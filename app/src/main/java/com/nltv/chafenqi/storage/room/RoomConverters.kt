@@ -2,7 +2,9 @@ package com.nltv.chafenqi.storage.room
 
 import androidx.room.TypeConverter
 import com.beust.klaxon.JsonArray
+import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Klaxon
+import com.nltv.chafenqi.storage.room.chunithm.ChunithmMusicCharts
 import com.nltv.chafenqi.storage.room.maimai.MaimaiBasicInfoEntry
 import com.nltv.chafenqi.storage.room.maimai.MaimaiChartEntry
 
@@ -38,4 +40,10 @@ class RoomConverters {
 
     @TypeConverter
     fun toBasicInfo(value: String): MaimaiBasicInfoEntry = parser.parse(value) ?: MaimaiBasicInfoEntry()
+
+    @TypeConverter
+    fun fromCharts(value: ChunithmMusicCharts): String = Klaxon().toJsonString(value)
+
+    @TypeConverter
+    fun toCharts(value: String): ChunithmMusicCharts = parser.parse(value) ?: ChunithmMusicCharts()
 }

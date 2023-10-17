@@ -4,7 +4,7 @@ import android.util.Log
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.view.LoginPageViewModel
 
-class CFQUser {
+object CFQUser {
     private val logTag = "CFQUser"
 
     private var token = ""
@@ -12,12 +12,11 @@ class CFQUser {
     var username = ""
     var isPremium = false
 
-    suspend fun createProfile(authToken: String, username: String, model: LoginPageViewModel) {
+    suspend fun createProfile(authToken: String, username: String) {
         this.token = authToken
         this.username = username
 
-        model.loginPromptText = "检查订阅状态..."
-        this.isPremium = CFQServer.apiIsPremium(authToken)
+        this.isPremium = CFQServer.apiIsPremium(username)
 
         Log.i(logTag, "User is ${if (isPremium) "" else "not"} premium")
     }

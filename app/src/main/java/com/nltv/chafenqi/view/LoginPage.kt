@@ -46,6 +46,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.beust.klaxon.Klaxon
@@ -144,7 +145,7 @@ fun LoginField(navController: NavController, model: LoginPageViewModel) {
         mutableStateOf("testaccount")
     }
     var password by remember {
-        mutableStateOf("testtest")
+        mutableStateOf("testaccount")
     }
     var passwordVisible by rememberSaveable {
         mutableStateOf(false)
@@ -195,21 +196,12 @@ fun LoginField(navController: NavController, model: LoginPageViewModel) {
         )
         Button(
             onClick = {
-                model.loginState = UIState.Loading
-                model.loginPromptText = "登陆中..."
-                coroutineScope.launch {
-                    val response = CFQServer.authLogin(
-                        username = username,
-                        password = password.sha256()
-                    )
-                    if (response.isNotEmpty()) {
-                        // successfully logged in
-                        println("Successfully logged in.")
-                        model.loginPromptText = "以${username}的身份登录..."
-                        model.user.createProfile(response, username, model)
-                        loadPersistentStorage(model)
-
-                        navController.navigate("home")
+                if (model.loginState == UIState.Pending) {
+                    val result = model.login(username, password.sha256())
+                    if (result) {
+                        model.loginState = UIState.Finished
+                    } else {
+                        model.loginState = UIState.Pending
                     }
                 }
             },
@@ -225,22 +217,6 @@ fun LoginField(navController: NavController, model: LoginPageViewModel) {
             Text(text = "注册新账号", color = MaterialTheme.colorScheme.primary)
         }
     }
-}
-
-suspend fun loadPersistentStorage(model: LoginPageViewModel) {
-    val parser = Klaxon()
-
-    val maiListData = FishServer.fetchMaimaiMusicListData()
-    println("Got maimai music list, size ${maiListData.length}")
-
-    val maiList = parser.parseArray<MaimaiMusicEntry>(maiListData)
-
-//    maiList?.also {
-//        model.updateMaiList(it)
-//    } ?: run {
-//        // parse failed
-//        println("Maimai list parse failed.")
-//    }
 }
 
 @Preview(showBackground = true)

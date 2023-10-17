@@ -9,7 +9,10 @@ import com.nltv.chafenqi.ChafenqiApplication
 object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
-            LoginPageViewModel(chafenqiApplication().container.maiListRepository)
+            LoginPageViewModel(
+                chafenqiApplication().container.maiListRepository,
+                chafenqiApplication().container.chuListRepository
+            )
         }
     }
 }

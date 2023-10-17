@@ -3,27 +3,28 @@ package com.nltv.chafenqi.networking
 import android.util.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.ANDROID
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 
 class CFQServer {
     companion object {
         val client = HttpClient(OkHttp) {
-            defaultRequest {
-                url("http://43.139.107.206:8083/")
-            }
             install(ContentNegotiation) {
                 json()
             }
@@ -42,8 +43,8 @@ class CFQServer {
         ): HttpResponse {
             when (method) {
                 "GET" -> {
-                    return client.get(path) {
-                        contentType(ContentType.Application.Json)
+                    return client.get("http://43.139.107.206:8083/$path") {
+                        accept(ContentType.Any)
                         queries?.also { q ->
                             url { u ->
                                 q.forEach {
@@ -57,9 +58,10 @@ class CFQServer {
                     }
                 }
                 "POST" -> {
-                    return client.post(path) {
-                        contentType(ContentType.Application.Json)
+                    return client.post("http://43.139.107.206:8083/$path") {
+                        accept(ContentType.Any)
                         payload?.also {
+                            this.contentType(ContentType.Application.Json)
                             this.setBody(it)
                         }
                         token?.also {
@@ -86,7 +88,6 @@ class CFQServer {
             val errorCode = response.bodyAsText()
             val statusCode = response.status.value
             val header = response.headers["Authorization"]?.substring(7)
-            client.close()
 
             Log.i("CFQServer", "auth login: $errorCode")
 
@@ -97,19 +98,34 @@ class CFQServer {
             }
         }
 
-        suspend fun apiIsPremium(authToken: String): Boolean {
+        suspend fun apiIsPremium(username: String): Boolean {
             Log.i("CFQServer", "Checking if user is premium...")
             val response = fetchFromServer(
                 "POST",
                 "api/isPremium",
-                token = authToken
+                payload = hashMapOf(
+                    "username" to username
+                )
             )
-            client.close()
             return response.status.value == 200
         }
 
-        private fun handleErrorCode(errorCode: String) {
+        suspend fun apiChuithmMusicData(): String {
+            val response = fetchFromServer(
+                "GET",
+                path = "api/chunithm/music_data"
+            )
+            return response.bodyAsText()
+        }
 
+        private fun handleErrorCode(errorCode: String) {
+            when(errorCode) {
+                "MISMATCH" -> {
+                    throw CredentialsMismatchException()
+                }
+            }
         }
     }
 }
+
+class CredentialsMismatchException: Exception()

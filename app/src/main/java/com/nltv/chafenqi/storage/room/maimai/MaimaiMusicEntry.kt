@@ -21,14 +21,3 @@ data class MaimaiMusicEntry(
     @Json(name = "cids") val chartIds: List<Int> = listOf(),
     @Json(name = "basic_info") val basicInfo: MaimaiBasicInfoEntry = MaimaiBasicInfoEntry()
 )
-
-data class MaimaiMusicData(
-    val id: String = "",
-    val title: String = "",
-    val type: String = "",
-    @Json(name = "ds") val constants: List<Double> = listOf(),
-    val level: List<String> = listOf(),
-    @Json(name = "cids") val chartIds: List<Int> = listOf(),
-    val charts: List<MaimaiChartEntry> = listOf(),
-    @Json(name = "basic_info") val basicInfo: MaimaiBasicInfoEntry = MaimaiBasicInfoEntry()
-)
