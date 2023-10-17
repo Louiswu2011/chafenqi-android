@@ -6,7 +6,6 @@ import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.ANDROID
-import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
@@ -21,7 +20,7 @@ import io.ktor.serialization.kotlinx.json.json
 
 class CFQServer {
     companion object {
-        private val client = HttpClient(OkHttp) {
+        val client = HttpClient(OkHttp) {
             defaultRequest {
                 url("http://43.139.107.206:8083/")
             }
@@ -30,7 +29,7 @@ class CFQServer {
             }
             install(Logging) {
                 logger = Logger.ANDROID
-                level = LogLevel.ALL
+                level = LogLevel.NONE
             }
         }
 
@@ -87,6 +86,7 @@ class CFQServer {
             val errorCode = response.bodyAsText()
             val statusCode = response.status.value
             val header = response.headers["Authorization"]?.substring(7)
+            client.close()
 
             Log.i("CFQServer", "auth login: $errorCode")
 
@@ -104,6 +104,7 @@ class CFQServer {
                 "api/isPremium",
                 token = authToken
             )
+            client.close()
             return response.status.value == 200
         }
 

@@ -1,7 +1,6 @@
 package com.nltv.chafenqi.view
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -39,7 +38,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -56,13 +54,7 @@ import com.nltv.chafenqi.UIState
 import com.nltv.chafenqi.extension.sha256
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.networking.FishServer
-import com.nltv.chafenqi.storage.room.maimai.LocalMaimaiMusicListRepository
-import com.nltv.chafenqi.storage.room.maimai.MaimaiMusicData
 import com.nltv.chafenqi.storage.room.maimai.MaimaiMusicEntry
-import io.ktor.client.HttpClient
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.request.get
-import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -84,7 +76,7 @@ fun LoginPage(navController: NavController) {
         AnimatedContent(targetState = model.loginState, label = "LoginScreenAnimatedContent") {
             when (it) {
                 UIState.Pending -> {
-                    LoginField(navController = navController)
+                    LoginField(navController, model)
                 }
                 UIState.Loading -> {
                     Column(
@@ -95,7 +87,7 @@ fun LoginPage(navController: NavController) {
                             modifier = Modifier.size(32.dp),
                             color = MaterialTheme.colorScheme.surfaceVariant
                         )
-                        Text(text = "登录中...", modifier = Modifier.padding(8.dp))
+                        Text(text = model.loginPromptText, modifier = Modifier.padding(8.dp))
 
                     }
                 }
@@ -146,8 +138,7 @@ fun AppIconWithFrame() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginField(navController: NavController) {
-    val model: LoginPageViewModel = viewModel(factory = AppViewModelProvider.Factory)
+fun LoginField(navController: NavController, model: LoginPageViewModel) {
 
     var username by remember {
         mutableStateOf("testaccount")
@@ -205,6 +196,7 @@ fun LoginField(navController: NavController) {
         Button(
             onClick = {
                 model.loginState = UIState.Loading
+                model.loginPromptText = "登陆中..."
                 coroutineScope.launch {
                     val response = CFQServer.authLogin(
                         username = username,
@@ -213,7 +205,8 @@ fun LoginField(navController: NavController) {
                     if (response.isNotEmpty()) {
                         // successfully logged in
                         println("Successfully logged in.")
-                        model.user.createProfile(response, username)
+                        model.loginPromptText = "以${username}的身份登录..."
+                        model.user.createProfile(response, username, model)
                         loadPersistentStorage(model)
 
                         navController.navigate("home")
