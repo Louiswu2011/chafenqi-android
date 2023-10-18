@@ -85,5 +85,4 @@ dependencies {
     implementation("com.beust:klaxon:5.6")
     implementation("io.ktor:ktor-client-logging:$ktor_version")
     debugImplementation("org.slf4j:slf4j-simple:2.0.7")
-    implementation("com.google.code.gson:gson:2.10.1")
 }
