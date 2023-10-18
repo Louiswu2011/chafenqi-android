@@ -1,4 +1,4 @@
-package com.nltv.chafenqi.view
+package com.nltv.chafenqi.view.login
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.BorderStroke
@@ -46,21 +46,16 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.beust.klaxon.Klaxon
 import com.nltv.chafenqi.R
 import com.nltv.chafenqi.UIState
 import com.nltv.chafenqi.extension.sha256
-import com.nltv.chafenqi.networking.CFQServer
-import com.nltv.chafenqi.networking.FishServer
-import com.nltv.chafenqi.storage.room.maimai.MaimaiMusicEntry
-import kotlinx.coroutines.launch
+import com.nltv.chafenqi.view.AppViewModelProvider
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginPage(navController: NavController) {
+fun LoginPage() {
     val model: LoginPageViewModel = viewModel(factory = AppViewModelProvider.Factory)
 
     Column(
@@ -77,7 +72,7 @@ fun LoginPage(navController: NavController) {
         AnimatedContent(targetState = model.loginState, label = "LoginScreenAnimatedContent") {
             when (it) {
                 UIState.Pending -> {
-                    LoginField(navController, model)
+                    LoginField(model)
                 }
                 UIState.Loading -> {
                     Column(
@@ -139,7 +134,7 @@ fun AppIconWithFrame() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginField(navController: NavController, model: LoginPageViewModel) {
+fun LoginField(model: LoginPageViewModel) {
 
     var username by remember {
         mutableStateOf("testaccount")
@@ -197,12 +192,7 @@ fun LoginField(navController: NavController, model: LoginPageViewModel) {
         Button(
             onClick = {
                 if (model.loginState == UIState.Pending) {
-                    val result = model.login(username, password.sha256())
-                    if (result) {
-                        model.loginState = UIState.Finished
-                    } else {
-                        model.loginState = UIState.Pending
-                    }
+                    model.login(username, password.sha256())
                 }
             },
             modifier = Modifier.padding(top = 30.dp)

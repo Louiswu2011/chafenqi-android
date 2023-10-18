@@ -24,5 +24,4 @@ interface MaimaiMusicListDao {
 
     @Query("SELECT * from MaimaiMusicList")
     fun getMusicList(): Flow<List<MaimaiMusicEntry>>
-
 }

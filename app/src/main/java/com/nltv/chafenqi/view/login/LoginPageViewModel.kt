@@ -1,4 +1,4 @@
-package com.nltv.chafenqi.view
+package com.nltv.chafenqi.view.login
 
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -7,6 +7,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.beust.klaxon.Klaxon
+import com.nltv.chafenqi.ChafenqiApp
+import com.nltv.chafenqi.ChafenqiApplication
 import com.nltv.chafenqi.UIState
 import com.nltv.chafenqi.extension.sha256
 import com.nltv.chafenqi.networking.CFQServer
@@ -16,8 +18,11 @@ import com.nltv.chafenqi.storage.CFQUser
 import com.nltv.chafenqi.storage.room.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.room.chunithm.ChunithmMusicListRepository
 import com.nltv.chafenqi.storage.room.maimai.MaimaiMusicEntry
+import com.nltv.chafenqi.storage.room.maimai.MaimaiMusicListDatabase
 import com.nltv.chafenqi.storage.room.maimai.MaimaiMusicListRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LoginPageViewModel(
     private val maiListRepo: MaimaiMusicListRepository,
@@ -28,7 +33,7 @@ class LoginPageViewModel(
 
     var loginPromptText by mutableStateOf("")
 
-    fun login(username: String, password: String): Boolean {
+    fun login(username: String, password: String) {
         var loggedIn = false
         loginState = UIState.Loading
         loginPromptText = "登陆中..."
@@ -48,14 +53,14 @@ class LoginPageViewModel(
                     user.createProfile(response, username)
                     // loadPersistentStorage()
 
-                    loggedIn = true
+                    loginState = UIState.Finished
                 }
             } catch (e: CredentialsMismatchException) {
                 Log.e("Login", "Login failed: Credentials mismatched.")
             }
         }
 
-        return loggedIn
+        loginState = UIState.Pending
     }
 
     private suspend fun loadPersistentStorage() {
@@ -68,24 +73,29 @@ class LoginPageViewModel(
         val chuListData = CFQServer.apiChuithmMusicData()
         Log.i("Login","Got chunithm music list, size ${chuListData.length}")
 
-        val maiList = parser.parseArray<MaimaiMusicEntry>(maiListData)
-        val chuList = parser.parseArray<ChunithmMusicEntry>(chuListData)
+        var maiList: List<MaimaiMusicEntry>?
+        var chuList: List<ChunithmMusicEntry>?
 
-        maiList?.also {
-            Log.i("Login","Saving maimai music list.")
-            updateMaiList(it)
-            Log.i("Login","Saved maimai music list.")
-        } ?: run {
-            // parse failed
-            Log.e("Login", "Maimai list parse failed.")
-        }
+        withContext(Dispatchers.Default) {
+            maiList = parser.parseArray(maiListData)
+            chuList = parser.parseArray(chuListData)
 
-        chuList?.also {
-            Log.i("Login","Saving chunithm music list.")
-            updateChuList(it)
-            Log.i("Login","Saved chunithm music list.")
-        } ?: run {
-            Log.e("Login", "Chunithm list parse failed.")
+            maiList?.also {
+                Log.i("Login","Saving maimai music list.")
+                updateMaiList(it)
+                Log.i("Login","Saved maimai music list.")
+            } ?: run {
+                // parse failed
+                Log.e("Login", "Maimai list parse failed.")
+            }
+
+            chuList?.also {
+                Log.i("Login","Saving chunithm music list.")
+                updateChuList(it)
+                Log.i("Login","Saved chunithm music list.")
+            } ?: run {
+                Log.e("Login", "Chunithm list parse failed.")
+            }
         }
     }
 

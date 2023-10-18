@@ -2,7 +2,6 @@ package com.nltv.chafenqi.storage
 
 import android.util.Log
 import com.nltv.chafenqi.networking.CFQServer
-import com.nltv.chafenqi.view.LoginPageViewModel
 
 object CFQUser {
     private val logTag = "CFQUser"

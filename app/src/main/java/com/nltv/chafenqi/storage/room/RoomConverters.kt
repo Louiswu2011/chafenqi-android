@@ -36,7 +36,7 @@ class RoomConverters {
     fun toChart(value: String): List<MaimaiChartEntry> = parser.parseArray(value) ?: listOf()
 
     @TypeConverter
-    fun fromBasicInfo(value: MaimaiBasicInfoEntry) = JsonArray(value).toJsonString()
+    fun fromBasicInfo(value: MaimaiBasicInfoEntry) = Klaxon().toJsonString(value)
 
     @TypeConverter
     fun toBasicInfo(value: String): MaimaiBasicInfoEntry = parser.parse(value) ?: MaimaiBasicInfoEntry()

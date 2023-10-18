@@ -5,11 +5,19 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.nltv.chafenqi.ChafenqiApplication
+import com.nltv.chafenqi.view.login.LoginPageViewModel
+import com.nltv.chafenqi.view.songlist.SongListPageViewModel
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
             LoginPageViewModel(
+                chafenqiApplication().container.maiListRepository,
+                chafenqiApplication().container.chuListRepository
+            )
+        }
+        initializer {
+            SongListPageViewModel(
                 chafenqiApplication().container.maiListRepository,
                 chafenqiApplication().container.chuListRepository
             )
