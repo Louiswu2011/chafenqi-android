@@ -26,8 +26,12 @@ class SongListPageViewModel(
             started = SharingStarted.WhileSubscribed(TIMEOUT_MILLS),
             initialValue = MaimaiListUiState()
         )
-
-    val maiSongList = maiListRepo.getAllMusicStream()
+    val chuSongState: StateFlow<ChunithmListUiState> = chuListRepo.getAllMusicStream().map { ChunithmListUiState(it) }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(TIMEOUT_MILLS),
+            initialValue = ChunithmListUiState()
+        )
 
     companion object {
         private const val TIMEOUT_MILLS = 5_000L

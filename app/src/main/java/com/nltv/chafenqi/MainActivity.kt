@@ -91,18 +91,13 @@ fun ChafenqiApp() {
         ) { innerPadding ->
             NavHost(
                 navController = navController,
-                startDestination = "home",
+                startDestination = HomeNavItem.Home.route,
                 modifier = Modifier.padding(innerPadding)
             ) {
-                composable("home") {
-                    BackHandler {
-
-                    }
-                    HomePage(navController)
-                }
                 composable(HomeNavItem.Home.route) { HomePage(navController = navController) }
                 composable(HomeNavItem.Uploader.route) {}
                 composable(HomeNavItem.SongList.route) { SongListPage(navController = navController) }
+
             }
         }
     } else {
