@@ -1,6 +1,7 @@
 package com.nltv.chafenqi.view.songlist
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -22,6 +23,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -55,7 +57,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.compose.AsyncImage
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
-import com.nltv.chafenqi.storage.room.maimai.MaimaiMusicEntry
+import com.nltv.chafenqi.storage.room.songlist.maimai.MaimaiMusicEntry
 import com.nltv.chafenqi.view.AppViewModelProvider
 import com.nltv.chafenqi.view.home.HomeNavItem
 import kotlinx.coroutines.launch
@@ -68,6 +70,8 @@ fun SongListPage(navController: NavController) {
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
     val maiSongList by model.maiSongState.collectAsStateWithLifecycle()
+
+    val isUiLoading by model.isUiLoading.collectAsStateWithLifecycle()
 
     var isSearchBarActive by remember {
         mutableStateOf(false)
@@ -83,7 +87,7 @@ fun SongListPage(navController: NavController) {
     BackHandler(true) {
         if (navController.currentBackStackEntry?.destination?.route != HomeNavItem.SongList.route) {
             navController.navigateUp()
-        } else {
+        } else if (listState.firstVisibleItemIndex > 0) {
             coroutineScope.launch { listState.animateScrollToItem(index = 0) }
         }
     }
@@ -159,5 +163,6 @@ fun MaimaiMusicListEntryPreview() {
         "2",
         "True Love Song",
         level = listOf("1", "2", "3", "4")
-    ))
+    )
+    )
 }

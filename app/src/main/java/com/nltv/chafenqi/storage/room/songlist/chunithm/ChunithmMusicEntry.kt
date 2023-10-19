@@ -1,12 +1,16 @@
-package com.nltv.chafenqi.storage.room.chunithm
+package com.nltv.chafenqi.storage.room.songlist.chunithm
 
 import androidx.annotation.Keep
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.beust.klaxon.Json
 
 @Keep
-@Entity(tableName = "ChunithmMusicList")
+@Entity(
+    tableName = "ChunithmMusicList",
+    indices = [Index(value = ["musicID"], unique = true)]
+)
 data class ChunithmMusicEntry(
     @PrimaryKey(autoGenerate = true)
     @Json(ignored = true)

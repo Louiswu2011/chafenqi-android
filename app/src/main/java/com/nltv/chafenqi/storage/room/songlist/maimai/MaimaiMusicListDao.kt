@@ -1,4 +1,4 @@
-package com.nltv.chafenqi.storage.room.maimai
+package com.nltv.chafenqi.storage.room.songlist.maimai
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -24,4 +24,7 @@ interface MaimaiMusicListDao {
 
     @Query("SELECT * from MaimaiMusicList")
     fun getMusicList(): Flow<List<MaimaiMusicEntry>>
+
+    @Query("SELECT COUNT(uid) from MaimaiMusicList")
+    fun getMusicCount(): Int
 }

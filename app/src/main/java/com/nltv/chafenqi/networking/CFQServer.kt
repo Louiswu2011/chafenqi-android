@@ -39,11 +39,13 @@ class CFQServer {
             path: String,
             payload: HashMap<Any, Any>? = null,
             queries: Map<String, String>? = null,
-            token: String? = null
+            token: String? = null,
+            shouldHandleErrorCode: Boolean = true
         ): HttpResponse {
+            var response: HttpResponse
             when (method) {
                 "GET" -> {
-                    return client.get("http://43.139.107.206:8083/$path") {
+                    response = client.get("http://43.139.107.206:8083/$path") {
                         accept(ContentType.Any)
                         queries?.also { q ->
                             url { u ->
@@ -58,7 +60,7 @@ class CFQServer {
                     }
                 }
                 "POST" -> {
-                    return client.post("http://43.139.107.206:8083/$path") {
+                    response = client.post("http://43.139.107.206:8083/$path") {
                         accept(ContentType.Any)
                         payload?.also {
                             this.contentType(ContentType.Application.Json)
@@ -73,7 +75,10 @@ class CFQServer {
                     throw Exception("Method not supported.")
                 }
             }
-
+            if (response.status.value != 200 && shouldHandleErrorCode) {
+                handleErrorCode(response.bodyAsText())
+            }
+            return response
         }
 
         suspend fun authLogin(username: String, password: String): String {
@@ -86,16 +91,11 @@ class CFQServer {
                 )
             )
             val errorCode = response.bodyAsText()
-            val statusCode = response.status.value
             val header = response.headers["Authorization"]?.substring(7)
 
             Log.i("CFQServer", "auth login: $errorCode")
 
-            return if (statusCode == 200) {
-                header ?: ""
-            } else {
-                ""
-            }
+            return header ?: ""
         }
 
         suspend fun apiIsPremium(username: String): Boolean {
@@ -105,7 +105,8 @@ class CFQServer {
                 "api/isPremium",
                 payload = hashMapOf(
                     "username" to username
-                )
+                ),
+                shouldHandleErrorCode = false
             )
             return response.status.value == 200
         }
@@ -118,14 +119,33 @@ class CFQServer {
             return response.bodyAsText()
         }
 
+        suspend fun apiMaimai(contentTag: String, authToken: String): String = fetchFromServer(
+            "GET",
+            path = "api/maimai/$contentTag",
+            token = authToken
+        ).bodyAsText()
+
+        suspend fun apiChunithm(contentTag: String, authToken: String): String = fetchFromServer(
+            "GET",
+            path = "api/chunithm/$contentTag",
+            token = authToken
+        ).bodyAsText()
+
+
         private fun handleErrorCode(errorCode: String) {
             when(errorCode) {
-                "MISMATCH" -> {
-                    throw CredentialsMismatchException()
-                }
+                "MISMATCH" -> throw CredentialsMismatchException()
+                "INVALID" -> throw InvalidTokenException()
+                "NOT FOUND" -> throw UserNotFoundException()
+                "EMPTY" -> throw EmptyUserDataException()
+                else -> throw CFQServerSideException(errorCode = errorCode)
             }
         }
     }
 }
 
 class CredentialsMismatchException: Exception()
+class InvalidTokenException: Exception()
+class UserNotFoundException: Exception()
+class EmptyUserDataException: Exception()
+class CFQServerSideException(errorCode: String): Exception(errorCode)

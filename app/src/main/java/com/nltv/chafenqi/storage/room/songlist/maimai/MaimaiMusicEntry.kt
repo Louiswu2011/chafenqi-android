@@ -1,12 +1,16 @@
-package com.nltv.chafenqi.storage.room.maimai
+package com.nltv.chafenqi.storage.room.songlist.maimai
 
 import androidx.annotation.Keep
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.beust.klaxon.Json
 
 @Keep
-@Entity(tableName = "MaimaiMusicList")
+@Entity(
+    tableName = "MaimaiMusicList",
+    indices = [Index(value = ["id"], unique = true)]
+)
 data class MaimaiMusicEntry(
     @PrimaryKey(autoGenerate = true)
     @Json(ignored = true)

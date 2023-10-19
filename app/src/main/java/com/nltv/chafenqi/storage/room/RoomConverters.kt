@@ -4,9 +4,9 @@ import androidx.room.TypeConverter
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Klaxon
-import com.nltv.chafenqi.storage.room.chunithm.ChunithmMusicCharts
-import com.nltv.chafenqi.storage.room.maimai.MaimaiBasicInfoEntry
-import com.nltv.chafenqi.storage.room.maimai.MaimaiChartEntry
+import com.nltv.chafenqi.storage.room.songlist.chunithm.ChunithmMusicCharts
+import com.nltv.chafenqi.storage.room.songlist.maimai.MaimaiBasicInfoEntry
+import com.nltv.chafenqi.storage.room.songlist.maimai.MaimaiChartEntry
 
 class RoomConverters {
     private val parser = Klaxon()

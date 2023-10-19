@@ -1,4 +1,4 @@
-package com.nltv.chafenqi.storage.room.chunithm
+package com.nltv.chafenqi.storage.room.songlist.chunithm
 
 import android.content.Context
 import androidx.room.Database
@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.nltv.chafenqi.storage.room.RoomConverters
 
-@Database(entities = [ChunithmMusicEntry::class], version = 1, exportSchema = false)
+@Database(entities = [ChunithmMusicEntry::class], version = 2, exportSchema = false)
 @TypeConverters(RoomConverters::class)
 abstract class ChunithmMusicListDatabase: RoomDatabase() {
     abstract fun ChunithmMusicListDao(): ChunithmMusicListDao

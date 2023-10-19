@@ -87,4 +87,5 @@ dependencies {
     debugImplementation("org.slf4j:slf4j-simple:2.0.7")
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0-alpha02")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 }

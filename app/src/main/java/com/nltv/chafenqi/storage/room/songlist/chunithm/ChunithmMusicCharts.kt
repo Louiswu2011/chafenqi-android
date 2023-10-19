@@ -1,4 +1,4 @@
-package com.nltv.chafenqi.storage.room.chunithm
+package com.nltv.chafenqi.storage.room.songlist.chunithm
 
 data class ChunithmMusicCharts(
     val basic: ChunithmMusicBasicChart = ChunithmMusicBasicChart(),

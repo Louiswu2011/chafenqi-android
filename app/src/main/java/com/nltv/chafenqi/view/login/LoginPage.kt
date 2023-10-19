@@ -46,6 +46,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.nltv.chafenqi.R
@@ -57,6 +58,7 @@ import com.nltv.chafenqi.view.AppViewModelProvider
 @Composable
 fun LoginPage() {
     val model: LoginPageViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    val loginUiState by model.loginUiState.collectAsStateWithLifecycle()
 
     Column(
         Modifier
@@ -69,7 +71,7 @@ fun LoginPage() {
         AppIconWithFrame()
         Spacer(modifier = Modifier.padding(all = 30.dp))
 
-        AnimatedContent(targetState = model.loginState, label = "LoginScreenAnimatedContent") {
+        AnimatedContent(targetState = loginUiState.loginState, label = "LoginScreenAnimatedContent") {
             when (it) {
                 UIState.Pending -> {
                     LoginField(model)
@@ -83,7 +85,7 @@ fun LoginPage() {
                             modifier = Modifier.size(32.dp),
                             color = MaterialTheme.colorScheme.surfaceVariant
                         )
-                        Text(text = model.loginPromptText, modifier = Modifier.padding(8.dp))
+                        Text(text = loginUiState.loginPromptText, modifier = Modifier.padding(8.dp))
 
                     }
                 }
@@ -135,12 +137,13 @@ fun AppIconWithFrame() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginField(model: LoginPageViewModel) {
+    val loginUiState by model.loginUiState.collectAsStateWithLifecycle()
 
     var username by remember {
         mutableStateOf("testaccount")
     }
     var password by remember {
-        mutableStateOf("testaccount")
+        mutableStateOf("testtest")
     }
     var passwordVisible by rememberSaveable {
         mutableStateOf(false)
@@ -158,8 +161,6 @@ fun LoginField(model: LoginPageViewModel) {
         keyboardType = KeyboardType.Password,
         imeAction = ImeAction.Done
     )
-
-    val coroutineScope = rememberCoroutineScope()
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -191,7 +192,7 @@ fun LoginField(model: LoginPageViewModel) {
         )
         Button(
             onClick = {
-                if (model.loginState == UIState.Pending) {
+                if (loginUiState.loginState == UIState.Pending) {
                     model.login(username, password.sha256())
                 }
             },

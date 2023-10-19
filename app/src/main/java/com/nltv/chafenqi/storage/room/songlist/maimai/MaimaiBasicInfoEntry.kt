@@ -1,4 +1,4 @@
-package com.nltv.chafenqi.storage.room.maimai
+package com.nltv.chafenqi.storage.room.songlist.maimai
 
 import androidx.annotation.Keep
 import androidx.room.Entity

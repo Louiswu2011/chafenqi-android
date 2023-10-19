@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -60,7 +61,9 @@ fun ChafenqiApp() {
     val navController = rememberNavController()
     val loginModel: LoginPageViewModel = viewModel(factory = AppViewModelProvider.Factory)
 
-    if (loginModel.loginState == UIState.Finished) {
+    val loginState by loginModel.loginUiState.collectAsStateWithLifecycle()
+
+    if (loginState.loginState == UIState.Finished) {
         val screenList = listOf(HomeNavItem.Home, HomeNavItem.Uploader, HomeNavItem.SongList)
 
         Scaffold(

@@ -13,7 +13,8 @@ object AppViewModelProvider {
         initializer {
             LoginPageViewModel(
                 chafenqiApplication().container.maiListRepository,
-                chafenqiApplication().container.chuListRepository
+                chafenqiApplication().container.chuListRepository,
+                chafenqiApplication().container.userMaiDataRepository
             )
         }
         initializer {

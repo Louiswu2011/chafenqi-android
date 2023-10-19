@@ -1,4 +1,4 @@
-package com.nltv.chafenqi.storage.room.chunithm
+package com.nltv.chafenqi.storage.room.songlist.chunithm
 
 import kotlinx.coroutines.flow.Flow
 
@@ -9,4 +9,5 @@ interface ChunithmMusicListRepository {
     suspend fun insertMusic(musicData: ChunithmMusicEntry)
     suspend fun deleteMusic(musicData: ChunithmMusicEntry)
     suspend fun updateMusic(musicData: ChunithmMusicEntry)
+    suspend fun getMusicCount(): Int
 }

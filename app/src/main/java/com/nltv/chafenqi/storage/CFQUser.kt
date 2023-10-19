@@ -4,9 +4,9 @@ import android.util.Log
 import com.nltv.chafenqi.networking.CFQServer
 
 object CFQUser {
-    private val logTag = "CFQUser"
+    private const val tag = "CFQUser"
 
-    private var token = ""
+    var token = ""
 
     var username = ""
     var isPremium = false
@@ -17,6 +17,8 @@ object CFQUser {
 
         this.isPremium = CFQServer.apiIsPremium(username)
 
-        Log.i(logTag, "User is ${if (isPremium) "" else "not"} premium")
+        Log.i(tag, "User is ${if (isPremium) "" else "not"} premium")
     }
+
+    suspend fun loadProfileFromCache(targetUsername: String) {}
 }

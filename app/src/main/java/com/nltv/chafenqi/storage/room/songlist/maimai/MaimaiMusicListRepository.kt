@@ -1,4 +1,4 @@
-package com.nltv.chafenqi.storage.room.maimai
+package com.nltv.chafenqi.storage.room.songlist.maimai
 
 import kotlinx.coroutines.flow.Flow
 
@@ -10,4 +10,6 @@ interface MaimaiMusicListRepository {
     suspend fun insertMusic(musicData: MaimaiMusicEntry)
     suspend fun deleteMusic(musicData: MaimaiMusicEntry)
     suspend fun updateMusic(musicData: MaimaiMusicEntry)
+
+    suspend fun getMusicCount(): Int
 }

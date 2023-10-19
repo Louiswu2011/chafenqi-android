@@ -1,4 +1,4 @@
-package com.nltv.chafenqi.storage.room.chunithm
+package com.nltv.chafenqi.storage.room.songlist.chunithm
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -24,4 +24,7 @@ interface ChunithmMusicListDao {
 
     @Query("SELECT * from ChunithmMusicList")
     fun getMusicList(): Flow<List<ChunithmMusicEntry>>
+
+    @Query("SELECT COUNT(uid) from ChunithmMusicList")
+    fun getMusicCount(): Int
 }

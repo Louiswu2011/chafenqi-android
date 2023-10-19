@@ -1,6 +1,6 @@
-package com.nltv.chafenqi.storage.room.chunithm
+package com.nltv.chafenqi.storage.room.songlist.chunithm
 
-data class ChunithmMusicAdvancedChart(
+data class ChunithmMusicBasicChart(
     val enabled: Boolean = false,
     val constant: Double = 0.0,
     val level: String = "",
