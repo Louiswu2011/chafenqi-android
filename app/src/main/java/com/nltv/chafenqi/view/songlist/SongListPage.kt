@@ -71,8 +71,6 @@ fun SongListPage(navController: NavController) {
     val listState = rememberLazyListState()
     val maiSongList by model.maiSongState.collectAsStateWithLifecycle()
 
-    val isUiLoading by model.isUiLoading.collectAsStateWithLifecycle()
-
     var isSearchBarActive by remember {
         mutableStateOf(false)
     }

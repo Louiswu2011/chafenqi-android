@@ -19,7 +19,7 @@ data class MaimaiRecentScoreEntry(
     val difficulty: String = "",
     val type: String = "",
     val achievements: Float = 0f,
-    val isNewRecord: Boolean = false,
+    val isNewRecord: Int = 0,
     val dxScore: Int = 0,
     val fc: String = "",
     val fs: String = "",

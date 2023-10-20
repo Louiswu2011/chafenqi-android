@@ -1,9 +1,11 @@
 package com.nltv.chafenqi.view.login
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.beust.klaxon.Klaxon
@@ -72,7 +74,7 @@ class LoginPageViewModel(
 
                     loadMaimaiData()
 
-                    // updateLoginState(UIState.Finished)
+                    updateLoginState(UIState.Finished)
                 } else {
                     updateLoginState(UIState.Pending)
                 }
@@ -146,25 +148,16 @@ class LoginPageViewModel(
                 val recent = parser.parseArray<MaimaiRecentScoreEntry>(recentString)
 
                 Log.i(tag, "Maimai data acquired.")
-                best?.onEach { userMaiDataRepo.rawDao.upsertBestScore(it) } ?: run {
-                    Log.e(
-                        tag,
-                        "Failed to parse best scores."
-                    )
-                }
-                recent?.onEach { userMaiDataRepo.rawDao.insertRecentScore(it) } ?: run {
-                    Log.e(
-                        tag,
-                        "Failed to parse recent scores."
-                    )
-                }
+                info?.also { user.maimaiUserInfo = it } ?: run { Log.e(tag, "Failed to parse info.") }
+                best?.onEach { userMaiDataRepo.rawDao.upsertBestScore(it) } ?: run { Log.e(tag, "Failed to parse best scores.") }
+                recent?.onEach { userMaiDataRepo.rawDao.insertRecentScore(it) } ?: run {Log.e(tag, "Failed to parse recent scores.") }
 
                 Log.i(tag, "Finished on loading user maimai basic data.")
             } catch (e: EmptyUserDataException) {
                 isEmpty = true
                 Log.i(tag, "User maimai data is empty, skipping...")
             } catch (e: Exception) {
-                Log.e(tag, e.localizedMessage)
+                Log.e(tag, e.localizedMessage?: "")
             }
 
             if (CFQUser.isPremium && !isEmpty) {

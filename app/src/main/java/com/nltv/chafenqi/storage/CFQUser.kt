@@ -2,6 +2,7 @@ package com.nltv.chafenqi.storage
 
 import android.util.Log
 import com.nltv.chafenqi.networking.CFQServer
+import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiUserInfo
 
 object CFQUser {
     private const val tag = "CFQUser"
@@ -10,6 +11,8 @@ object CFQUser {
 
     var username = ""
     var isPremium = false
+
+    var maimaiUserInfo = MaimaiUserInfo()
 
     suspend fun createProfile(authToken: String, username: String) {
         this.token = authToken
