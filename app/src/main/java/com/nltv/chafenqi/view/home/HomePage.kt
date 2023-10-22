@@ -2,6 +2,7 @@ package com.nltv.chafenqi.view.home
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
@@ -56,6 +57,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -63,8 +65,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.nltv.chafenqi.R
+import com.nltv.chafenqi.extension.toDateString
+import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.storage.CFQUser
+import com.nltv.chafenqi.storage.room.user.maimai.MaimaiRecentScoreEntry
 import com.nltv.chafenqi.view.AppViewModelProvider
 import com.nltv.chafenqi.view.songlist.SongListPage
 
@@ -74,14 +80,20 @@ fun HomePage(navController: NavController) {
     val model: HomePageViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val scrollState = rememberScrollState()
 
+    val maiRecents by model.userMaiRecentState.collectAsStateWithLifecycle()
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = "主页") },
                 scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
-                colors = TopAppBarDefaults.mediumTopAppBarColors()
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary
+                )
             )
-        }
+        },
+        containerColor = MaterialTheme.colorScheme.background
     ) {
         Column(
             Modifier
@@ -90,12 +102,13 @@ fun HomePage(navController: NavController) {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             HomePageNameplate()
-            HomePageRecentBar()
+            HomePageRecentBar(navController)
             Column(
+                modifier = Modifier.padding(horizontal = 10.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                repeat(3) {
-                    HomePageRecentEntry()
+                maiRecents.data.take(3).onEach { entry ->
+                    HomePageRecentEntry(entry = entry)
                 }
             }
         }
@@ -104,6 +117,8 @@ fun HomePage(navController: NavController) {
 
 @Composable
 fun HomePageNameplate() {
+    val model: HomePageViewModel = viewModel(factory = AppViewModelProvider.Factory)
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -130,21 +145,21 @@ fun HomePageNameplate() {
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 Text(
-                    text = "游戏昵称",
+                    text = model.userMaimaiInfo.nickname,
                     fontSize = TextUnit(20f, TextUnitType.Sp),
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 12.dp)
                 )
-                HomePageNameplateInfoRow(title = "Rating", content = "16318")
+                HomePageNameplateInfoRow(title = "Rating", content = "${model.userMaimaiInfo.rating}")
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    HomePageNameplateInfoRow(title = "P", content = "14321")
-                    HomePageNameplateInfoRow(title = "N", content = "4321")
+                    HomePageNameplateInfoRow(title = "P", content = "-")
+                    HomePageNameplateInfoRow(title = "N", content = "-")
                 }
-                HomePageNameplateInfoRow(title = "游玩次数", content = "2471")
+                HomePageNameplateInfoRow(title = "游玩次数", content = "${model.userMaimaiInfo.playCount}")
                 Spacer(modifier = Modifier.size(8.dp))
-                HomePageNameplateInfoRow(title = "更新于", content = "10-20 13:20")
+                HomePageNameplateInfoRow(title = "更新于", content = "-")
             }
         }
     }
@@ -161,7 +176,7 @@ fun HomePageNameplateInfoRow(title: String, content: String) {
 }
 
 @Composable
-fun HomePageRecentBar() {
+fun HomePageRecentBar(navController: NavController) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -174,25 +189,25 @@ fun HomePageRecentBar() {
             text = "显示全部",
             fontSize = TextUnit(14f, TextUnitType.Sp),
             modifier = Modifier.clickable {
-
+                navController.navigate(HomeNavItem.Home.route + "/recent")
             },
             color = MaterialTheme.colorScheme.primary
         )
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun HomePageRecentEntry() {
+fun HomePageRecentEntry(entry: MaimaiRecentScoreEntry) {
+    val model: HomePageViewModel = viewModel(factory = AppViewModelProvider.Factory)
+
     Row(
         Modifier
             .fillMaxWidth()
-            .height(72.dp)
-            .padding(horizontal = 10.dp),
+            .height(72.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.nameplate_salt),
+        AsyncImage(
+            model = model.getAssociatedMaimaiMusic(title = entry.title).id.toMaimaiCoverPath(),
             contentDescription = "最近动态歌曲封面",
             modifier = Modifier
                 .padding(end = 8.dp)
@@ -215,7 +230,7 @@ fun HomePageRecentEntry() {
                 Modifier.fillMaxWidth(),
                 Arrangement.SpaceBetween
             ) {
-                Text("通关时间", fontSize = 14.sp)
+                Text(entry.timestamp.toDateString(), fontSize = 14.sp)
                 Text(text = "状态", fontWeight = FontWeight.Bold)
             }
             Row(
@@ -223,8 +238,8 @@ fun HomePageRecentEntry() {
                 Arrangement.SpaceBetween,
                 Alignment.CenterVertically
             ) {
-                Text("曲名", fontSize = 16.sp)
-                Text(text = "达成率", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text(entry.title, fontSize = 16.sp)
+                Text(text = "%.4f".format(entry.achievements).plus("%"), fontWeight = FontWeight.Bold, fontSize = 18.sp)
             }
         }
     }
@@ -235,15 +250,16 @@ fun HomePageRecentEntry() {
 @Composable
 fun HomePagePreview() {
     Column(
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        modifier = Modifier.background(MaterialTheme.colorScheme.background)
     ) {
         HomePageNameplate()
-        HomePageRecentBar()
+        // HomePageRecentBar()
         Column(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             repeat(3) {
-                HomePageRecentEntry()
+                HomePageRecentEntry(MaimaiRecentScoreEntry())
             }
         }
     }

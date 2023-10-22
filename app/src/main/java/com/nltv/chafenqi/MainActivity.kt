@@ -32,8 +32,10 @@ import com.nltv.chafenqi.ui.theme.ChafenqiTheme
 import com.nltv.chafenqi.view.AppViewModelProvider
 import com.nltv.chafenqi.view.home.HomeNavItem
 import com.nltv.chafenqi.view.home.HomePage
+import com.nltv.chafenqi.view.home.HomeRecentPage
 import com.nltv.chafenqi.view.login.LoginPageViewModel
 import com.nltv.chafenqi.view.songlist.SongListPage
+import java.io.File
 
 enum class UIState {
     Pending, Loading, Finished
@@ -98,6 +100,8 @@ fun ChafenqiApp() {
                 modifier = Modifier.padding(innerPadding)
             ) {
                 composable(HomeNavItem.Home.route) { HomePage(navController = navController) }
+                composable(HomeNavItem.Home.route + "/recent") { HomeRecentPage(navController = navController) }
+                
                 composable(HomeNavItem.Uploader.route) {}
                 composable(HomeNavItem.SongList.route) { SongListPage(navController = navController) }
 

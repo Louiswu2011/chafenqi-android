@@ -1,6 +1,9 @@
 package com.nltv.chafenqi.extension
 
 import java.security.MessageDigest
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 fun String.sha256(): String {
     return MessageDigest
@@ -38,4 +41,11 @@ fun String.prepended(): String {
 
 fun String.toMaimaiCoverPath(): String {
     return "https://www.diving-fish.com/covers/${this.toMaimaiCoverString()}.png"
+}
+
+fun Int.toDateString(): String {
+    return Instant.ofEpochSecond(this.toLong())
+        .atZone(ZoneId.systemDefault())
+        .toLocalDateTime()
+        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss"))
 }

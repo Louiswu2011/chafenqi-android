@@ -13,19 +13,16 @@ object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
             LoginPageViewModel(
-                chafenqiApplication().container.maiListRepository,
-                chafenqiApplication().container.chuListRepository,
                 chafenqiApplication().container.userMaiDataRepository
             )
         }
         initializer {
-            SongListPageViewModel(
-                chafenqiApplication().container.maiListRepository,
-                chafenqiApplication().container.chuListRepository
-            )
+            SongListPageViewModel()
         }
         initializer {
-            HomePageViewModel()
+            HomePageViewModel(
+                chafenqiApplication().container.userMaiDataRepository
+            )
         }
     }
 }

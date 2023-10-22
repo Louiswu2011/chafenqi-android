@@ -7,15 +7,7 @@ import androidx.room.PrimaryKey
 import com.beust.klaxon.Json
 
 @Keep
-@Entity(
-    tableName = "MaimaiMusicList",
-    indices = [Index(value = ["id"], unique = true)]
-)
 data class MaimaiMusicEntry(
-    @PrimaryKey(autoGenerate = true)
-    @Json(ignored = true)
-    val uid: Int = 0,
-
     val id: String = "",
     val title: String = "",
     val type: String = "",

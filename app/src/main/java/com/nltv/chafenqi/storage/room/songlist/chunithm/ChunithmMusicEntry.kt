@@ -7,15 +7,7 @@ import androidx.room.PrimaryKey
 import com.beust.klaxon.Json
 
 @Keep
-@Entity(
-    tableName = "ChunithmMusicList",
-    indices = [Index(value = ["musicID"], unique = true)]
-)
 data class ChunithmMusicEntry(
-    @PrimaryKey(autoGenerate = true)
-    @Json(ignored = true)
-    val uid: Int = 0,
-
     val musicID: Int = 0,
     val title: String = "",
     val artist: String = "",

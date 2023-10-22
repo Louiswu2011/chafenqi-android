@@ -139,6 +139,7 @@ fun AppIconWithFrame() {
 @Composable
 fun LoginField(model: LoginPageViewModel) {
     val loginUiState by model.loginUiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     var username by remember {
         mutableStateOf("testaccount")
@@ -194,7 +195,7 @@ fun LoginField(model: LoginPageViewModel) {
         Button(
             onClick = {
                 if (loginUiState.loginState == UIState.Pending) {
-                    model.login(username, password.sha256())
+                    model.login(username, password.sha256(), context)
                 }
             },
             modifier = Modifier.padding(top = 30.dp)
@@ -207,6 +208,13 @@ fun LoginField(model: LoginPageViewModel) {
             }
         ) {
             Text(text = "注册新账号", color = MaterialTheme.colorScheme.primary)
+        }
+        TextButton(
+            onClick = {
+                model.clearPersistentStorage(context)
+            }
+        ) {
+            Text(text = "清除缓存", color = MaterialTheme.colorScheme.primary)
         }
     }
 }

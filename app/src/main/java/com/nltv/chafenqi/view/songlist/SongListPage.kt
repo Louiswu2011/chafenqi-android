@@ -57,6 +57,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.compose.AsyncImage
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
+import com.nltv.chafenqi.storage.`object`.CFQPersistentData
 import com.nltv.chafenqi.storage.room.songlist.maimai.MaimaiMusicEntry
 import com.nltv.chafenqi.view.AppViewModelProvider
 import com.nltv.chafenqi.view.home.HomeNavItem
@@ -69,7 +70,6 @@ fun SongListPage(navController: NavController) {
 
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
-    val maiSongList by model.maiSongState.collectAsStateWithLifecycle()
 
     var isSearchBarActive by remember {
         mutableStateOf(false)
@@ -112,12 +112,12 @@ fun SongListPage(navController: NavController) {
         state = listState
     ) {
         items(
-            count = maiSongList.items.size,
+            count = CFQPersistentData.Maimai.musicList.size,
             key = { index ->
-                maiSongList.items[index].uid
+                CFQPersistentData.Maimai.musicList[index].id
             },
             itemContent = {index ->
-                MaimaiMusicListEntry(music = maiSongList.items[index])
+                MaimaiMusicListEntry(music = CFQPersistentData.Maimai.musicList[index])
             }
         )
     }
@@ -157,8 +157,7 @@ fun MaimaiMusicListEntry(music: MaimaiMusicEntry) {
 @Composable
 fun MaimaiMusicListEntryPreview() {
     MaimaiMusicListEntry(music = MaimaiMusicEntry(
-        0,
-        "2",
+        "1",
         "True Love Song",
         level = listOf("1", "2", "3", "4")
     )

@@ -29,7 +29,7 @@ abstract class UserMaimaiDatabase: RoomDatabase() {
 
         fun getDatabase(context: Context): UserMaimaiDatabase {
             return Instance ?: synchronized(this) {
-                Room.databaseBuilder(context.applicationContext, UserMaimaiDatabase::class.java, "maiMusicListDb")
+                Room.databaseBuilder(context.applicationContext, UserMaimaiDatabase::class.java, "userMaiDatabase")
                     .fallbackToDestructiveMigration()
                     .build()
                     .also { Instance = it }

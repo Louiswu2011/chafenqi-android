@@ -2,6 +2,7 @@ package com.nltv.chafenqi.view.login
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -20,11 +21,9 @@ import com.nltv.chafenqi.networking.EmptyUserDataException
 import com.nltv.chafenqi.networking.FishServer
 import com.nltv.chafenqi.storage.CFQUser
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiUserInfo
+import com.nltv.chafenqi.storage.`object`.CFQPersistentData
 import com.nltv.chafenqi.storage.room.songlist.chunithm.ChunithmMusicEntry
-import com.nltv.chafenqi.storage.room.songlist.chunithm.ChunithmMusicListRepository
 import com.nltv.chafenqi.storage.room.songlist.maimai.MaimaiMusicEntry
-import com.nltv.chafenqi.storage.room.songlist.maimai.MaimaiMusicListDatabase
-import com.nltv.chafenqi.storage.room.songlist.maimai.MaimaiMusicListRepository
 import com.nltv.chafenqi.storage.room.user.maimai.LocalUserMaimaiDataRepository
 import com.nltv.chafenqi.storage.room.user.maimai.MaimaiBestScoreEntry
 import com.nltv.chafenqi.storage.room.user.maimai.MaimaiRecentScoreEntry
@@ -37,8 +36,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class LoginPageViewModel(
-    private val maiListRepo: MaimaiMusicListRepository,
-    private val chuListRepo: ChunithmMusicListRepository,
     private val userMaiDataRepo: UserMaimaiDataRepository
 ): ViewModel() {
     data class LoginUiState(
@@ -52,7 +49,7 @@ class LoginPageViewModel(
     var loginUiState = loginState.asStateFlow()
 
 
-    fun login(username: String, passwordHash: String) {
+    fun login(username: String, passwordHash: String, context: Context) {
         updateLoginState(UIState.Loading)
         updateLoginPromptText("登陆中...")
 
@@ -70,7 +67,7 @@ class LoginPageViewModel(
                     updateLoginPromptText("以${username}的身份登录...")
                     user.createProfile(response, username)
 
-                    // loadPersistentStorage()
+                    loadPersistentStorage(context)
 
                     loadMaimaiData()
 
@@ -88,40 +85,14 @@ class LoginPageViewModel(
         }
     }
 
-    private suspend fun loadPersistentStorage() {
-        val parser = Klaxon()
-
+    private suspend fun loadPersistentStorage(context: Context) {
         updateLoginPromptText("加载歌曲列表...")
-        val maiListData = FishServer.fetchMaimaiMusicListData()
-        Log.i("Login","Got maimai music list, size ${maiListData.length}")
+        CFQPersistentData.loadData(shouldValidate = false, context = context)
+    }
 
-        val chuListData = CFQServer.apiChuithmMusicData()
-        Log.i("Login","Got chunithm music list, size ${chuListData.length}")
-
-
-        withContext(Dispatchers.IO) {
-            parser.parseArray<MaimaiMusicEntry>(maiListData)?.also {
-                if (it.size != maiListRepo.getMusicCount()) {
-                    updateMaiList(it)
-                    Log.i("Login", "Saved maimai music list.")
-                } else {
-                    Log.i("Login", "Maimai music list cache is up-to-date, skipping...")
-                }
-            } ?: run {
-                // parse failed
-                Log.e("Login", "Maimai list parse failed.")
-            }
-
-            parser.parseArray<ChunithmMusicEntry>(chuListData)?.also {
-                if (it.size != chuListRepo.getMusicCount()) {
-                    updateChuList(it)
-                    Log.i("Login", "Saved chunithm music list.")
-                } else {
-                    Log.i("Login", "Chunithm music list cache is up-to-date, skipping...")
-                }
-            } ?: run {
-                Log.e("Login", "Chunithm list parse failed.")
-            }
+    fun clearPersistentStorage(context: Context) {
+        viewModelScope.launch {
+            CFQPersistentData.clearData(context)
         }
     }
 
@@ -166,17 +137,6 @@ class LoginPageViewModel(
         }
     }
 
-    private suspend fun updateMaiList(list: List<MaimaiMusicEntry>) {
-        list.onEach {
-            maiListRepo.insertMusic(it)
-        }
-    }
-
-    private suspend fun updateChuList(list: List<ChunithmMusicEntry>) {
-        list.onEach {
-            chuListRepo.insertMusic(it)
-        }
-    }
 
     private fun updateLoginPromptText(newText: String) {
         loginState.update { state ->
