@@ -36,6 +36,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.alorma.compose.settings.ui.SettingsGroup
+import com.alorma.compose.settings.ui.SettingsList
 import com.alorma.compose.settings.ui.SettingsSwitch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,7 +64,11 @@ fun UpdaterHomePage() {
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
-            ProxyToggle()
+            SettingsGroup(
+                title = { Text(text = "代理") }
+            ) {
+                ProxyToggle()
+            }
         }
     }
 }
@@ -84,7 +90,7 @@ fun ProxyToggle() {
     })
 
     SettingsSwitch(
-        title = { Text(text = "代理开关") },
+        title = { Text(text = "开关") },
         icon = { Icon(imageVector = Icons.Default.Wifi, contentDescription = "代理开关") },
         onCheckedChange = { checked ->
             isVpnOn = checked

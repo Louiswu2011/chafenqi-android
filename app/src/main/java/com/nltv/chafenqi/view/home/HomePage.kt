@@ -25,6 +25,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
@@ -90,7 +91,12 @@ fun HomePage(navController: NavController) {
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary
-                )
+                ),
+                actions = {
+                    IconButton(onClick = { navController.navigate(HomeNavItem.Home.route + "/settings") }) {
+                        Icon(imageVector = Icons.Default.Settings, contentDescription = "设置")
+                    }
+                }
             )
         },
         containerColor = MaterialTheme.colorScheme.background

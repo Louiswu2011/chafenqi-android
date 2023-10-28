@@ -34,6 +34,7 @@ import com.nltv.chafenqi.view.home.HomeNavItem
 import com.nltv.chafenqi.view.home.HomePage
 import com.nltv.chafenqi.view.home.HomeRecentPage
 import com.nltv.chafenqi.view.login.LoginPageViewModel
+import com.nltv.chafenqi.view.settings.SettingsPage
 import com.nltv.chafenqi.view.songlist.SongListPage
 import com.nltv.chafenqi.view.updater.UpdaterHomePage
 import java.io.File
@@ -102,6 +103,8 @@ fun ChafenqiApp() {
             ) {
                 composable(HomeNavItem.Home.route) { HomePage(navController = navController) }
                 composable(HomeNavItem.Home.route + "/recent") { HomeRecentPage(navController = navController) }
+                
+                composable(HomeNavItem.Home.route + "/settings") { SettingsPage(navController = navController) }
 
                 composable(HomeNavItem.Uploader.route) { UpdaterHomePage() }
                 composable(HomeNavItem.SongList.route) { SongListPage(navController = navController) }
