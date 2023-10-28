@@ -100,4 +100,6 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0-alpha03")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("com.github.alorma:compose-settings-ui-m3:1.0.2")
+    implementation("com.onesignal:OneSignal:[5.0.0, 5.99.99]")
 }

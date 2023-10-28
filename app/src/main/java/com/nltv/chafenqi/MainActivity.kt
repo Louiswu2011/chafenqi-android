@@ -66,51 +66,49 @@ fun ChafenqiApp() {
 
     val loginState by loginModel.loginUiState.collectAsStateWithLifecycle()
 
-    UpdaterHomePage()
+    if (loginState.loginState == UIState.Finished) {
+        val screenList = listOf(HomeNavItem.Home, HomeNavItem.Uploader, HomeNavItem.SongList)
 
-//    if (loginState.loginState == UIState.Finished) {
-//        val screenList = listOf(HomeNavItem.Home, HomeNavItem.Uploader, HomeNavItem.SongList)
-//
-//        Scaffold(
-//            bottomBar = {
-//                NavigationBar {
-//                    val navBackStackEntry by navController.currentBackStackEntryAsState()
-//                    val currentDestination = navBackStackEntry?.destination
-//
-//                    screenList.forEach { screen ->
-//                        NavigationBarItem(
-//                            selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-//                            onClick = {
-//                                navController.navigate(screen.route) {
-//                                    popUpTo(navController.graph.startDestinationId) {
-//                                        saveState = true
-//                                    }
-//                                    launchSingleTop = true
-//                                    restoreState = true
-//                                }
-//                            },
-//                            icon = { Icon(screen.displayIcon, screen.displayName) },
-//                            label = { Text(text = screen.displayName) },
-//                            alwaysShowLabel = true
-//                        )
-//                    }
-//                }
-//            }
-//        ) { innerPadding ->
-//            NavHost(
-//                navController = navController,
-//                startDestination = HomeNavItem.Home.route,
-//                modifier = Modifier.padding(innerPadding)
-//            ) {
-//                composable(HomeNavItem.Home.route) { HomePage(navController = navController) }
-//                composable(HomeNavItem.Home.route + "/recent") { HomeRecentPage(navController = navController) }
-//
-//                composable(HomeNavItem.Uploader.route) { UpdaterHomePage() }
-//                composable(HomeNavItem.SongList.route) { SongListPage(navController = navController) }
-//            }
-//        }
-//    } else {
-//        LoginPage()
-//    }
+        Scaffold(
+            bottomBar = {
+                NavigationBar {
+                    val navBackStackEntry by navController.currentBackStackEntryAsState()
+                    val currentDestination = navBackStackEntry?.destination
+
+                    screenList.forEach { screen ->
+                        NavigationBarItem(
+                            selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                            onClick = {
+                                navController.navigate(screen.route) {
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            },
+                            icon = { Icon(screen.displayIcon, screen.displayName) },
+                            label = { Text(text = screen.displayName) },
+                            alwaysShowLabel = true
+                        )
+                    }
+                }
+            }
+        ) { innerPadding ->
+            NavHost(
+                navController = navController,
+                startDestination = HomeNavItem.Home.route,
+                modifier = Modifier.padding(innerPadding)
+            ) {
+                composable(HomeNavItem.Home.route) { HomePage(navController = navController) }
+                composable(HomeNavItem.Home.route + "/recent") { HomeRecentPage(navController = navController) }
+
+                composable(HomeNavItem.Uploader.route) { UpdaterHomePage() }
+                composable(HomeNavItem.SongList.route) { SongListPage(navController = navController) }
+            }
+        }
+    } else {
+        LoginPage()
+    }
 }
 

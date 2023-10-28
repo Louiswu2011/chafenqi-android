@@ -5,20 +5,70 @@ import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.alorma.compose.settings.ui.SettingsSwitch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdaterHomePage() {
+    val scrollState = rememberScrollState()
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = "传分") },
+                scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary
+                )
+            )
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
+                .verticalScroll(scrollState),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start
+        ) {
+            ProxyToggle()
+        }
+    }
+}
+
+@Composable
+fun ProxyToggle() {
     var isVpnOn by remember {
         mutableStateOf(false)
     }
@@ -33,8 +83,10 @@ fun UpdaterHomePage() {
         }
     })
 
-    Column {
-        Switch(checked = isVpnOn, onCheckedChange = { checked ->
+    SettingsSwitch(
+        title = { Text(text = "代理开关") },
+        icon = { Icon(imageVector = Icons.Default.Wifi, contentDescription = "代理开关") },
+        onCheckedChange = { checked ->
             isVpnOn = checked
             if (checked) {
                 val intent = model.prepareVPN(context)
@@ -44,6 +96,6 @@ fun UpdaterHomePage() {
             } else {
                 model.stopVPN(context)
             }
-        })
-    }
+        }
+    )
 }

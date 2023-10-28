@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "614557947796",
+    "project_id": "louiswu-2011",
+    "storage_bucket": "louiswu-2011.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:614557947796:android:ef00f8a4de022e346d6181",
+        "android_client_info": {
+          "package_name": "com.nltv.chafenqi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCW1GgA6ufHI-3I7xrwZqSM9DYBfyTEcjA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
