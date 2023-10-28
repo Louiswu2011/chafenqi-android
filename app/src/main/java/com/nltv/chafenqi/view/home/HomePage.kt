@@ -245,6 +245,27 @@ fun HomePageRecentEntry(entry: MaimaiRecentScoreEntry) {
     }
 }
 
+@Composable
+fun HomePageRatingBar(navController: NavController) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 10.dp)
+    ) {
+        Text(text = "Rating分析", fontWeight = FontWeight.Bold, fontSize = TextUnit(16f, TextUnitType.Sp))
+        Text(
+            text = "显示全部",
+            fontSize = TextUnit(14f, TextUnitType.Sp),
+            modifier = Modifier.clickable {
+                navController.navigate(HomeNavItem.Home.route + "/rating")
+            },
+            color = MaterialTheme.colorScheme.primary
+        )
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable

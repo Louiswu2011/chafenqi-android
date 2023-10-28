@@ -1,0 +1,269 @@
+package com.nltv.chafenqi.updater
+
+import android.content.Context
+import android.content.Intent
+import android.net.VpnService
+import android.os.Binder
+import android.os.IBinder
+import android.os.Parcel
+import android.os.ParcelFileDescriptor
+import android.os.PowerManager
+import android.os.PowerManager.WakeLock
+import android.os.RemoteException
+import android.preference.PreferenceManager
+import android.text.TextUtils
+import android.util.Log
+import com.nltv.chafenqi.ChafenqiApplication
+import com.nltv.chafenqi.R
+import java.io.IOException
+
+class ChafenqiProxy: VpnService() {
+    val PREF_RUNNING = "pref_running"
+    private val TAG = "ChafenqiProxy.Service"
+    private val ACTION_START = "start"
+    private val ACTION_STOP = "stop"
+
+    @Volatile
+    private var wlInstance: WakeLock? = null
+
+    private var lastBuilder: VpnService.Builder? = null
+    private var vpn: ParcelFileDescriptor? = null
+
+    @Synchronized
+    private fun getLock(context: Context): WakeLock? {
+        if (wlInstance == null) {
+            val pm = context.getSystemService(POWER_SERVICE) as PowerManager
+            wlInstance = pm.newWakeLock(
+                PowerManager.PARTIAL_WAKE_LOCK,
+                context.getString(R.string.app_name) + " wakelock"
+            )
+            wlInstance?.setReferenceCounted(true)
+        }
+        return wlInstance
+    }
+
+    init {
+        System.loadLibrary("tun2http")
+    }
+
+
+    fun start(context: Context) {
+        val intent = Intent(context, ChafenqiProxy::class.java)
+        intent.action = ACTION_START
+        context.startService(intent)
+    }
+
+    fun stop(context: Context) {
+        val intent = Intent(context, ChafenqiProxy::class.java)
+        intent.action = ACTION_STOP
+        context.startService(intent)
+    }
+
+    private external fun jni_init()
+
+    private external fun jni_start(
+        tun: Int,
+        fwd53: Boolean,
+        rcode: Int,
+        proxyIp: String?,
+        proxyPort: Int
+    )
+
+    private external fun jni_stop(tun: Int)
+
+    private external fun jni_get_mtu(): Int
+
+    private external fun jni_done()
+
+    override fun onBind(intent: Intent?): IBinder {
+        return ServiceBinder()
+    }
+
+    fun isRunning(): Boolean {
+        return vpn != null
+    }
+
+    private fun start() {
+        if (vpn == null) {
+            lastBuilder = getBuilder()
+            vpn = startVPN(lastBuilder)
+            checkNotNull(vpn) { getString(R.string.msg_start_failed) }
+            startNative(vpn!!)
+        }
+    }
+
+    private fun stop() {
+        if (vpn != null) {
+            stopNative(vpn!!)
+            stopVPN(vpn!!)
+            vpn = null
+        }
+        stopForeground(true)
+    }
+
+    override fun onRevoke() {
+        Log.i(TAG, "Revoke")
+        stop()
+        vpn = null
+        super.onRevoke()
+    }
+
+    @Throws(SecurityException::class)
+    private fun startVPN(builder: Builder?): ParcelFileDescriptor? {
+        return try {
+            builder!!.establish()
+        } catch (ex: SecurityException) {
+            throw ex
+        } catch (ex: Throwable) {
+            Log.e(
+                TAG, """
+     $ex
+     ${Log.getStackTraceString(ex)}
+     """.trimIndent()
+            )
+            null
+        }
+    }
+
+    private fun getBuilder(): Builder {
+        // Build VPN service
+        val builder = Builder()
+        builder.setSession(getString(R.string.app_name))
+
+        // VPN address
+        builder.addAddress("10.1.10.1", 32)
+        builder.addAddress("fd00:1:fd00:1:fd00:1:fd00:1", 128)
+        builder.addRoute("0.0.0.0", 0)
+        builder.addRoute("0:0:0:0:0:0:0:0", 0)
+        var dnsList: MutableList<String> = Util.getDefaultDNS(ChafenqiApplication.applicationContext()).toMutableList()
+        for (dns in dnsList) {
+            Log.i(TAG, "default DNS:$dns")
+            builder.addDnsServer(dns)
+        }
+
+        // MTU
+        val mtu = jni_get_mtu()
+        Log.i(TAG, "MTU=$mtu")
+        builder.setMtu(mtu)
+
+        return builder
+    }
+
+    private fun startNative(vpn: ParcelFileDescriptor) {
+        val proxyHost = "43.139.107.206"
+        val proxyPort = 8999
+        if (!TextUtils.isEmpty(proxyHost)) {
+            val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+            jni_start(vpn.fd, false, 3, proxyHost, proxyPort)
+            prefs.edit().putBoolean(PREF_RUNNING, true).apply()
+        }
+    }
+
+    private fun stopNative(vpn: ParcelFileDescriptor) {
+        try {
+            jni_stop(vpn.fd)
+        } catch (ex: Throwable) {
+            // File descriptor might be closed
+            Log.e(
+                TAG, """
+     $ex
+     ${Log.getStackTraceString(ex)}
+     """.trimIndent()
+            )
+            jni_stop(-1)
+        }
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        prefs.edit().putBoolean(PREF_RUNNING, false).apply()
+    }
+
+    private fun stopVPN(pfd: ParcelFileDescriptor) {
+        Log.i(TAG, "Stopping")
+        try {
+            pfd.close()
+        } catch (ex: IOException) {
+            Log.e(
+                TAG, """
+     $ex
+     ${Log.getStackTraceString(ex)}
+     """.trimIndent()
+            )
+        }
+    }
+
+    // Called from native code
+    private fun nativeExit(reason: String?) {
+        Log.w(TAG, "Native exit reason=$reason")
+        if (reason != null) {
+            val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+            prefs.edit().putBoolean("enabled", false).apply()
+        }
+    }
+
+    // Called from native code
+    private fun nativeError(error: Int, message: String) {
+        Log.w(TAG, "Native error $error: $message")
+    }
+
+    private fun isSupported(protocol: Int): Boolean {
+        return protocol == 1 || protocol == 59 || protocol == 6 || protocol == 17 /* UDP */
+    }
+
+    override fun onCreate() {
+        // Native init
+        jni_init()
+        super.onCreate()
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.i(TAG, "Received $intent")
+        // Handle service restart
+        if (intent == null) {
+            return START_STICKY
+        }
+        if (ACTION_START == intent.action) {
+            start()
+        }
+        if (ACTION_STOP == intent.action) {
+            stop()
+        }
+        return START_STICKY
+    }
+
+    override fun onDestroy() {
+        Log.i(TAG, "Destroy")
+        try {
+            if (vpn != null) {
+                stopNative(vpn!!)
+                stopVPN(vpn!!)
+                vpn = null
+            }
+        } catch (ex: Throwable) {
+            Log.e(
+                TAG, """
+     $ex
+     ${Log.getStackTraceString(ex)}
+     """.trimIndent()
+            )
+        }
+        jni_done()
+        super.onDestroy()
+    }
+
+    class ServiceBinder : Binder() {
+        @Throws(RemoteException::class)
+        public override fun onTransact(
+            code: Int,
+            data: Parcel,
+            reply: Parcel?,
+            flags: Int
+        ): Boolean {
+            // see Implementation of android.net.VpnService.Callback.onTransact()
+            if (code == LAST_CALL_TRANSACTION) {
+                ChafenqiProxy().onRevoke()
+                return true
+            }
+            return super.onTransact(code, data, reply, flags)
+        }
+
+    }
+}

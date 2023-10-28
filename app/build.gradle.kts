@@ -24,6 +24,11 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        externalNativeBuild {
+            cmake {
+                cppFlags += ""
+            }
+        }
     }
 
     buildTypes {
@@ -52,6 +57,12 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path = file("CMakeLists.txt")
+            version = "3.22.1"
         }
     }
 }
@@ -87,6 +98,6 @@ dependencies {
     implementation("io.ktor:ktor-client-logging:$ktor_version")
     debugImplementation("org.slf4j:slf4j-simple:2.0.7")
     implementation("io.coil-kt:coil-compose:2.4.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0-alpha02")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0-alpha03")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 }

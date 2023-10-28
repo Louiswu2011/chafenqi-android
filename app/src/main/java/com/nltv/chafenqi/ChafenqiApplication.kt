@@ -16,6 +16,18 @@ val Context.cacheStore: DataStore<Preferences> by preferencesDataStore(name = "c
 class ChafenqiApplication: Application() {
     lateinit var container: RoomContainer
 
+    init {
+        instance = this
+    }
+
+    companion object {
+        private var instance: ChafenqiApplication? = null
+
+        fun applicationContext() : Context {
+            return requireNotNull(instance).applicationContext
+        }
+    }
+
     override fun onCreate() {
         super.onCreate()
         container = RoomDataContainer(this)
