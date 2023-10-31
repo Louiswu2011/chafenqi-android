@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -40,7 +39,8 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.nltv.chafenqi.extension.toDateString
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
-import com.nltv.chafenqi.storage.room.user.maimai.MaimaiRecentScoreEntry
+import com.nltv.chafenqi.storage.CFQUser
+import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
 import com.nltv.chafenqi.view.AppViewModelProvider
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,7 +49,6 @@ fun HomeRecentPage(navController: NavController) {
     val listState = rememberLazyListState()
 
     val model: HomePageViewModel = viewModel(factory = AppViewModelProvider.Factory)
-    val maiRecents by model.userMaiRecentState.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -77,10 +76,10 @@ fun HomeRecentPage(navController: NavController) {
             state = listState
         ) {
             items(
-                count = maiRecents.data.size,
-                key = { index -> maiRecents.data[index].timestamp },
+                count = model.user.maimai.recent.size,
+                key = { index -> model.user.maimai.recent[index].timestamp },
                 itemContent = { index ->
-                    HomeRecentPageEntry(entry = maiRecents.data[index])
+                    HomeRecentPageEntry(entry = model.user.maimai.recent[index])
                 }
             )
         }

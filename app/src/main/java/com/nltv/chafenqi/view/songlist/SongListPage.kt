@@ -58,7 +58,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.compose.AsyncImage
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.storage.`object`.CFQPersistentData
-import com.nltv.chafenqi.storage.room.songlist.maimai.MaimaiMusicEntry
+import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import com.nltv.chafenqi.view.AppViewModelProvider
 import com.nltv.chafenqi.view.home.HomeNavItem
 import kotlinx.coroutines.launch

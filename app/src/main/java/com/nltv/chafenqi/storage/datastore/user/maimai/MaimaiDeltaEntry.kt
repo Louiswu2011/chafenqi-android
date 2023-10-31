@@ -1,21 +1,19 @@
 package com.nltv.chafenqi.storage.datastore.user.maimai
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.beust.klaxon.Json
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MaimaiUserInfo(
-    val id: Int = 0,
-    val uid: Int = 0,
-    val nickname: String = "",
-    val trophy: String = "",
+data class MaimaiDeltaEntry(
     val rating: Int = 0,
-    val maxRating: Int = 0,
-    val star: Int = 0,
-    val charUrl: String = "",
-    val gradeUrl: String = "",
     val playCount: Int = 0,
     val stats: String = "",
+    val dxScore: Int = 0,
+    val achievement: Double = 0.0,
+    val syncPoint: Int = 0,
+    val awakening: String = "",
     val createdAt: String = "",
     val updatedAt: String = ""
 )

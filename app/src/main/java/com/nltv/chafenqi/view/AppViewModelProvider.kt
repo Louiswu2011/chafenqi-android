@@ -13,7 +13,7 @@ object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
             LoginPageViewModel(
-                chafenqiApplication().container.userMaiDataRepository
+
             )
         }
         initializer {
@@ -21,7 +21,7 @@ object AppViewModelProvider {
         }
         initializer {
             HomePageViewModel(
-                chafenqiApplication().container.userMaiDataRepository
+
             )
         }
     }

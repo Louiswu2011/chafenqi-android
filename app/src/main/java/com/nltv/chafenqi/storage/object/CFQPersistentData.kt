@@ -12,18 +12,20 @@ import com.nltv.chafenqi.ChafenqiApplication
 import com.nltv.chafenqi.cacheStore
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.networking.FishServer
-import com.nltv.chafenqi.storage.room.songlist.chunithm.ChunithmMusicEntry
-import com.nltv.chafenqi.storage.room.songlist.maimai.MaimaiMusicEntry
+import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
+import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 object CFQPersistentData {
     private const val TAG = "CFQPersistentData"
-    private val parser = Klaxon()
+
     private val maiListKey = stringPreferencesKey("maimaiMusicList")
     private val chuListKey = stringPreferencesKey("chunithmMusicList")
 
@@ -41,10 +43,10 @@ object CFQPersistentData {
         }
 
         private suspend fun loadDataFromWeb(stringFromValidate: String = "") {
-            Log.i(TAG, "Fetching ${this.javaClass.name} music list from web...")
+            Log.i(TAG, "Fetching ${this.javaClass.canonicalName} music list from web...")
             val maiListString = stringFromValidate.ifEmpty { FishServer.fetchMaimaiMusicListData() }
             if (maiListString.isNotEmpty()) {
-                musicList = parser.parseArray(maiListString) ?: listOf()
+                musicList = Json.decodeFromString(maiListString) ?: listOf()
             }
         }
 
@@ -62,7 +64,7 @@ object CFQPersistentData {
                         return
                     }
                 } else {
-                    musicList = parser.parseArray(maiListString) ?: listOf()
+                    musicList = Json.decodeFromString(maiListString) ?: listOf()
                 }
             }
         }
@@ -70,7 +72,7 @@ object CFQPersistentData {
         private suspend fun saveCacheData(cacheStore: DataStore<Preferences>) {
             Log.i(TAG, "Saving ${this.javaClass.name} music list from cache...")
             cacheStore.edit {
-                it[maiListKey] = parser.toJsonString(musicList)
+                it[maiListKey] = Json.encodeToString(musicList)
             }
         }
     }
@@ -93,7 +95,7 @@ object CFQPersistentData {
             Log.i(TAG, "Fetching ${this.javaClass.name} music list from web...")
             var chuListString = stringFromValidate.ifEmpty { CFQServer.apiChuithmMusicData() }
             if (chuListString.isNotEmpty()) {
-                musicList = parser.parseArray(chuListString) ?: listOf()
+                musicList = Json.decodeFromString(chuListString) ?: listOf()
             }
         }
 
@@ -111,7 +113,7 @@ object CFQPersistentData {
                         return
                     }
                 } else {
-                    musicList = parser.parseArray(chuListString) ?: listOf()
+                    musicList = Json.decodeFromString(chuListString) ?: listOf()
                 }
             }
         }
@@ -119,7 +121,7 @@ object CFQPersistentData {
         private suspend fun saveCacheData(cacheStore: DataStore<Preferences>) {
             Log.i(TAG, "Saving ${this.javaClass.name} music list from cache...")
             cacheStore.edit {
-                it[chuListKey] = parser.toJsonString(musicList)
+                it[chuListKey] = Json.encodeToString(musicList)
             }
         }
     }

@@ -8,8 +8,6 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.nltv.chafenqi.storage.room.RoomContainer
-import com.nltv.chafenqi.storage.room.RoomDataContainer
 import com.onesignal.OneSignal
 import com.onesignal.debug.LogLevel
 import kotlinx.coroutines.CoroutineScope
@@ -20,7 +18,6 @@ val Context.cacheStore: DataStore<Preferences> by preferencesDataStore(name = "c
 const val ONE_SIGNAL_APP_ID = "61d8cb1c-6de2-4b50-af87-f419b2d24ece"
 
 class ChafenqiApplication: Application() {
-    lateinit var container: RoomContainer
 
     init {
         instance = this
@@ -36,13 +33,9 @@ class ChafenqiApplication: Application() {
 
     override fun onCreate() {
         super.onCreate()
-        container = RoomDataContainer(this)
-        if (!::container.isInitialized) {
-            println("Successfully initialized room data container.")
-        }
 
         // OneSignal setup
-        OneSignal.Debug.logLevel = LogLevel.VERBOSE
+        OneSignal.Debug.logLevel = LogLevel.INFO
         OneSignal.initWithContext(this, ONE_SIGNAL_APP_ID)
         CoroutineScope(Dispatchers.IO).launch {
             OneSignal.Notifications.requestPermission(true)

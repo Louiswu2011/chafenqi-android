@@ -2,41 +2,28 @@ package com.nltv.chafenqi.view.login
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.beust.klaxon.Klaxon
-import com.nltv.chafenqi.ChafenqiApp
-import com.nltv.chafenqi.ChafenqiApplication
 import com.nltv.chafenqi.UIState
-import com.nltv.chafenqi.extension.sha256
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.networking.CFQServerSideException
 import com.nltv.chafenqi.networking.CredentialsMismatchException
-import com.nltv.chafenqi.networking.EmptyUserDataException
-import com.nltv.chafenqi.networking.FishServer
 import com.nltv.chafenqi.storage.CFQUser
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiUserInfo
 import com.nltv.chafenqi.storage.`object`.CFQPersistentData
-import com.nltv.chafenqi.storage.room.songlist.chunithm.ChunithmMusicEntry
-import com.nltv.chafenqi.storage.room.songlist.maimai.MaimaiMusicEntry
-import com.nltv.chafenqi.storage.room.user.maimai.LocalUserMaimaiDataRepository
-import com.nltv.chafenqi.storage.room.user.maimai.MaimaiBestScoreEntry
-import com.nltv.chafenqi.storage.room.user.maimai.MaimaiRecentScoreEntry
-import com.nltv.chafenqi.storage.room.user.maimai.UserMaimaiDataRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
 
 class LoginPageViewModel(
-    private val userMaiDataRepo: UserMaimaiDataRepository
+
 ): ViewModel() {
     data class LoginUiState(
         val loginState: UIState = UIState.Pending,
@@ -70,6 +57,7 @@ class LoginPageViewModel(
                     loadPersistentStorage(context)
 
                     loadMaimaiData()
+                    loadChunithmData()
 
                     updateLoginState(UIState.Finished)
                 } else {
@@ -98,8 +86,9 @@ class LoginPageViewModel(
 
     private suspend fun loadMaimaiData() {
         val tag = "Login.User.MaimaiData"
-        val parser = Klaxon()
         val token = user.token
+
+        val maimai = CFQUser.Maimai
 
         var isEmpty = false
 
@@ -107,32 +96,63 @@ class LoginPageViewModel(
 
         withContext(Dispatchers.IO) {
             try {
-                Log.i(tag, "Saving maimai data...")
-
                 val infoString = CFQServer.apiMaimai("info", token)
                 val bestString = CFQServer.apiMaimai("best", token)
                 val recentString = CFQServer.apiMaimai("recent", token)
-                Log.i(tag, "Data size: ${infoString.length}, ${bestString.length}, ${recentString.length}.")
 
-                val info = parser.parse<MaimaiUserInfo>(infoString)
-                val best = parser.parseArray<MaimaiBestScoreEntry>(bestString)
-                val recent = parser.parseArray<MaimaiRecentScoreEntry>(recentString)
-
-                Log.i(tag, "Maimai data acquired.")
-                info?.also { user.maimaiUserInfo = it } ?: run { Log.e(tag, "Failed to parse info.") }
-                best?.onEach { userMaiDataRepo.rawDao.upsertBestScore(it) } ?: run { Log.e(tag, "Failed to parse best scores.") }
-                recent?.onEach { userMaiDataRepo.rawDao.insertRecentScore(it) } ?: run {Log.e(tag, "Failed to parse recent scores.") }
-
-                Log.i(tag, "Finished on loading user maimai basic data.")
-            } catch (e: EmptyUserDataException) {
-                isEmpty = true
-                Log.i(tag, "User maimai data is empty, skipping...")
+                maimai.info = Json.decodeFromString(infoString)
+                maimai.best = Json.decodeFromString(bestString)
+                maimai.recent = Json.decodeFromString(recentString)
             } catch (e: Exception) {
-                Log.e(tag, e.localizedMessage?: "")
+                e.printStackTrace()
+                Log.e(tag, "User maimai data is empty, skipping...")
+                isEmpty = true
             }
 
-            if (CFQUser.isPremium && !isEmpty) {
-                Log.i(tag, "Fetching premium related data...")
+            if (user.isPremium && !isEmpty) {
+                val deltaString = CFQServer.apiMaimai("delta", token)
+                val extraString = CFQServer.apiMaimai("extra", token)
+
+                maimai.delta = Json.decodeFromString(deltaString)
+                maimai.extra = Json.decodeFromString(extraString)
+            }
+        }
+    }
+
+    private suspend fun loadChunithmData() {
+        val tag = "Login.User.ChunithmData"
+        val token = user.token
+        val deserializer = Json { ignoreUnknownKeys = true }
+
+        val chunithm = CFQUser.Chunithm
+
+        var isEmpty = false
+
+        updateLoginPromptText("加载中二节奏数据...")
+
+        withContext(Dispatchers.IO) {
+            try {
+                val infoString = CFQServer.apiChunithm("info", token)
+                val bestString = CFQServer.apiChunithm("best", token)
+                val recentString = CFQServer.apiChunithm("recent", token)
+                val ratingString = CFQServer.apiChunithm("rating", token)
+
+                chunithm.info = deserializer.decodeFromString(infoString)
+                chunithm.best = deserializer.decodeFromString(bestString)
+                chunithm.recent = deserializer.decodeFromString(recentString)
+                chunithm.rating = deserializer.decodeFromString(ratingString)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Log.e(tag, "User chunithm data is empty, skipping...")
+                isEmpty = true
+            }
+
+            if (user.isPremium && !isEmpty) {
+                val deltaString = CFQServer.apiChunithm("delta", token)
+                val extraString = CFQServer.apiChunithm("extra", token)
+
+                chunithm.delta = deserializer.decodeFromString(deltaString)
+                chunithm.extra = deserializer.decodeFromString(extraString)
             }
         }
     }
