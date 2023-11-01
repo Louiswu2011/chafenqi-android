@@ -2,9 +2,7 @@ package com.nltv.chafenqi
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -16,32 +14,33 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.nltv.chafenqi.view.login.LoginPage
 import com.nltv.chafenqi.ui.theme.ChafenqiTheme
 import com.nltv.chafenqi.view.AppViewModelProvider
 import com.nltv.chafenqi.view.home.HomeNavItem
 import com.nltv.chafenqi.view.home.HomePage
-import com.nltv.chafenqi.view.home.HomeRecentPage
+import com.nltv.chafenqi.view.home.recent.RecentDetailPage
+import com.nltv.chafenqi.view.home.recent.HomeRecentPage
+import com.nltv.chafenqi.view.login.LoginPage
 import com.nltv.chafenqi.view.login.LoginPageViewModel
 import com.nltv.chafenqi.view.settings.SettingsPage
+import com.nltv.chafenqi.view.songlist.SongDetailPage
 import com.nltv.chafenqi.view.songlist.SongListPage
 import com.nltv.chafenqi.view.updater.UpdaterHomePage
-import java.io.File
 
 enum class UIState {
     Pending, Loading, Finished
 }
+
+val SCREEN_PADDING = 10.dp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,11 +102,38 @@ fun ChafenqiApp() {
             ) {
                 composable(HomeNavItem.Home.route) { HomePage(navController = navController) }
                 composable(HomeNavItem.Home.route + "/recent") { HomeRecentPage(navController = navController) }
+                composable(HomeNavItem.Home.route + "/recent/maimai/{index}") { navBackStackEntry ->
+                    RecentDetailPage(
+                        mode = 1,
+                        index = navBackStackEntry.arguments?.getString("index")?.toInt() ?: 0,
+                        navHostController = navController
+                    )
+                }
+                composable(HomeNavItem.Home.route + "/recent/chunithm/{index}") { navBackStackEntry ->
+                    RecentDetailPage(
+                        mode = 0,
+                        index = navBackStackEntry.arguments?.getString("index")?.toInt() ?: 0,
+                        navHostController = navController
+                    )
+                }
                 
                 composable(HomeNavItem.Home.route + "/settings") { SettingsPage(navController = navController) }
 
                 composable(HomeNavItem.Uploader.route) { UpdaterHomePage() }
+
                 composable(HomeNavItem.SongList.route) { SongListPage(navController = navController) }
+                composable(HomeNavItem.SongList.route + "/maimai/{index}") { navBackStackEntry ->
+                    SongDetailPage(
+                        mode = 1,
+                        index = navBackStackEntry.arguments?.getString("index")?.toInt() ?: 0
+                    )
+                }
+                composable(HomeNavItem.SongList.route + "/chunithm/{index}") { navBackStackEntry ->
+                    SongDetailPage(
+                        mode = 0,
+                        index = navBackStackEntry.arguments?.getString("index")?.toInt() ?: 0
+                    )
+                }
             }
         }
     } else {

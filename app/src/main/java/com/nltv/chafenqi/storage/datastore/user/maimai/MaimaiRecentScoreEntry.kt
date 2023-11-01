@@ -1,11 +1,9 @@
 package com.nltv.chafenqi.storage.datastore.user.maimai
 
-import androidx.room.Entity
-import androidx.room.Index
-import androidx.room.PrimaryKey
-import com.beust.klaxon.Json
+import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Serializable
 data class MaimaiRecentScoreEntry(
@@ -30,5 +28,6 @@ data class MaimaiRecentScoreEntry(
     @SerialName("matching_2") val matching2: String = "",
     @SerialName("matching_3") val matching3: String = "",
     val createdAt: String = "",
-    val updatedAt: String = ""
+    val updatedAt: String = "",
+    @Transient var associatedMusicEntry: MaimaiMusicEntry = MaimaiMusicEntry()
 )

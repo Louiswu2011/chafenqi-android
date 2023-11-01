@@ -1,10 +1,6 @@
 package com.nltv.chafenqi.storage.songlist.chunithm
 
 import androidx.annotation.Keep
-import androidx.room.Entity
-import androidx.room.Index
-import androidx.room.PrimaryKey
-import com.beust.klaxon.Json
 import kotlinx.serialization.Serializable
 
 @Keep

@@ -1,6 +1,5 @@
 package com.nltv.chafenqi.storage.datastore.user.chunithm
 
-import kotlinx.serialization.SerialInfo
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient

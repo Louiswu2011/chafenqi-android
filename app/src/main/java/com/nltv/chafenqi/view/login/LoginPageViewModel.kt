@@ -7,7 +7,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.beust.klaxon.Klaxon
 import com.nltv.chafenqi.UIState
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.networking.CFQServerSideException
@@ -42,7 +41,6 @@ class LoginPageViewModel(
 
         viewModelScope.launch {
             try {
-                Log.i("Login", "Debug sha256 output: $passwordHash")
                 val response = CFQServer.authLogin(
                     username = username,
                     password = passwordHash
@@ -51,12 +49,15 @@ class LoginPageViewModel(
                 if (response.isNotEmpty()) {
                     // successfully logged in
                     println("Successfully logged in.")
-                    updateLoginPromptText("以${username}的身份登录...")
+                    // updateLoginPromptText("以${username}的身份登录...")
                     user.createProfile(response, username)
 
                     loadPersistentStorage(context)
 
+                    updateLoginPromptText("加载舞萌DX数据...")
                     loadMaimaiData()
+
+                    updateLoginPromptText("加载中二节奏数据...")
                     loadChunithmData()
 
                     updateLoginState(UIState.Finished)
@@ -92,8 +93,6 @@ class LoginPageViewModel(
 
         var isEmpty = false
 
-        updateLoginPromptText("加载舞萌DX数据...")
-
         withContext(Dispatchers.IO) {
             try {
                 val infoString = CFQServer.apiMaimai("info", token)
@@ -103,6 +102,9 @@ class LoginPageViewModel(
                 maimai.info = Json.decodeFromString(infoString)
                 maimai.best = Json.decodeFromString(bestString)
                 maimai.recent = Json.decodeFromString(recentString)
+
+                maimai.addAuxiliaryData()
+                Log.i(tag, "Loaded user maimai basic data.")
             } catch (e: Exception) {
                 e.printStackTrace()
                 Log.e(tag, "User maimai data is empty, skipping...")
@@ -110,11 +112,16 @@ class LoginPageViewModel(
             }
 
             if (user.isPremium && !isEmpty) {
-                val deltaString = CFQServer.apiMaimai("delta", token)
-                val extraString = CFQServer.apiMaimai("extra", token)
+                try {
+                    val deltaString = CFQServer.apiMaimai("delta", token)
+                    val extraString = CFQServer.apiMaimai("extra", token)
 
-                maimai.delta = Json.decodeFromString(deltaString)
-                maimai.extra = Json.decodeFromString(extraString)
+                    maimai.delta = Json.decodeFromString(deltaString)
+                    maimai.extra = Json.decodeFromString(extraString)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    Log.e(tag, "Error loading user maimai premium data.")
+                }
             }
         }
     }
@@ -128,8 +135,6 @@ class LoginPageViewModel(
 
         var isEmpty = false
 
-        updateLoginPromptText("加载中二节奏数据...")
-
         withContext(Dispatchers.IO) {
             try {
                 val infoString = CFQServer.apiChunithm("info", token)
@@ -141,6 +146,7 @@ class LoginPageViewModel(
                 chunithm.best = deserializer.decodeFromString(bestString)
                 chunithm.recent = deserializer.decodeFromString(recentString)
                 chunithm.rating = deserializer.decodeFromString(ratingString)
+                Log.i(tag, "Loaded user chunithm basic data.")
             } catch (e: Exception) {
                 e.printStackTrace()
                 Log.e(tag, "User chunithm data is empty, skipping...")
@@ -148,11 +154,17 @@ class LoginPageViewModel(
             }
 
             if (user.isPremium && !isEmpty) {
-                val deltaString = CFQServer.apiChunithm("delta", token)
-                val extraString = CFQServer.apiChunithm("extra", token)
+                try {
+                    val deltaString = CFQServer.apiChunithm("delta", token)
+                    val extraString = CFQServer.apiChunithm("extra", token)
 
-                chunithm.delta = deserializer.decodeFromString(deltaString)
-                chunithm.extra = deserializer.decodeFromString(extraString)
+                    chunithm.delta = deserializer.decodeFromString(deltaString)
+                    chunithm.extra = deserializer.decodeFromString(extraString)
+                    Log.i(tag, "Loaded user chunithm premium data.")
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    Log.e(tag, "Error loading user chunithm premium data.")
+                }
             }
         }
     }

@@ -1,7 +1,9 @@
-package com.nltv.chafenqi.view.home
+package com.nltv.chafenqi.view.home.recent
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -26,22 +28,22 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.nltv.chafenqi.extension.toDateString
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
-import com.nltv.chafenqi.storage.CFQUser
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
 import com.nltv.chafenqi.view.AppViewModelProvider
+import com.nltv.chafenqi.view.home.HomeNavItem
+import com.nltv.chafenqi.view.home.HomePageViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,7 +81,7 @@ fun HomeRecentPage(navController: NavController) {
                 count = model.user.maimai.recent.size,
                 key = { index -> model.user.maimai.recent[index].timestamp },
                 itemContent = { index ->
-                    HomeRecentPageEntry(entry = model.user.maimai.recent[index])
+                    HomeRecentPageEntry(entry = model.user.maimai.recent[index], index, navController)
                 }
             )
         }
@@ -87,13 +89,17 @@ fun HomeRecentPage(navController: NavController) {
 }
 
 @Composable
-fun HomeRecentPageEntry(entry: MaimaiRecentScoreEntry) {
+fun HomeRecentPageEntry(entry: MaimaiRecentScoreEntry, index: Int, navController: NavController) {
     val model: HomePageViewModel = viewModel(factory = AppViewModelProvider.Factory)
 
     Row(
         Modifier
             .fillMaxWidth()
-            .height(72.dp),
+            .height(72.dp)
+            .clickable {
+                Log.i("HomeRecentPageEntry", "Jump from index $index")
+                navController.navigate(HomeNavItem.Home.route + "/recent/maimai/${index}")
+            },
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         AsyncImage(
@@ -122,7 +128,7 @@ fun HomeRecentPageEntry(entry: MaimaiRecentScoreEntry) {
                 Arrangement.SpaceBetween,
                 Alignment.CenterVertically
             ) {
-                Text(entry.title, fontSize = 16.sp)
+                Text(entry.title, fontSize = 16.sp, overflow = TextOverflow.Ellipsis, maxLines = 1)
                 Text(text = "%.4f".format(entry.achievements).plus("%"), fontWeight = FontWeight.Bold, fontSize = 18.sp)
             }
         }

@@ -32,26 +32,23 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.nltv.chafenqi.R
 import com.nltv.chafenqi.extension.toDateString
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
-import com.nltv.chafenqi.storage.CFQUser
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
 import com.nltv.chafenqi.view.AppViewModelProvider
 
@@ -91,8 +88,14 @@ fun HomePage(navController: NavController) {
                 modifier = Modifier.padding(horizontal = 10.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                model.user.maimai.recent.take(3).onEach { entry ->
-                    HomePageRecentEntry(entry = entry)
+                model.user.maimai.recent.take(3).onEachIndexed { index, entry ->
+                    Column (
+                        Modifier.clickable {
+                            navController.navigate(HomeNavItem.Home.route + "/recent/maimai/$index")
+                        }
+                    ) {
+                        HomePageRecentEntry(entry = entry)
+                    }
                 }
             }
         }
@@ -138,8 +141,8 @@ fun HomePageNameplate() {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    HomePageNameplateInfoRow(title = "P", content = "-")
-                    HomePageNameplateInfoRow(title = "N", content = "-")
+                    HomePageNameplateInfoRow(title = "P", content = model.user.maimai.aux.pastRating.toString())
+                    HomePageNameplateInfoRow(title = "N", content = model.user.maimai.aux.newRating.toString())
                 }
                 HomePageNameplateInfoRow(title = "游玩次数", content = "${model.user.maimai.info.playCount}")
                 Spacer(modifier = Modifier.size(8.dp))
@@ -222,7 +225,7 @@ fun HomePageRecentEntry(entry: MaimaiRecentScoreEntry) {
                 Arrangement.SpaceBetween,
                 Alignment.CenterVertically
             ) {
-                Text(entry.title, fontSize = 16.sp)
+                Text(entry.title, fontSize = 16.sp, overflow = TextOverflow.Ellipsis, maxLines = 2)
                 Text(text = "%.4f".format(entry.achievements).plus("%"), fontWeight = FontWeight.Bold, fontSize = 18.sp)
             }
         }

@@ -1,6 +1,5 @@
 package com.nltv.chafenqi.storage.datastore.user.maimai
 
-import com.beust.klaxon.Json
 import kotlinx.serialization.Serializable
 
 @Serializable

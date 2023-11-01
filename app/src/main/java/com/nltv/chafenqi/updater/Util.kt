@@ -2,7 +2,6 @@ package com.nltv.chafenqi.updater
 
 import android.content.Context
 import android.net.ConnectivityManager
-import android.os.Build
 import android.text.TextUtils
 
 

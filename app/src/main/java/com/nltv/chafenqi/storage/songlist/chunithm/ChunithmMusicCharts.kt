@@ -10,4 +10,14 @@ data class ChunithmMusicCharts(
     val master: ChunithmMusicMasterChart = ChunithmMusicMasterChart(),
     val ultima: ChunithmMusicUltimaChart = ChunithmMusicUltimaChart(),
     val worldsend: ChunithmMusicWEChart = ChunithmMusicWEChart()
-)
+) {
+    val constants = listOf(
+        basic.constant,
+        advanced.constant,
+        expert.constant,
+        master.constant,
+        ultima.constant
+    )
+
+    val isWE = worldsend.enabled
+}

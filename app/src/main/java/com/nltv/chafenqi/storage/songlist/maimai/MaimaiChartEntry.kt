@@ -1,7 +1,5 @@
 package com.nltv.chafenqi.storage.songlist.maimai
 
-import androidx.annotation.Keep
-import androidx.room.Entity
 import kotlinx.serialization.Serializable
 
 @Serializable
