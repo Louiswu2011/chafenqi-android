@@ -69,7 +69,7 @@ android {
     }
 }
 
-val ktor_version = "2.3.5"
+val ktorVersion = "2.3.5"
 
 dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
@@ -89,13 +89,13 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-    implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
-    implementation("io.ktor:ktor-client-core:$ktor_version")
-    implementation("io.ktor:ktor-client-okhttp:$ktor_version")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-client-core:$ktorVersion")
+    implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
     implementation("androidx.navigation:navigation-compose:2.7.4")
-    implementation("androidx.compose.material:material-icons-extended:1.5.3")
-    implementation("io.ktor:ktor-client-logging:$ktor_version")
+    implementation("androidx.compose.material:material-icons-extended:1.5.4")
+    implementation("io.ktor:ktor-client-logging:$ktorVersion")
     debugImplementation("org.slf4j:slf4j-simple:2.0.7")
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0-alpha03")
@@ -109,4 +109,5 @@ dependencies {
     debugImplementation("com.google.firebase:firebase-appdistribution:16.0.0-beta11")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    // implementation("androidx.compose.material:material:1.6.0-alpha08")
 }

@@ -27,6 +27,7 @@ import com.nltv.chafenqi.ui.theme.ChafenqiTheme
 import com.nltv.chafenqi.view.AppViewModelProvider
 import com.nltv.chafenqi.view.home.HomeNavItem
 import com.nltv.chafenqi.view.home.HomePage
+import com.nltv.chafenqi.view.home.rating.HomeRatingPage
 import com.nltv.chafenqi.view.home.recent.RecentDetailPage
 import com.nltv.chafenqi.view.home.recent.HomeRecentPage
 import com.nltv.chafenqi.view.login.LoginPage
@@ -116,6 +117,7 @@ fun ChafenqiApp() {
                         navHostController = navController
                     )
                 }
+                composable(HomeNavItem.Home.route + "/rating") { HomeRatingPage(navController) }
                 
                 composable(HomeNavItem.Home.route + "/settings") { SettingsPage(navController = navController) }
 

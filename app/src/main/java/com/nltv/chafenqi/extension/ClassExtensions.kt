@@ -2,11 +2,17 @@ package com.nltv.chafenqi.extension
 
 import android.util.Log
 import com.nltv.chafenqi.storage.CFQUser
+import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmBestScoreEntry
+import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRatingEntry
+import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiBestScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
 import com.nltv.chafenqi.storage.`object`.CFQPersistentData
+import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
+import java.math.RoundingMode
 import java.security.MessageDigest
+import java.text.DecimalFormat
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -68,6 +74,13 @@ fun Int.toDateString(): String {
         .format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss"))
 }
 
+fun Int.toChunithmCoverPath(): String = "http://43.139.107.206:8083/api/chunithm/cover?musicId=${this}"
+
+fun Double.cutForRating(): Double {
+    val df = DecimalFormat("#.##")
+    df.roundingMode = RoundingMode.FLOOR
+    return df.format(this).toDouble()
+}
 
 // TODO: Fix incorrect rating calculation
 fun maimaiRatingOf(constant: Double, achievements: Float): Int {
@@ -89,7 +102,7 @@ fun MaimaiBestScoreEntry.associatedMusicEntry(): MaimaiMusicEntry {
         if (CFQPersistentData.Maimai.musicList.isNotEmpty()) {
             if (this.title == "D✪N’T ST✪P R✪CKIN’") {
                 CFQPersistentData.Maimai.musicList.first {
-                    it.id == "299" && it.type == this.type
+                    it.musicID == "299" && it.type == this.type
                 }
             } else {
                 CFQPersistentData.Maimai.musicList.first {
@@ -111,7 +124,7 @@ fun MaimaiRecentScoreEntry.associatedMusicEntry(): MaimaiMusicEntry {
         if (CFQUser.Maimai.best.isNotEmpty() && CFQPersistentData.Maimai.musicList.isNotEmpty()) {
             if (this.title == "D✪N’T ST✪P R✪CKIN’") {
                 CFQPersistentData.Maimai.musicList.first {
-                    it.id == "299" && it.type == this.type
+                    it.musicID == "299" && it.type == this.type
                 }
             } else {
                 CFQUser.Maimai.best.first {
@@ -129,3 +142,70 @@ fun MaimaiRecentScoreEntry.associatedMusicEntry(): MaimaiMusicEntry {
 }
 
 fun MaimaiBestScoreEntry.rating(): Int = maimaiRatingOf(this.associatedMusicEntry.constants[this.levelIndex], this.achievements)
+
+fun ChunithmBestScoreEntry.associatedMusicEntry(): ChunithmMusicEntry {
+    return try {
+        if (CFQPersistentData.Chunithm.musicList.isNotEmpty()) {
+            CFQPersistentData.Chunithm.musicList.first {
+                it.musicID.toString() == this.idx
+            }
+        } else {
+            ChunithmMusicEntry()
+        }
+    } catch (e: Exception) {
+        ChunithmMusicEntry()
+    }
+}
+
+fun ChunithmRecentScoreEntry.associatedMusicEntry(): ChunithmMusicEntry {
+    return try {
+        if (CFQUser.Chunithm.best.isNotEmpty()) {
+            CFQUser.Chunithm.best.first {
+                it.idx == this.idx
+            }.associatedMusicEntry
+        } else {
+            ChunithmMusicEntry()
+        }
+    } catch (e: Exception) {
+        ChunithmMusicEntry()
+    }
+}
+
+fun ChunithmRatingEntry.associatedMusicEntry(): ChunithmMusicEntry {
+    return try {
+        if (CFQUser.Chunithm.best.isNotEmpty()) {
+            CFQUser.Chunithm.best.first {
+                it.idx == this.idx
+            }.associatedMusicEntry
+        } else {
+            ChunithmMusicEntry()
+        }
+    } catch (e: Exception) {
+        ChunithmMusicEntry()
+    }
+}
+
+fun chunithmRatingOf(constant: Double, score: Int): Double {
+    return when (score) {
+        in 925000..949999 ->
+            constant - 3.0 + (score - 950000) * 3 / 50000
+        in 950000..974999 ->
+            constant - 1.5 + (score - 950000) * 3 / 50000
+        in 975000..999999 ->
+            constant + (score - 975000) / 2500 * 0.1
+        in 1000000..1004999 ->
+            constant + 1.0 + (score - 1000000) / 1000 * 0.1
+        in 1005000..1007499 ->
+            constant + 1.5 + (score - 1005000) / 500 * 0.1
+        in 1007500..1008999 ->
+            constant + 2.0 + (score - 1007500) / 100 * 0.01
+        in 1009000..1010000 ->
+            constant + 2.15
+        else ->
+            0.0
+    }
+}
+
+fun ChunithmBestScoreEntry.rating(): Double = chunithmRatingOf(this.associatedMusicEntry.charts.constants[this.levelIndex], this.score)
+fun ChunithmRecentScoreEntry.rating(): Double = chunithmRatingOf(this.associatedMusicEntry.charts.constants[this.levelIndex], this.score)
+fun ChunithmRatingEntry.rating(): Double = chunithmRatingOf(this.associatedMusicEntry.charts.constants[this.levelIndex], this.score)

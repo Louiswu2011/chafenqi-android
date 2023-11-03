@@ -151,6 +151,10 @@ fun SongDetailPage(
                 model.maiDiffInfos.onEach {
                     MaimaiDifficultyCard(info = it)
                 }
+            } else if (mode == 0) {
+                model.chuDiffInfos.onEach {
+                    ChunithmDifficultyCard(info = it)
+                }
             }
         }
     }
@@ -158,8 +162,6 @@ fun SongDetailPage(
 
 @Composable
 fun MaimaiDifficultyCard(info: MaimaiDifficultyInfo) {
-    val model: SongDetailViewModel = viewModel()
-    
     var isExpanded by remember {
         mutableStateOf(false)
     }
@@ -175,7 +177,8 @@ fun MaimaiDifficultyCard(info: MaimaiDifficultyInfo) {
         shape = RoundedCornerShape(10.dp),
     ) {
         Column (
-            Modifier.padding(10.dp)
+            Modifier
+                .padding(10.dp)
                 .padding(vertical = 2.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
@@ -198,7 +201,62 @@ fun MaimaiDifficultyCard(info: MaimaiDifficultyInfo) {
             }
             AnimatedVisibility(visible = isExpanded) {
                 Row (
-                    Modifier.fillMaxWidth()
+                    Modifier
+                        .fillMaxWidth()
+                        .animateContentSize(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(text = "定数：${info.constant}")
+                    Text(text = "谱师：${info.charter}")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ChunithmDifficultyCard(info: ChunithmDifficultyInfo) {
+    var isExpanded by remember {
+        mutableStateOf(false)
+    }
+    val rotationState by animateFloatAsState(
+        targetValue = if (isExpanded) 180f else 0f, label = "Icon expansion"
+    )
+
+    Card (
+        Modifier
+            .fillMaxWidth()
+            .clickable { isExpanded = !isExpanded },
+        colors = CardDefaults.cardColors(containerColor = info.color),
+        shape = RoundedCornerShape(10.dp),
+    ) {
+        Column (
+            Modifier
+                .padding(10.dp)
+                .padding(vertical = 2.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Row (
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = info.difficultyName)
+                Row {
+                    Text(text = if (info.bestEntry == null) "暂未游玩" else info.bestScore)
+                    Icon(
+                        imageVector = Icons.Default.ArrowDropDown,
+                        contentDescription = "展开按钮图标",
+                        modifier = Modifier
+                            .clickable { isExpanded = !isExpanded }
+                            .rotate(rotationState)
+                    )
+                }
+            }
+            AnimatedVisibility(visible = isExpanded) {
+                Row (
+                    Modifier
+                        .fillMaxWidth()
                         .animateContentSize(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {

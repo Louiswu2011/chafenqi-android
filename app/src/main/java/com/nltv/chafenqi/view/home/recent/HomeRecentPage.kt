@@ -38,19 +38,20 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.nltv.chafenqi.SCREEN_PADDING
+import com.nltv.chafenqi.extension.toChunithmCoverPath
 import com.nltv.chafenqi.extension.toDateString
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
+import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
-import com.nltv.chafenqi.view.AppViewModelProvider
 import com.nltv.chafenqi.view.home.HomeNavItem
-import com.nltv.chafenqi.view.home.HomePageViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeRecentPage(navController: NavController) {
     val listState = rememberLazyListState()
 
-    val model: HomePageViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    val model: HomeRecentViewModel = viewModel()
 
     Scaffold(
         topBar = {
@@ -73,15 +74,20 @@ fun HomeRecentPage(navController: NavController) {
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize(),
-            contentPadding = PaddingValues(vertical = 8.dp, horizontal = 8.dp),
+            contentPadding = PaddingValues(vertical = 8.dp, horizontal = SCREEN_PADDING),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             state = listState
         ) {
             items(
-                count = model.user.maimai.recent.size,
-                key = { index -> model.user.maimai.recent[index].timestamp },
+                count = model.getRecentList().size,
+                key = { index -> model.getRecentList()[index].timestamp },
                 itemContent = { index ->
-                    HomeRecentPageEntry(entry = model.user.maimai.recent[index], index, navController)
+                    val entry = model.getRecentList()[index]
+                    if (entry is MaimaiRecentScoreEntry) {
+                        HomeRecentPageEntry(entry, index, navController)
+                    } else if (entry is ChunithmRecentScoreEntry) {
+                        HomeRecentPageEntry(entry, index, navController)
+                    }
                 }
             )
         }
@@ -90,8 +96,6 @@ fun HomeRecentPage(navController: NavController) {
 
 @Composable
 fun HomeRecentPageEntry(entry: MaimaiRecentScoreEntry, index: Int, navController: NavController) {
-    val model: HomePageViewModel = viewModel(factory = AppViewModelProvider.Factory)
-
     Row(
         Modifier
             .fillMaxWidth()
@@ -103,17 +107,15 @@ fun HomeRecentPageEntry(entry: MaimaiRecentScoreEntry, index: Int, navController
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         AsyncImage(
-            model = model.getAssociatedMaimaiMusic(title = entry.title).id.toMaimaiCoverPath(),
+            model = entry.associatedMusicEntry.musicID.toMaimaiCoverPath(),
             contentDescription = "歌曲封面",
             modifier = Modifier
                 .padding(end = 8.dp)
                 .size(72.dp)
                 .border(
                     border = BorderStroke(
-                        width = 4.dp,
-                        color = MaterialTheme.colorScheme.primaryContainer
-                    ),
-                    shape = RoundedCornerShape(10.dp)
+                        width = 4.dp, color = MaterialTheme.colorScheme.primaryContainer
+                    ), shape = RoundedCornerShape(10.dp)
                 )
                 .padding(2.dp)
                 .clip(RoundedCornerShape(size = 10.dp))
@@ -130,6 +132,49 @@ fun HomeRecentPageEntry(entry: MaimaiRecentScoreEntry, index: Int, navController
             ) {
                 Text(entry.title, fontSize = 16.sp, overflow = TextOverflow.Ellipsis, maxLines = 1)
                 Text(text = "%.4f".format(entry.achievements).plus("%"), fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            }
+        }
+    }
+}
+
+@Composable
+fun HomeRecentPageEntry(entry: ChunithmRecentScoreEntry, index: Int, navController: NavController) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .height(72.dp)
+            .clickable {
+                Log.i("HomeRecentPageEntry", "Jump from index $index")
+                navController.navigate(HomeNavItem.Home.route + "/recent/maimai/${index}")
+            },
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        AsyncImage(
+            model = entry.associatedMusicEntry.musicID.toChunithmCoverPath(),
+            contentDescription = "歌曲封面",
+            modifier = Modifier
+                .padding(end = 8.dp)
+                .size(72.dp)
+                .border(
+                    border = BorderStroke(
+                        width = 4.dp, color = MaterialTheme.colorScheme.primaryContainer
+                    ), shape = RoundedCornerShape(10.dp)
+                )
+                .padding(2.dp)
+                .clip(RoundedCornerShape(size = 10.dp))
+        )
+        Column(
+            Modifier.fillMaxHeight(),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(entry.timestamp.toDateString(), fontSize = 14.sp)
+            Row(
+                Modifier.fillMaxWidth(),
+                Arrangement.SpaceBetween,
+                Alignment.CenterVertically
+            ) {
+                Text(entry.title, fontSize = 16.sp, overflow = TextOverflow.Ellipsis, maxLines = 1)
+                Text(text = entry.score.toString(), fontWeight = FontWeight.Bold, fontSize = 18.sp)
             }
         }
     }

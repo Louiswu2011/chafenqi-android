@@ -146,6 +146,8 @@ class LoginPageViewModel(
                 chunithm.best = deserializer.decodeFromString(bestString)
                 chunithm.recent = deserializer.decodeFromString(recentString)
                 chunithm.rating = deserializer.decodeFromString(ratingString)
+
+                chunithm.addAuxiliaryData()
                 Log.i(tag, "Loaded user chunithm basic data.")
             } catch (e: Exception) {
                 e.printStackTrace()

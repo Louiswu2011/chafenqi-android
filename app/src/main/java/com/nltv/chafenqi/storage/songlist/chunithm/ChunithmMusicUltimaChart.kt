@@ -4,8 +4,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ChunithmMusicUltimaChart(
-    val enabled: Boolean = false,
-    val constant: Double = 0.0,
-    val level: String = "",
-    val charter: String? = ""
-)
+    override val enabled: Boolean = false,
+    override val constant: Double = 0.0,
+    override val level: String = "",
+    override val charter: String? = ""
+): ChunithmMusicChart

@@ -1,7 +1,9 @@
 package com.nltv.chafenqi.storage
 
+import android.content.Context
 import android.util.Log
 import com.nltv.chafenqi.extension.associatedMusicEntry
+import com.nltv.chafenqi.extension.cutForRating
 import com.nltv.chafenqi.extension.rating
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmBestScoreEntry
@@ -25,6 +27,8 @@ object CFQUser {
 
     var username = ""
     var isPremium = false
+
+    var mode = 1
 
     var maimai = Maimai
     var chunithm = Chunithm
@@ -84,6 +88,33 @@ object CFQUser {
         var delta = listOf<ChunithmDeltaEntry>()
         var rating = listOf<ChunithmRatingEntry>()
         var extra = ChunithmExtraEntry()
+
+        var aux = Aux
+
+        object Aux {
+            var bestRating: Double = 0.0
+            var recentRating: Double = 0.0
+        }
+
+        fun addAuxiliaryData() {
+            if (CFQPersistentData.Chunithm.musicList.isNotEmpty()) {
+                best.forEach {
+                    it.associatedMusicEntry = it.associatedMusicEntry()
+                }
+                recent.forEach {
+                    it.associatedMusicEntry = it.associatedMusicEntry()
+                }
+                rating.forEach {
+                    it.associatedMusicEntry = it.associatedMusicEntry()
+                }
+
+                val (bestSlice, otherSlice) = rating.partition { it.type == "best" }
+                val recentSlice = otherSlice.filter { it.type == "recent" }
+
+                aux.bestRating = (bestSlice.fold(0.0) { acc, chunithmRatingEntry -> acc + chunithmRatingEntry.rating() } / 30).cutForRating()
+                aux.recentRating = (recentSlice.fold(0.0) { acc, chunithmRatingEntry -> acc + chunithmRatingEntry.rating() } / 10).cutForRating()
+            }
+        }
 
         fun reset() {
             info = ChunithmUserInfo()

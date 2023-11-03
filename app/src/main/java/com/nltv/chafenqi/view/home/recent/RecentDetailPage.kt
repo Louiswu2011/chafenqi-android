@@ -104,6 +104,7 @@ fun RecentDetailPage(
                     fontSize = 24.sp
                 )
             }
+
             if (mode == 0) {
                 RecentDetailChunithmScoreGrid()
 
@@ -114,7 +115,7 @@ fun RecentDetailPage(
                 }
             }
 
-            TextButton(onClick = { navHostController.navigate(HomeNavItem.SongList.route + "/maimai/${model.maiMusicEntryIndex}") }) {
+            TextButton(onClick = { model.navigateToMusicEntry(navHostController) }, enabled = model.canNavigate) {
                 Row (
                     verticalAlignment = Alignment.CenterVertically
                 ) {

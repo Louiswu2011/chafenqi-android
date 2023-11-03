@@ -1,5 +1,6 @@
 package com.nltv.chafenqi.storage.datastore.user.chunithm
 
+import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -17,4 +18,5 @@ data class ChunithmBestScoreEntry(
     var idx: String = "",
     val updatedAt: String = "",
     val createdAt: String = "",
+    @Transient var associatedMusicEntry: ChunithmMusicEntry = ChunithmMusicEntry()
 )

@@ -1,6 +1,7 @@
 package com.nltv.chafenqi.storage.songlist.chunithm
 
 import androidx.annotation.Keep
+import com.nltv.chafenqi.storage.songlist.MusicEntry
 import kotlinx.serialization.Serializable
 
 @Keep
@@ -13,4 +14,6 @@ data class ChunithmMusicEntry(
     val bpm: Int = 0,
     val from: String = "",
     val charts: ChunithmMusicCharts = ChunithmMusicCharts()
-)
+): MusicEntry {
+    val isWE = charts.worldsend.enabled
+}

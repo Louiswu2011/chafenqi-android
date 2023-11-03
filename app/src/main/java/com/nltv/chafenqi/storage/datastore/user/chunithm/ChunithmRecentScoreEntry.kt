@@ -1,12 +1,15 @@
 package com.nltv.chafenqi.storage.datastore.user.chunithm
 
+import androidx.compose.ui.text.toLowerCase
+import com.nltv.chafenqi.storage.datastore.user.RecentScoreEntry
+import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 @Serializable
 data class ChunithmRecentScoreEntry(
-    val timestamp: Int = 0,
+    override val timestamp: Int = 0,
     val idx: String = "",
     val title: String = "",
     val difficulty: String = "",
@@ -30,8 +33,18 @@ data class ChunithmRecentScoreEntry(
     @SerialName("notes_air") val notesAir: String = "",
     @SerialName("notes_flick") val notesFlick: String = "",
     val updatedAt: String = "",
-    val createdAt: String = ""
-) {
+    val createdAt: String = "",
+    @Transient var associatedMusicEntry: ChunithmMusicEntry = ChunithmMusicEntry()
+): RecentScoreEntry {
+    val levelIndex = when (difficulty.lowercase()) {
+        "basic" -> 0
+        "advanced" -> 1
+        "expert" -> 2
+        "master" -> 3
+        "ultima" -> 4
+        else -> 5
+    }
+
     init {
         judges = mapOf(
             "critical" to judgesCritical,

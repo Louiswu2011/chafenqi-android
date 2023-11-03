@@ -16,8 +16,31 @@ data class ChunithmMusicCharts(
         advanced.constant,
         expert.constant,
         master.constant,
-        ultima.constant
+        ultima.constant,
+        worldsend.weConstant.toDouble()
     )
 
+    val levels = listOf(
+        basic.level,
+        advanced.level,
+        expert.level,
+        master.level,
+        ultima.level
+    )
+
+    val charters = listOf(
+        basic.charter,
+        advanced.charter,
+        expert.charter,
+        master.charter,
+        ultima.charter,
+        worldsend.charter
+    )
+
+    val indexedList = listOf(
+        basic, advanced, expert, master, ultima, worldsend
+    )
+
+    val hasUltima = ultima.enabled
     val isWE = worldsend.enabled
 }

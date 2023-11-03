@@ -1,7 +1,9 @@
 package com.nltv.chafenqi.view.home
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -9,7 +11,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,22 +21,22 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,17 +47,20 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.nltv.chafenqi.R
+import com.nltv.chafenqi.extension.toChunithmCoverPath
 import com.nltv.chafenqi.extension.toDateString
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
+import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
-import com.nltv.chafenqi.view.AppViewModelProvider
+import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
+import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomePage(navController: NavController) {
-    val model: HomePageViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    val model: HomePageViewModel = viewModel<HomePageViewModel>().also { it.update() }
     val scrollState = rememberScrollState()
+    // val pullRefreshState = rememberPullRefreshState(refreshing = , onRefresh = { /*TODO*/ })
 
     Scaffold(
         topBar = {
@@ -68,6 +72,9 @@ fun HomePage(navController: NavController) {
                     titleContentColor = MaterialTheme.colorScheme.primary
                 ),
                 actions = {
+                    IconButton(onClick = { model.switchGame() }) {
+                        Icon(imageVector = Icons.Default.SwapHoriz, contentDescription = "切换游戏")
+                    }
                     IconButton(onClick = { navController.navigate(HomeNavItem.Home.route + "/settings") }) {
                         Icon(imageVector = Icons.Default.Settings, contentDescription = "设置")
                     }
@@ -84,73 +91,15 @@ fun HomePage(navController: NavController) {
         ) {
             HomePageNameplate()
             HomePageRecentBar(navController)
-            Column(
-                modifier = Modifier.padding(horizontal = 10.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                model.user.maimai.recent.take(3).onEachIndexed { index, entry ->
-                    Column (
-                        Modifier.clickable {
-                            navController.navigate(HomeNavItem.Home.route + "/recent/maimai/$index")
-                        }
-                    ) {
-                        HomePageRecentEntry(entry = entry)
-                    }
-                }
-            }
+            HomePageRecentLineup(navController)
+            HomePageRatingBar(navController)
+            HomePageRatingIndicators()
+            HomePageLogBar(navController)
+            HomePageLogInfo()
         }
     }
 }
 
-@Composable
-fun HomePageNameplate() {
-    val model: HomePageViewModel = viewModel(factory = AppViewModelProvider.Factory)
-
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp),
-        shape = ShapeDefaults.Medium,
-        colors = CardDefaults.cardColors(),
-        elevation = CardDefaults.cardElevation()
-    ) {
-        Box {
-            Column(
-                horizontalAlignment = Alignment.End,
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .fillMaxWidth()
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.nameplate_salt),
-                    contentDescription = "名牌纱露朵形象",
-                    Modifier.size(128.dp)
-                )
-            }
-            Column(
-                modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(2.dp)
-            ) {
-                Text(
-                    text = model.user.maimai.info.nickname,
-                    fontSize = TextUnit(20f, TextUnitType.Sp),
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 12.dp)
-                )
-                HomePageNameplateInfoRow(title = "Rating", content = "${model.user.maimai.info.rating}")
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    HomePageNameplateInfoRow(title = "P", content = model.user.maimai.aux.pastRating.toString())
-                    HomePageNameplateInfoRow(title = "N", content = model.user.maimai.aux.newRating.toString())
-                }
-                HomePageNameplateInfoRow(title = "游玩次数", content = "${model.user.maimai.info.playCount}")
-                Spacer(modifier = Modifier.size(8.dp))
-                HomePageNameplateInfoRow(title = "更新于", content = "-")
-            }
-        }
-    }
-}
 
 @Composable
 fun HomePageNameplateInfoRow(title: String, content: String) {
@@ -164,6 +113,9 @@ fun HomePageNameplateInfoRow(title: String, content: String) {
 
 @Composable
 fun HomePageRecentBar(navController: NavController) {
+    val model: HomePageViewModel = viewModel()
+    val uiState by model.uiState.collectAsState()
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -175,8 +127,8 @@ fun HomePageRecentBar(navController: NavController) {
         Text(
             text = "显示全部",
             fontSize = TextUnit(14f, TextUnitType.Sp),
-            modifier = Modifier.clickable {
-                navController.navigate(HomeNavItem.Home.route + "/recent")
+            modifier = Modifier.clickable (enabled = uiState.canNavigateToRecentList) {
+                model.navigateToRecentList(navController)
             },
             color = MaterialTheme.colorScheme.primary
         )
@@ -184,9 +136,48 @@ fun HomePageRecentBar(navController: NavController) {
 }
 
 @Composable
-fun HomePageRecentEntry(entry: MaimaiRecentScoreEntry) {
-    val model: HomePageViewModel = viewModel(factory = AppViewModelProvider.Factory)
+fun HomePageRecentLineup(navController: NavController) {
+    val model: HomePageViewModel = viewModel()
+    val uiState by model.uiState.collectAsState()
 
+    Box {
+        AnimatedVisibility(visible = uiState.mode == 0, enter = fadeIn(), exit = fadeOut(), modifier = Modifier.clipToBounds()) {
+            Column (
+                modifier = Modifier.padding(horizontal = 10.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                uiState.chuRecentLineup.onEachIndexed { index, entry ->
+                    Column(
+                        Modifier.clickable {
+                            model.navigateToRecentLog(navController, index)
+                        }
+                    ) {
+                        HomePageRecentChunithmEntry(entry)
+                    }
+                }
+            }
+        }
+        AnimatedVisibility(visible = uiState.mode == 1, enter = fadeIn(), exit = fadeOut(), modifier = Modifier.clipToBounds()) {
+            Column(
+                modifier = Modifier.padding(horizontal = 10.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                uiState.maiRecentLineup.onEachIndexed { index, entry ->
+                    Column(
+                        Modifier.clickable {
+                            model.navigateToRecentLog(navController, index)
+                        }
+                    ) {
+                        HomePageRecentMaimaiEntry(entry)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun HomePageRecentMaimaiEntry(entry: MaimaiRecentScoreEntry) {
     Row(
         Modifier
             .fillMaxWidth()
@@ -194,7 +185,7 @@ fun HomePageRecentEntry(entry: MaimaiRecentScoreEntry) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         AsyncImage(
-            model = model.getAssociatedMaimaiMusic(title = entry.title).id.toMaimaiCoverPath(),
+            model = entry.associatedMusicEntry.musicID.toMaimaiCoverPath(),
             contentDescription = "最近动态歌曲封面",
             modifier = Modifier
                 .padding(end = 8.dp)
@@ -202,7 +193,7 @@ fun HomePageRecentEntry(entry: MaimaiRecentScoreEntry) {
                 .border(
                     border = BorderStroke(
                         width = 4.dp,
-                        color = MaterialTheme.colorScheme.primaryContainer
+                        color = maimaiDifficultyColors[entry.levelIndex]
                     ),
                     shape = RoundedCornerShape(10.dp)
                 )
@@ -233,7 +224,57 @@ fun HomePageRecentEntry(entry: MaimaiRecentScoreEntry) {
 }
 
 @Composable
+fun HomePageRecentChunithmEntry(entry: ChunithmRecentScoreEntry) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .height(72.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        AsyncImage(
+            model = entry.associatedMusicEntry.musicID.toChunithmCoverPath(),
+            contentDescription = "最近动态歌曲封面",
+            modifier = Modifier
+                .padding(end = 8.dp)
+                .size(72.dp)
+                .border(
+                    border = BorderStroke(
+                        width = 4.dp,
+                        color = chunithmDifficultyColors[entry.levelIndex]
+                    ),
+                    shape = RoundedCornerShape(10.dp)
+                )
+                .padding(2.dp)
+                .clip(RoundedCornerShape(size = 10.dp))
+        )
+        Column(
+            Modifier.fillMaxHeight(),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(
+                Modifier.fillMaxWidth(),
+                Arrangement.SpaceBetween
+            ) {
+                Text(entry.timestamp.toDateString(), fontSize = 14.sp)
+                Text(text = "状态", fontWeight = FontWeight.Bold)
+            }
+            Row(
+                Modifier.fillMaxWidth(),
+                Arrangement.SpaceBetween,
+                Alignment.CenterVertically
+            ) {
+                Text(entry.title, fontSize = 16.sp, overflow = TextOverflow.Ellipsis, maxLines = 2)
+                Text(text = entry.score.toString(), fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            }
+        }
+    }
+}
+
+@Composable
 fun HomePageRatingBar(navController: NavController) {
+    val model: HomePageViewModel = viewModel()
+    val uiState by model.uiState.collectAsState()
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -245,13 +286,43 @@ fun HomePageRatingBar(navController: NavController) {
         Text(
             text = "显示全部",
             fontSize = TextUnit(14f, TextUnitType.Sp),
-            modifier = Modifier.clickable {
+            modifier = Modifier.clickable (enabled = uiState.canNavigateToRatingList) {
                 navController.navigate(HomeNavItem.Home.route + "/rating")
             },
             color = MaterialTheme.colorScheme.primary
         )
     }
 }
+
+@Composable
+fun HomePageRatingIndicators() {}
+
+@Composable
+fun HomePageLogBar(navController: NavController) {
+    val model: HomePageViewModel = viewModel()
+    val uiState by model.uiState.collectAsState()
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 10.dp)
+    ) {
+        Text(text = "出勤记录（开发中）", fontWeight = FontWeight.Bold, fontSize = TextUnit(16f, TextUnitType.Sp))
+        Text(
+            text = "显示全部",
+            fontSize = TextUnit(14f, TextUnitType.Sp),
+            modifier = Modifier.clickable (enabled = uiState.canNavigateToRatingList) {
+                navController.navigate(HomeNavItem.Home.route + "/rating")
+            },
+            color = MaterialTheme.colorScheme.primary
+        )
+    }
+}
+
+@Composable
+fun HomePageLogInfo() {}
 
 
 @Preview(showBackground = true)
@@ -267,7 +338,7 @@ fun HomePagePreview() {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             repeat(3) {
-                HomePageRecentEntry(MaimaiRecentScoreEntry())
+                HomePageRecentMaimaiEntry(MaimaiRecentScoreEntry())
             }
         }
     }

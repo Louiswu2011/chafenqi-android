@@ -5,9 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.storage.CFQUser
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmBestScoreEntry
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiBestScoreEntry
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
 import com.nltv.chafenqi.storage.`object`.CFQPersistentData
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
@@ -27,7 +25,7 @@ val chunithmDifficultyColors = listOf(
     Color(red = 237, green = 123, blue = 33),
     Color(red = 205, green = 85, blue = 77),
     Color(red = 171, green = 104, blue = 249),
-    Color(red = 32, green = 32, blue = 32),
+    Color(red = 68, green = 63, blue = 63),
     Color.White
 )
 
@@ -49,10 +47,12 @@ class SongDetailViewModel: ViewModel() {
     var genre: String = ""
 
     val maiDiffInfos: MutableList<MaimaiDifficultyInfo> = mutableListOf()
+    val chuDiffInfos: MutableList<ChunithmDifficultyInfo> = mutableListOf()
 
     fun update(mode: Int, index: Int) {
         if (mode == 0 && CFQPersistentData.Chunithm.musicList.isNotEmpty()) {
             chuMusic = CFQPersistentData.Chunithm.musicList[index]
+            if (chuMusic == null) return
 
             coverUrl = "http://43.139.107.206:8083/api/chunithm/cover?musicId=${chuMusic?.musicID}"
             title = chuMusic?.title ?: ""
@@ -61,10 +61,23 @@ class SongDetailViewModel: ViewModel() {
             bpm = chuMusic?.bpm?.toString() ?: ""
             version = chuMusic?.from ?: ""
             genre = chuMusic?.genre ?: ""
+
+            if (chuDiffInfos.isNotEmpty()) return
+
+            if (chuMusic!!.isWE) {
+                chuDiffInfos.add(ChunithmDifficultyInfo(title, 5, chuMusic!!))
+            } else {
+                chuMusic!!.charts.indexedList.forEachIndexed { difficultyIndex, chart ->
+                    if (chart.enabled) {
+                        chuDiffInfos.add(ChunithmDifficultyInfo(title, difficultyIndex, chuMusic!!))
+                    }
+                }
+            }
         } else if (mode == 1 && CFQPersistentData.Maimai.musicList.isNotEmpty()) {
             maiMusic = CFQPersistentData.Maimai.musicList[index]
+            if (maiMusic == null) return
 
-            coverUrl = maiMusic?.id?.toMaimaiCoverPath() ?: ""
+            coverUrl = maiMusic?.musicID?.toMaimaiCoverPath() ?: ""
             title = maiMusic?.title ?: ""
             artist = maiMusic?.basicInfo?.artist ?: ""
             constants = maiMusic?.constants?.map { String.format("%.1f", it) } ?: listOf()
@@ -72,7 +85,9 @@ class SongDetailViewModel: ViewModel() {
             version = maiMusic?.basicInfo?.from ?: ""
             genre = maiMusic?.basicInfo?.genre ?: ""
 
-            maiMusic?.charts?.forEachIndexed { difficultyIndex, _ ->
+            if (maiDiffInfos.isNotEmpty()) return
+
+            maiMusic?.charts?.forEachIndexed { difficultyIndex, chart ->
                 maiDiffInfos.add(
                     MaimaiDifficultyInfo(
                         title,
@@ -88,7 +103,7 @@ class SongDetailViewModel: ViewModel() {
 class MaimaiDifficultyInfo(
     title: String,
     difficultyIndex: Int,
-    val musicEntry: MaimaiMusicEntry
+    musicEntry: MaimaiMusicEntry
 ) {
     var difficultyName: String = ""
 
@@ -107,6 +122,32 @@ class MaimaiDifficultyInfo(
         }
         if (bestEntry != null) {
             bestScore = String.format("%.4f", bestEntry!!.achievements) + "%"
+        }
+    }
+}
+
+class ChunithmDifficultyInfo(
+    title: String,
+    difficultyIndex: Int,
+    musicEntry: ChunithmMusicEntry
+) {
+    var difficultyName: String = ""
+
+    var color: Color = chunithmDifficultyColors[difficultyIndex]
+    var constant: String = ""
+    var charter: String = ""
+    var bestScore: String = "暂未游玩"
+    var bestEntry: ChunithmBestScoreEntry? = null
+
+    init {
+        difficultyName = chunithmDifficultyTitles[difficultyIndex]
+        constant = String.format("%.1f", musicEntry.charts.constants[difficultyIndex])
+        charter = musicEntry.charts.charters[difficultyIndex] ?: "-"
+        bestEntry = CFQUser.chunithm.best.firstOrNull {
+            it.title == title && it.levelIndex == difficultyIndex
+        }
+        if (bestEntry != null) {
+            bestScore = bestEntry!!.score.toString()
         }
     }
 }

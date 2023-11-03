@@ -2,18 +2,21 @@ package com.nltv.chafenqi.view.home.recent
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavHostController
 import com.nltv.chafenqi.extension.toDateString
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
-import com.nltv.chafenqi.extension.toMaimaiCoverString
 import com.nltv.chafenqi.storage.CFQUser
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
 import com.nltv.chafenqi.storage.`object`.CFQPersistentData
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
+import com.nltv.chafenqi.view.home.HomeNavItem
 
 class RecentDetailPageViewModel: ViewModel() {
     private val tag = this::class.java.canonicalName
+
+    var mode: Int = 0
 
     var maiEntry: MaimaiRecentScoreEntry? = null
     var chuEntry: ChunithmRecentScoreEntry? = null
@@ -40,9 +43,14 @@ class RecentDetailPageViewModel: ViewModel() {
     var maiHasSync: Boolean = false
     var maiMatchingPlayers: List<String> = listOf()
     var maiSync: String = ""
-    var maiMusicEntryIndex = 0
+    private var maiMusicEntryIndex = 0
+
+    private var chuMusicEntryIndex = 0
+
+    var canNavigate = false
 
     fun update(mode: Int, index: Int) {
+        this.mode = mode
         if (mode == 0 && CFQPersistentData.Chunithm.musicList.isNotEmpty()) {
             chuEntry = CFQUser.chunithm.recent[index]
             chuMusic = CFQPersistentData.Chunithm.musicList.firstOrNull { it.musicID.toString() == chuEntry?.idx }
@@ -54,12 +62,14 @@ class RecentDetailPageViewModel: ViewModel() {
             playDateString = chuEntry?.timestamp?.toDateString() ?: ""
             score = chuEntry?.score.toString()
 
+            chuMusicEntryIndex = CFQPersistentData.Chunithm.musicList.indexOf(chuMusic ?: ChunithmMusicEntry())
+            canNavigate = chuMusicEntryIndex != -1
         } else if (mode == 1 && CFQPersistentData.Maimai.musicList.isNotEmpty()) {
             maiEntry = CFQUser.maimai.recent[index]
             maiMusic = CFQPersistentData.Maimai.musicList.firstOrNull { it.title == maiEntry?.title }
             Log.i(tag, "Loaded maimai music ${maiMusic?.title} from ${maiEntry?.title}")
 
-            coverUrl = maiMusic?.id?.toMaimaiCoverPath() ?: ""
+            coverUrl = maiMusic?.musicID?.toMaimaiCoverPath() ?: ""
             title = maiMusic?.title ?: ""
             artist = maiMusic?.basicInfo?.artist ?: ""
             playDateString = maiEntry?.timestamp?.toDateString() ?: ""
@@ -78,6 +88,15 @@ class RecentDetailPageViewModel: ViewModel() {
             maiHasSync = maiSync != "―"
 
             maiMusicEntryIndex = CFQPersistentData.Maimai.musicList.indexOf(maiMusic ?: MaimaiMusicEntry())
+            canNavigate = maiMusicEntryIndex != -1
         }
+    }
+
+    fun navigateToMusicEntry(navHostController: NavHostController) {
+        if (!canNavigate) return
+
+        val navigateKeyword = if (mode == 0) "chunithm" else "maimai"
+        val navigateIndex = if (mode == 0) chuMusicEntryIndex else maiMusicEntryIndex
+        navHostController.navigate(HomeNavItem.SongList.route + "/$navigateKeyword/$navigateIndex")
     }
 }

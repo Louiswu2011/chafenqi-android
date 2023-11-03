@@ -1,5 +1,6 @@
 package com.nltv.chafenqi.storage.datastore.user.maimai
 
+import com.nltv.chafenqi.storage.datastore.user.RecentScoreEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -8,7 +9,7 @@ import kotlinx.serialization.Transient
 @Serializable
 data class MaimaiRecentScoreEntry(
     val id: Int = 0,
-    val timestamp: Int = 0,
+    override val timestamp: Int = 0,
     val title: String = "",
     val difficulty: String = "",
     val type: String = "",
@@ -30,4 +31,12 @@ data class MaimaiRecentScoreEntry(
     val createdAt: String = "",
     val updatedAt: String = "",
     @Transient var associatedMusicEntry: MaimaiMusicEntry = MaimaiMusicEntry()
-)
+): RecentScoreEntry {
+    val levelIndex = when (difficulty.lowercase()) {
+        "basic" -> 0
+        "advanced" -> 1
+        "expert" -> 2
+        "master" -> 3
+        else -> 4
+    }
+}
