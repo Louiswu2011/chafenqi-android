@@ -61,11 +61,11 @@ object CFQUser {
                 val pastList = CFQPersistentData.Maimai.musicList.filter { !it.basicInfo.isNew }
                 val (pastBest, newBest) = best.partition { bestEntry -> pastList.map { it.title }.contains(bestEntry.title) }
 
-                aux.pastBest = pastBest.sortedByDescending { it.rating() }
-                aux.newBest = newBest.sortedByDescending { it.rating() }
+                aux.pastBest = pastBest.sortedByDescending { it.rating() }.take(35)
+                aux.newBest = newBest.sortedByDescending { it.rating() }.take(15)
 
-                aux.pastRating = aux.pastBest.take(35).fold(0) { acc, maimaiBestScoreEntry -> acc + maimaiBestScoreEntry.rating() }
-                aux.newRating = aux.newBest.take(15).fold(0) { acc, maimaiBestScoreEntry -> acc + maimaiBestScoreEntry.rating() }
+                aux.pastRating = aux.pastBest.fold(0) { acc, maimaiBestScoreEntry -> acc + maimaiBestScoreEntry.rating() }
+                aux.newRating = aux.newBest.fold(0) { acc, maimaiBestScoreEntry -> acc + maimaiBestScoreEntry.rating() }
                 Log.i(tag, "Loaded maimai auxiliary data.")
             }
         }
@@ -92,6 +92,8 @@ object CFQUser {
         var aux = Aux
 
         object Aux {
+            var bestList = listOf<ChunithmRatingEntry>()
+            var recentList = listOf<ChunithmRatingEntry>()
             var bestRating: Double = 0.0
             var recentRating: Double = 0.0
         }
@@ -110,7 +112,8 @@ object CFQUser {
 
                 val (bestSlice, otherSlice) = rating.partition { it.type == "best" }
                 val recentSlice = otherSlice.filter { it.type == "recent" }
-
+                aux.bestList = bestSlice
+                aux.recentList = recentSlice
                 aux.bestRating = (bestSlice.fold(0.0) { acc, chunithmRatingEntry -> acc + chunithmRatingEntry.rating() } / 30).cutForRating()
                 aux.recentRating = (recentSlice.fold(0.0) { acc, chunithmRatingEntry -> acc + chunithmRatingEntry.rating() } / 10).cutForRating()
             }
