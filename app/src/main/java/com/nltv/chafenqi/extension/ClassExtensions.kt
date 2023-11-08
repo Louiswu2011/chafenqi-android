@@ -71,7 +71,7 @@ fun Int.toDateString(): String {
     return Instant.ofEpochSecond(this.toLong())
         .atZone(ZoneId.systemDefault())
         .toLocalDateTime()
-        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss"))
+        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm"))
 }
 
 fun Int.toChunithmCoverPath(): String = "http://43.139.107.206:8083/api/chunithm/cover?musicId=${this}"

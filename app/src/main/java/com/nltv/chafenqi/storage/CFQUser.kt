@@ -19,6 +19,10 @@ import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiUserInfo
 import com.nltv.chafenqi.storage.`object`.CFQPersistentData
 import com.onesignal.OneSignal
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Date
 
 object CFQUser {
     private const val tag = "CFQUser"
@@ -32,6 +36,9 @@ object CFQUser {
 
     var maimai = Maimai
     var chunithm = Chunithm
+
+    val isoTimeParser = DateTimeFormatter.ISO_INSTANT
+    val nameplateDateFormatter = DateTimeFormatter.ofPattern("MM-dd hh:mm")
 
     object Maimai {
         var info = MaimaiUserInfo()
@@ -47,6 +54,15 @@ object CFQUser {
             var newBest = listOf<MaimaiBestScoreEntry>()
             var pastRating: Int = 0
             var newRating: Int = 0
+            var updateTime: String = ""
+
+            fun reset() {
+                pastBest = listOf()
+                newBest = listOf()
+                pastRating = 0
+                newRating = 0
+                updateTime = ""
+            }
         }
 
         fun addAuxiliaryData() {
@@ -66,6 +82,12 @@ object CFQUser {
 
                 aux.pastRating = aux.pastBest.fold(0) { acc, maimaiBestScoreEntry -> acc + maimaiBestScoreEntry.rating() }
                 aux.newRating = aux.newBest.fold(0) { acc, maimaiBestScoreEntry -> acc + maimaiBestScoreEntry.rating() }
+
+                aux.updateTime = Instant.from(isoTimeParser.parse(info.updatedAt))
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDateTime()
+                    .format(nameplateDateFormatter)
+
                 Log.i(tag, "Loaded maimai auxiliary data.")
             }
         }
@@ -76,8 +98,7 @@ object CFQUser {
             recent = listOf()
             delta = listOf()
             extra = MaimaiExtraInfo()
-            aux.newRating = 0
-            aux.pastRating = 0
+            aux.reset()
         }
     }
 
@@ -96,6 +117,15 @@ object CFQUser {
             var recentList = listOf<ChunithmRatingEntry>()
             var bestRating: Double = 0.0
             var recentRating: Double = 0.0
+            var updateTime: String = ""
+
+            fun reset() {
+                bestList = listOf()
+                recentList = listOf()
+                bestRating = 0.0
+                recentRating = 0.0
+                updateTime = ""
+            }
         }
 
         fun addAuxiliaryData() {
@@ -116,6 +146,11 @@ object CFQUser {
                 aux.recentList = recentSlice
                 aux.bestRating = (bestSlice.fold(0.0) { acc, chunithmRatingEntry -> acc + chunithmRatingEntry.rating() } / 30).cutForRating()
                 aux.recentRating = (recentSlice.fold(0.0) { acc, chunithmRatingEntry -> acc + chunithmRatingEntry.rating() } / 10).cutForRating()
+
+                aux.updateTime = Instant.from(isoTimeParser.parse(info.updatedAt))
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDateTime()
+                    .format(nameplateDateFormatter)
             }
         }
 
@@ -126,6 +161,7 @@ object CFQUser {
             delta = listOf()
             rating = listOf()
             extra = ChunithmExtraEntry()
+            aux.reset()
         }
     }
 

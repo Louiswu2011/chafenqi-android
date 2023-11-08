@@ -1,5 +1,7 @@
 package com.nltv.chafenqi.view.songlist
 
+import android.content.Context
+import android.content.pm.PackageManager
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
@@ -28,6 +30,8 @@ val chunithmDifficultyColors = listOf(
     Color(red = 68, green = 63, blue = 63),
     Color.White
 )
+
+val bilibiliPackageName = "tv.danmaku.bili"
 
 class SongDetailViewModel: ViewModel() {
     private val tag = this::class.java.canonicalName
@@ -96,6 +100,18 @@ class SongDetailViewModel: ViewModel() {
                     )
                 )
             }
+        }
+    }
+
+    fun checkBilibili(context: Context): Boolean {
+        return try {
+            context.packageManager.getPackageInfo(
+                bilibiliPackageName,
+                PackageManager.GET_ACTIVITIES
+            )
+            true
+        } catch (e: Exception) {
+            false
         }
     }
 }

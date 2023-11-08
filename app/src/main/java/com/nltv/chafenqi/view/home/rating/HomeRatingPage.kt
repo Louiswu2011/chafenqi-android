@@ -60,7 +60,6 @@ import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
 @Composable
 fun HomeRatingPage(navController: NavController) {
     val model = viewModel<HomeRatingPageViewModel>().also { it.update() }
-    val scrollState = rememberScrollState()
 
     Scaffold (
         topBar = {

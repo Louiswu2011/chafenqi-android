@@ -41,6 +41,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -86,7 +87,9 @@ fun SongDetailPage(
                     Text(
                         text = model.title,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 26.sp
+                        fontSize = 26.sp,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
                     )
                     Text(
                         text = model.artist,
@@ -118,6 +121,11 @@ fun SongDetailPage(
             TextButton (
                 onClick = {
                     val gameName = if (mode == 0) "中二节奏" else "maimai"
+                    if (!model.checkBilibili(context)) {
+                        Toast.makeText(context, "无法打开B站客户端，请检查权限或是否已安装B站", Toast.LENGTH_SHORT)
+                            .show()
+                        return@TextButton
+                    }
                     try {
                         uriHandler.openUri(
                             Uri.parse("bilibili://search")

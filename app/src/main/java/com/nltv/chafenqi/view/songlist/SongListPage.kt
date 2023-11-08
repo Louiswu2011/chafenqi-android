@@ -41,6 +41,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
@@ -163,7 +164,7 @@ fun MaimaiMusicListEntry(music: MaimaiMusicEntry, index: Int, navController: Nav
             modifier = Modifier.fillMaxHeight(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = music.title, fontWeight = FontWeight.Bold, fontSize = TextUnit(16f, TextUnitType.Sp))
+            Text(text = music.title, fontWeight = FontWeight.Bold, fontSize = TextUnit(16f, TextUnitType.Sp), maxLines = 1, overflow = TextOverflow.Ellipsis)
             MaimaiLevelBadgeRow(musicEntry = music)
         }
     }
@@ -196,7 +197,7 @@ fun ChunithmMusicListEntry(music: ChunithmMusicEntry, index: Int, navController:
             modifier = Modifier.fillMaxHeight(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = music.title, fontWeight = FontWeight.Bold, fontSize = TextUnit(16f, TextUnitType.Sp))
+            Text(text = music.title, fontWeight = FontWeight.Bold, fontSize = TextUnit(16f, TextUnitType.Sp), maxLines = 1, overflow = TextOverflow.Ellipsis)
             ChunithmLevelBadgeRow(musicEntry = music)
         }
     }
