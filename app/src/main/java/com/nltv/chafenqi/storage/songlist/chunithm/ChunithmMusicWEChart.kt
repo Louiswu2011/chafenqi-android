@@ -1,6 +1,5 @@
 package com.nltv.chafenqi.storage.songlist.chunithm
 
-import kotlinx.serialization.SerialInfo
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -14,4 +13,4 @@ data class ChunithmMusicWEChart(
     override val charter: String? = null,
     @SerialName("wetype") val chartType: String? = null,
     @SerialName("wediff") val starDifficulty: Int = 0
-): ChunithmMusicChart
+) : ChunithmMusicChart

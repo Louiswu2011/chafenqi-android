@@ -26,8 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.alorma.compose.settings.ui.SettingsGroup
-import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.alorma.compose.settings.ui.SettingsSwitch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -69,12 +67,14 @@ fun ProxyToggle() {
     val model: UpdaterViewModel = viewModel()
     val context = LocalContext.current
 
-    val vpnLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult() , onResult = {
-        if (it.resultCode == Activity.RESULT_OK) {
-            model.startVPN(context)
-            isVpnOn = true
-        }
-    })
+    val vpnLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+        onResult = {
+            if (it.resultCode == Activity.RESULT_OK) {
+                model.startVPN(context)
+                isVpnOn = true
+            }
+        })
 
     SettingsSwitch(
         title = { Text(text = "开关") },

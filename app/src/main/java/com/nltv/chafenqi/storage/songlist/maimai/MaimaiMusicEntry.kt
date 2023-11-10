@@ -16,4 +16,4 @@ data class MaimaiMusicEntry(
     val charts: List<MaimaiChartEntry> = listOf(),
     @SerialName("cids") val chartIds: List<Int> = listOf(),
     @SerialName("basic_info") val basicInfo: MaimaiBasicInfoEntry = MaimaiBasicInfoEntry()
-): MusicEntry
+) : MusicEntry

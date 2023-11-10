@@ -17,7 +17,7 @@ import com.nltv.chafenqi.ChafenqiApplication
 import com.nltv.chafenqi.R
 import java.io.IOException
 
-class ChafenqiProxy: VpnService() {
+class ChafenqiProxy : VpnService() {
     val PREF_RUNNING = "pref_running"
     private val TAG = "ChafenqiProxy.Service"
     private val ACTION_START = "start"
@@ -135,7 +135,8 @@ class ChafenqiProxy: VpnService() {
         builder.addAddress("fd00:1:fd00:1:fd00:1:fd00:1", 128)
         builder.addRoute("0.0.0.0", 0)
         builder.addRoute("0:0:0:0:0:0:0:0", 0)
-        var dnsList: MutableList<String> = Util.getDefaultDNS(ChafenqiApplication.applicationContext()).toMutableList()
+        var dnsList: MutableList<String> =
+            Util.getDefaultDNS(ChafenqiApplication.applicationContext()).toMutableList()
         for (dns in dnsList) {
             Log.i(TAG, "default DNS:$dns")
             builder.addDnsServer(dns)

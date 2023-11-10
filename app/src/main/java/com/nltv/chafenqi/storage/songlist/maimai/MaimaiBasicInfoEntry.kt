@@ -9,7 +9,7 @@ data class MaimaiBasicInfoEntry(
     val artist: String = "",
     val genre: String = "",
     val bpm: Int = 0,
-    @SerialName( "release_date")  val releaseDate: String = "",
+    @SerialName("release_date") val releaseDate: String = "",
     val from: String = "",
     @SerialName("is_new") val isNew: Boolean = false
 )

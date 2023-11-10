@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.nltv.chafenqi.storage.CFQUser
 import com.nltv.chafenqi.storage.datastore.user.RecentScoreEntry
 
-class HomeRecentViewModel: ViewModel() {
+class HomeRecentViewModel : ViewModel() {
     val user = CFQUser
 
     private val maiRecentList = user.maimai.recent
@@ -15,9 +15,11 @@ class HomeRecentViewModel: ViewModel() {
             0 -> {
                 chuRecentList
             }
+
             1 -> {
                 maiRecentList
             }
+
             else -> {
                 listOf()
             }

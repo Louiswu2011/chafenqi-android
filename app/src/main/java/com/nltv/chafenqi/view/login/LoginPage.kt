@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -48,12 +49,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.nltv.chafenqi.LocalUserState
 import com.nltv.chafenqi.R
 import com.nltv.chafenqi.UIState
 import com.nltv.chafenqi.extension.sha256
 import com.nltv.chafenqi.view.AppViewModelProvider
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginPage() {
     val model: LoginPageViewModel = viewModel(factory = AppViewModelProvider.Factory)
@@ -70,11 +71,15 @@ fun LoginPage() {
         AppIconWithFrame()
         Spacer(modifier = Modifier.padding(all = 30.dp))
 
-        AnimatedContent(targetState = loginUiState.loginState, label = "LoginScreenAnimatedContent") {
+        AnimatedContent(
+            targetState = loginUiState.loginState,
+            label = "LoginScreenAnimatedContent"
+        ) {
             when (it) {
                 UIState.Pending -> {
                     LoginField(model)
                 }
+
                 UIState.Loading -> {
                     Column(
                         verticalArrangement = Arrangement.Center,
@@ -85,9 +90,9 @@ fun LoginPage() {
                             color = MaterialTheme.colorScheme.surfaceVariant
                         )
                         Text(text = loginUiState.loginPromptText, modifier = Modifier.padding(8.dp))
-
                     }
                 }
+
                 UIState.Finished -> {
 
                 }
@@ -126,7 +131,8 @@ fun AppIconWithFrame() {
         .padding(innerBorderWidth)
         .clip(RoundedCornerShape(size = cornerSize))
 
-    Image(painter = painterResource(id = R.drawable.app_icon),
+    Image(
+        painter = painterResource(id = R.drawable.app_icon),
         contentDescription = "AppIcon",
         contentScale = ContentScale.Crop,
         modifier = appIconModifier
@@ -137,6 +143,9 @@ fun AppIconWithFrame() {
 @Composable
 fun LoginField(model: LoginPageViewModel) {
     val loginUiState by model.loginUiState.collectAsStateWithLifecycle()
+    val userState = LocalUserState.current
+
+    val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
     var username by remember {
@@ -193,7 +202,7 @@ fun LoginField(model: LoginPageViewModel) {
         Button(
             onClick = {
                 if (loginUiState.loginState == UIState.Pending) {
-                    model.login(username, password.sha256(), context)
+                    model.login(username, password.sha256(), context, userState)
                 }
             },
             modifier = Modifier.padding(top = 30.dp)

@@ -45,7 +45,10 @@ object CFQPersistentData {
             }
         }
 
-        private suspend fun loadDataFromCache(shouldValidate: Boolean, cacheStore: DataStore<Preferences>) {
+        private suspend fun loadDataFromCache(
+            shouldValidate: Boolean,
+            cacheStore: DataStore<Preferences>
+        ) {
             Log.i(TAG, "Loading ${this.javaClass.name} music list from cache...")
             val maiListString = cacheStore.data.map { p -> p[maiListKey] ?: "" }
                 .first()
@@ -94,7 +97,10 @@ object CFQPersistentData {
             }
         }
 
-        private suspend fun loadDataFromCache(shouldValidate: Boolean, cacheStore: DataStore<Preferences>) {
+        private suspend fun loadDataFromCache(
+            shouldValidate: Boolean,
+            cacheStore: DataStore<Preferences>
+        ) {
             Log.i(TAG, "Loading ${this.javaClass.name} music list from cache...")
             var chuListString = cacheStore.data.map { p -> p[chuListKey] ?: "" }
                 .first()

@@ -10,6 +10,7 @@ object Util {
     init {
         System.loadLibrary("tun2http")
     }
+
     private external fun jni_getprop(name: String): String?
     fun getDefaultDNS(context: Context): List<String> {
         var dns1: String? = null

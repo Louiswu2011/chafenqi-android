@@ -6,7 +6,7 @@ import android.net.VpnService
 import androidx.lifecycle.ViewModel
 import com.nltv.chafenqi.updater.ChafenqiProxy
 
-class UpdaterViewModel: ViewModel() {
+class UpdaterViewModel : ViewModel() {
 
     fun prepareVPN(context: Context): Intent? {
         VpnService.prepare(context)?.also {

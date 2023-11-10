@@ -1,16 +1,13 @@
 package com.nltv.chafenqi.view.home.rating
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -28,7 +24,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -50,7 +45,6 @@ import com.nltv.chafenqi.SCREEN_PADDING
 import com.nltv.chafenqi.extension.rating
 import com.nltv.chafenqi.extension.toChunithmCoverPath
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmBestScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRatingEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiBestScoreEntry
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
@@ -61,7 +55,7 @@ import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
 fun HomeRatingPage(navController: NavController) {
     val model = viewModel<HomeRatingPageViewModel>().also { it.update() }
 
-    Scaffold (
+    Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = "Rating列表") },
@@ -72,13 +66,16 @@ fun HomeRatingPage(navController: NavController) {
                 ),
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "返回上一级")
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "返回上一级"
+                        )
                     }
                 }
             )
         }
     ) { paddingValues ->
-        Column (
+        Column(
             modifier = Modifier
                 .padding(paddingValues),
             verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -113,7 +110,7 @@ fun HomeRatingMaimaiList(navController: NavController) {
             verticalArrangement = Arrangement.spacedBy(SCREEN_PADDING)
         ) {
             item {
-                Row (
+                Row(
                     Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.Bottom
@@ -123,7 +120,7 @@ fun HomeRatingMaimaiList(navController: NavController) {
                 }
             }
             item {
-                Row (
+                Row(
                     Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
@@ -184,7 +181,7 @@ fun HomeRatingMaimaiList(navController: NavController) {
 fun HomeRatingMaimaiEntry(entry: MaimaiBestScoreEntry, index: Int, navController: NavController) {
     val model = viewModel<HomeRatingPageViewModel>()
 
-    Row (
+    Row(
         Modifier
             .fillMaxWidth()
             .clickable { model.navigateToMusicEntry(entry, navController) },
@@ -205,29 +202,46 @@ fun HomeRatingMaimaiEntry(entry: MaimaiBestScoreEntry, index: Int, navController
                 .padding(2.dp)
                 .clip(RoundedCornerShape(size = 8.dp))
         )
-        Column (
+        Column(
             Modifier
                 .fillMaxWidth()
                 .height(64.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Row (
+            Row(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Row {
                     Text(text = "#${index + 1}", Modifier.width(40.dp))
-                    Text(text = "${String.format("%.1f", entry.constant)}/${entry.rating()}", fontWeight = FontWeight.Bold)
+                    Text(
+                        text = "${
+                            String.format(
+                                "%.1f",
+                                entry.associatedMusicEntry.constants[entry.levelIndex]
+                            )
+                        }/${entry.rating()}", fontWeight = FontWeight.Bold
+                    )
                 }
                 Text(text = "Rate")
             }
-            Row (
+            Row(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = entry.title, overflow = TextOverflow.Ellipsis, maxLines = 1, softWrap = false, modifier = Modifier.fillMaxWidth(fraction = 0.7f))
-                Text(text = "${String.format("%.4f", entry.achievements)}%", maxLines = 1, softWrap = false)
+                Text(
+                    text = entry.title,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1,
+                    softWrap = false,
+                    modifier = Modifier.fillMaxWidth(fraction = 0.7f)
+                )
+                Text(
+                    text = "${String.format("%.4f", entry.achievements)}%",
+                    maxLines = 1,
+                    softWrap = false
+                )
             }
         }
     }
@@ -253,7 +267,7 @@ fun HomeRatingChunithmList(navController: NavController) {
             verticalArrangement = Arrangement.spacedBy(SCREEN_PADDING)
         ) {
             item {
-                Row (
+                Row(
                     Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.Bottom
@@ -263,7 +277,7 @@ fun HomeRatingChunithmList(navController: NavController) {
                 }
             }
             item {
-                Row (
+                Row(
                     Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
@@ -324,7 +338,7 @@ fun HomeRatingChunithmList(navController: NavController) {
 fun HomeRatingChunithmEntry(entry: ChunithmRatingEntry, index: Int, navController: NavController) {
     val model = viewModel<HomeRatingPageViewModel>()
 
-    Row (
+    Row(
         Modifier
             .fillMaxWidth()
             .clickable { model.navigateToMusicEntry(entry, navController) },
@@ -345,28 +359,41 @@ fun HomeRatingChunithmEntry(entry: ChunithmRatingEntry, index: Int, navControlle
                 .padding(2.dp)
                 .clip(RoundedCornerShape(size = 8.dp))
         )
-        Column (
+        Column(
             Modifier
                 .fillMaxWidth()
                 .height(64.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Row (
+            Row(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Row {
                     Text(text = "#${index + 1}", Modifier.width(40.dp))
-                    Text(text = "${String.format("%.1f", entry.associatedMusicEntry.charts.constants[entry.levelIndex])}/${String.format("%.2f", entry.rating())}", fontWeight = FontWeight.Bold)
+                    Text(
+                        text = "${
+                            String.format(
+                                "%.1f",
+                                entry.associatedMusicEntry.charts.constants[entry.levelIndex]
+                            )
+                        }/${String.format("%.2f", entry.rating())}", fontWeight = FontWeight.Bold
+                    )
                 }
                 Text(text = "Rate")
             }
-            Row (
+            Row(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = entry.title, overflow = TextOverflow.Ellipsis, maxLines = 1, softWrap = false, modifier = Modifier.fillMaxWidth(fraction = 0.7f))
+                Text(
+                    text = entry.title,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1,
+                    softWrap = false,
+                    modifier = Modifier.fillMaxWidth(fraction = 0.7f)
+                )
                 Text(text = entry.score.toString(), maxLines = 1, softWrap = false)
             }
         }

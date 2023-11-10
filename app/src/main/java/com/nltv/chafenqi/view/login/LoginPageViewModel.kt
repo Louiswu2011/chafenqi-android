@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nltv.chafenqi.CFQUserStateViewModel
 import com.nltv.chafenqi.UIState
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.networking.CFQServerSideException
@@ -23,7 +24,7 @@ import kotlinx.serialization.json.Json
 
 class LoginPageViewModel(
 
-): ViewModel() {
+) : ViewModel() {
     data class LoginUiState(
         val loginState: UIState = UIState.Pending,
         val loginPromptText: String = ""
@@ -35,10 +36,14 @@ class LoginPageViewModel(
     var loginUiState = loginState.asStateFlow()
 
 
-    fun login(username: String, passwordHash: String, context: Context) {
+    fun login(
+        username: String,
+        passwordHash: String,
+        context: Context,
+        userState: CFQUserStateViewModel
+    ) {
         updateLoginState(UIState.Loading)
         updateLoginPromptText("登陆中...")
-
         viewModelScope.launch {
             try {
                 val response = CFQServer.authLogin(
@@ -52,6 +57,7 @@ class LoginPageViewModel(
                     // updateLoginPromptText("以${username}的身份登录...")
                     user.createProfile(response, username)
 
+
                     loadPersistentStorage(context)
 
                     updateLoginPromptText("加载舞萌DX数据...")
@@ -60,7 +66,8 @@ class LoginPageViewModel(
                     updateLoginPromptText("加载中二节奏数据...")
                     loadChunithmData()
 
-                    updateLoginState(UIState.Finished)
+                    updateLoginState(UIState.Pending)
+                    userState.isLoggedIn = true
                 } else {
                     updateLoginState(UIState.Pending)
                 }
@@ -72,6 +79,10 @@ class LoginPageViewModel(
                 updateLoginState(UIState.Pending)
             }
         }
+    }
+
+    fun logout() {
+
     }
 
     private suspend fun loadPersistentStorage(context: Context) {
@@ -88,6 +99,7 @@ class LoginPageViewModel(
     private suspend fun loadMaimaiData() {
         val tag = "Login.User.MaimaiData"
         val token = user.token
+        val deserializer = Json { ignoreUnknownKeys = true }
 
         val maimai = CFQUser.Maimai
 
@@ -99,9 +111,9 @@ class LoginPageViewModel(
                 val bestString = CFQServer.apiMaimai("best", token)
                 val recentString = CFQServer.apiMaimai("recent", token)
 
-                maimai.info = Json.decodeFromString(infoString)
-                maimai.best = Json.decodeFromString(bestString)
-                maimai.recent = Json.decodeFromString(recentString)
+                maimai.info = deserializer.decodeFromString(infoString)
+                maimai.best = deserializer.decodeFromString(bestString)
+                maimai.recent = deserializer.decodeFromString(recentString)
 
                 maimai.addAuxiliaryData()
                 Log.i(tag, "Loaded user maimai basic data.")
@@ -116,8 +128,8 @@ class LoginPageViewModel(
                     val deltaString = CFQServer.apiMaimai("delta", token)
                     val extraString = CFQServer.apiMaimai("extra", token)
 
-                    maimai.delta = Json.decodeFromString(deltaString)
-                    maimai.extra = Json.decodeFromString(extraString)
+                    maimai.delta = deserializer.decodeFromString(deltaString)
+                    maimai.extra = deserializer.decodeFromString(extraString)
                 } catch (e: Exception) {
                     e.printStackTrace()
                     Log.e(tag, "Error loading user maimai premium data.")
@@ -158,7 +170,7 @@ class LoginPageViewModel(
             if (user.isPremium && !isEmpty) {
                 try {
                     val deltaString = CFQServer.apiChunithm("delta", token)
-                    val extraString = CFQServer.apiChunithm("extra", token)
+                    val extraString = CFQServer.apiChunithm("extras", token)
 
                     chunithm.delta = deserializer.decodeFromString(deltaString)
                     chunithm.extra = deserializer.decodeFromString(extraString)

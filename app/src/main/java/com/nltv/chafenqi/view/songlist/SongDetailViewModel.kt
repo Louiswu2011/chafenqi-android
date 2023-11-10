@@ -13,7 +13,8 @@ import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 
 val maimaiDifficultyTitles = listOf("Basic", "Advanced", "Expert", "Master", "Re:Master")
-val chunithmDifficultyTitles = listOf("Basic", "Advanced", "Expert", "Master", "Ultima", "World's End")
+val chunithmDifficultyTitles =
+    listOf("Basic", "Advanced", "Expert", "Master", "Ultima", "World's End")
 
 val maimaiDifficultyColors = listOf(
     Color(red = 128, green = 216, blue = 98),
@@ -33,7 +34,7 @@ val chunithmDifficultyColors = listOf(
 
 val bilibiliPackageName = "tv.danmaku.bili"
 
-class SongDetailViewModel: ViewModel() {
+class SongDetailViewModel : ViewModel() {
     private val tag = this::class.java.canonicalName
 
     var maiScores: List<MaimaiBestScoreEntry> = listOf()

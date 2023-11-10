@@ -1,6 +1,5 @@
 package com.nltv.chafenqi.storage.datastore.user.chunithm
 
-import androidx.compose.ui.text.toLowerCase
 import com.nltv.chafenqi.storage.datastore.user.RecentScoreEntry
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import kotlinx.serialization.SerialName
@@ -35,7 +34,7 @@ data class ChunithmRecentScoreEntry(
     val updatedAt: String = "",
     val createdAt: String = "",
     @Transient var associatedMusicEntry: ChunithmMusicEntry = ChunithmMusicEntry()
-): RecentScoreEntry {
+) : RecentScoreEntry {
     val levelIndex = when (difficulty.lowercase()) {
         "basic" -> 0
         "advanced" -> 1

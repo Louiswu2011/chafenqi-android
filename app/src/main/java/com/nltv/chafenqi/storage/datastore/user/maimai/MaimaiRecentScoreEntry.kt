@@ -31,7 +31,7 @@ data class MaimaiRecentScoreEntry(
     val createdAt: String = "",
     val updatedAt: String = "",
     @Transient var associatedMusicEntry: MaimaiMusicEntry = MaimaiMusicEntry()
-): RecentScoreEntry {
+) : RecentScoreEntry {
     val levelIndex = when (difficulty.lowercase()) {
         "basic" -> 0
         "advanced" -> 1

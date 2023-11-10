@@ -1,9 +1,6 @@
 package com.nltv.chafenqi.view.home
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,10 +11,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -31,6 +33,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.nltv.chafenqi.R
 import com.nltv.chafenqi.view.AppViewModelProvider
 
@@ -41,7 +44,7 @@ val nameplateMaimaiTopColor = Color(red = 167, green = 243, blue = 254)
 val nameplateMaimaiBottomColor = Color(red = 93, green = 166, blue = 247)
 
 @Composable
-fun HomePageNameplate() {
+fun HomePageNameplate(navController: NavController) {
     val model: HomePageViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val uiState by model.uiState.collectAsState()
 
@@ -49,10 +52,11 @@ fun HomePageNameplate() {
         Crossfade(targetState = uiState.mode, label = "home nameplate crossfade") {
             when (it) {
                 0 -> {
-                    HomePageChunithmNameplate()
+                    HomePageChunithmNameplate(navController)
                 }
+
                 1 -> {
-                    HomePageMaimaiNameplate()
+                    HomePageMaimaiNameplate(navController)
                 }
             }
         }
@@ -60,7 +64,7 @@ fun HomePageNameplate() {
 }
 
 @Composable
-fun HomePageMaimaiNameplate() {
+fun HomePageMaimaiNameplate(navController: NavController) {
     val model: HomePageViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val uiState by model.uiState.collectAsState()
 
@@ -73,7 +77,7 @@ fun HomePageMaimaiNameplate() {
         shape = ShapeDefaults.Medium,
         elevation = CardDefaults.cardElevation()
     ) {
-        Box (
+        Box(
             modifier = Modifier.background(brush)
         ) {
             Column(
@@ -87,6 +91,25 @@ fun HomePageMaimaiNameplate() {
                     contentDescription = "名牌纱露朵形象",
                     Modifier.size(128.dp)
                 )
+            }
+            if (model.user.isPremium) {
+                Row(
+                    modifier = Modifier
+                        .padding(end = 16.dp, top = 5.dp)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(onClick = { navController.navigate(HomeNavItem.Home.route + "/info") }) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "user info Icon",
+                            Modifier.size(ButtonDefaults.IconSize)
+                        )
+                        Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+                        Text(text = "玩家信息")
+                    }
+                }
             }
             Column(
                 modifier = Modifier.padding(16.dp),
@@ -114,11 +137,12 @@ fun HomePageMaimaiNameplate() {
 }
 
 @Composable
-fun HomePageChunithmNameplate() {
+fun HomePageChunithmNameplate(navController: NavController) {
     val model: HomePageViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val uiState by model.uiState.collectAsState()
 
-    val brush = Brush.verticalGradient(listOf(nameplateChunithmTopColor, nameplateChunithmBottomColor))
+    val brush =
+        Brush.verticalGradient(listOf(nameplateChunithmTopColor, nameplateChunithmBottomColor))
 
     Card(
         modifier = Modifier
@@ -127,7 +151,7 @@ fun HomePageChunithmNameplate() {
         shape = ShapeDefaults.Medium,
         elevation = CardDefaults.cardElevation()
     ) {
-        Box (
+        Box(
             modifier = Modifier.background(brush)
         ) {
             Column(
@@ -142,6 +166,25 @@ fun HomePageChunithmNameplate() {
                     Modifier.size(128.dp)
                 )
             }
+            if (model.user.isPremium) {
+                Row(
+                    modifier = Modifier
+                        .padding(end = 16.dp, top = 5.dp)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(onClick = { navController.navigate(HomeNavItem.Home.route + "/info") }) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "user info Icon",
+                            Modifier.size(ButtonDefaults.IconSize)
+                        )
+                        Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+                        Text(text = "玩家信息")
+                    }
+                }
+            }
             Column(
                 modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(2.dp)
@@ -152,7 +195,10 @@ fun HomePageChunithmNameplate() {
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 12.dp)
                 )
-                HomePageNameplateInfoRow(title = "Rating", content = uiState.rating + " (${uiState.chuMaxRating})")
+                HomePageNameplateInfoRow(
+                    title = "Rating",
+                    content = uiState.rating + " (${uiState.chuMaxRating})"
+                )
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {

@@ -14,6 +14,6 @@ data class ChunithmMusicEntry(
     val bpm: Int = 0,
     val from: String = "",
     val charts: ChunithmMusicCharts = ChunithmMusicCharts()
-): MusicEntry {
+) : MusicEntry {
     val isWE = charts.worldsend.enabled
 }

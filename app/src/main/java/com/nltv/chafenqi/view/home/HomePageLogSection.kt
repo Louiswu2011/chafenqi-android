@@ -31,11 +31,15 @@ fun HomePageLogBar(navController: NavController) {
             .fillMaxWidth()
             .padding(horizontal = 10.dp)
     ) {
-        Text(text = "出勤记录", fontWeight = FontWeight.Bold, fontSize = TextUnit(16f, TextUnitType.Sp))
+        Text(
+            text = "出勤记录",
+            fontWeight = FontWeight.Bold,
+            fontSize = TextUnit(16f, TextUnitType.Sp)
+        )
         Text(
             text = "显示全部",
             fontSize = TextUnit(14f, TextUnitType.Sp),
-            modifier = Modifier.clickable (enabled = uiState.canNavigateToRatingList) {
+            modifier = Modifier.clickable(enabled = uiState.canNavigateToRatingList) {
                 navController.navigate(HomeNavItem.Home.route + "/rating")
             },
             color = MaterialTheme.colorScheme.primary
@@ -44,4 +48,5 @@ fun HomePageLogBar(navController: NavController) {
 }
 
 @Composable
-fun HomePageLogInfo() {}
+fun HomePageLogInfo() {
+}

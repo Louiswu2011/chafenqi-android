@@ -93,12 +93,12 @@ dependencies {
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
-    implementation("androidx.navigation:navigation-compose:2.7.4")
+    implementation("androidx.navigation:navigation-compose:2.7.5")
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
     implementation("io.ktor:ktor-client-logging:$ktorVersion")
     debugImplementation("org.slf4j:slf4j-simple:2.0.7")
     implementation("io.coil-kt:coil-compose:2.4.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0-alpha03")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0-beta01")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("com.github.alorma:compose-settings-ui-m3:1.0.2")
     implementation("com.onesignal:OneSignal:[5.0.0, 5.99.99]")
@@ -110,4 +110,5 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     // implementation("androidx.compose.material:material:1.6.0-alpha08")
+    implementation("com.patrykandpatrick.vico:compose-m3:1.12.0")
 }

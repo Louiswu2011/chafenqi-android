@@ -1,6 +1,5 @@
 package com.nltv.chafenqi.storage
 
-import android.content.Context
 import android.util.Log
 import com.nltv.chafenqi.extension.associatedMusicEntry
 import com.nltv.chafenqi.extension.cutForRating
@@ -22,7 +21,6 @@ import com.onesignal.OneSignal
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.Date
 
 object CFQUser {
     private const val tag = "CFQUser"
@@ -75,13 +73,17 @@ object CFQUser {
                 }
 
                 val pastList = CFQPersistentData.Maimai.musicList.filter { !it.basicInfo.isNew }
-                val (pastBest, newBest) = best.partition { bestEntry -> pastList.map { it.title }.contains(bestEntry.title) }
+                val (pastBest, newBest) = best.partition { bestEntry ->
+                    pastList.map { it.title }.contains(bestEntry.title)
+                }
 
                 aux.pastBest = pastBest.sortedByDescending { it.rating() }.take(35)
                 aux.newBest = newBest.sortedByDescending { it.rating() }.take(15)
 
-                aux.pastRating = aux.pastBest.fold(0) { acc, maimaiBestScoreEntry -> acc + maimaiBestScoreEntry.rating() }
-                aux.newRating = aux.newBest.fold(0) { acc, maimaiBestScoreEntry -> acc + maimaiBestScoreEntry.rating() }
+                aux.pastRating =
+                    aux.pastBest.fold(0) { acc, maimaiBestScoreEntry -> acc + maimaiBestScoreEntry.rating() }
+                aux.newRating =
+                    aux.newBest.fold(0) { acc, maimaiBestScoreEntry -> acc + maimaiBestScoreEntry.rating() }
 
                 aux.updateTime = Instant.from(isoTimeParser.parse(info.updatedAt))
                     .atZone(ZoneId.systemDefault())
@@ -144,8 +146,10 @@ object CFQUser {
                 val recentSlice = otherSlice.filter { it.type == "recent" }
                 aux.bestList = bestSlice
                 aux.recentList = recentSlice
-                aux.bestRating = (bestSlice.fold(0.0) { acc, chunithmRatingEntry -> acc + chunithmRatingEntry.rating() } / 30).cutForRating()
-                aux.recentRating = (recentSlice.fold(0.0) { acc, chunithmRatingEntry -> acc + chunithmRatingEntry.rating() } / 10).cutForRating()
+                aux.bestRating =
+                    (bestSlice.fold(0.0) { acc, chunithmRatingEntry -> acc + chunithmRatingEntry.rating() } / 30).cutForRating()
+                aux.recentRating =
+                    (recentSlice.fold(0.0) { acc, chunithmRatingEntry -> acc + chunithmRatingEntry.rating() } / 10).cutForRating()
 
                 aux.updateTime = Instant.from(isoTimeParser.parse(info.updatedAt))
                     .atZone(ZoneId.systemDefault())
@@ -184,6 +188,10 @@ object CFQUser {
 
         maimai.reset()
         chunithm.reset()
+    }
+
+    suspend fun refreshPremiumStatus() {
+        this.isPremium = CFQServer.apiIsPremium(username)
     }
 
     fun registerOneSignal(username: String) {

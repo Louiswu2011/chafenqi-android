@@ -3,13 +3,12 @@ package com.nltv.chafenqi.view.home.rating
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.nltv.chafenqi.storage.CFQUser
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmBestScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRatingEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiBestScoreEntry
 import com.nltv.chafenqi.storage.`object`.CFQPersistentData
 import com.nltv.chafenqi.view.home.HomeNavItem
 
-class HomeRatingPageViewModel: ViewModel() {
+class HomeRatingPageViewModel : ViewModel() {
     var user = CFQUser
     var mode = user.mode
 
@@ -37,6 +36,7 @@ class HomeRatingPageViewModel: ViewModel() {
                 maiPastRating = maimai.aux.pastRating.toString()
                 maiNewRating = maimai.aux.newRating.toString()
             }
+
             0 -> {
                 val chunithm = user.chunithm
                 chuBestList = chunithm.aux.bestList
@@ -51,7 +51,8 @@ class HomeRatingPageViewModel: ViewModel() {
     fun navigateToMusicEntry(bestEntry: MaimaiBestScoreEntry, navController: NavController) {
         if (CFQPersistentData.Maimai.musicList.isEmpty()) return
 
-        val maiMusicEntryIndex = CFQPersistentData.Maimai.musicList.indexOf(bestEntry.associatedMusicEntry)
+        val maiMusicEntryIndex =
+            CFQPersistentData.Maimai.musicList.indexOf(bestEntry.associatedMusicEntry)
         if (maiMusicEntryIndex < 0) return
 
         navController.navigate(HomeNavItem.SongList.route + "/maimai/$maiMusicEntryIndex")
@@ -60,7 +61,8 @@ class HomeRatingPageViewModel: ViewModel() {
     fun navigateToMusicEntry(ratingEntry: ChunithmRatingEntry, navController: NavController) {
         if (CFQPersistentData.Chunithm.musicList.isEmpty()) return
 
-        val chuMusicEntryIndex = CFQPersistentData.Chunithm.musicList.indexOf(ratingEntry.associatedMusicEntry)
+        val chuMusicEntryIndex =
+            CFQPersistentData.Chunithm.musicList.indexOf(ratingEntry.associatedMusicEntry)
         if (chuMusicEntryIndex < 0) return
 
         navController.navigate(HomeNavItem.SongList.route + "/maimai/$chuMusicEntryIndex")

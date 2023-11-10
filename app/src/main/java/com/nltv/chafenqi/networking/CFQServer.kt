@@ -55,6 +55,7 @@ class CFQServer {
                         }
                     }
                 }
+
                 "POST" -> {
                     response = client.post("http://43.139.107.206:8083/$path") {
                         accept(ContentType.Any)
@@ -67,6 +68,7 @@ class CFQServer {
                         }
                     }
                 }
+
                 else -> {
                     throw Exception("Method not supported.")
                 }
@@ -129,7 +131,7 @@ class CFQServer {
 
 
         private fun handleErrorCode(errorCode: String) {
-            when(errorCode) {
+            when (errorCode) {
                 "MISMATCH" -> throw CredentialsMismatchException()
                 "INVALID" -> throw InvalidTokenException()
                 "NOT FOUND" -> throw UserNotFoundException()
@@ -140,8 +142,8 @@ class CFQServer {
     }
 }
 
-class CredentialsMismatchException: Exception()
-class InvalidTokenException: Exception()
-class UserNotFoundException: Exception()
-class EmptyUserDataException: Exception()
-class CFQServerSideException(errorCode: String): Exception(errorCode)
+class CredentialsMismatchException : Exception()
+class InvalidTokenException : Exception()
+class UserNotFoundException : Exception()
+class EmptyUserDataException : Exception()
+class CFQServerSideException(errorCode: String) : Exception(errorCode)

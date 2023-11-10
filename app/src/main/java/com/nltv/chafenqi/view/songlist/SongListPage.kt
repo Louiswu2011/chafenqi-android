@@ -4,7 +4,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,8 +35,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -51,7 +48,6 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.nltv.chafenqi.extension.toChunithmCoverPath
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
-import com.nltv.chafenqi.storage.`object`.CFQPersistentData
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import com.nltv.chafenqi.view.home.HomeNavItem
@@ -99,7 +95,7 @@ fun SongListPage(navController: NavController) {
 //
 //    }
 
-    Scaffold (
+    Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = "歌曲列表") },
@@ -124,7 +120,7 @@ fun SongListPage(navController: NavController) {
                 key = { index ->
                     model.getMusicList()[index].hashCode()
                 },
-                itemContent = {index ->
+                itemContent = { index ->
                     val entry = model.getMusicList()[index]
                     if (entry is MaimaiMusicEntry) {
                         MaimaiMusicListEntry(entry, index, navController)
@@ -164,7 +160,13 @@ fun MaimaiMusicListEntry(music: MaimaiMusicEntry, index: Int, navController: Nav
             modifier = Modifier.fillMaxHeight(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = music.title, fontWeight = FontWeight.Bold, fontSize = TextUnit(16f, TextUnitType.Sp), maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(
+                text = music.title,
+                fontWeight = FontWeight.Bold,
+                fontSize = TextUnit(16f, TextUnitType.Sp),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
             MaimaiLevelBadgeRow(musicEntry = music)
         }
     }
@@ -197,7 +199,13 @@ fun ChunithmMusicListEntry(music: ChunithmMusicEntry, index: Int, navController:
             modifier = Modifier.fillMaxHeight(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = music.title, fontWeight = FontWeight.Bold, fontSize = TextUnit(16f, TextUnitType.Sp), maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(
+                text = music.title,
+                fontWeight = FontWeight.Bold,
+                fontSize = TextUnit(16f, TextUnitType.Sp),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
             ChunithmLevelBadgeRow(musicEntry = music)
         }
     }
@@ -205,12 +213,12 @@ fun ChunithmMusicListEntry(music: ChunithmMusicEntry, index: Int, navController:
 
 @Composable
 fun MaimaiLevelBadgeRow(musicEntry: MaimaiMusicEntry) {
-    Row (
+    Row(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         musicEntry.charts.forEachIndexed { index, _ ->
-            Box (
+            Box(
                 modifier = Modifier
                     .size(width = 30.dp, height = 16.dp)
                     .clip(RoundedCornerShape(3.dp))
@@ -230,7 +238,7 @@ fun MaimaiLevelBadgeRow(musicEntry: MaimaiMusicEntry) {
 
 @Composable
 fun ChunithmLevelBadgeRow(musicEntry: ChunithmMusicEntry) {
-    Row (
+    Row(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

@@ -1,9 +1,6 @@
 package com.nltv.chafenqi.view.home
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -25,7 +22,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
@@ -55,11 +51,15 @@ fun HomePageRecentBar(navController: NavController) {
             .fillMaxWidth()
             .padding(horizontal = 10.dp)
     ) {
-        Text(text = "最近动态", fontWeight = FontWeight.Bold, fontSize = TextUnit(16f, TextUnitType.Sp))
+        Text(
+            text = "最近动态",
+            fontWeight = FontWeight.Bold,
+            fontSize = TextUnit(16f, TextUnitType.Sp)
+        )
         Text(
             text = "显示全部",
             fontSize = TextUnit(14f, TextUnitType.Sp),
-            modifier = Modifier.clickable (enabled = uiState.canNavigateToRecentList) {
+            modifier = Modifier.clickable(enabled = uiState.canNavigateToRecentList) {
                 model.navigateToRecentList(navController)
             },
             color = MaterialTheme.colorScheme.primary
@@ -76,7 +76,7 @@ fun HomePageRecentLineup(navController: NavController) {
         Crossfade(targetState = uiState.mode, label = "home recent entries crossfade") {
             when (it) {
                 0 -> {
-                    Column (
+                    Column(
                         modifier = Modifier.padding(horizontal = 10.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
@@ -91,6 +91,7 @@ fun HomePageRecentLineup(navController: NavController) {
                         }
                     }
                 }
+
                 1 -> {
                     Column(
                         modifier = Modifier.padding(horizontal = 10.dp),
@@ -153,7 +154,11 @@ fun HomePageRecentMaimaiEntry(entry: MaimaiRecentScoreEntry) {
                 Alignment.CenterVertically
             ) {
                 Text(entry.title, fontSize = 16.sp, overflow = TextOverflow.Ellipsis, maxLines = 2)
-                Text(text = "%.4f".format(entry.achievements).plus("%"), fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text(
+                    text = "%.4f".format(entry.achievements).plus("%"),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                )
             }
         }
     }

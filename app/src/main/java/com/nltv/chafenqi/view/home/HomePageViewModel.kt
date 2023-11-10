@@ -1,16 +1,11 @@
 package com.nltv.chafenqi.view.home
 
-import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import com.nltv.chafenqi.SCREEN_PADDING
 import com.nltv.chafenqi.storage.CFQUser
 import com.nltv.chafenqi.storage.datastore.user.RecentScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRatingEntry
@@ -22,7 +17,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlin.math.ceil
-import kotlin.math.floor
 
 data class HomePageUiState(
     val mode: Int = 0,
@@ -44,6 +38,8 @@ data class HomePageUiState(
     val maiPastRatingList: List<MaimaiBestScoreEntry> = listOf(),
     val maiNewRatingList: List<MaimaiBestScoreEntry> = listOf(),
     val maiCurrentSelectedRatingEntry: MaimaiBestScoreEntry = MaimaiBestScoreEntry(),
+    val maiCurrentSelectedRatingEntryType: String = "",
+    val maiCurrentSelectedRatingEntryRank: Int = -1,
 
     val chuRecentLineup: List<ChunithmRecentScoreEntry> = listOf(),
     val chuMaxRating: String = "",
@@ -60,7 +56,7 @@ data class HomePageUiState(
 
 class HomePageViewModel(
 
-): ViewModel() {
+) : ViewModel() {
     val tag = "HomePageViewModel"
     val user = CFQUser
 
@@ -74,8 +70,8 @@ class HomePageViewModel(
 
     fun update() {
         // TODO: Add recent lineup picking strategy
-        Log.i(tag, "Updating home data for game ${user.mode}...")
-        Log.i(tag, user.maimai.info.updatedAt)
+        // Log.i(tag, "Updating home data for game ${user.mode}...")
+        // Log.i(tag, user.maimai.info.updatedAt)
         _uiState.update { currentState ->
             when (user.mode) {
                 1 -> {
@@ -95,9 +91,14 @@ class HomePageViewModel(
                         maiNewIndicatorsCount = user.maimai.aux.newBest.size,
                         maiPastRatingList = user.maimai.aux.pastBest,
                         maiNewRatingList = user.maimai.aux.newBest,
-                        indicatorHeights = MutableList(this.maiIndicatorsCount) { 20.dp }
+                        indicatorHeights = MutableList(this.maiIndicatorsCount) { 20.dp },
+                        maiCurrentSelectedRatingEntry = if (user.maimai.aux.pastBest.isNotEmpty()) user.maimai.aux.pastBest.first() else MaimaiBestScoreEntry(),
+                        maiCurrentSelectedRatingEntryType = "旧曲",
+                        maiCurrentSelectedRatingEntryRank = 1,
+                        currentSelectedIndicatorIndex = 0
                     )
                 }
+
                 0 -> {
                     currentState.copy(
                         mode = 0,
@@ -113,9 +114,12 @@ class HomePageViewModel(
                         chuRecentRating = String.format("%.2f", user.chunithm.aux.recentRating),
                         chuIndicatorsCount = user.chunithm.aux.bestList.size,
                         chuBestRatingList = user.chunithm.aux.bestList,
-                        indicatorHeights = MutableList(this.chuIndicatorsCount) { 20.dp }
+                        indicatorHeights = MutableList(this.chuIndicatorsCount) { 20.dp },
+                        chuCurrentSelectedRatingEntry = if (user.chunithm.aux.bestList.isNotEmpty()) user.chunithm.aux.bestList.first() else ChunithmRatingEntry(),
+                        currentSelectedIndicatorIndex = 0
                     )
                 }
+
                 else -> {
                     currentState
                 }
@@ -124,7 +128,7 @@ class HomePageViewModel(
     }
 
     fun switchGame() {
-        Log.i(tag, "Switching game mode from ${user.mode} to ${1 - user.mode}...")
+        // Log.i(tag, "Switching game mode from ${user.mode} to ${1 - user.mode}...")
         user.mode = 1 - user.mode
         update()
     }
@@ -149,23 +153,60 @@ class HomePageViewModel(
             val x = touchPoint.x.toDp()
 
             val gridWidth = maxWidth / (indicatorCount * 2 - 1)
-            val position = ceil(x / gridWidth / 2).toInt() - 1
+            val position = minOf(maxOf(ceil(x / gridWidth / 2).toInt() - 1, 0), indicatorCount - 1)
+
+            val maiPastSize = user.maimai.aux.pastBest.size
+            val maiPastLastIndex = user.maimai.aux.pastBest.lastIndex
+            val maiPosition = if (position > maiPastLastIndex) position - maiPastSize else position
 
             if (position != previousIndex) {
-                _uiState.update { currentValue ->
-                    currentValue.copy(currentSelectedIndicatorIndex = position)
+                if (user.mode == 1) {
+                    _uiState.update { currentValue ->
+                        currentValue.copy(
+                            currentSelectedIndicatorIndex = position,
+                            maiCurrentSelectedRatingEntry = if (position > maiPastLastIndex) user.maimai.aux.newBest[maiPosition] else user.maimai.aux.pastBest[maiPosition],
+                            maiCurrentSelectedRatingEntryType = if (position > maiPastLastIndex) "新曲" else "旧曲",
+                            maiCurrentSelectedRatingEntryRank = (if (position > maiPastLastIndex) position - maiPastSize else position) + 1
+                        )
+                    }
+                } else if (user.mode == 0) {
+                    _uiState.update { currentValue ->
+                        currentValue.copy(
+                            currentSelectedIndicatorIndex = position,
+                            chuCurrentSelectedRatingEntry = user.chunithm.aux.bestList[position]
+                        )
+                    }
                 }
                 previousIndex = position
             }
         }
     }
 
-    fun getIndicatorHeight(index: Int, currentPosition: Int): Dp {
-        return when (currentPosition) {
-            index -> 40.dp
-            index - 1, index + 1 -> 25.dp
-            index - 2, index + 2 -> 22.dp
-            else -> 20.dp
+    fun resetRatingIndicators() {
+        _uiState.update { currentValue ->
+            currentValue.copy(
+                indicatorHeights = MutableList(currentValue.indicatorHeights.size) { 10.dp }
+            )
+        }
+    }
+
+    fun getIndicatorHeight(
+        index: Int,
+        currentPosition: Int,
+        density: Density,
+        isTouching: Boolean
+    ): Float {
+        return with(density) {
+            if (isTouching) {
+                when (currentPosition) {
+                    index -> 22.dp.toPx()
+                    index - 1, index + 1 -> 16.dp.toPx()
+                    index - 2, index + 2 -> 12.dp.toPx()
+                    else -> 10.dp.toPx()
+                }
+            } else {
+                10.dp.toPx()
+            }
         }
     }
 

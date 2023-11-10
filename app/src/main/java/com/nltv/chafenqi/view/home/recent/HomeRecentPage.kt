@@ -64,7 +64,10 @@ fun HomeRecentPage(navController: NavController) {
                 ),
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "返回上一级")
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "返回上一级"
+                        )
                     }
                 }
             )
@@ -131,7 +134,11 @@ fun HomeRecentPageEntry(entry: MaimaiRecentScoreEntry, index: Int, navController
                 Alignment.CenterVertically
             ) {
                 Text(entry.title, fontSize = 16.sp, overflow = TextOverflow.Ellipsis, maxLines = 1)
-                Text(text = "%.4f".format(entry.achievements).plus("%"), fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text(
+                    text = "%.4f".format(entry.achievements).plus("%"),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                )
             }
         }
     }

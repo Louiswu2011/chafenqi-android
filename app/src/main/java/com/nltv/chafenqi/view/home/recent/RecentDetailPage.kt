@@ -30,7 +30,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.nltv.chafenqi.SCREEN_PADDING
-import com.nltv.chafenqi.view.home.HomeNavItem
 
 @Composable
 fun RecentDetailPage(
@@ -44,14 +43,14 @@ fun RecentDetailPage(
     }
 
     Scaffold { paddingValues ->
-        Column (
+        Column(
             Modifier
                 .padding(paddingValues)
                 .padding(SCREEN_PADDING),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Row (
+            Row(
                 Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.Bottom,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -63,7 +62,7 @@ fun RecentDetailPage(
                         .size(128.dp)
                         .clip(RoundedCornerShape(12.dp))
                 )
-                Column (
+                Column(
                     horizontalAlignment = Alignment.Start
                 ) {
                     Text(
@@ -77,11 +76,11 @@ fun RecentDetailPage(
                     )
                 }
             }
-            Card (
+            Card(
                 Modifier.fillMaxWidth(),
                 RoundedCornerShape(6.dp),
             ) {
-                Column (
+                Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
                     modifier = Modifier
@@ -91,7 +90,7 @@ fun RecentDetailPage(
                     Text(text = model.playDateString)
                 }
             }
-            Row (
+            Row(
                 Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
@@ -115,11 +114,18 @@ fun RecentDetailPage(
                 }
             }
 
-            TextButton(onClick = { model.navigateToMusicEntry(navHostController) }, enabled = model.canNavigate) {
-                Row (
+            TextButton(
+                onClick = { model.navigateToMusicEntry(navHostController) },
+                enabled = model.canNavigate
+            ) {
+                Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(imageVector = Icons.Default.OpenInNew, contentDescription = "跳转到歌曲详情按钮图标", Modifier.size(ButtonDefaults.IconSize))
+                    Icon(
+                        imageVector = Icons.Default.OpenInNew,
+                        contentDescription = "跳转到歌曲详情按钮图标",
+                        Modifier.size(ButtonDefaults.IconSize)
+                    )
                     Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
                     Text(text = "跳转到歌曲详情")
                 }
@@ -132,21 +138,21 @@ fun RecentDetailPage(
 fun RecentDetailMaimaiScoreGrid() {
     val model: RecentDetailPageViewModel = viewModel()
 
-    Card (
+    Card(
         Modifier.fillMaxWidth()
     ) {
-        Column (
+        Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier.padding(16.dp)
         ) {
-            Row (
+            Row(
                 Modifier
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Bottom
             ) {
-                Column (
+                Column(
                     verticalArrangement = Arrangement.Bottom,
                     horizontalAlignment = Alignment.Start,
                     modifier = Modifier.height(IntrinsicSize.Max)
@@ -159,7 +165,7 @@ fun RecentDetailMaimaiScoreGrid() {
                 }
 
                 repeat(5) { noteType ->
-                    Column (
+                    Column(
                         verticalArrangement = Arrangement.Bottom,
                         horizontalAlignment = Alignment.End
                     ) {
@@ -170,7 +176,7 @@ fun RecentDetailMaimaiScoreGrid() {
                     }
                 }
             }
-            
+
             Text(text = "Combo ${model.maiCombo}")
         }
     }
@@ -180,20 +186,20 @@ fun RecentDetailMaimaiScoreGrid() {
 fun RecentDetailMaimaiSyncCard() {
     val model: RecentDetailPageViewModel = viewModel()
 
-    Card (
+    Card(
         Modifier.fillMaxWidth()
     ) {
-        Column (
+        Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier.padding(16.dp)
         ) {
-            Row (
+            Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 repeat(3) { playerIndex ->
-                    Column (
+                    Column(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {

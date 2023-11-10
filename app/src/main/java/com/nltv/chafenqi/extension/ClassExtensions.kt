@@ -38,7 +38,7 @@ fun String.sha256(): String {
 
 fun String.toMaimaiCoverString(): String {
     try {
-        return when(val number = this.toInt()) {
+        return when (val number = this.toInt()) {
             in 10000..11000 -> {
                 val rawId = number - 10000
                 rawId.toString().prepended()
@@ -67,6 +67,27 @@ fun String.toMaimaiCoverPath(): String {
     return "https://www.diving-fish.com/covers/${this.toMaimaiCoverString()}.png"
 }
 
+fun String.toMaimaiTrophyType(): String {
+    return when (this) {
+        "NORMAL" -> "普通"
+        "BRONZE" -> "铜"
+        "SILVER" -> "银"
+        "GOLD" -> "金"
+        else -> "彩虹"
+    }
+}
+
+fun String.toChunithmTrophyType(): String {
+    return when (this) {
+        "normal" -> "普通"
+        "copper" -> "铜"
+        "silver" -> "银"
+        "gold" -> "金"
+        "platinum" -> "白金"
+        else -> "彩虹"
+    }
+}
+
 fun Int.toDateString(): String {
     return Instant.ofEpochSecond(this.toLong())
         .atZone(ZoneId.systemDefault())
@@ -74,7 +95,8 @@ fun Int.toDateString(): String {
         .format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm"))
 }
 
-fun Int.toChunithmCoverPath(): String = "http://43.139.107.206:8083/api/chunithm/cover?musicId=${this}"
+fun Int.toChunithmCoverPath(): String =
+    "http://43.139.107.206:8083/api/chunithm/cover?musicId=${this}"
 
 fun Double.cutForRating(): Double {
     val df = DecimalFormat("#.##")
@@ -141,7 +163,14 @@ fun MaimaiRecentScoreEntry.associatedMusicEntry(): MaimaiMusicEntry {
     }
 }
 
-fun MaimaiBestScoreEntry.rating(): Int = maimaiRatingOf(this.associatedMusicEntry.constants[this.levelIndex], this.achievements)
+fun MaimaiBestScoreEntry.rating(): Int {
+    return try {
+        maimaiRatingOf(this.associatedMusicEntry.constants[this.levelIndex], this.achievements)
+    } catch (e: Exception) {
+        Log.e("MaimaiBestScoreEntry.Rating", "Error calculating rating for ${this.title}")
+        -1
+    }
+}
 
 fun ChunithmBestScoreEntry.associatedMusicEntry(): ChunithmMusicEntry {
     return try {
@@ -189,23 +218,35 @@ fun chunithmRatingOf(constant: Double, score: Int): Double {
     return when (score) {
         in 925000..949999 ->
             constant - 3.0 + (score - 950000) * 3 / 50000
+
         in 950000..974999 ->
             constant - 1.5 + (score - 950000) * 3 / 50000
+
         in 975000..999999 ->
             constant + (score - 975000) / 2500 * 0.1
+
         in 1000000..1004999 ->
             constant + 1.0 + (score - 1000000) / 1000 * 0.1
+
         in 1005000..1007499 ->
             constant + 1.5 + (score - 1005000) / 500 * 0.1
+
         in 1007500..1008999 ->
             constant + 2.0 + (score - 1007500) / 100 * 0.01
+
         in 1009000..1010000 ->
             constant + 2.15
+
         else ->
             0.0
     }
 }
 
-fun ChunithmBestScoreEntry.rating(): Double = chunithmRatingOf(this.associatedMusicEntry.charts.constants[this.levelIndex], this.score)
-fun ChunithmRecentScoreEntry.rating(): Double = chunithmRatingOf(this.associatedMusicEntry.charts.constants[this.levelIndex], this.score)
-fun ChunithmRatingEntry.rating(): Double = chunithmRatingOf(this.associatedMusicEntry.charts.constants[this.levelIndex], this.score)
+fun ChunithmBestScoreEntry.rating(): Double =
+    chunithmRatingOf(this.associatedMusicEntry.charts.constants[this.levelIndex], this.score)
+
+fun ChunithmRecentScoreEntry.rating(): Double =
+    chunithmRatingOf(this.associatedMusicEntry.charts.constants[this.levelIndex], this.score)
+
+fun ChunithmRatingEntry.rating(): Double =
+    chunithmRatingOf(this.associatedMusicEntry.charts.constants[this.levelIndex], this.score)

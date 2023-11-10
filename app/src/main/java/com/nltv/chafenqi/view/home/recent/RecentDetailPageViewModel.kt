@@ -13,7 +13,7 @@ import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import com.nltv.chafenqi.view.home.HomeNavItem
 
-class RecentDetailPageViewModel: ViewModel() {
+class RecentDetailPageViewModel : ViewModel() {
     private val tag = this::class.java.canonicalName
 
     var mode: Int = 0
@@ -53,7 +53,8 @@ class RecentDetailPageViewModel: ViewModel() {
         this.mode = mode
         if (mode == 0 && CFQPersistentData.Chunithm.musicList.isNotEmpty()) {
             chuEntry = CFQUser.chunithm.recent[index]
-            chuMusic = CFQPersistentData.Chunithm.musicList.firstOrNull { it.musicID.toString() == chuEntry?.idx }
+            chuMusic =
+                CFQPersistentData.Chunithm.musicList.firstOrNull { it.musicID.toString() == chuEntry?.idx }
             Log.i(tag, "Loaded chunithm music ${chuMusic?.title} from ${chuEntry?.title}")
 
             coverUrl = "http://43.139.107.206:8083/api/chunithm/cover?musicId=${chuMusic?.musicID}"
@@ -62,11 +63,13 @@ class RecentDetailPageViewModel: ViewModel() {
             playDateString = chuEntry?.timestamp?.toDateString() ?: ""
             score = chuEntry?.score.toString()
 
-            chuMusicEntryIndex = CFQPersistentData.Chunithm.musicList.indexOf(chuMusic ?: ChunithmMusicEntry())
+            chuMusicEntryIndex =
+                CFQPersistentData.Chunithm.musicList.indexOf(chuMusic ?: ChunithmMusicEntry())
             canNavigate = chuMusicEntryIndex != -1
         } else if (mode == 1 && CFQPersistentData.Maimai.musicList.isNotEmpty()) {
             maiEntry = CFQUser.maimai.recent[index]
-            maiMusic = CFQPersistentData.Maimai.musicList.firstOrNull { it.title == maiEntry?.title }
+            maiMusic =
+                CFQPersistentData.Maimai.musicList.firstOrNull { it.title == maiEntry?.title }
             Log.i(tag, "Loaded maimai music ${maiMusic?.title} from ${maiEntry?.title}")
 
             coverUrl = maiMusic?.musicID?.toMaimaiCoverPath() ?: ""
@@ -83,11 +86,16 @@ class RecentDetailPageViewModel: ViewModel() {
             maiJudges = listOf(maiTap, maiHold, maiSlide, maiTouch, maiBreak)
 
             maiCombo = maiEntry?.maxCombo ?: ""
-            maiMatchingPlayers = listOf(maiEntry?.matching1 ?: "-", maiEntry?.matching2 ?: "-", maiEntry?.matching3 ?: "-")
+            maiMatchingPlayers = listOf(
+                maiEntry?.matching1 ?: "-",
+                maiEntry?.matching2 ?: "-",
+                maiEntry?.matching3 ?: "-"
+            )
             maiSync = maiEntry?.maxSync ?: ""
             maiHasSync = maiSync != "―"
 
-            maiMusicEntryIndex = CFQPersistentData.Maimai.musicList.indexOf(maiMusic ?: MaimaiMusicEntry())
+            maiMusicEntryIndex =
+                CFQPersistentData.Maimai.musicList.indexOf(maiMusic ?: MaimaiMusicEntry())
             canNavigate = maiMusicEntryIndex != -1
         }
     }

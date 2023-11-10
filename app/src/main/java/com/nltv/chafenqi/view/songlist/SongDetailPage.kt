@@ -4,9 +4,7 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -61,7 +59,7 @@ fun SongDetailPage(
     val scrollState = rememberScrollState()
 
     Scaffold { paddingValues ->
-        Column (
+        Column(
             Modifier
                 .padding(paddingValues)
                 .padding(SCREEN_PADDING)
@@ -97,32 +95,36 @@ fun SongDetailPage(
                     )
                 }
             }
-            Row (
+            Row(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
             ) {
-                Row (
+                Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    model.constants.forEach { 
+                    model.constants.forEach {
                         Text(text = it, fontSize = 16.sp)
                     }
                 }
                 Text(text = "BPM: ${model.bpm}", fontSize = 16.sp)
             }
-            Row (
+            Row(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
             ) {
                 Text(text = model.version)
             }
-            TextButton (
+            TextButton(
                 onClick = {
                     val gameName = if (mode == 0) "中二节奏" else "maimai"
                     if (!model.checkBilibili(context)) {
-                        Toast.makeText(context, "无法打开B站客户端，请检查权限或是否已安装B站", Toast.LENGTH_SHORT)
+                        Toast.makeText(
+                            context,
+                            "无法打开B站客户端，请检查权限或是否已安装B站",
+                            Toast.LENGTH_SHORT
+                        )
                             .show()
                         return@TextButton
                     }
@@ -135,25 +137,37 @@ fun SongDetailPage(
                                 .toString()
                         )
                     } catch (e: Exception) {
-                        Toast.makeText(context, "无法打开B站客户端，请检查权限或是否已安装B站", Toast.LENGTH_SHORT)
+                        Toast.makeText(
+                            context,
+                            "无法打开B站客户端，请检查权限或是否已安装B站",
+                            Toast.LENGTH_SHORT
+                        )
                             .show()
                     }
                 },
                 // modifier = Modifier.fillMaxWidth()
             ) {
-                Row (
+                Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(imageVector = Icons.Default.OpenInNew, contentDescription = "搜索谱面确认", modifier = Modifier.size(ButtonDefaults.IconSize))
+                    Icon(
+                        imageVector = Icons.Default.OpenInNew,
+                        contentDescription = "搜索谱面确认",
+                        modifier = Modifier.size(ButtonDefaults.IconSize)
+                    )
                     Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
                     Text(text = "在Bilibili搜索谱面确认")
                 }
             }
-            Row (
+            Row(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Start
             ) {
-                Text(text = "游玩记录", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+                Text(
+                    text = "游玩记录",
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
             if (mode == 1) {
                 model.maiDiffInfos.onEach {
@@ -177,20 +191,20 @@ fun MaimaiDifficultyCard(info: MaimaiDifficultyInfo) {
         targetValue = if (isExpanded) 180f else 0f, label = "Icon expansion"
     )
 
-    Card (
+    Card(
         Modifier
             .fillMaxWidth()
             .clickable { isExpanded = !isExpanded },
         colors = CardDefaults.cardColors(containerColor = info.color),
         shape = RoundedCornerShape(10.dp),
     ) {
-        Column (
+        Column(
             Modifier
                 .padding(10.dp)
                 .padding(vertical = 2.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Row (
+            Row(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
@@ -208,7 +222,7 @@ fun MaimaiDifficultyCard(info: MaimaiDifficultyInfo) {
                 }
             }
             AnimatedVisibility(visible = isExpanded) {
-                Row (
+                Row(
                     Modifier
                         .fillMaxWidth()
                         .animateContentSize(),
@@ -231,20 +245,20 @@ fun ChunithmDifficultyCard(info: ChunithmDifficultyInfo) {
         targetValue = if (isExpanded) 180f else 0f, label = "Icon expansion"
     )
 
-    Card (
+    Card(
         Modifier
             .fillMaxWidth()
             .clickable { isExpanded = !isExpanded },
         colors = CardDefaults.cardColors(containerColor = info.color),
         shape = RoundedCornerShape(10.dp),
     ) {
-        Column (
+        Column(
             Modifier
                 .padding(10.dp)
                 .padding(vertical = 2.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Row (
+            Row(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
@@ -262,7 +276,7 @@ fun ChunithmDifficultyCard(info: ChunithmDifficultyInfo) {
                 }
             }
             AnimatedVisibility(visible = isExpanded) {
-                Row (
+                Row(
                     Modifier
                         .fillMaxWidth()
                         .animateContentSize(),

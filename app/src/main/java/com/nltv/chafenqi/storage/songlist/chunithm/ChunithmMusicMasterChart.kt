@@ -8,4 +8,4 @@ data class ChunithmMusicMasterChart(
     override val constant: Double = 0.0,
     override val level: String = "",
     override val charter: String? = ""
-): ChunithmMusicChart
+) : ChunithmMusicChart

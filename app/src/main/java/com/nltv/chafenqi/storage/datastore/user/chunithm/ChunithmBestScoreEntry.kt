@@ -1,7 +1,6 @@
 package com.nltv.chafenqi.storage.datastore.user.chunithm
 
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
-import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
