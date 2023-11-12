@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.archivesName
 import org.jetbrains.kotlin.konan.properties.Properties
 import java.io.FileInputStream
 import java.io.FileNotFoundException
@@ -70,6 +71,10 @@ android {
         }
     } else {
         throw FileNotFoundException("Cannot access version.properties!")
+    }
+
+    if ("assembleRelease" in runningTasks) {
+
     }
 
     buildFeatures {

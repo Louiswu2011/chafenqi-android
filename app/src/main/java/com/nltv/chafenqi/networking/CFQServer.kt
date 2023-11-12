@@ -17,6 +17,7 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 class CFQServer {
@@ -177,6 +178,46 @@ class CFQServer {
             path = "api/chunithm/$contentTag",
             token = authToken
         ).bodyAsText()
+
+        suspend fun fishFetchToken(authToken: String) = fetchFromServer(
+            "GET",
+            "fish/fetch_token",
+            token = authToken
+        ).bodyAsText()
+
+
+        suspend fun fishUploadToken(authToken: String, fishToken: String): Boolean {
+            val response = fetchFromServer(
+                "POST",
+                "fish/upload_token",
+                payload = hashMapOf(
+                    "token" to fishToken
+                ),
+                token = authToken
+            )
+            return response.status.value == 200
+        }
+
+        suspend fun statUploadTime(mode: Int): String {
+            val response = fetchFromServer(
+                "POST",
+                "api/stats/upload_time",
+                payload = hashMapOf(
+                    "type" to mode
+                )
+            )
+            return response.bodyAsText()
+        }
+
+        suspend fun statCheckUpload(authToken: String): List<Int> {
+            val response = fetchFromServer(
+                "GET",
+                "api/stats/upload_status",
+                token = authToken
+            )
+            val dict = Json.decodeFromString<Map<String, Int>>(response.bodyAsText())
+            return listOf(dict["chu"] ?: -1, dict["mai"] ?: -1)
+        }
 
 
         private fun handleErrorCode(errorCode: String) {
