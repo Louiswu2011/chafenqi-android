@@ -174,7 +174,7 @@ fun PreferenceRootScope.SettingsAboutGroup(navController: NavController) {
     PreferenceSectionHeader(title = { Text(text = "关于") })
     PreferenceInfo(
         title = { Text(text = "版本") },
-        subtitle = { Text(text = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})") },
+        subtitle = { Text(text = BuildConfig.VERSION_NAME) },
         icon = { Icon(imageVector = Icons.Default.Info, contentDescription = "版本") }
     )
     PreferenceButton(

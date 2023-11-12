@@ -26,6 +26,7 @@ object CFQUser {
     private const val tag = "CFQUser"
 
     var token = ""
+    var fishToken = ""
 
     var username = ""
     var isPremium = false
@@ -184,6 +185,11 @@ object CFQUser {
         this.username = username
 
         this.isPremium = CFQServer.apiIsPremium(username)
+        this.fishToken = try {
+            CFQServer.fishFetchToken(authToken)
+        } catch (e: Exception) {
+            ""
+        }
 
         Log.i(tag, "User is ${if (isPremium) "" else "not"} premium")
         // registerOneSignal(username)
