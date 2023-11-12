@@ -1,6 +1,5 @@
 package com.nltv.chafenqi.view.settings
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -10,7 +9,6 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Phonelink
 import androidx.compose.material.icons.filled.ScubaDiving
 import androidx.compose.material.icons.filled.Token
 import androidx.compose.material.icons.filled.WorkspacePremium
@@ -38,16 +36,14 @@ import com.michaelflisar.composepreferences.core.PreferenceDivider
 import com.michaelflisar.composepreferences.core.PreferenceInfo
 import com.michaelflisar.composepreferences.core.PreferenceScreen
 import com.michaelflisar.composepreferences.core.PreferenceSectionHeader
-import com.michaelflisar.composepreferences.core.PreferenceSubScreen
 import com.michaelflisar.composepreferences.core.classes.PreferenceSettingsDefaults
 import com.michaelflisar.composepreferences.core.hierarchy.PreferenceRootScope
-import com.michaelflisar.composepreferences.core.hierarchy.PreferenceScope
 import com.michaelflisar.composepreferences.screen.button.PreferenceButton
+import com.nltv.chafenqi.BuildConfig
 import com.nltv.chafenqi.LocalUserState
 import com.nltv.chafenqi.storage.`object`.CFQPersistentData
 import com.nltv.chafenqi.view.home.HomeNavItem
 import kotlinx.coroutines.launch
-import com.nltv.chafenqi.BuildConfig
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

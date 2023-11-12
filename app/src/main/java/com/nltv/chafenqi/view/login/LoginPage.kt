@@ -1,6 +1,5 @@
 package com.nltv.chafenqi.view.login
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.BorderStroke
@@ -51,7 +50,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.firebase.appdistribution.BuildConfig
 import com.nltv.chafenqi.LocalUserState
 import com.nltv.chafenqi.R
 import com.nltv.chafenqi.UIState

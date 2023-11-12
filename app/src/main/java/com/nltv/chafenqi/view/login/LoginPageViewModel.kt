@@ -1,7 +1,6 @@
 package com.nltv.chafenqi.view.login
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,18 +9,12 @@ import androidx.lifecycle.viewModelScope
 import com.nltv.chafenqi.CFQUserStateViewModel
 import com.nltv.chafenqi.UIState
 import com.nltv.chafenqi.networking.CFQServer
-import com.nltv.chafenqi.networking.CFQServerSideException
-import com.nltv.chafenqi.networking.CredentialsMismatchException
-import com.nltv.chafenqi.networking.UserNotFoundException
 import com.nltv.chafenqi.storage.CFQUser
 import com.nltv.chafenqi.storage.`object`.CFQPersistentData
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.Json
 
 class LoginPageViewModel(
 

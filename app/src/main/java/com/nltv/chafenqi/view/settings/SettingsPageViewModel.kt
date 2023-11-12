@@ -6,8 +6,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nltv.chafenqi.networking.CFQServer
-import com.nltv.chafenqi.networking.CredentialsMismatchException
-import com.nltv.chafenqi.networking.FishServer
 import com.nltv.chafenqi.storage.CFQUser
 import kotlinx.coroutines.launch
 

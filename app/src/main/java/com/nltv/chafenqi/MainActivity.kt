@@ -21,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -55,8 +54,6 @@ import com.nltv.chafenqi.view.settings.SettingsPage
 import com.nltv.chafenqi.view.songlist.SongDetailPage
 import com.nltv.chafenqi.view.songlist.SongListPage
 import com.nltv.chafenqi.view.updater.UpdaterHomePage
-import com.nltv.chafenqi.view.updater.UpdaterQRCodePage
-import com.onesignal.core.internal.preferences.PreferenceStores
 
 enum class UIState {
     Pending, Loading, Finished

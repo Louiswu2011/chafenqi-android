@@ -17,7 +17,6 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 class CFQServer {
