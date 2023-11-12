@@ -137,5 +137,7 @@ object CFQPersistentData {
     suspend fun clearData(context: Context) {
         val store = context.cacheStore
         store.edit { it.clear() }
+        Maimai.musicList = listOf()
+        Chunithm.musicList = listOf()
     }
 }

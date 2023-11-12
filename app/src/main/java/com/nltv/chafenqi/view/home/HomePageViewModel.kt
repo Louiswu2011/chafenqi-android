@@ -1,21 +1,26 @@
 package com.nltv.chafenqi.view.home
 
+import android.util.Log
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.nltv.chafenqi.CFQUserStateViewModel
 import com.nltv.chafenqi.storage.CFQUser
 import com.nltv.chafenqi.storage.datastore.user.RecentScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRatingEntry
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiBestScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlin.math.ceil
 
 data class HomePageUiState(
@@ -26,6 +31,8 @@ data class HomePageUiState(
     val playCount: String = "",
     val canNavigateToRecentList: Boolean = true,
     val canNavigateToRatingList: Boolean = true,
+    val canOpenMaimaiInfo: Boolean = false,
+    val canOpenChunithmInfo: Boolean = false,
 
     val nameplateUpdateTime: String = "",
 
@@ -95,7 +102,8 @@ class HomePageViewModel(
                         maiCurrentSelectedRatingEntry = if (user.maimai.aux.pastBest.isNotEmpty()) user.maimai.aux.pastBest.first() else MaimaiBestScoreEntry(),
                         maiCurrentSelectedRatingEntryType = "旧曲",
                         maiCurrentSelectedRatingEntryRank = 1,
-                        currentSelectedIndicatorIndex = 0
+                        currentSelectedIndicatorIndex = 0,
+                        canOpenMaimaiInfo = user.isPremium && !user.maimai.isExtraEmpty
                     )
                 }
 
@@ -116,7 +124,8 @@ class HomePageViewModel(
                         chuBestRatingList = user.chunithm.aux.bestList,
                         indicatorHeights = MutableList(this.chuIndicatorsCount) { 20.dp },
                         chuCurrentSelectedRatingEntry = if (user.chunithm.aux.bestList.isNotEmpty()) user.chunithm.aux.bestList.first() else ChunithmRatingEntry(),
-                        currentSelectedIndicatorIndex = 0
+                        currentSelectedIndicatorIndex = 0,
+                        canOpenChunithmInfo = user.isPremium && !user.chunithm.isExtraEmpty
                     )
                 }
 
@@ -210,7 +219,17 @@ class HomePageViewModel(
         }
     }
 
-    companion object {
-        private const val TIMEOUT_MILLS = 5_000L
+    fun refreshUserData(userState: CFQUserStateViewModel) {
+        userState.isRefreshing = true
+        viewModelScope.launch {
+            async {
+                userState.loadMaimaiData()
+                userState.loadChunithmData()
+            }.invokeOnCompletion {
+                userState.isRefreshing = false
+                update()
+                Log.i("Refresh", "Refresh completed.")
+            }
+        }
     }
 }

@@ -23,6 +23,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -67,8 +70,17 @@ fun HomePageNameplate(navController: NavController) {
 fun HomePageMaimaiNameplate(navController: NavController) {
     val model: HomePageViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val uiState by model.uiState.collectAsState()
+    var showEmptyDataAlert by remember {
+        mutableStateOf(false)
+    }
 
     val brush = Brush.verticalGradient(listOf(nameplateMaimaiTopColor, nameplateMaimaiBottomColor))
+
+    if (showEmptyDataAlert) {
+        EmptyDataAlert(onDismissRequest = { showEmptyDataAlert = false }) {
+            showEmptyDataAlert = false
+        }
+    }
 
     Card(
         modifier = Modifier
@@ -92,23 +104,31 @@ fun HomePageMaimaiNameplate(navController: NavController) {
                     Modifier.size(128.dp)
                 )
             }
-            if (model.user.isPremium) {
-                Row(
-                    modifier = Modifier
-                        .padding(end = 16.dp, top = 5.dp)
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    TextButton(onClick = { navController.navigate(HomeNavItem.Home.route + "/info") }) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = "user info Icon",
-                            Modifier.size(ButtonDefaults.IconSize)
-                        )
-                        Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-                        Text(text = "玩家信息")
+            Row(
+                modifier = Modifier
+                    .padding(end = 16.dp, top = 5.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End
+            ) {
+                TextButton(onClick = {
+                    if (!model.user.isPremium) {
+                        navController.navigate(HomeNavItem.Home.route + "/settings/redeem")
+                        return@TextButton
                     }
+                    if (uiState.canOpenMaimaiInfo) {
+                        navController.navigate(HomeNavItem.Home.route + "/info")
+                    } else {
+                        showEmptyDataAlert = true
+                    }
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = "user info Icon",
+                        Modifier.size(ButtonDefaults.IconSize)
+                    )
+                    Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+                    Text(text = "玩家信息")
                 }
             }
             Column(
@@ -140,9 +160,18 @@ fun HomePageMaimaiNameplate(navController: NavController) {
 fun HomePageChunithmNameplate(navController: NavController) {
     val model: HomePageViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val uiState by model.uiState.collectAsState()
+    var showEmptyDataAlert by remember {
+        mutableStateOf(false)
+    }
 
     val brush =
         Brush.verticalGradient(listOf(nameplateChunithmTopColor, nameplateChunithmBottomColor))
+
+    if (showEmptyDataAlert) {
+        EmptyDataAlert(onDismissRequest = { showEmptyDataAlert = false }) {
+            showEmptyDataAlert = false
+        }
+    }
 
     Card(
         modifier = Modifier
@@ -166,23 +195,32 @@ fun HomePageChunithmNameplate(navController: NavController) {
                     Modifier.size(128.dp)
                 )
             }
-            if (model.user.isPremium) {
-                Row(
-                    modifier = Modifier
-                        .padding(end = 16.dp, top = 5.dp)
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    TextButton(onClick = { navController.navigate(HomeNavItem.Home.route + "/info") }) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = "user info Icon",
-                            Modifier.size(ButtonDefaults.IconSize)
-                        )
-                        Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-                        Text(text = "玩家信息")
+            Row(
+                modifier = Modifier
+                    .padding(end = 16.dp, top = 5.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End
+            ) {
+                TextButton(onClick = {
+                    if (!model.user.isPremium) {
+                        navController.navigate(HomeNavItem.Home.route + "/settings/redeem")
+                        return@TextButton
                     }
+
+                    if (uiState.canOpenChunithmInfo) {
+                        navController.navigate(HomeNavItem.Home.route + "/info")
+                    } else {
+                        showEmptyDataAlert = true
+                    }
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = "user info Icon",
+                        Modifier.size(ButtonDefaults.IconSize)
+                    )
+                    Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+                    Text(text = "玩家信息")
                 }
             }
             Column(

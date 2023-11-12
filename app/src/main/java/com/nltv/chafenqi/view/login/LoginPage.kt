@@ -1,5 +1,6 @@
 package com.nltv.chafenqi.view.login
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -49,11 +50,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.firebase.appdistribution.BuildConfig
 import com.nltv.chafenqi.LocalUserState
 import com.nltv.chafenqi.R
 import com.nltv.chafenqi.UIState
 import com.nltv.chafenqi.extension.sha256
+import com.nltv.chafenqi.networking.CFQServer
+import com.nltv.chafenqi.networking.UsernameOccupiedException
 import com.nltv.chafenqi.view.AppViewModelProvider
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginPage() {
@@ -148,11 +153,14 @@ fun LoginField(model: LoginPageViewModel) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
+    var registerMode by remember {
+        mutableStateOf(false)
+    }
     var username by remember {
-        mutableStateOf("testaccount")
+        mutableStateOf(context.getString(R.string.username))
     }
     var password by remember {
-        mutableStateOf("testtest")
+        mutableStateOf(context.getString(R.string.password))
     }
     var passwordVisible by rememberSaveable {
         mutableStateOf(false)
@@ -201,28 +209,47 @@ fun LoginField(model: LoginPageViewModel) {
         )
         Button(
             onClick = {
-                if (loginUiState.loginState == UIState.Pending) {
-                    model.login(username, password.sha256(), context, userState)
+                if (registerMode) {
+                    if (username.isEmpty() || password.isEmpty()) {
+                        Toast.makeText(context, "请输入用户名和密码", Toast.LENGTH_LONG).show()
+                        return@Button
+                    }
+                    scope.launch {
+                        try {
+                            if (CFQServer.authRegister(username, password.sha256())) {
+                                Toast.makeText(context, "注册成功", Toast.LENGTH_SHORT).show()
+                                registerMode = false
+                            }
+                        } catch (e: UsernameOccupiedException) {
+                            Toast.makeText(context, "该用户名已被占用", Toast.LENGTH_LONG).show()
+                        } catch (e: Exception) {
+                            Toast.makeText(context, "出错了：${e.localizedMessage}", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                } else {
+                    if (loginUiState.loginState == UIState.Pending) {
+                        model.login(username, password.sha256(), context, userState)
+                    }
                 }
             },
             modifier = Modifier.padding(top = 30.dp)
         ) {
-            Text(text = "登录")
+            Text(text = if (registerMode) "注册" else "登录")
         }
         TextButton(
             onClick = {
-
+                registerMode = !registerMode
             }
         ) {
-            Text(text = "注册新账号", color = MaterialTheme.colorScheme.primary)
+            Text(text = if (!registerMode) "注册新账号" else "登录已有账号", color = MaterialTheme.colorScheme.primary)
         }
-        TextButton(
+        /*TextButton(
             onClick = {
                 model.clearPersistentStorage(context)
             }
         ) {
             Text(text = "清除缓存", color = MaterialTheme.colorScheme.primary)
-        }
+        }*/
     }
 }
 

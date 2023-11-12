@@ -45,10 +45,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.nltv.chafenqi.SCREEN_PADDING
+import com.nltv.chafenqi.storage.CFQUser
 import com.nltv.chafenqi.view.home.HomeNavItem
 
 @Composable
 fun InfoChunithmPage(navController: NavController) {
+    val isEmpty = CFQUser.chunithm.isExtraEmpty
     val scrollState = rememberScrollState()
 
     Column(

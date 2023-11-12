@@ -17,6 +17,7 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
 
 class CFQServer {
     companion object {
@@ -96,6 +97,31 @@ class CFQServer {
             return header ?: ""
         }
 
+        suspend fun authCheckUsername(username: String): Boolean {
+            Log.i("CFQServer", "Checking username $username")
+            val usernameCheckResponse = fetchFromServer(
+                "POST",
+                "api/checkUsername",
+                payload = hashMapOf(
+                    "username" to username
+                )
+            )
+            return usernameCheckResponse.status.value == 200
+        }
+
+        suspend fun authRegister(username: String, password: String): Boolean {
+            if (!authCheckUsername(username)) return false
+            val registerResponse = fetchFromServer(
+                "POST",
+                "api/register",
+                payload = hashMapOf(
+                    "username" to username,
+                    "password" to password
+                )
+            )
+            return registerResponse.status.value == 200
+        }
+
         suspend fun apiIsPremium(username: String): Boolean {
             Log.i("CFQServer", "Checking if user is premium...")
             val response = fetchFromServer(
@@ -109,12 +135,35 @@ class CFQServer {
             return response.status.value == 200
         }
 
+        suspend fun apiRedeem(username: String, redeemCode: String): Boolean {
+            Log.i("CFQServer", "Redeeming code $redeemCode")
+            val response = fetchFromServer(
+                "POST",
+                "api/redeemCode",
+                payload = hashMapOf(
+                    "username" to username,
+                    "code" to redeemCode
+                )
+            )
+            return response.status.value == 200
+        }
+
         suspend fun apiChuithmMusicData(): String {
             val response = fetchFromServer(
                 "GET",
                 path = "api/chunithm/music_data"
             )
             return response.bodyAsText()
+        }
+
+        suspend fun apiSponsorList(): List<String> = try {
+            val responseText = fetchFromServer(
+                "GET",
+                "api/stats/sponsor"
+            ).bodyAsText()
+            Json.decodeFromString(responseText)
+        } catch (e: Exception) {
+            listOf()
         }
 
         suspend fun apiMaimai(contentTag: String, authToken: String): String = fetchFromServer(
@@ -136,6 +185,7 @@ class CFQServer {
                 "INVALID" -> throw InvalidTokenException()
                 "NOT FOUND" -> throw UserNotFoundException()
                 "EMPTY" -> throw EmptyUserDataException()
+                "NOT UNIQUE" -> throw UsernameOccupiedException()
                 else -> throw CFQServerSideException(errorCode = errorCode)
             }
         }
@@ -146,4 +196,5 @@ class CredentialsMismatchException : Exception()
 class InvalidTokenException : Exception()
 class UserNotFoundException : Exception()
 class EmptyUserDataException : Exception()
+class UsernameOccupiedException: Exception()
 class CFQServerSideException(errorCode: String) : Exception(errorCode)

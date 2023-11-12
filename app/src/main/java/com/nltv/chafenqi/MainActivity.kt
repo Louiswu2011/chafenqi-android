@@ -1,5 +1,6 @@
 package com.nltv.chafenqi
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -19,6 +20,10 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -43,16 +48,22 @@ import com.nltv.chafenqi.view.info.maimai.InfoMaimaiFramePage
 import com.nltv.chafenqi.view.info.maimai.InfoMaimaiNameplatePage
 import com.nltv.chafenqi.view.info.maimai.InfoMaimaiTrophyPage
 import com.nltv.chafenqi.view.login.LoginPage
+import com.nltv.chafenqi.view.premium.PremiumRedeemPage
+import com.nltv.chafenqi.view.settings.SettingsAcknowledgePage
+import com.nltv.chafenqi.view.settings.SettingsBindFishPage
 import com.nltv.chafenqi.view.settings.SettingsPage
 import com.nltv.chafenqi.view.songlist.SongDetailPage
 import com.nltv.chafenqi.view.songlist.SongListPage
 import com.nltv.chafenqi.view.updater.UpdaterHomePage
+import com.nltv.chafenqi.view.updater.UpdaterQRCodePage
+import com.onesignal.core.internal.preferences.PreferenceStores
 
 enum class UIState {
     Pending, Loading, Finished
 }
 
 val SCREEN_PADDING = 10.dp
+val Context.prefStore: DataStore<Preferences> by preferencesDataStore("settings")
 
 class MainActivity : ComponentActivity() {
     private val userState by viewModels<CFQUserStateViewModel>()
@@ -144,6 +155,9 @@ fun LogonPage(navController: NavHostController) {
             composable(HomeNavItem.Home.route + "/rating") { HomeRatingPage(navController) }
 
             composable(HomeNavItem.Home.route + "/settings") { SettingsPage(navController) }
+            composable(HomeNavItem.Home.route + "/settings/redeem") { PremiumRedeemPage(navController) }
+            composable(HomeNavItem.Home.route + "/settings/bind/fish") { SettingsBindFishPage(navController) }
+            composable(HomeNavItem.Home.route + "/settings/acknowledge") { SettingsAcknowledgePage(navController) }
 
             composable(HomeNavItem.Home.route + "/info") { InfoPage(navController) }
             composable(HomeNavItem.Home.route + "/info/maimai/trophy") {
@@ -198,9 +212,9 @@ fun LogonPage(navController: NavHostController) {
                 )
             }
 
-            composable(HomeNavItem.Uploader.route) { UpdaterHomePage() }
+            composable(HomeNavItem.Uploader.route) { UpdaterHomePage(navController) }
 
-            composable(HomeNavItem.SongList.route) { SongListPage(navController = navController) }
+            composable(HomeNavItem.SongList.route) { SongListPage(navController) }
             composable(HomeNavItem.SongList.route + "/maimai/{index}") { navBackStackEntry ->
                 SongDetailPage(
                     mode = 1,

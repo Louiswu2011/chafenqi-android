@@ -45,6 +45,9 @@ object CFQUser {
         var delta = listOf<MaimaiDeltaEntry>()
         var extra = MaimaiExtraInfo()
 
+        var isBasicEmpty = true
+        var isExtraEmpty = true
+
         val aux = Aux
 
         object Aux {
@@ -100,6 +103,8 @@ object CFQUser {
             recent = listOf()
             delta = listOf()
             extra = MaimaiExtraInfo()
+            isBasicEmpty = true
+            isExtraEmpty = true
             aux.reset()
         }
     }
@@ -111,6 +116,9 @@ object CFQUser {
         var delta = listOf<ChunithmDeltaEntry>()
         var rating = listOf<ChunithmRatingEntry>()
         var extra = ChunithmExtraEntry()
+
+        var isBasicEmpty = true
+        var isExtraEmpty = true
 
         var aux = Aux
 
@@ -165,6 +173,8 @@ object CFQUser {
             delta = listOf()
             rating = listOf()
             extra = ChunithmExtraEntry()
+            isBasicEmpty = true
+            isExtraEmpty = true
             aux.reset()
         }
     }
