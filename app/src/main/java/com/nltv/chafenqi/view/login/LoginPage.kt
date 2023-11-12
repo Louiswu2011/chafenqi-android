@@ -1,5 +1,6 @@
 package com.nltv.chafenqi.view.login
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.BorderStroke
@@ -56,6 +57,9 @@ import com.nltv.chafenqi.R
 import com.nltv.chafenqi.UIState
 import com.nltv.chafenqi.extension.sha256
 import com.nltv.chafenqi.networking.CFQServer
+import com.nltv.chafenqi.networking.CFQServerSideException
+import com.nltv.chafenqi.networking.CredentialsMismatchException
+import com.nltv.chafenqi.networking.UserNotFoundException
 import com.nltv.chafenqi.networking.UsernameOccupiedException
 import com.nltv.chafenqi.view.AppViewModelProvider
 import kotlinx.coroutines.launch
@@ -228,7 +232,22 @@ fun LoginField(model: LoginPageViewModel) {
                     }
                 } else {
                     if (loginUiState.loginState == UIState.Pending) {
-                        model.login(username, password.sha256(), context, userState)
+                        try {
+                            model.login(username, password.sha256(), context, userState)
+                        } catch (e: Exception) {
+                            when (e) {
+                                is CredentialsMismatchException,
+                                is UserNotFoundException -> {
+                                    Toast.makeText(context, "用户名或密码错误", Toast.LENGTH_LONG).show()
+                                }
+                                is CFQServerSideException -> {
+                                    Toast.makeText(context, "服务器出错，请稍后再试", Toast.LENGTH_LONG).show()
+                                }
+                                else -> {
+                                    Toast.makeText(context, "未知错误: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+                                }
+                            }
+                        }
                     }
                 }
             },

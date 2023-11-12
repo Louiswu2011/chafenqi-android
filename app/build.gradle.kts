@@ -1,3 +1,7 @@
+import org.jetbrains.kotlin.konan.properties.Properties
+import java.io.FileInputStream
+import java.io.FileNotFoundException
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -15,27 +19,64 @@ android {
     namespace = "com.nltv.chafenqi"
     compileSdk = 34
 
+    val versionFile = file("version.properties")
+    var value = 0
+    val versionProperties = Properties()
+    if (!versionFile.exists()) {
+        versionProperties["VERSION_PATCH"] = 0
+        versionProperties["VERSION_NUMBER"] = 0
+        versionProperties["VERSION_BUILD"] = 0
+        versionProperties.store(versionFile.writer(), null)
+    }
+
+    val runningTasks = gradle.startParameter.taskNames
+    if ("assembleRelease" in runningTasks) {
+        value = 1
+    }
+
+    var mVersionName = ""
+    var mFileName = ""
+
+    val appName = "chafenqi"
+    val majorVersion = "1"
+    val minorVersion = "0"
+
+    if (versionFile.canRead()) {
+        versionProperties.load(FileInputStream(versionFile))
+        versionProperties["VERSION_PATCH"] = (versionProperties.getProperty("VERSION_PATCH").toInt() + value).toString()
+        versionProperties["VERSION_NUMBER"] = (versionProperties.getProperty("VERSION_NUMBER").toInt() + value).toString()
+        versionProperties["VERSION_BUILD"] = (versionProperties.getProperty("VERSION_BUILD").toInt() + 1).toString()
+
+        versionProperties.store(versionFile.writer(), null)
+        mVersionName = "v$majorVersion.$minorVersion.${versionProperties.getProperty("VERSION_PATCH")}"
+        mFileName = "$appName-$mVersionName.apk"
+
+        defaultConfig {
+            applicationId = "com.nltv.chafenqi"
+            minSdk = 28
+            targetSdk = 33
+            versionCode = versionProperties.getProperty("VERSION_NUMBER").toInt()
+            versionName = "$mVersionName (${versionProperties.getProperty("VERSION_BUILD")})"
+
+            testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+            vectorDrawables {
+                useSupportLibrary = true
+            }
+            externalNativeBuild {
+                cmake {
+                    cppFlags += ""
+                }
+            }
+        }
+    } else {
+        throw FileNotFoundException("Cannot access version.properties!")
+    }
+
     buildFeatures {
         buildConfig = true
     }
 
-    defaultConfig {
-        applicationId = "com.nltv.chafenqi"
-        minSdk = 28
-        targetSdk = 33
-        versionCode = 1
-        versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
-        externalNativeBuild {
-            cmake {
-                cppFlags += ""
-            }
-        }
-    }
 
     buildTypes {
         debug {

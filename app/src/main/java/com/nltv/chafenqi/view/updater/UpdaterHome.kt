@@ -131,7 +131,7 @@ fun UpdaterClipboardActions(navController: NavController) {
     }
 
     SettingsSwitch(
-        title = { Text(text = "转发到水鱼网") },
+        title = { Text(text = "同步到水鱼网") },
         subtitle = { Text(text = "需要在设置中绑定账号") },
         onCheckedChange = {
             shouldForward = it

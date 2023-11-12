@@ -72,18 +72,9 @@ class LoginPageViewModel(
                 } else {
                     updateLoginState(UIState.Pending)
                 }
-            } catch (e: CredentialsMismatchException) {
-                Log.e("Login", "Login failed: Credentials mismatched.")
-                updateLoginState(UIState.Pending)
-            } catch (e: CFQServerSideException) {
-                Log.e("Login", "Server side error: ${e.message}")
-                updateLoginState(UIState.Pending)
-            } catch (e: UserNotFoundException) {
-                Log.e("Login", "Login failed: User not found.")
-                updateLoginState(UIState.Pending)
             } catch (e: Exception) {
-                Log.e("Login", "Unknown error: ${e.printStackTrace()}")
                 updateLoginState(UIState.Pending)
+                throw e
             }
         }
     }
