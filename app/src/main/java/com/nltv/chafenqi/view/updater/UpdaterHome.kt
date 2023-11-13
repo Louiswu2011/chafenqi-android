@@ -44,6 +44,7 @@ import com.michaelflisar.composepreferences.core.classes.PreferenceSettingsDefau
 import com.michaelflisar.composepreferences.core.hierarchy.PreferenceRootScope
 import com.michaelflisar.composepreferences.screen.bool.PreferenceBool
 import com.michaelflisar.composepreferences.screen.button.PreferenceButton
+import com.nltv.chafenqi.view.home.HomeNavItem
 import dev.burnoo.compose.rememberpreference.rememberBooleanPreference
 import kotlinx.coroutines.delay
 
@@ -51,7 +52,6 @@ import kotlinx.coroutines.delay
 @Composable
 fun UpdaterHomePage(navController: NavController) {
     val model: UpdaterViewModel = viewModel()
-    val scrollState = rememberScrollState()
 
     LaunchedEffect(Unit) {
         while (true) {
@@ -72,7 +72,7 @@ fun UpdaterHomePage(navController: NavController) {
                     titleContentColor = MaterialTheme.colorScheme.primary
                 ),
                 actions = {
-                    IconButton(onClick = {  }) {
+                    IconButton(onClick = { navController.navigate(HomeNavItem.Uploader.route + "/help") }) {
                         Icon(imageVector = Icons.Default.Help, contentDescription = "传分帮助")
                     }
                 }

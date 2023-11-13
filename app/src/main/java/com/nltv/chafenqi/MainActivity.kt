@@ -5,7 +5,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -53,6 +61,7 @@ import com.nltv.chafenqi.view.settings.SettingsBindFishPage
 import com.nltv.chafenqi.view.settings.SettingsPage
 import com.nltv.chafenqi.view.songlist.SongDetailPage
 import com.nltv.chafenqi.view.songlist.SongListPage
+import com.nltv.chafenqi.view.updater.UpdaterHelpPage
 import com.nltv.chafenqi.view.updater.UpdaterHomePage
 
 enum class UIState {
@@ -131,7 +140,22 @@ fun LogonPage(navController: NavHostController) {
         NavHost(
             navController = navController,
             startDestination = HomeNavItem.Home.route,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding),
+            /*enterTransition = {
+                fadeIn(tween(300, easing = LinearEasing)) +
+                        slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.Start, animationSpec = tween(300, easing = EaseIn))
+            },
+            exitTransition = {
+                fadeOut(tween(300, easing = LinearEasing)) +
+                        slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.End, animationSpec = tween(300, easing = EaseOut))
+            },
+            popEnterTransition = {
+                fadeIn(tween(300, easing = LinearEasing))
+            },*/
+            /*popExitTransition = {
+                fadeOut(tween(300, easing = LinearEasing)) +
+                        slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.End, animationSpec = tween(300, easing = EaseOut))
+            }*/
         ) {
             composable(HomeNavItem.Home.route) { HomePage(navController = navController) }
             composable(HomeNavItem.Home.route + "/recent") { HomeRecentPage(navController = navController) }
@@ -139,14 +163,14 @@ fun LogonPage(navController: NavHostController) {
                 RecentDetailPage(
                     mode = 1,
                     index = navBackStackEntry.arguments?.getString("index")?.toInt() ?: 0,
-                    navHostController = navController
+                    navController = navController
                 )
             }
             composable(HomeNavItem.Home.route + "/recent/chunithm/{index}") { navBackStackEntry ->
                 RecentDetailPage(
                     mode = 0,
                     index = navBackStackEntry.arguments?.getString("index")?.toInt() ?: 0,
-                    navHostController = navController
+                    navController = navController
                 )
             }
             composable(HomeNavItem.Home.route + "/rating") { HomeRatingPage(navController) }
@@ -210,18 +234,21 @@ fun LogonPage(navController: NavHostController) {
             }
 
             composable(HomeNavItem.Uploader.route) { UpdaterHomePage(navController) }
+            composable(HomeNavItem.Uploader.route + "/help") { UpdaterHelpPage(navController) }
 
             composable(HomeNavItem.SongList.route) { SongListPage(navController) }
             composable(HomeNavItem.SongList.route + "/maimai/{index}") { navBackStackEntry ->
                 SongDetailPage(
                     mode = 1,
-                    index = navBackStackEntry.arguments?.getString("index")?.toInt() ?: 0
+                    index = navBackStackEntry.arguments?.getString("index")?.toInt() ?: 0,
+                    navController = navController
                 )
             }
             composable(HomeNavItem.SongList.route + "/chunithm/{index}") { navBackStackEntry ->
                 SongDetailPage(
                     mode = 0,
-                    index = navBackStackEntry.arguments?.getString("index")?.toInt() ?: 0
+                    index = navBackStackEntry.arguments?.getString("index")?.toInt() ?: 0,
+                    navController = navController
                 )
             }
         }

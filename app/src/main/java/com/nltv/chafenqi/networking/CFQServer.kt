@@ -135,6 +135,22 @@ class CFQServer {
             return response.status.value == 200
         }
 
+        suspend fun apiCheckPremiumTime(username: String): Double {
+            return try {
+                val response = fetchFromServer(
+                    "POST",
+                    "api/premiumTime",
+                    payload = hashMapOf(
+                        "username" to username
+                    )
+                )
+                response.bodyAsText().toDouble()
+            } catch (e: Exception) {
+                Log.e("CFQServer", "Failed to get premium time: ${e.localizedMessage}")
+                0.0
+            }
+        }
+
         suspend fun apiRedeem(username: String, redeemCode: String): Boolean {
             Log.i("CFQServer", "Redeeming code $redeemCode")
             val response = fetchFromServer(
@@ -154,16 +170,6 @@ class CFQServer {
                 path = "api/chunithm/music_data"
             )
             return response.bodyAsText()
-        }
-
-        suspend fun apiSponsorList(): List<String> = try {
-            val responseText = fetchFromServer(
-                "GET",
-                "api/stats/sponsor"
-            ).bodyAsText()
-            Json.decodeFromString(responseText)
-        } catch (e: Exception) {
-            listOf()
         }
 
         suspend fun apiMaimai(contentTag: String, authToken: String): String = fetchFromServer(
@@ -216,6 +222,19 @@ class CFQServer {
             )
             val dict = Json.decodeFromString<Map<String, Int>>(response.bodyAsText())
             return listOf(dict["chu"] ?: -1, dict["mai"] ?: -1)
+        }
+
+        suspend fun statSponsorList(): List<String> {
+            return try {
+                val responseText = fetchFromServer(
+                    "GET",
+                    "api/stats/sponsor"
+                ).bodyAsText()
+                Json.decodeFromString<List<String>>(responseText).distinct().reversed()
+            } catch (e: Exception) {
+                Log.e("CFQServer", "Error fetching sponsor list: ${e.localizedMessage}")
+                listOf()
+            }
         }
 
 

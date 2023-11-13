@@ -2,6 +2,7 @@ package com.nltv.chafenqi.view.home.recent
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.nltv.chafenqi.extension.toDateString
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
@@ -100,11 +101,11 @@ class RecentDetailPageViewModel : ViewModel() {
         }
     }
 
-    fun navigateToMusicEntry(navHostController: NavHostController) {
+    fun navigateToMusicEntry(navController: NavController) {
         if (!canNavigate) return
 
         val navigateKeyword = if (mode == 0) "chunithm" else "maimai"
         val navigateIndex = if (mode == 0) chuMusicEntryIndex else maiMusicEntryIndex
-        navHostController.navigate(HomeNavItem.SongList.route + "/$navigateKeyword/$navigateIndex")
+        navController.navigate(HomeNavItem.SongList.route + "/$navigateKeyword/$navigateIndex")
     }
 }

@@ -6,9 +6,17 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.net.VpnService
 import android.widget.Toast
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AdsClick
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Link
+import androidx.compose.material.icons.filled.Timelapse
+import androidx.compose.material.icons.filled.ToggleOn
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.UriHandler
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -28,6 +36,44 @@ data class UpdaterUiState(
     val chuServerStat: String = "暂无数据",
     val maiUploadStat: String = "暂未上传",
     val chuUploadStat: String = "暂未上传"
+)
+data class UpdaterHelpInfo(
+    val icon: ImageVector = Icons.Default.ArrowDropDown,
+    val contentDescription: String = "",
+    val title: String = "",
+    val text: String = ""
+)
+val HELPS = listOf(
+    UpdaterHelpInfo(
+        Icons.Default.Link,
+        "第一步",
+        "复制链接",
+        "复制需要传分的游戏链接，打开微信发送到任意聊天内"
+    ),
+    UpdaterHelpInfo(
+        Icons.Default.ToggleOn,
+        "第二步",
+        "打开代理开关",
+        "第一次打开需要同意应用的VPN使用请求，开启期间无法使用网络属正常现象"
+    ),
+    UpdaterHelpInfo(
+        Icons.Default.AdsClick,
+        "第三步",
+        "点击链接",
+        "回到微信，点击发送的链接，并等待弹出“上传中”的提示"
+    ),
+    UpdaterHelpInfo(
+        Icons.Default.Timelapse,
+        "第四步",
+        "等待上传完成",
+        "返回到传分页面中，等待传分状态从“正在上传”变为“未开始上传”，即可回到主页下拉刷新数据"
+    ),
+    UpdaterHelpInfo(
+        Icons.Default.Info,
+        "关于水鱼网",
+        "同步至水鱼网",
+        "如需将分数同步上传至水鱼网，请先在主页设置中绑定水鱼网账号，再打开“同步至水鱼网”开关，最后复制新的链接并上传即可"
+    )
 )
 
 class UpdaterViewModel : ViewModel() {

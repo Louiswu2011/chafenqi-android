@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ScubaDiving
 import androidx.compose.material.icons.filled.Token
+import androidx.compose.material.icons.filled.Update
 import androidx.compose.material.icons.filled.WorkspacePremium
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,6 +24,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -120,6 +123,14 @@ fun PreferenceRootScope.SettingsEntry(navController: NavController) {
 @Composable
 fun PreferenceRootScope.SettingsUserGroup(navController: NavController) {
     val model: SettingsPageViewModel = viewModel()
+    val uiState by model.uiState.collectAsState()
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        scope.launch {
+            model.updateUserPremiumTime()
+        }
+    }
 
     PreferenceSectionHeader(title = { Text(text = "用户") })
     PreferenceInfo(
@@ -130,6 +141,9 @@ fun PreferenceRootScope.SettingsUserGroup(navController: NavController) {
     PreferenceButton(
         onClick = { navController.navigate(HomeNavItem.Home.route + "/settings/redeem") },
         title = { Text(text = "兑换会员") },
+        subtitle = {
+            Text(text = uiState.membershipStatus)
+        },
         icon = { Icon(imageVector = Icons.Default.CardGiftcard, contentDescription = "兑换会员") }
     )
     PreferenceButton(
@@ -172,6 +186,11 @@ fun PreferenceRootScope.SettingsAboutGroup(navController: NavController) {
         title = { Text(text = "版本") },
         subtitle = { Text(text = BuildConfig.VERSION_NAME) },
         icon = { Icon(imageVector = Icons.Default.Info, contentDescription = "版本") }
+    )
+    PreferenceButton(
+        onClick = { /*TODO*/ },
+        title = { Text(text = "检查新版本") },
+        icon = { Icon(imageVector = Icons.Default.Update, contentDescription = "检查新版本") }
     )
     PreferenceButton(
         onClick = { navController.navigate(HomeNavItem.Home.route + "/settings/acknowledge") },
