@@ -4,15 +4,20 @@ import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nltv.chafenqi.CFQUserStateViewModel
 import com.nltv.chafenqi.UIState
+import com.nltv.chafenqi.cacheStore
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.CFQUser
 import com.nltv.chafenqi.storage.`object`.CFQPersistentData
+import dev.burnoo.compose.rememberpreference.rememberStringPreference
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -25,12 +30,38 @@ class LoginPageViewModel(
     )
 
     private var loginState = MutableStateFlow(LoginUiState())
-    private var user by mutableStateOf(CFQUser)
+    var user by mutableStateOf(CFQUser)
 
     var loginUiState = loginState.asStateFlow()
 
-    fun loginWithToken(token: String) {
+    fun login(
+        token: String,
+        username: String,
+        context: Context,
+        userState: CFQUserStateViewModel,
+        loadFromCache: Boolean = true
+    ) {
+        updateLoginState(UIState.Loading)
+        updateLoginPromptText("登陆中...")
+        viewModelScope.launch {
+            try {
+                user.createProfile(token, username)
 
+                loadPersistentStorage(context)
+
+                updateLoginPromptText("加载舞萌DX数据...")
+                userState.loadMaimaiData()
+
+                updateLoginPromptText("加载中二节奏数据...")
+                userState.loadChunithmData()
+
+                updateLoginState(UIState.Pending)
+                userState.isLoggedIn = true
+            } catch (e: Exception) {
+                updateLoginState(UIState.Pending)
+                throw e
+            }
+        }
     }
 
     fun login(
@@ -53,7 +84,6 @@ class LoginPageViewModel(
                     println("Successfully logged in.")
                     // updateLoginPromptText("以${username}的身份登录...")
                     user.createProfile(response, username)
-
 
                     loadPersistentStorage(context)
 
@@ -107,6 +137,17 @@ class LoginPageViewModel(
                 loginPromptText = state.loginPromptText
             )
         }
+    }
+
+    suspend fun getCachedCredentials(context: Context): List<String> {
+        val store = context.cacheStore
+        val tokenKey = stringPreferencesKey("cachedToken")
+        val usernameKey = stringPreferencesKey("cachedUsername")
+
+        return listOf(
+            store.data.map { it[tokenKey] }.first() ?: "",
+            store.data.map { it[usernameKey] }.first() ?: ""
+        )
     }
 
 }

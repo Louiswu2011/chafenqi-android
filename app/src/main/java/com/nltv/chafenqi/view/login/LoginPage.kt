@@ -1,5 +1,6 @@
 package com.nltv.chafenqi.view.login
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.BorderStroke
@@ -67,11 +68,27 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginPage() {
     val model: LoginPageViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    val context = LocalContext.current
+    val userState = LocalUserState.current
     val loginUiState by model.loginUiState.collectAsStateWithLifecycle()
 
-    val cachedToken by rememberStringPreference(keyName = "cachedToken")
-    LaunchedEffect(Unit) {
 
+    LaunchedEffect(Unit) {
+        val credentials = model.getCachedCredentials(context)
+        if (credentials.size < 2) { return@LaunchedEffect }
+
+        val token = credentials[0]
+        val username = credentials[1]
+
+        if (token.isEmpty() || username.isEmpty()) { return@LaunchedEffect }
+        Log.i("Login", "Cached username: $username, token: $token")
+
+        try {
+            model.login(token, username, context, userState, loadFromCache = true)
+        } catch (e: Exception) {
+            Log.e("Login", "Error login from cached token, error: ${e.localizedMessage}")
+            Toast.makeText(context, "登陆状态失效，请重试", Toast.LENGTH_LONG).show()
+        }
     }
 
     Column(

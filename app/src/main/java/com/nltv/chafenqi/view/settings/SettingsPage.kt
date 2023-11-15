@@ -1,5 +1,6 @@
 package com.nltv.chafenqi.view.settings
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -59,8 +60,15 @@ fun SettingsPage(navController: NavController) {
     if (model.showLogoutAlert) {
         LogoutAlertDialog(onDismissRequest = { model.showLogoutAlert = false }) {
             // Logout here
-            model.showLogoutAlert = false
-            userState.logout()
+            scope.launch {
+                model.showLogoutAlert = false
+                if (model.clearCachedCredentials(context)) {
+                    userState.logout()
+                } else {
+                    Log.e("Settings", "Failed to clear previous credentials, abort logging out.")
+                }
+            }
+
         }
     }
     if (model.showReloadListAlert) {

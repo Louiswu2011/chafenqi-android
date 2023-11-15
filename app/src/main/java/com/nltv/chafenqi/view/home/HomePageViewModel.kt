@@ -1,14 +1,18 @@
 package com.nltv.chafenqi.view.home
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.nltv.chafenqi.CFQUserStateViewModel
+import com.nltv.chafenqi.cacheStore
 import com.nltv.chafenqi.storage.CFQUser
 import com.nltv.chafenqi.storage.datastore.user.RecentScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRatingEntry
@@ -19,6 +23,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.math.ceil
@@ -230,6 +236,23 @@ class HomePageViewModel(
                 update()
                 Log.i("Refresh", "Refresh completed.")
             }
+        }
+    }
+
+    suspend fun saveCredentialsToCache(context: Context): Boolean {
+        val store = context.cacheStore
+        val tokenKey = stringPreferencesKey("cachedToken")
+        val usernameKey = stringPreferencesKey("cachedUsername")
+
+        return try {
+            store.edit {
+                it[tokenKey] = user.token
+                it[usernameKey] = user.username
+            }
+            true
+        } catch (e: Exception) {
+            Log.e("HomePageViewModel", "Failed to save credentials to cache.")
+            false
         }
     }
 }

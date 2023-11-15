@@ -1,10 +1,15 @@
 package com.nltv.chafenqi.view.settings
 
+import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nltv.chafenqi.cacheStore
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.CFQUser
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -78,6 +83,23 @@ class SettingsPageViewModel : ViewModel() {
                     membershipStatus = statusString
                 )
             }
+        }
+    }
+
+    suspend fun clearCachedCredentials(context: Context): Boolean {
+        val store = context.cacheStore
+        val tokenKey = stringPreferencesKey("cachedToken")
+        val usernameKey = stringPreferencesKey("cachedUsername")
+
+        return try {
+            store.edit {
+                it[tokenKey] = ""
+                it[usernameKey] = ""
+            }
+            true
+        } catch (e: Exception) {
+            Log.e("SettingsPageViewModel", "Failed to save credentials to cache.")
+            false
         }
     }
 
