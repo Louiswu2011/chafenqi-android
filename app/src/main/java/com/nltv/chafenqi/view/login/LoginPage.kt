@@ -62,7 +62,6 @@ import com.nltv.chafenqi.networking.CredentialsMismatchException
 import com.nltv.chafenqi.networking.UserNotFoundException
 import com.nltv.chafenqi.networking.UsernameOccupiedException
 import com.nltv.chafenqi.view.AppViewModelProvider
-import dev.burnoo.compose.rememberpreference.rememberStringPreference
 import kotlinx.coroutines.launch
 
 @Composable

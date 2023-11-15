@@ -1,19 +1,10 @@
 package com.nltv.chafenqi
 
-import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.animation.AnimatedContentScope
-import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.EaseIn
-import androidx.compose.animation.core.EaseOut
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -28,9 +19,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -69,7 +57,6 @@ enum class UIState {
 }
 
 val SCREEN_PADDING = 10.dp
-val Context.prefStore: DataStore<Preferences> by preferencesDataStore("settings")
 
 class MainActivity : ComponentActivity() {
     private val userState by viewModels<CFQUserStateViewModel>()

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.net.VpnService
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AdsClick
@@ -172,10 +173,11 @@ class UpdaterViewModel : ViewModel() {
     fun openWeChat(context: Context, uriHandler: UriHandler) {
         try {
             val mananger = context.packageManager
-            mananger.getPackageInfo("", PackageManager.GET_ACTIVITIES)
+            mananger.getPackageInfo("com.tencent.mm", PackageManager.GET_ACTIVITIES)
             uriHandler.openUri("weixin://")
         } catch (e: Exception) {
             // No WeChat?
+            Log.e("Updater", "Cannot jump to WeChat, error: $e")
             Toast.makeText(context, "无法打开微信，请检查权限或是否已安装", Toast.LENGTH_LONG).show()
         }
     }
@@ -183,11 +185,12 @@ class UpdaterViewModel : ViewModel() {
     fun openWeChatScan(context: Context, uriHandler: UriHandler) {
         try {
             val mananger = context.packageManager
-            mananger.getPackageInfo("", PackageManager.GET_ACTIVITIES)
-            uriHandler.openUri("weixin://scanqrcode")
+            mananger.getPackageInfo("com.tencent.mm", PackageManager.GET_ACTIVITIES)
+            uriHandler.openUri("weixin://")
         } catch (e: Exception) {
             // No WeChat?
             Toast.makeText(context, "无法打开微信，请检查权限或是否已安装", Toast.LENGTH_LONG).show()
         }
     }
+
 }

@@ -16,17 +16,12 @@ import com.nltv.chafenqi.cacheStore
 import com.nltv.chafenqi.storage.CFQUser
 import com.nltv.chafenqi.storage.ChunithmRecentLineup
 import com.nltv.chafenqi.storage.MaimaiRecentLineup
-import com.nltv.chafenqi.storage.datastore.user.RecentScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRatingEntry
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiBestScoreEntry
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.math.ceil
@@ -235,7 +230,7 @@ class HomePageViewModel(
             }.invokeOnCompletion {
                 userState.isRefreshing = false
                 update()
-                Log.i("Refresh", "Refresh completed.")
+                Log.i(tag, "Refresh completed.")
             }
         }
     }
@@ -252,7 +247,7 @@ class HomePageViewModel(
             }
             true
         } catch (e: Exception) {
-            Log.e("HomePageViewModel", "Failed to save credentials to cache.")
+            Log.e(tag, "Failed to save credentials to cache.")
             false
         }
     }

@@ -13,7 +13,6 @@ import com.nltv.chafenqi.cacheStore
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.CFQUser
 import com.nltv.chafenqi.storage.`object`.CFQPersistentData
-import dev.burnoo.compose.rememberpreference.rememberStringPreference
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
@@ -103,10 +102,6 @@ class LoginPageViewModel(
                 throw e
             }
         }
-    }
-
-    fun register(username: String, passwordHash: String) {
-
     }
 
     private suspend fun loadPersistentStorage(context: Context) {

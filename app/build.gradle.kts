@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.archivesName
 import org.jetbrains.kotlin.konan.properties.Properties
 import java.io.FileInputStream
 import java.io.FileNotFoundException
@@ -35,8 +34,7 @@ android {
         value = 1
     }
 
-    var mVersionName = ""
-    var mFileName = ""
+    var mVersionName: String
 
     val appName = "chafenqi"
     val majorVersion = "1"
@@ -50,7 +48,6 @@ android {
 
         versionProperties.store(versionFile.writer(), null)
         mVersionName = "v$majorVersion.$minorVersion.${versionProperties.getProperty("VERSION_PATCH")}"
-        mFileName = "$appName-$mVersionName.apk"
 
         defaultConfig {
             applicationId = "com.nltv.chafenqi"
@@ -71,10 +68,6 @@ android {
         }
     } else {
         throw FileNotFoundException("Cannot access version.properties!")
-    }
-
-    if ("assembleRelease" in runningTasks) {
-
     }
 
     buildFeatures {
@@ -174,6 +167,5 @@ dependencies {
     implementation("androidx.compose.material:material:1.5.4")
     implementation("com.patrykandpatrick.vico:compose-m3:1.12.0")
     implementation("io.github.alexzhirkevich:qrose:1.0.0-beta02")
-    implementation("dev.burnoo:compose-remember-preference:1.0.1")
     implementation("com.github.MFlisar:ComposePreferences:0.3")
 }

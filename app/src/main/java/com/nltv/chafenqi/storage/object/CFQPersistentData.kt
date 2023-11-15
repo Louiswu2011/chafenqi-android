@@ -6,9 +6,9 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.nltv.chafenqi.cacheStore
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.networking.FishServer
+import com.nltv.chafenqi.storage.datastore.user.SettingsStore.Companion.cacheStore
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import kotlinx.coroutines.Dispatchers
@@ -91,7 +91,7 @@ object CFQPersistentData {
 
         private suspend fun loadDataFromWeb(stringFromValidate: String = "") {
             Log.i(TAG, "Fetching ${this.javaClass.name} music list from web...")
-            var chuListString = stringFromValidate.ifEmpty { CFQServer.apiChuithmMusicData() }
+            val chuListString = stringFromValidate.ifEmpty { CFQServer.apiChuithmMusicData() }
             if (chuListString.isNotEmpty()) {
                 musicList = Json.decodeFromString(chuListString) ?: listOf()
             }
@@ -102,7 +102,7 @@ object CFQPersistentData {
             cacheStore: DataStore<Preferences>
         ) {
             Log.i(TAG, "Loading ${this.javaClass.name} music list from cache...")
-            var chuListString = cacheStore.data.map { p -> p[chuListKey] ?: "" }
+            val chuListString = cacheStore.data.map { p -> p[chuListKey] ?: "" }
                 .first()
 
 

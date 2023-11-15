@@ -6,7 +6,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Help
@@ -28,6 +27,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -44,9 +44,10 @@ import com.michaelflisar.composepreferences.core.classes.PreferenceSettingsDefau
 import com.michaelflisar.composepreferences.core.hierarchy.PreferenceRootScope
 import com.michaelflisar.composepreferences.screen.bool.PreferenceBool
 import com.michaelflisar.composepreferences.screen.button.PreferenceButton
+import com.nltv.chafenqi.storage.datastore.user.SettingsStore
 import com.nltv.chafenqi.view.home.HomeNavItem
-import dev.burnoo.compose.rememberpreference.rememberBooleanPreference
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -158,12 +159,8 @@ fun PreferenceRootScope.UpdaterClipboardGroup() {
     val model: UpdaterViewModel = viewModel()
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
-
-    val shouldForward by rememberBooleanPreference(
-        keyName = "shouldForward",
-        initialValue = false,
-        defaultValue = false
-    )
+    val store = SettingsStore(context)
+    val shouldForward by store.shouldForward.collectAsState(initial = false)
 
     fun makeToast() {
         Toast.makeText(context, "已复制到剪贴板", Toast.LENGTH_SHORT).show()
@@ -209,16 +206,19 @@ fun PreferenceRootScope.UpdaterWechatActions() {
 
 @Composable
 fun PreferenceRootScope.UpdaterSettingsGroup() {
-    var shouldForward by rememberBooleanPreference(
-        keyName = "shouldForward",
-        initialValue = false,
-        defaultValue = false
-    )
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val store = SettingsStore(context)
+    val shouldForward by store.shouldForward.collectAsState(initial = false)
 
     PreferenceSectionHeader(title = { Text(text = "设置") })
     PreferenceBool(
         value = shouldForward,
-        onValueChange = { selected -> shouldForward = selected },
+        onValueChange = { 
+            scope.launch { 
+                store.setShouldForward(it) 
+            }
+        },
         title = { Text(text = "同步到水鱼网") },
         subtitle = { Text(text = "需要在设置中绑定账号") }
     )

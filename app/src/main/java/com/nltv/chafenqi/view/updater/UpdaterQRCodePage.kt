@@ -22,6 +22,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,9 +35,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.nltv.chafenqi.R
 import com.nltv.chafenqi.SCREEN_PADDING
+import com.nltv.chafenqi.storage.datastore.user.SettingsStore
 import com.nltv.chafenqi.view.home.nameplateChunithmBottomColor
 import com.nltv.chafenqi.view.home.nameplateMaimaiBottomColor
-import dev.burnoo.compose.rememberpreference.rememberBooleanPreference
 import io.github.alexzhirkevich.qrose.options.QrBrush
 import io.github.alexzhirkevich.qrose.options.QrLogoPadding
 import io.github.alexzhirkevich.qrose.options.QrLogoShape
@@ -53,10 +54,11 @@ fun UpdaterQRCodePage() {
     val uriHandler = LocalUriHandler.current
     val logoPainter = painterResource(id = R.drawable.app_icon)
     val pagerState = rememberPagerState { 2 }
+    val store = SettingsStore(context)
     
-    val shouldForward by rememberBooleanPreference(keyName = "shouldForward")
+    val shouldForward by store.shouldForward.collectAsState(initial = false)
 
-    val maiQrCodePainter = rememberQrCodePainter(model.buildUri(1, shouldForward ?: false)) {
+    val maiQrCodePainter = rememberQrCodePainter(model.buildUri(1, shouldForward)) {
         logo {
             painter = logoPainter
             padding = QrLogoPadding.Natural(.1f)
@@ -72,7 +74,7 @@ fun UpdaterQRCodePage() {
             dark = QrBrush.solid(nameplateMaimaiBottomColor)
         }
     }
-    val chuQrCodePainter = rememberQrCodePainter(model.buildUri(0, shouldForward ?: false)) {
+    val chuQrCodePainter = rememberQrCodePainter(model.buildUri(0, shouldForward)) {
         logo {
             painter = logoPainter
             padding = QrLogoPadding.Natural(.1f)
@@ -145,7 +147,7 @@ fun UpdaterQRCodePage() {
                 Button(onClick = {
                     model.openWeChatScan(context, uriHandler)
                 }) {
-                    Text(text = "打开微信扫一扫")
+                    Text(text = "跳转到微信")
                 }
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(text = "为了保证您的数据安全，请不要随意分享您的二维码")

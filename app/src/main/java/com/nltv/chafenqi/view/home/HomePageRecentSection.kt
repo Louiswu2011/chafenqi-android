@@ -36,8 +36,6 @@ import com.nltv.chafenqi.extension.toDateString
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.storage.ChunithmRecentLineup
 import com.nltv.chafenqi.storage.MaimaiRecentLineup
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
 import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
 
