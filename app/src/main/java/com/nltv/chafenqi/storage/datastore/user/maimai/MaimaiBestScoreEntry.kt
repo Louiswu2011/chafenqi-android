@@ -22,4 +22,6 @@ data class MaimaiBestScoreEntry(
     val createdAt: String = "",
     val updatedAt: String = "",
     @Transient var associatedMusicEntry: MaimaiMusicEntry = MaimaiMusicEntry()
-)
+) {
+    val rateString = rate.replace("p", "+").uppercase()
+}

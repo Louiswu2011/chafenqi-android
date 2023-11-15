@@ -1,6 +1,7 @@
 package com.nltv.chafenqi.extension
 
 import android.util.Log
+import androidx.compose.ui.Modifier
 import com.nltv.chafenqi.storage.CFQUser
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmBestScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRatingEntry
@@ -97,6 +98,22 @@ fun Int.toDateString(): String {
 
 fun Int.toChunithmCoverPath(): String =
     "http://43.139.107.206:8083/api/chunithm/cover?musicId=${this}"
+
+fun Int.toRateString(): String = when (this) {
+    in Int.MIN_VALUE..499999 -> "D"
+    in 500000..599999 -> "C"
+    in 600000..699999 -> "B"
+    in 700000..799999 -> "BB"
+    in 800000..899999 -> "BBB"
+    in 900000..924999 -> "A"
+    in 925000..949999 -> "AA"
+    in 950000..974999 -> "AAA"
+    in 975000..999999 -> "S"
+    in 1000000..1007499 -> "SS"
+    in 1007500..1008999 -> "SSS"
+    in 1009000..1010000 -> "SSS+"
+    else -> "D"
+}
 
 fun Double.cutForRating(): Double {
     val df = DecimalFormat("#.##")
@@ -250,3 +267,11 @@ fun ChunithmRecentScoreEntry.rating(): Double =
 
 fun ChunithmRatingEntry.rating(): Double =
     chunithmRatingOf(this.associatedMusicEntry.charts.constants[this.levelIndex], this.score)
+
+fun Modifier.conditional(condition : Boolean, modifier : Modifier.() -> Modifier) : Modifier {
+    return if (condition) {
+        then(modifier(Modifier))
+    } else {
+        this
+    }
+}

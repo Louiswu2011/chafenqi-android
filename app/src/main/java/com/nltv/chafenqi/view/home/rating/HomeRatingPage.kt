@@ -45,8 +45,10 @@ import com.nltv.chafenqi.SCREEN_PADDING
 import com.nltv.chafenqi.extension.rating
 import com.nltv.chafenqi.extension.toChunithmCoverPath
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
+import com.nltv.chafenqi.extension.toRateString
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRatingEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiBestScoreEntry
+import com.nltv.chafenqi.view.module.RatingBadge
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
 import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
 
@@ -135,7 +137,7 @@ fun HomeRatingMaimaiList(navController: NavController) {
                 items(
                     count = model.maiPastList.size,
                     key = { index ->
-                        model.maiPastList[index].idx
+                        model.maiPastList[index].idx + model.maiPastList[index].levelIndex + "P" + index
                     },
                     itemContent = { index ->
                         HomeRatingMaimaiEntry(
@@ -162,7 +164,7 @@ fun HomeRatingMaimaiList(navController: NavController) {
                 items(
                     count = model.maiNewList.size,
                     key = { index ->
-                        model.maiNewList[index].idx
+                        model.maiNewList[index].idx + model.maiNewList[index].levelIndex + "N" + index
                     },
                     itemContent = { index ->
                         HomeRatingMaimaiEntry(
@@ -223,7 +225,7 @@ fun HomeRatingMaimaiEntry(entry: MaimaiBestScoreEntry, index: Int, navController
                         }/${entry.rating()}", fontWeight = FontWeight.Bold
                     )
                 }
-                Text(text = "Rate")
+                RatingBadge(entry.rateString)
             }
             Row(
                 Modifier.fillMaxWidth(),
@@ -252,10 +254,10 @@ fun HomeRatingChunithmList(navController: NavController) {
     val model = viewModel<HomeRatingPageViewModel>()
 
     val listState = rememberLazyListState()
-    var pastExpanded by remember {
+    var bestExpanded by remember {
         mutableStateOf(true)
     }
-    var newExpanded by remember {
+    var recentExpanded by remember {
         mutableStateOf(true)
     }
 
@@ -283,16 +285,16 @@ fun HomeRatingChunithmList(navController: NavController) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(text = "最佳成绩 B30", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                    Text(text = if (pastExpanded) "收起" else "展开", Modifier.clickable {
-                        pastExpanded = !pastExpanded
+                    Text(text = if (bestExpanded) "收起" else "展开", Modifier.clickable {
+                        bestExpanded = !bestExpanded
                     }, color = MaterialTheme.colorScheme.primary)
                 }
             }
-            if (pastExpanded) {
+            if (bestExpanded) {
                 items(
                     count = model.chuBestList.size,
                     key = { index ->
-                        model.chuBestList[index].idx
+                        model.chuBestList[index].idx + model.chuBestList[index].levelIndex + "B" + index
                     },
                     itemContent = { index ->
                         HomeRatingChunithmEntry(
@@ -310,16 +312,16 @@ fun HomeRatingChunithmList(navController: NavController) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(text = "最近成绩 R10", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                    Text(text = if (newExpanded) "收起" else "展开", Modifier.clickable {
-                        newExpanded = !newExpanded
+                    Text(text = if (recentExpanded) "收起" else "展开", Modifier.clickable {
+                        recentExpanded = !recentExpanded
                     }, color = MaterialTheme.colorScheme.primary)
                 }
             }
-            if (newExpanded) {
+            if (recentExpanded) {
                 items(
                     count = model.chuRecentList.size,
                     key = { index ->
-                        model.chuRecentList[index].idx
+                        model.chuRecentList[index].idx + model.chuRecentList[index].levelIndex + "R" + index
                     },
                     itemContent = { index ->
                         HomeRatingChunithmEntry(
@@ -380,7 +382,7 @@ fun HomeRatingChunithmEntry(entry: ChunithmRatingEntry, index: Int, navControlle
                         }/${String.format("%.2f", entry.rating())}", fontWeight = FontWeight.Bold
                     )
                 }
-                Text(text = "Rate")
+                RatingBadge(rate = entry.score.toRateString())
             }
             Row(
                 Modifier.fillMaxWidth(),

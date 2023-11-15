@@ -237,7 +237,7 @@ fun PremiumRedeemInputField(navController: NavController) {
                         Toast.makeText(context, "兑换失败，请检查兑换码是否有效", Toast.LENGTH_LONG).show()
                     }
                 }
-                      },
+            },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(5.dp)
         ) {
