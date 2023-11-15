@@ -30,3 +30,4 @@
 - [@Diving-Fish的查分器](https://github.com/Diving-Fish/maimaidx-prober)
 - [@bakapiano的国服代理更新方案](https://github.com/bakapiano/maimaidx-prober-proxy-updater)
 - [sdvx.in的谱面预览](https://sdvx.in)
+- [tun2http的代理实现](https://github.com/forbe/tun2http)
