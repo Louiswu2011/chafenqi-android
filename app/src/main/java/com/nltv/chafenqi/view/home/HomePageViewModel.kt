@@ -14,6 +14,8 @@ import androidx.navigation.NavController
 import com.nltv.chafenqi.CFQUserStateViewModel
 import com.nltv.chafenqi.cacheStore
 import com.nltv.chafenqi.storage.CFQUser
+import com.nltv.chafenqi.storage.ChunithmRecentLineup
+import com.nltv.chafenqi.storage.MaimaiRecentLineup
 import com.nltv.chafenqi.storage.datastore.user.RecentScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRatingEntry
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
@@ -42,7 +44,7 @@ data class HomePageUiState(
 
     val nameplateUpdateTime: String = "",
 
-    val maiRecentLineup: List<MaimaiRecentScoreEntry> = listOf(),
+    val maiRecentLineup: List<MaimaiRecentLineup> = listOf(),
     val maiPastRating: String = "",
     val maiNewRating: String = "",
     val maiIndicatorsCount: Int = 0,
@@ -54,7 +56,7 @@ data class HomePageUiState(
     val maiCurrentSelectedRatingEntryType: String = "",
     val maiCurrentSelectedRatingEntryRank: Int = -1,
 
-    val chuRecentLineup: List<ChunithmRecentScoreEntry> = listOf(),
+    val chuRecentLineup: List<ChunithmRecentLineup> = listOf(),
     val chuMaxRating: String = "",
     val chuBestRating: String = "",
     val chuRecentRating: String = "",
@@ -62,7 +64,6 @@ data class HomePageUiState(
     val chuBestRatingList: List<ChunithmRatingEntry> = listOf(),
     val chuCurrentSelectedRatingEntry: ChunithmRatingEntry = ChunithmRatingEntry(),
 
-    val recentLineup: List<RecentScoreEntry> = if (mode == 0) chuRecentLineup else maiRecentLineup,
     val currentSelectedIndicatorIndex: Int = -1,
     val indicatorHeights: MutableList<Dp> = mutableListOf(),
 )
@@ -96,7 +97,7 @@ class HomePageViewModel(
                         canNavigateToRecentList = user.maimai.recent.isNotEmpty(),
                         canNavigateToRatingList = user.maimai.aux.pastBest.isNotEmpty() && user.maimai.aux.newBest.isNotEmpty(),
                         nameplateUpdateTime = user.maimai.aux.updateTime,
-                        maiRecentLineup = user.maimai.recent.take(3),
+                        maiRecentLineup = user.maimai.aux.recommendList.take(3),
                         maiPastRating = user.maimai.aux.pastRating.toString(),
                         maiNewRating = user.maimai.aux.newRating.toString(),
                         maiIndicatorsCount = this.maiIndicatorsCount,
@@ -122,7 +123,7 @@ class HomePageViewModel(
                         nameplateUpdateTime = user.chunithm.aux.updateTime,
                         canNavigateToRecentList = user.chunithm.recent.isNotEmpty(),
                         canNavigateToRatingList = user.chunithm.rating.isNotEmpty(),
-                        chuRecentLineup = user.chunithm.recent.take(3),
+                        chuRecentLineup = user.chunithm.aux.recommendList.take(3),
                         chuMaxRating = String.format("%.2f", user.chunithm.info.maxRating),
                         chuBestRating = String.format("%.2f", user.chunithm.aux.bestRating),
                         chuRecentRating = String.format("%.2f", user.chunithm.aux.recentRating),

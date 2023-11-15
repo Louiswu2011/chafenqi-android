@@ -34,6 +34,8 @@ import coil.compose.AsyncImage
 import com.nltv.chafenqi.extension.toChunithmCoverPath
 import com.nltv.chafenqi.extension.toDateString
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
+import com.nltv.chafenqi.storage.ChunithmRecentLineup
+import com.nltv.chafenqi.storage.MaimaiRecentLineup
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
@@ -114,7 +116,7 @@ fun HomePageRecentLineup(navController: NavController) {
 }
 
 @Composable
-fun HomePageRecentMaimaiEntry(entry: MaimaiRecentScoreEntry) {
+fun HomePageRecentMaimaiEntry(item: MaimaiRecentLineup) {
     Row(
         Modifier
             .fillMaxWidth()
@@ -122,7 +124,7 @@ fun HomePageRecentMaimaiEntry(entry: MaimaiRecentScoreEntry) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         AsyncImage(
-            model = entry.associatedMusicEntry.musicID.toMaimaiCoverPath(),
+            model = item.entry.associatedMusicEntry.musicID.toMaimaiCoverPath(),
             contentDescription = "最近动态歌曲封面",
             modifier = Modifier
                 .padding(end = 8.dp)
@@ -130,7 +132,7 @@ fun HomePageRecentMaimaiEntry(entry: MaimaiRecentScoreEntry) {
                 .border(
                     border = BorderStroke(
                         width = 4.dp,
-                        color = maimaiDifficultyColors[entry.levelIndex]
+                        color = maimaiDifficultyColors[item.entry.levelIndex]
                     ),
                     shape = RoundedCornerShape(10.dp)
                 )
@@ -145,17 +147,17 @@ fun HomePageRecentMaimaiEntry(entry: MaimaiRecentScoreEntry) {
                 Modifier.fillMaxWidth(),
                 Arrangement.SpaceBetween
             ) {
-                Text(entry.timestamp.toDateString(), fontSize = 14.sp)
-                Text(text = "", fontWeight = FontWeight.Bold) // TODO: Add status text
+                Text(item.entry.timestamp.toDateString(), fontSize = 14.sp)
+                Text(text = item.tag, fontWeight = FontWeight.Bold)
             }
             Row(
                 Modifier.fillMaxWidth(),
                 Arrangement.SpaceBetween,
                 Alignment.CenterVertically
             ) {
-                Text(entry.title, fontSize = 16.sp, overflow = TextOverflow.Ellipsis, maxLines = 2)
+                Text(item.entry.title, fontSize = 16.sp, overflow = TextOverflow.Ellipsis, maxLines = 2)
                 Text(
-                    text = "%.4f".format(entry.achievements).plus("%"),
+                    text = "%.4f".format(item.entry.achievements).plus("%"),
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
                 )
@@ -165,7 +167,7 @@ fun HomePageRecentMaimaiEntry(entry: MaimaiRecentScoreEntry) {
 }
 
 @Composable
-fun HomePageRecentChunithmEntry(entry: ChunithmRecentScoreEntry) {
+fun HomePageRecentChunithmEntry(item: ChunithmRecentLineup) {
     Row(
         Modifier
             .fillMaxWidth()
@@ -173,7 +175,7 @@ fun HomePageRecentChunithmEntry(entry: ChunithmRecentScoreEntry) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         AsyncImage(
-            model = entry.associatedMusicEntry.musicID.toChunithmCoverPath(),
+            model = item.entry.associatedMusicEntry.musicID.toChunithmCoverPath(),
             contentDescription = "最近动态歌曲封面",
             modifier = Modifier
                 .padding(end = 8.dp)
@@ -181,7 +183,7 @@ fun HomePageRecentChunithmEntry(entry: ChunithmRecentScoreEntry) {
                 .border(
                     border = BorderStroke(
                         width = 4.dp,
-                        color = chunithmDifficultyColors[entry.levelIndex]
+                        color = chunithmDifficultyColors[item.entry.levelIndex]
                     ),
                     shape = RoundedCornerShape(10.dp)
                 )
@@ -196,16 +198,16 @@ fun HomePageRecentChunithmEntry(entry: ChunithmRecentScoreEntry) {
                 Modifier.fillMaxWidth(),
                 Arrangement.SpaceBetween
             ) {
-                Text(entry.timestamp.toDateString(), fontSize = 14.sp)
-                Text(text = "状态", fontWeight = FontWeight.Bold)
+                Text(item.entry.timestamp.toDateString(), fontSize = 14.sp)
+                Text(text = item.tag, fontWeight = FontWeight.Bold)
             }
             Row(
                 Modifier.fillMaxWidth(),
                 Arrangement.SpaceBetween,
                 Alignment.CenterVertically
             ) {
-                Text(entry.title, fontSize = 16.sp, overflow = TextOverflow.Ellipsis, maxLines = 2)
-                Text(text = entry.score.toString(), fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text(item.entry.title, fontSize = 16.sp, overflow = TextOverflow.Ellipsis, maxLines = 2)
+                Text(text = item.entry.score.toString(), fontWeight = FontWeight.Bold, fontSize = 18.sp)
             }
         }
     }

@@ -22,6 +22,9 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
+data class ChunithmRecentLineup(val entry: ChunithmRecentScoreEntry, val tag: String)
+data class MaimaiRecentLineup(val entry: MaimaiRecentScoreEntry, val tag: String)
+
 object CFQUser {
     private const val tag = "CFQUser"
 
@@ -36,8 +39,8 @@ object CFQUser {
     var maimai = Maimai
     var chunithm = Chunithm
 
-    val isoTimeParser = DateTimeFormatter.ISO_INSTANT
-    val nameplateDateFormatter = DateTimeFormatter.ofPattern("MM-dd hh:mm")
+    val isoTimeParser: DateTimeFormatter = DateTimeFormatter.ISO_INSTANT
+    val nameplateDateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MM-dd hh:mm")
 
     object Maimai {
         var info = MaimaiUserInfo()
@@ -58,12 +61,15 @@ object CFQUser {
             var newRating: Int = 0
             var updateTime: String = ""
 
+            val recommendList = mutableListOf<MaimaiRecentLineup>()
+
             fun reset() {
                 pastBest = listOf()
                 newBest = listOf()
                 pastRating = 0
                 newRating = 0
                 updateTime = ""
+                recommendList.clear()
             }
         }
 
@@ -93,6 +99,28 @@ object CFQUser {
                     .atZone(ZoneId.systemDefault())
                     .toLocalDateTime()
                     .format(nameplateDateFormatter)
+
+                val mostRecent = recent.take(30).toMutableList()
+                mostRecent.firstOrNull { it.fc == "applus" }
+                    ?.also { aux.recommendList.add(MaimaiRecentLineup(it, "AP+")) }
+                    ?.also { mostRecent.remove(it) }
+                mostRecent.firstOrNull { it.fc == "ap" }
+                    ?.also { aux.recommendList.add(MaimaiRecentLineup(it, "AP")) }
+                    ?.also { mostRecent.remove(it) }
+                mostRecent.firstOrNull { it.fc.startsWith("fc") || it.fc.startsWith("fs") }
+                    ?.also { aux.recommendList.add(MaimaiRecentLineup(it, "FC")) }
+                    ?.also { mostRecent.remove(it) }
+                mostRecent.maxByOrNull { it.achievements }
+                    ?.also { aux.recommendList.add(MaimaiRecentLineup(it, "高分")) }
+                    ?.also { mostRecent.remove(it) }
+                mostRecent.maxByOrNull { it.timestamp }
+                    ?.also { aux.recommendList.add(MaimaiRecentLineup(it, "最近一首")) }
+                    ?.also { mostRecent.remove(it) }
+                try {
+                    mostRecent.filter { it.isNewRecord == 1 }
+                        .maxByOrNull { it.timestamp }
+                        ?.also { aux.recommendList.add(MaimaiRecentLineup(it, "新纪录")) }
+                } catch (_: Exception) {}
 
                 Log.i(tag, "Loaded maimai auxiliary data.")
             }
@@ -130,12 +158,16 @@ object CFQUser {
             var recentRating: Double = 0.0
             var updateTime: String = ""
 
+            val recommendList = mutableListOf<ChunithmRecentLineup>()
+
             fun reset() {
                 bestList = listOf()
                 recentList = listOf()
                 bestRating = 0.0
                 recentRating = 0.0
                 updateTime = ""
+                recommendList.clear()
+
             }
         }
 
@@ -164,6 +196,28 @@ object CFQUser {
                     .atZone(ZoneId.systemDefault())
                     .toLocalDateTime()
                     .format(nameplateDateFormatter)
+
+                val mostRecent = recent.take(30).toMutableList()
+                mostRecent.firstOrNull { it.score == 1010000 }
+                    ?.also { aux.recommendList.add(ChunithmRecentLineup(it, "理论值")) }
+                    ?.also { mostRecent.remove(it) }
+                mostRecent.firstOrNull { it.fullCombo == "alljustice" }
+                    ?.also { aux.recommendList.add(ChunithmRecentLineup(it, "AJ")) }
+                    ?.also { mostRecent.remove(it) }
+                mostRecent.firstOrNull { it.fullCombo.contains("fullcombo") || it.fullChain.contains("fullchain") }
+                    ?.also { aux.recommendList.add(ChunithmRecentLineup(it, "FC")) }
+                    ?.also { mostRecent.remove(it) }
+                mostRecent.maxByOrNull { it.score }
+                    ?.also { aux.recommendList.add(ChunithmRecentLineup(it, "高分")) }
+                    ?.also { mostRecent.remove(it) }
+                mostRecent.maxByOrNull { it.timestamp }
+                    ?.also { aux.recommendList.add(ChunithmRecentLineup(it, "最近一首")) }
+                    ?.also { mostRecent.remove(it) }
+                try {
+                    mostRecent.filter { it.isNewRecord == 1 }
+                        .maxByOrNull { it.timestamp }
+                        ?.also { aux.recommendList.add(ChunithmRecentLineup(it, "新纪录")) }
+                } catch (_: Exception) {}
             }
         }
 
