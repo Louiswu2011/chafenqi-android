@@ -87,6 +87,8 @@ android {
         debug {
             resValue("string", "username", "testaccount")
             resValue("string", "password", "testtest")
+
+            setProperty("archivesBaseName", "$appName-$mVersionName-Build${versionProperties.getProperty("VERSION_BUILD")}")
         }
 
         release {
@@ -99,6 +101,9 @@ android {
 
             resValue("string", "username", "")
             resValue("string", "password", "")
+
+
+            setProperty("archivesBaseName", "$appName-$mVersionName-Build${versionProperties.getProperty("VERSION_BUILD")}")
         }
     }
     compileOptions {

@@ -29,6 +29,9 @@ class LoginPageViewModel(
 
     var loginUiState = loginState.asStateFlow()
 
+    fun loginWithToken(token: String) {
+
+    }
 
     fun login(
         username: String,

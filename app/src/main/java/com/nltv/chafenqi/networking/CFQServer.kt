@@ -153,15 +153,19 @@ class CFQServer {
 
         suspend fun apiRedeem(username: String, redeemCode: String): Boolean {
             Log.i("CFQServer", "Redeeming code $redeemCode")
-            val response = fetchFromServer(
-                "POST",
-                "api/redeemCode",
-                payload = hashMapOf(
-                    "username" to username,
-                    "code" to redeemCode
+            return try {
+                val response = fetchFromServer(
+                    "POST",
+                    "api/redeemCode",
+                    payload = hashMapOf(
+                        "username" to username,
+                        "code" to redeemCode
+                    )
                 )
-            )
-            return response.status.value == 200
+                response.status.value == 200
+            } catch (e: Exception) {
+                false
+            }
         }
 
         suspend fun apiChuithmMusicData(): String {

@@ -1,5 +1,6 @@
 package com.nltv.chafenqi.view.premium
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -224,7 +225,7 @@ fun PremiumRedeemInputField(navController: NavController) {
                         Toast.makeText(context, "请输入兑换码", Toast.LENGTH_SHORT).show()
                         return@launch
                     }
-                    redeemCode = redeemCode.filter { it.isWhitespace() }
+                    redeemCode = redeemCode.filter { !it.isWhitespace() }
                     try {
                         if (model.redeemMembership(redeemCode)) {
                             redeemCode = ""
@@ -232,6 +233,7 @@ fun PremiumRedeemInputField(navController: NavController) {
                             navController.navigateUp()
                         }
                     } catch (e: Exception) {
+                        Log.e("PremiumRedeem", "Failed to validate redeem code $redeemCode, error: ${e.localizedMessage}")
                         Toast.makeText(context, "兑换失败，请检查兑换码是否有效", Toast.LENGTH_LONG).show()
                     }
                 }

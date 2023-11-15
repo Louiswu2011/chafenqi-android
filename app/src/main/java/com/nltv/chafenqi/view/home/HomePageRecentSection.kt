@@ -146,7 +146,7 @@ fun HomePageRecentMaimaiEntry(entry: MaimaiRecentScoreEntry) {
                 Arrangement.SpaceBetween
             ) {
                 Text(entry.timestamp.toDateString(), fontSize = 14.sp)
-                Text(text = "状态", fontWeight = FontWeight.Bold)
+                Text(text = "", fontWeight = FontWeight.Bold) // TODO: Add status text
             }
             Row(
                 Modifier.fillMaxWidth(),

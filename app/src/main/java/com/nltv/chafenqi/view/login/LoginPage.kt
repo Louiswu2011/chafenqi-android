@@ -27,6 +27,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -60,12 +61,18 @@ import com.nltv.chafenqi.networking.CredentialsMismatchException
 import com.nltv.chafenqi.networking.UserNotFoundException
 import com.nltv.chafenqi.networking.UsernameOccupiedException
 import com.nltv.chafenqi.view.AppViewModelProvider
+import dev.burnoo.compose.rememberpreference.rememberStringPreference
 import kotlinx.coroutines.launch
 
 @Composable
 fun LoginPage() {
     val model: LoginPageViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val loginUiState by model.loginUiState.collectAsStateWithLifecycle()
+
+    val cachedToken by rememberStringPreference(keyName = "cachedToken")
+    LaunchedEffect(Unit) {
+
+    }
 
     Column(
         Modifier
