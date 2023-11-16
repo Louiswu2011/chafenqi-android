@@ -39,6 +39,11 @@ val DEVELOPERS = listOf(
     DeveloperInfo("sdvx.in", "中二节奏谱面数据")
 )
 
+val GAME_LIST = listOf(
+    "中二节奏NEW",
+    "舞萌DX"
+)
+
 class SettingsPageViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()

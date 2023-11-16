@@ -1,6 +1,8 @@
 package com.nltv.chafenqi.view.songlist
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,9 +22,19 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.filled.BrowserUpdated
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -43,9 +55,11 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.nltv.chafenqi.SCREEN_PADDING
 import com.nltv.chafenqi.extension.toChunithmCoverPath
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
@@ -61,17 +75,6 @@ fun SongListPage(navController: NavController) {
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
 
-    var isSearchBarActive by remember {
-        mutableStateOf(false)
-    }
-    val searchBarHorizontalPadding by animateDpAsState(
-        targetValue = if (isSearchBarActive) 0.dp else 8.dp,
-        label = "animated search bar horizontal padding"
-    )
-    var searchInput by remember {
-        mutableStateOf("")
-    }
-
     BackHandler(true) {
         if (navController.currentBackStackEntry?.destination?.route != HomeNavItem.SongList.route) {
             navController.navigateUp()
@@ -79,21 +82,6 @@ fun SongListPage(navController: NavController) {
             coroutineScope.launch { listState.animateScrollToItem(index = 0) }
         }
     }
-
-//    SearchBar(
-//        query = searchInput,
-//        onQueryChange = { newQuery -> searchInput = newQuery },
-//        onSearch = {  },
-//        active = isSearchBarActive,
-//        onActiveChange = { activeChange -> isSearchBarActive = activeChange },
-//        placeholder = { Text(text = "输入曲名或作曲家") },
-//        leadingIcon = { Icon(imageVector = Icons.Default.Search, contentDescription = "搜索歌曲列表") },
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(horizontal = searchBarHorizontalPadding)
-//    ) {
-//
-//    }
 
     Scaffold(
         topBar = {
@@ -106,30 +94,171 @@ fun SongListPage(navController: NavController) {
                 )
             )
         },
+        floatingActionButton = {
+            if (!model.isSearchBarActive) {
+                FloatingActionButton(onClick = {
+                    coroutineScope.launch {
+                        listState.animateScrollToItem(0)
+                    }
+                }) {
+                    Icon(imageVector = Icons.Default.ArrowUpward, contentDescription = "回到顶部")
+                }
+            }
+        },
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize(),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-            state = listState
+        Column (
+            Modifier.padding(paddingValues)
         ) {
-            items(
-                count = model.getMusicList().size,
-                key = { index ->
-                    model.getMusicList()[index].hashCode()
-                },
-                itemContent = { index ->
-                    val entry = model.getMusicList()[index]
-                    if (entry is MaimaiMusicEntry) {
-                        MaimaiMusicListEntry(entry, index, navController)
-                    } else if (entry is ChunithmMusicEntry) {
-                        ChunithmMusicListEntry(entry, index, navController)
+            SongListSearchBar(navController)
+            Divider()
+            AnimatedVisibility(visible = !model.isSearchBarActive) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                    state = listState
+                ) {
+                    items(
+                        count = model.getMusicList().size,
+                        key = { index ->
+                            model.getMusicList()[index].hashCode()
+                        },
+                        itemContent = { index ->
+                            val entry = model.getMusicList()[index]
+                            if (entry is MaimaiMusicEntry) {
+                                MaimaiMusicListEntry(entry, index, navController)
+                            } else if (entry is ChunithmMusicEntry) {
+                                ChunithmMusicListEntry(entry, index, navController)
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SongListSearchBar(navController: NavController) {
+    val model: SongListPageViewModel = viewModel()
+    val maiResultListState = rememberLazyListState()
+    val chuResultListState = rememberLazyListState()
+
+    val searchBarHorizontalPadding by animateDpAsState(
+        targetValue = if (model.isSearchBarActive) 0.dp else 8.dp,
+        label = "animated search bar horizontal padding"
+    )
+
+    val maiSearchResult by model.maiSearchResult.collectAsStateWithLifecycle()
+    val chuSearchResult by model.chuSearchResult.collectAsStateWithLifecycle()
+
+    SearchBar(
+        query = model.searchQuery,
+        onQueryChange = { newQuery -> model.onSearchQueryChange(newQuery) },
+        onSearch = {},
+        active = model.isSearchBarActive,
+        onActiveChange = { activeChange -> model.isSearchBarActive = activeChange },
+        placeholder = { Text(text = "输入曲名或作曲家") },
+        leadingIcon = { Icon(imageVector = Icons.Default.Search, contentDescription = "搜索歌曲列表") },
+        trailingIcon = {
+            if (model.isSearchBarActive) {
+                IconButton(onClick = {
+                    if (model.searchQuery.isNotEmpty()) {
+                        model.onSearchQueryChange("")
+                    } else {
+                        model.isSearchBarActive = false
+                    }
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "清除或关闭"
+                    )
+                }
+            }
+        },
+        modifier = Modifier
+            .padding(horizontal = searchBarHorizontalPadding)
+            .padding(bottom = SCREEN_PADDING)
+            .fillMaxWidth()
+    ) {
+        when (model.user.mode) {
+            0 -> {
+                when {
+                    chuSearchResult.isNotEmpty() -> {
+                        LazyColumn (
+                            Modifier.fillMaxWidth(),
+                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                            state = chuResultListState
+                        ) {
+                            items(
+                                count = chuSearchResult.size,
+                                key = { index ->
+                                    chuSearchResult[index].musicID
+                                }
+                            ) { index ->
+                                ChunithmMusicListEntry(
+                                    music = chuSearchResult[index],
+                                    index = index,
+                                    navController = navController
+                                )
+                            }
+                        }
+                    }
+                    model.searchQuery.isNotEmpty() -> {
+                        SongListSearchEmptyState()
                     }
                 }
-            )
+            }
+            1 -> {
+                when {
+                    maiSearchResult.isNotEmpty() -> {
+                        LazyColumn (
+                            Modifier.fillMaxWidth(),
+                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                            state = maiResultListState
+                        ) {
+                            items(
+                                count = maiSearchResult.size,
+                                key = { index ->
+                                    maiSearchResult[index].musicID
+                                }
+                            ) { index ->
+                                MaimaiMusicListEntry(
+                                    music = maiSearchResult[index],
+                                    index = index,
+                                    navController = navController
+                                )
+                            }
+                        }
+                    }
+                    model.searchQuery.isNotEmpty() -> {
+                        SongListSearchEmptyState()
+                    }
+                }
+            }
         }
+    }
+}
+
+@Composable
+fun SongListSearchEmptyState(
+    modifier: Modifier = Modifier
+) {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier.fillMaxSize()
+    ) {
+        Text(
+            text = "无搜索结果",
+            style = MaterialTheme.typography.titleSmall
+        )
+        Text(
+            text = "试试调整搜索关键词",
+            style = MaterialTheme.typography.bodyLarge
+        )
     }
 }
 
@@ -138,7 +267,7 @@ fun MaimaiMusicListEntry(music: MaimaiMusicEntry, index: Int, navController: Nav
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(72.dp)
+            .height(96.dp)
             .padding(vertical = 8.dp)
             .clickable {
                 navController.navigate(HomeNavItem.SongList.route + "/maimai/$index")
@@ -152,7 +281,6 @@ fun MaimaiMusicListEntry(music: MaimaiMusicEntry, index: Int, navController: Nav
             modifier = Modifier
                 .padding(end = 8.dp)
                 .aspectRatio(1f)
-                .width(64.dp)
                 .clip(RoundedCornerShape(size = 10.dp)),
             contentScale = ContentScale.FillBounds
         )
@@ -160,13 +288,21 @@ fun MaimaiMusicListEntry(music: MaimaiMusicEntry, index: Int, navController: Nav
             modifier = Modifier.fillMaxHeight(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = music.title,
-                fontWeight = FontWeight.Bold,
-                fontSize = TextUnit(16f, TextUnitType.Sp),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            Column {
+                Text(
+                    text = music.title,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = music.basicInfo.artist,
+                    fontSize = 12.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
             MaimaiLevelBadgeRow(musicEntry = music)
         }
     }
@@ -177,7 +313,7 @@ fun ChunithmMusicListEntry(music: ChunithmMusicEntry, index: Int, navController:
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(72.dp)
+            .height(96.dp)
             .padding(vertical = 8.dp)
             .clickable {
                 navController.navigate(HomeNavItem.SongList.route + "/chunithm/$index")
@@ -191,7 +327,6 @@ fun ChunithmMusicListEntry(music: ChunithmMusicEntry, index: Int, navController:
             modifier = Modifier
                 .padding(end = 8.dp)
                 .aspectRatio(1f)
-                .width(64.dp)
                 .clip(RoundedCornerShape(size = 10.dp)),
             contentScale = ContentScale.FillBounds
         )
@@ -199,13 +334,21 @@ fun ChunithmMusicListEntry(music: ChunithmMusicEntry, index: Int, navController:
             modifier = Modifier.fillMaxHeight(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = music.title,
-                fontWeight = FontWeight.Bold,
-                fontSize = TextUnit(16f, TextUnitType.Sp),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            Column {
+                Text(
+                    text = music.title,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = music.artist,
+                    fontSize = 12.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
             ChunithmLevelBadgeRow(musicEntry = music)
         }
     }
@@ -220,7 +363,7 @@ fun MaimaiLevelBadgeRow(musicEntry: MaimaiMusicEntry) {
         musicEntry.charts.forEachIndexed { index, _ ->
             Box(
                 modifier = Modifier
-                    .size(width = 30.dp, height = 16.dp)
+                    .size(width = 30.dp, height = 18.dp)
                     .clip(RoundedCornerShape(3.dp))
                     .background(color = maimaiDifficultyColors[index]),
                 contentAlignment = Alignment.Center
@@ -246,7 +389,7 @@ fun ChunithmLevelBadgeRow(musicEntry: ChunithmMusicEntry) {
             if (entry.enabled) {
                 Box(
                     modifier = Modifier
-                        .size(width = 30.dp, height = 16.dp)
+                        .size(width = 30.dp, height = 18.dp)
                         .clip(RoundedCornerShape(3.dp))
                         .background(color = chunithmDifficultyColors[index]),
                     contentAlignment = Alignment.Center

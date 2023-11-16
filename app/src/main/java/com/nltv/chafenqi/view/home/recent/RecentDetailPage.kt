@@ -243,4 +243,5 @@ fun RecentDetailMaimaiSyncCard() {
 @Composable
 fun RecentDetailChunithmScoreGrid() {
     // val model: RecentDetailPageViewModel = viewModel()
+    // TODO: Implement this
 }

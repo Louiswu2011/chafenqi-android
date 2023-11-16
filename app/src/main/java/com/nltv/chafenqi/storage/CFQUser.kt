@@ -1,10 +1,12 @@
 package com.nltv.chafenqi.storage
 
 import android.util.Log
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nltv.chafenqi.extension.associatedMusicEntry
 import com.nltv.chafenqi.extension.cutForRating
 import com.nltv.chafenqi.extension.rating
 import com.nltv.chafenqi.networking.CFQServer
+import com.nltv.chafenqi.storage.datastore.user.SettingsStore
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmBestScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmDeltaEntry
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmExtraEntry

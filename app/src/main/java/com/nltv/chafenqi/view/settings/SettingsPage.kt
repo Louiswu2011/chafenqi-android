@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ScubaDiving
 import androidx.compose.material.icons.filled.Token
 import androidx.compose.material.icons.filled.Update
+import androidx.compose.material.icons.filled.VideogameAsset
 import androidx.compose.material.icons.filled.WorkspacePremium
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,6 +35,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.michaelflisar.composepreferences.core.PreferenceDivider
@@ -43,8 +45,10 @@ import com.michaelflisar.composepreferences.core.PreferenceSectionHeader
 import com.michaelflisar.composepreferences.core.classes.PreferenceSettingsDefaults
 import com.michaelflisar.composepreferences.core.hierarchy.PreferenceRootScope
 import com.michaelflisar.composepreferences.screen.button.PreferenceButton
+import com.michaelflisar.composepreferences.screen.list.PreferenceList
 import com.nltv.chafenqi.BuildConfig
 import com.nltv.chafenqi.LocalUserState
+import com.nltv.chafenqi.storage.datastore.user.SettingsStore
 import com.nltv.chafenqi.storage.`object`.CFQPersistentData
 import com.nltv.chafenqi.view.home.HomeNavItem
 import kotlinx.coroutines.launch
@@ -123,8 +127,13 @@ fun SettingsPage(navController: NavController) {
 fun PreferenceRootScope.SettingsEntry(navController: NavController) {
     SettingsUserGroup(navController)
     PreferenceDivider()
+
+    SettingsHomeGroup()
+    PreferenceDivider()
+
     SettingsAdvancedGroup()
     PreferenceDivider()
+
     SettingsAboutGroup(navController)
 }
 
@@ -165,6 +174,30 @@ fun PreferenceRootScope.SettingsUserGroup(navController: NavController) {
         },
         title = { Text("登出") },
         icon = { Icon(imageVector = Icons.Default.Logout, contentDescription = "登出") }
+    )
+}
+
+@Composable
+fun PreferenceRootScope.SettingsHomeGroup() {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val store = SettingsStore(context)
+    val homeDefaultGame by store.homeDefaultGame.collectAsStateWithLifecycle(initialValue = 1)
+
+    PreferenceSectionHeader(title = { Text(text = "主页") })
+    PreferenceList(
+        value = homeDefaultGame,
+        onValueChange = { newValue ->
+            scope.launch {
+                store.setHomeDefaultGame(newValue)
+            }
+        },
+        items = listOf(0, 1),
+        itemTextProvider = { index -> GAME_LIST[index] },
+        title = { Text(text = "默认游戏") },
+        subtitle = { Text(text = "设置登录后显示的游戏") },
+        icon = { Icon(imageVector = Icons.Default.VideogameAsset, contentDescription = "默认游戏") },
+        style = PreferenceList.Style.Spinner
     )
 }
 

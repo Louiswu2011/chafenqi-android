@@ -61,6 +61,8 @@ import com.nltv.chafenqi.networking.CFQServerSideException
 import com.nltv.chafenqi.networking.CredentialsMismatchException
 import com.nltv.chafenqi.networking.UserNotFoundException
 import com.nltv.chafenqi.networking.UsernameOccupiedException
+import com.nltv.chafenqi.storage.datastore.user.SettingsStore
+import com.nltv.chafenqi.storage.datastore.user.SettingsStore.Companion.settingsStore
 import com.nltv.chafenqi.view.AppViewModelProvider
 import kotlinx.coroutines.launch
 
@@ -177,6 +179,8 @@ fun LoginField(model: LoginPageViewModel) {
 
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+    val store = SettingsStore(context)
+    val defaultGame by store.homeDefaultGame.collectAsStateWithLifecycle(initialValue = 1)
 
     var registerMode by remember {
         mutableStateOf(false)
@@ -255,6 +259,7 @@ fun LoginField(model: LoginPageViewModel) {
                     if (loginUiState.loginState == UIState.Pending) {
                         try {
                             model.login(username, password.sha256(), context, userState)
+                            model.user.mode = defaultGame
                         } catch (e: Exception) {
                             when (e) {
                                 is CredentialsMismatchException,

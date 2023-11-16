@@ -8,7 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.networking.FishServer
-import com.nltv.chafenqi.storage.datastore.user.SettingsStore.Companion.cacheStore
+import com.nltv.chafenqi.storage.datastore.user.SettingsStore.Companion.settingsStore
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +27,7 @@ object CFQPersistentData {
     object Maimai {
         var musicList = listOf<MaimaiMusicEntry>()
         suspend fun loadData(shouldValidate: Boolean, context: Context) {
-            val cacheStore = context.cacheStore
+            val cacheStore = context.settingsStore
 
             Log.i(TAG, "Loading ${this.javaClass.name} music list...")
             loadDataFromCache(shouldValidate, cacheStore)
@@ -79,7 +79,7 @@ object CFQPersistentData {
         var musicList = listOf<ChunithmMusicEntry>()
 
         suspend fun loadData(shouldValidate: Boolean, context: Context) {
-            val cacheStore = context.cacheStore
+            val cacheStore = context.settingsStore
 
             Log.i(TAG, "Loading ${this.javaClass.name} music list...")
             loadDataFromCache(shouldValidate, cacheStore)
@@ -135,7 +135,7 @@ object CFQPersistentData {
     }
 
     suspend fun clearData(context: Context) {
-        val store = context.cacheStore
+        val store = context.settingsStore
         store.edit { it.clear() }
         Maimai.musicList = listOf()
         Chunithm.musicList = listOf()
