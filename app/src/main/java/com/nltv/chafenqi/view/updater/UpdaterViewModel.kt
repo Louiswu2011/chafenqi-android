@@ -36,7 +36,11 @@ data class UpdaterUiState(
     val maiServerStat: String = "暂无数据",
     val chuServerStat: String = "暂无数据",
     val maiUploadStat: String = "暂未上传",
-    val chuUploadStat: String = "暂未上传"
+    val chuUploadStat: String = "暂未上传",
+    val maiTokenCacheStat: String = "无缓存",
+    val chuTokenCacheStat: String = "无缓存",
+    val canPerformMaiQuickUpload: Boolean = false,
+    val canPerformChuQuickUpload: Boolean = false
 )
 data class UpdaterHelpInfo(
     val icon: ImageVector = Icons.Default.ArrowDropDown,
@@ -139,6 +143,22 @@ class UpdaterViewModel : ViewModel() {
         }
     }
 
+    fun updateQuickUploadStat() {
+        viewModelScope.launch {
+            val chuStat = CFQServer.apiHasTokenCache(0, token)
+            val maiStat = CFQServer.apiHasTokenCache(1, token)
+
+            _uiState.update { currentValue ->
+                currentValue.copy(
+                    chuTokenCacheStat = if (chuStat) "可上传" else "无缓存",
+                    maiTokenCacheStat = if (maiStat) "可上传" else "无缓存",
+                    canPerformChuQuickUpload = chuStat,
+                    canPerformMaiQuickUpload = maiStat
+                )
+            }
+        }
+    }
+
     fun prepareVPN(context: Context): Intent? {
         VpnService.prepare(context)?.also {
             // Fisrt time
@@ -190,6 +210,18 @@ class UpdaterViewModel : ViewModel() {
         } catch (e: Exception) {
             // No WeChat?
             Toast.makeText(context, "无法打开微信，请检查权限或是否已安装", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    suspend fun triggerQuickUpload(game: Int, shouldForward: Boolean): Boolean {
+        try {
+            if (CFQServer.apiIsUploading(game, token)) { return false }
+
+            CFQServer.apiTriggerQuickUpload(game, shouldForward, token)
+            return true
+        } catch (e: Exception) {
+            Log.e("Updater", "Failed to trigger quick upload, error: $e")
+            return false
         }
     }
 

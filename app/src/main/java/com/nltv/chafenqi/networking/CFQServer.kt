@@ -176,6 +176,40 @@ class CFQServer {
             return response.bodyAsText()
         }
 
+        suspend fun apiIsUploading(gameType: Int, authToken: String): Boolean {
+            val response = fetchFromServer(
+                "GET",
+                "api/user/isUploading",
+                queries = mapOf("dest" to gameType.toString()),
+                token = authToken,
+                shouldHandleErrorCode = false
+            )
+            return response.status.value == 200
+        }
+
+        suspend fun apiHasTokenCache(gameType: Int, authToken: String): Boolean {
+            val response = fetchFromServer(
+                "GET",
+                "api/user/hasCache",
+                queries = mapOf("dest" to gameType.toString()),
+                token = authToken,
+                shouldHandleErrorCode = false
+            )
+            return response.status.value == 200
+        }
+
+        suspend fun apiTriggerQuickUpload(gameType: Int, shouldForward: Boolean, authToken: String) {
+            fetchFromServer(
+                "POST",
+                "api/quick_upload",
+                payload = hashMapOf(
+                    "dest" to gameType,
+                    "forwarding" to if (shouldForward) 1 else 0
+                ),
+                token = authToken
+            )
+        }
+
         suspend fun apiMaimai(contentTag: String, authToken: String): String = fetchFromServer(
             "GET",
             path = "api/maimai/$contentTag",

@@ -56,7 +56,7 @@ fun UpdaterQRCodePage() {
     val pagerState = rememberPagerState { 2 }
     val store = SettingsStore(context)
     
-    val shouldForward by store.shouldForward.collectAsState(initial = false)
+    val shouldForward by store.uploadShouldForward.collectAsState(initial = false)
 
     val maiQrCodePainter = rememberQrCodePainter(model.buildUri(1, shouldForward)) {
         logo {
