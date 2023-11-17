@@ -38,7 +38,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.nltv.chafenqi.R
-import com.nltv.chafenqi.view.AppViewModelProvider
 
 val nameplateChunithmTopColor = Color(red = 254, green = 241, blue = 65)
 val nameplateChunithmBottomColor = Color(red = 243, green = 200, blue = 48)
@@ -48,7 +47,7 @@ val nameplateMaimaiBottomColor = Color(red = 93, green = 166, blue = 247)
 
 @Composable
 fun HomePageNameplate(navController: NavController) {
-    val model: HomePageViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    val model: HomePageViewModel = viewModel()
     val uiState by model.uiState.collectAsState()
 
     Box {
@@ -68,7 +67,7 @@ fun HomePageNameplate(navController: NavController) {
 
 @Composable
 fun HomePageMaimaiNameplate(navController: NavController) {
-    val model: HomePageViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    val model: HomePageViewModel = viewModel()
     val uiState by model.uiState.collectAsState()
     var showEmptyDataAlert by remember {
         mutableStateOf(false)
@@ -158,7 +157,7 @@ fun HomePageMaimaiNameplate(navController: NavController) {
 
 @Composable
 fun HomePageChunithmNameplate(navController: NavController) {
-    val model: HomePageViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    val model: HomePageViewModel = viewModel()
     val uiState by model.uiState.collectAsState()
     var showEmptyDataAlert by remember {
         mutableStateOf(false)

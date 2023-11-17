@@ -44,6 +44,7 @@ import com.michaelflisar.composepreferences.core.PreferenceScreen
 import com.michaelflisar.composepreferences.core.PreferenceSectionHeader
 import com.michaelflisar.composepreferences.core.classes.PreferenceSettingsDefaults
 import com.michaelflisar.composepreferences.core.hierarchy.PreferenceRootScope
+import com.michaelflisar.composepreferences.screen.bool.PreferenceBool
 import com.michaelflisar.composepreferences.screen.button.PreferenceButton
 import com.michaelflisar.composepreferences.screen.list.PreferenceList
 import com.nltv.chafenqi.BuildConfig
@@ -183,14 +184,13 @@ fun PreferenceRootScope.SettingsHomeGroup() {
     val scope = rememberCoroutineScope()
     val store = SettingsStore(context)
     val homeDefaultGame by store.homeDefaultGame.collectAsStateWithLifecycle(initialValue = 1)
+    val homeShowRefreshButton by store.homeShowRefreshButton.collectAsStateWithLifecycle(initialValue = false)
 
     PreferenceSectionHeader(title = { Text(text = "主页") })
     PreferenceList(
         value = homeDefaultGame,
         onValueChange = { newValue ->
-            scope.launch {
-                store.setHomeDefaultGame(newValue)
-            }
+            scope.launch { store.setHomeDefaultGame(newValue) }
         },
         items = listOf(0, 1),
         itemTextProvider = { index -> GAME_LIST[index] },
@@ -198,6 +198,14 @@ fun PreferenceRootScope.SettingsHomeGroup() {
         subtitle = { Text(text = "设置登录后显示的游戏") },
         icon = { Icon(imageVector = Icons.Default.VideogameAsset, contentDescription = "默认游戏") },
         style = PreferenceList.Style.Spinner
+    )
+    PreferenceBool(
+        value = homeShowRefreshButton,
+        onValueChange = { newValue ->
+            scope.launch { store.setHomeShowRefreshButton(newValue) }
+        },
+        title = { Text(text = "显示刷新按钮") },
+        subtitle = { Text(text = "无法下拉刷新时可以使用") }
     )
 }
 

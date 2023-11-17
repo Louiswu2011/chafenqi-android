@@ -168,4 +168,5 @@ dependencies {
     implementation("com.patrykandpatrick.vico:compose-m3:1.12.0")
     implementation("io.github.alexzhirkevich:qrose:1.0.0-beta02")
     implementation("com.github.MFlisar:ComposePreferences:0.3")
+    implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
 }

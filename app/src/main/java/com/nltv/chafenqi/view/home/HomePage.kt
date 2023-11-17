@@ -14,6 +14,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.Warning
@@ -33,11 +34,13 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.nltv.chafenqi.LocalUserState
@@ -53,7 +56,9 @@ fun HomePage(navController: NavController) {
     val scrollState = rememberScrollState()
     val userState = LocalUserState.current
     val context = LocalContext.current
-
+    val store = SettingsStore(context)
+    val homeShowRefreshButton by store.homeShowRefreshButton.collectAsStateWithLifecycle(initialValue = false)
+    
     val refreshState = rememberPullRefreshState(refreshing = userState.isRefreshing, onRefresh = { model.refreshUserData(userState) }, refreshThreshold = 120.dp)
 
     LaunchedEffect(Unit) {
@@ -76,6 +81,11 @@ fun HomePage(navController: NavController) {
                     titleContentColor = MaterialTheme.colorScheme.primary
                 ),
                 actions = {
+                    if (homeShowRefreshButton) {
+                        IconButton(onClick = { model.refreshUserData(userState) }) {
+                            Icon(imageVector = Icons.Default.Refresh, contentDescription = "刷新")
+                        }
+                    }
                     IconButton(onClick = { model.switchGame() }) {
                         Icon(imageVector = Icons.Default.SwapHoriz, contentDescription = "切换游戏")
                     }

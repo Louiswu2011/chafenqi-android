@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -15,6 +16,7 @@ class SettingsStore(private val context: Context) {
         val Context.settingsStore: DataStore<Preferences> by preferencesDataStore(name = "settingsStore")
         private val shouldForwardKey = booleanPreferencesKey("shouldForward")
         private val homeDefaultGameKey = intPreferencesKey("homeDefaultGame")
+        private val homeShowRefreshButtonKey = booleanPreferencesKey("homeShowRefreshButton")
     }
 
     var shouldForward: Flow<Boolean> =
@@ -28,5 +30,11 @@ class SettingsStore(private val context: Context) {
         private set
     suspend fun setHomeDefaultGame(value: Int) {
         context.settingsStore.edit { it[homeDefaultGameKey] = value }
+    }
+
+    var homeShowRefreshButton: Flow<Boolean> = context.settingsStore.data.map { it[homeShowRefreshButtonKey] ?: false }
+        private set
+    suspend fun setHomeShowRefreshButton(value: Boolean) {
+        context.settingsStore.edit { it[homeShowRefreshButtonKey] = value }
     }
 }
