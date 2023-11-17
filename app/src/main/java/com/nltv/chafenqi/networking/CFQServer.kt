@@ -1,6 +1,7 @@
 package com.nltv.chafenqi.networking
 
 import android.util.Log
+import com.nltv.chafenqi.data.VersionData
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -78,6 +79,20 @@ class CFQServer {
                 handleErrorCode(response.bodyAsText())
             }
             return response
+        }
+
+        suspend fun apiFetchLatestVersion(): VersionData {
+            return try {
+                val deserializer = Json { ignoreUnknownKeys = true }
+                val responseText = fetchFromServer(
+                    "GET",
+                    "api/stats/version"
+                ).bodyAsText()
+                deserializer.decodeFromString(responseText)
+            } catch (e: Exception) {
+                Log.e("CFQServer", "Failed to obtain latest version data, error: $e")
+                VersionData()
+            }
         }
 
         suspend fun authLogin(username: String, password: String): String {

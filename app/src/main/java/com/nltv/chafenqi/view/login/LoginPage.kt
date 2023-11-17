@@ -285,7 +285,7 @@ fun LoginField(model: LoginPageViewModel) {
                 registerMode = !registerMode
             }
         ) {
-            Text(text = if (!registerMode) "注册新账号" else "登录已有账号", color = MaterialTheme.colorScheme.primary)
+            Text(text = if (!registerMode) "新用户注册" else "登录已有账号", color = MaterialTheme.colorScheme.primary)
         }
         /*TextButton(
             onClick = {

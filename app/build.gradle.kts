@@ -125,6 +125,10 @@ android {
     }
 }
 
+task("bumpServerBuildVersion") {
+
+}
+
 val ktorVersion = "2.3.6"
 
 dependencies {
@@ -165,7 +169,7 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     implementation("androidx.compose.material:material:1.5.4")
-    implementation("com.patrykandpatrick.vico:compose-m3:1.12.0")
+    implementation("com.github.tehras:charts:0.2.4-alpha")
     implementation("io.github.alexzhirkevich:qrose:1.0.0-beta02")
     implementation("com.github.MFlisar:ComposePreferences:0.3")
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")

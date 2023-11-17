@@ -14,11 +14,19 @@ class SettingsStore(private val context: Context) {
     companion object {
         val Context.settingsStore: DataStore<Preferences> by preferencesDataStore(name = "settingsStore")
 
+        private val loginBiometricEnabledKey = booleanPreferencesKey("loginBiometricEnabled")
+
         private val uploadShouldForwardKey = booleanPreferencesKey("uploadShouldForward")
         private val uploadShouldAutoJumpKey = booleanPreferencesKey("uploadShouldAutoJump")
 
         private val homeDefaultGameKey = intPreferencesKey("homeDefaultGame")
         private val homeShowRefreshButtonKey = booleanPreferencesKey("homeShowRefreshButton")
+    }
+
+    var loginBiometricEnabled: Flow<Boolean> = context.settingsStore.data.map { it[loginBiometricEnabledKey] ?: false }
+        private set
+    suspend fun setLoginBiometricEnabled(value: Boolean) {
+        context.settingsStore.edit { it[loginBiometricEnabledKey] = value }
     }
 
     var uploadShouldForward: Flow<Boolean> = context.settingsStore.data.map { it[uploadShouldForwardKey] ?: false }

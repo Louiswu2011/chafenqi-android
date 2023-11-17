@@ -173,8 +173,8 @@ fun PreferenceRootScope.SettingsUserGroup(navController: NavController) {
         onClick = {
             model.showLogoutAlert = true
         },
-        title = { Text("登出") },
-        icon = { Icon(imageVector = Icons.Default.Logout, contentDescription = "登出") }
+        title = { Text("登出", color = MaterialTheme.colorScheme.error) },
+        icon = { Icon(imageVector = Icons.Default.Logout, contentDescription = "登出", tint = MaterialTheme.colorScheme.error) }
     )
 }
 
