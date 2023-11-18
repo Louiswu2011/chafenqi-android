@@ -14,7 +14,6 @@ import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ScubaDiving
 import androidx.compose.material.icons.filled.Token
-import androidx.compose.material.icons.filled.Update
 import androidx.compose.material.icons.filled.VideogameAsset
 import androidx.compose.material.icons.filled.WorkspacePremium
 import androidx.compose.material3.Card

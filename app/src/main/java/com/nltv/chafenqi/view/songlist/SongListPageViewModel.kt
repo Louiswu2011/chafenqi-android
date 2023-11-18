@@ -20,14 +20,14 @@ import kotlinx.coroutines.flow.stateIn
 class SongListPageViewModel: ViewModel() {
     val user = CFQUser
 
-    private val maiMusicList = CFQPersistentData.Maimai.musicList
-    private val chuMusicList = CFQPersistentData.Chunithm.musicList
+    val maiMusicList = CFQPersistentData.Maimai.musicList
+    val chuMusicList = CFQPersistentData.Chunithm.musicList
 
     var searchQuery by mutableStateOf("")
         private set
     var isSearchBarActive by mutableStateOf(false)
 
-    val maiSearchFlow = flowOf(maiMusicList)
+    private val maiSearchFlow = flowOf(maiMusicList)
     val maiSearchResult: StateFlow<List<MaimaiMusicEntry>> =
         snapshotFlow { searchQuery }
             .combine(maiSearchFlow) { query, musicList ->
@@ -47,7 +47,7 @@ class SongListPageViewModel: ViewModel() {
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLS)
             )
 
-    val chuSearchFlow = flowOf(chuMusicList)
+    private val chuSearchFlow = flowOf(chuMusicList)
     val chuSearchResult: StateFlow<List<ChunithmMusicEntry>> =
         snapshotFlow { searchQuery }
             .combine(chuSearchFlow) { query, musicList ->

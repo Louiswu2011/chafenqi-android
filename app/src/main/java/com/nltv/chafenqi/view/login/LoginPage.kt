@@ -62,7 +62,6 @@ import com.nltv.chafenqi.networking.CredentialsMismatchException
 import com.nltv.chafenqi.networking.UserNotFoundException
 import com.nltv.chafenqi.networking.UsernameOccupiedException
 import com.nltv.chafenqi.storage.datastore.user.SettingsStore
-import com.nltv.chafenqi.storage.datastore.user.SettingsStore.Companion.settingsStore
 import kotlinx.coroutines.launch
 
 @Composable

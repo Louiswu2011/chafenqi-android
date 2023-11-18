@@ -3,8 +3,6 @@ package com.nltv.chafenqi.view.songlist.record
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,7 +20,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.github.tehras.charts.line.LineChart
 import com.github.tehras.charts.line.LineChartData
-import com.github.tehras.charts.line.renderer.line.LineDrawer
 import com.github.tehras.charts.line.renderer.line.SolidLineDrawer
 import com.github.tehras.charts.line.renderer.line.SolidLineShader
 import com.github.tehras.charts.line.renderer.point.FilledCircularPointDrawer

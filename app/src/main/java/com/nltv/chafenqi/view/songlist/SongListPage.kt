@@ -2,7 +2,6 @@ package com.nltv.chafenqi.view.songlist
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,13 +17,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowUpward
-import androidx.compose.material.icons.filled.BrowserUpdated
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Divider
@@ -40,10 +37,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,8 +45,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -200,7 +192,7 @@ fun SongListSearchBar(navController: NavController) {
                             ) { index ->
                                 ChunithmMusicListEntry(
                                     music = chuSearchResult[index],
-                                    index = index,
+                                    index = -1,
                                     navController = navController
                                 )
                             }
@@ -227,7 +219,7 @@ fun SongListSearchBar(navController: NavController) {
                             ) { index ->
                                 MaimaiMusicListEntry(
                                     music = maiSearchResult[index],
-                                    index = index,
+                                    index = -1,
                                     navController = navController
                                 )
                             }
@@ -264,12 +256,19 @@ fun SongListSearchEmptyState(
 
 @Composable
 fun MaimaiMusicListEntry(music: MaimaiMusicEntry, index: Int, navController: NavController) {
+    val model: SongListPageViewModel = viewModel()
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(96.dp)
             .padding(vertical = 8.dp)
             .clickable {
+                if (index == -1) {
+                    val listIndex = model.maiMusicList.indexOf(music)
+                    navController.navigate(HomeNavItem.SongList.route + "/maimai/$listIndex")
+                    return@clickable
+                }
                 navController.navigate(HomeNavItem.SongList.route + "/maimai/$index")
             },
         verticalAlignment = Alignment.CenterVertically,
@@ -310,12 +309,18 @@ fun MaimaiMusicListEntry(music: MaimaiMusicEntry, index: Int, navController: Nav
 
 @Composable
 fun ChunithmMusicListEntry(music: ChunithmMusicEntry, index: Int, navController: NavController) {
+    val model: SongListPageViewModel = viewModel()
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(96.dp)
             .padding(vertical = 8.dp)
             .clickable {
+                if (index == -1) {
+                    val listIndex = model.chuMusicList.indexOf(music)
+                    navController.navigate(HomeNavItem.SongList.route + "/chunithm/$listIndex")
+                }
                 navController.navigate(HomeNavItem.SongList.route + "/chunithm/$index")
             },
         verticalAlignment = Alignment.CenterVertically,
