@@ -53,7 +53,7 @@ class RecentDetailPageViewModel : ViewModel() {
 
     fun update(mode: Int, index: Int) {
         this.mode = mode
-        if (mode == 0 && CFQPersistentData.Chunithm.musicList.isNotEmpty()) {
+        if (mode == 0 && CFQPersistentData.Chunithm.musicList.isNotEmpty() && CFQUser.chunithm.recent.isNotEmpty()) {
             chuEntry = CFQUser.chunithm.recent[index]
             chuMusic =
                 CFQPersistentData.Chunithm.musicList.firstOrNull { it.musicID.toString() == chuEntry?.idx }
@@ -69,7 +69,7 @@ class RecentDetailPageViewModel : ViewModel() {
             chuMusicEntryIndex =
                 CFQPersistentData.Chunithm.musicList.indexOf(chuMusic ?: ChunithmMusicEntry())
             canNavigate = chuMusicEntryIndex != -1
-        } else if (mode == 1 && CFQPersistentData.Maimai.musicList.isNotEmpty()) {
+        } else if (mode == 1 && CFQPersistentData.Maimai.musicList.isNotEmpty() && CFQUser.maimai.recent.isNotEmpty()) {
             maiEntry = CFQUser.maimai.recent[index]
             maiMusic =
                 CFQPersistentData.Maimai.musicList.firstOrNull { it.title == maiEntry?.title }
