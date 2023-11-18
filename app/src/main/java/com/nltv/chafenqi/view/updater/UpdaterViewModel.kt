@@ -21,6 +21,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.UriHandler
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.CFQUser
 import com.nltv.chafenqi.updater.ChafenqiProxy
@@ -198,6 +200,7 @@ class UpdaterViewModel : ViewModel() {
         } catch (e: Exception) {
             // No WeChat?
             Log.e("Updater", "Cannot jump to WeChat, error: $e")
+            Firebase.crashlytics.recordException(e)
             Toast.makeText(context, "无法打开微信，请检查权限或是否已安装", Toast.LENGTH_LONG).show()
         }
     }
@@ -209,6 +212,7 @@ class UpdaterViewModel : ViewModel() {
             uriHandler.openUri("weixin://")
         } catch (e: Exception) {
             // No WeChat?
+            Log.e("Updater", "Cannot jump to WeChat, error: $e")
             Toast.makeText(context, "无法打开微信，请检查权限或是否已安装", Toast.LENGTH_LONG).show()
         }
     }

@@ -45,8 +45,10 @@ import com.nltv.chafenqi.SCREEN_PADDING
 import com.nltv.chafenqi.extension.rating
 import com.nltv.chafenqi.extension.toChunithmCoverPath
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
+import com.nltv.chafenqi.extension.toRateString
 import com.nltv.chafenqi.util.getChunithmCardGradientStop
 import com.nltv.chafenqi.util.getMaimaiCardGradientStop
+import com.nltv.chafenqi.view.module.RatingBadge
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
 import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
 
@@ -278,7 +280,7 @@ fun HomePageMaimaiRatingSelection(navController: NavController) {
                         fontWeight = FontWeight.Bold
                     )
                 }
-                Text(text = "评价")
+                RatingBadge(rate = uiState.maiCurrentSelectedRatingEntry.rateString)
             }
             Row(
                 Modifier.fillMaxWidth(),
@@ -359,7 +361,7 @@ fun HomePageChunithmRatingSelection(navController: NavController) {
                         fontWeight = FontWeight.Bold
                     )
                 }
-                Text(text = "评价")
+                RatingBadge(rate = uiState.chuCurrentSelectedRatingEntry.score.toRateString())
             }
             Row(
                 Modifier.fillMaxWidth(),

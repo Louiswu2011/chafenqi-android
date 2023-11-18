@@ -140,7 +140,6 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
-    implementation("com.google.firebase:firebase-crashlytics:18.5.1")
     implementation("com.google.firebase:firebase-analytics:21.5.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -162,10 +161,8 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("com.onesignal:OneSignal:[5.0.0, 5.99.99]")
 
-    implementation("com.google.firebase:firebase-appdistribution-api-ktx:16.0.0-beta11")
-
-    // ADD the full SDK implementation to the "beta" variant only (example)
-    debugImplementation("com.google.firebase:firebase-appdistribution:16.0.0-beta11")
+    implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
+    implementation("com.google.firebase:firebase-crashlytics")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     implementation("androidx.compose.material:material:1.5.4")

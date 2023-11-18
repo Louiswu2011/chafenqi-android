@@ -43,6 +43,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
 import com.nltv.chafenqi.LocalUserState
 import com.nltv.chafenqi.SCREEN_PADDING
 import com.nltv.chafenqi.storage.datastore.user.SettingsStore
@@ -63,6 +65,7 @@ fun HomePage(navController: NavController) {
 
     LaunchedEffect(Unit) {
         scope.launch {
+            Firebase.crashlytics.setUserId(model.user.username)
             model.saveCredentialsToCache(context)
         }
     }

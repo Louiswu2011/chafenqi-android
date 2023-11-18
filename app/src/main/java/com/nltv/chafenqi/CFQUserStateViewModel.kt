@@ -6,6 +6,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.CFQUser
 import kotlinx.coroutines.Dispatchers
@@ -19,6 +21,7 @@ class CFQUserStateViewModel : ViewModel() {
 
     fun logout() {
         user.clearProfile()
+        Firebase.crashlytics.setUserId("")
         isLoggedIn = false
     }
 
