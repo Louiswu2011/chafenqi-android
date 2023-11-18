@@ -17,6 +17,8 @@ import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiExtraInfo
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiUserInfo
 import com.nltv.chafenqi.storage.`object`.CFQPersistentData
+import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
+import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import com.onesignal.OneSignal
 import java.time.Instant
 import java.time.ZoneId
@@ -81,6 +83,8 @@ object CFQUser {
                 recent.forEach {
                     it.associatedMusicEntry = it.associatedMusicEntry()
                 }
+                best = best.filterNot { it.associatedMusicEntry == MaimaiMusicEntry() }
+                recent = recent.filterNot { it.associatedMusicEntry == MaimaiMusicEntry() }
 
                 val pastList = CFQPersistentData.Maimai.musicList.filter { !it.basicInfo.isNew }
                 val (pastBest, newBest) = best.partition { bestEntry ->
@@ -182,6 +186,9 @@ object CFQUser {
                 rating.forEach {
                     it.associatedMusicEntry = it.associatedMusicEntry()
                 }
+                best.filterNot { it.associatedMusicEntry == ChunithmMusicEntry() }
+                recent.filterNot { it.associatedMusicEntry == ChunithmMusicEntry() }
+                rating.filterNot { it.associatedMusicEntry == ChunithmMusicEntry() }
 
                 val (bestSlice, otherSlice) = rating.partition { it.type == "best" }
                 val recentSlice = otherSlice.filter { it.type == "recent" }
