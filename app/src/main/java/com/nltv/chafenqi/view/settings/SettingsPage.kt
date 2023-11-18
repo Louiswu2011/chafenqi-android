@@ -8,6 +8,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CardGiftcard
 import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material.icons.filled.Code
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Logout
@@ -63,6 +65,10 @@ fun SettingsPage(navController: NavController) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val userState = LocalUserState.current
+
+    LaunchedEffect(Unit) {
+        model.getCoilDiskCacheSize(context)
+    }
 
     if (model.showLogoutAlert) {
         LogoutAlertDialog(onDismissRequest = { model.showLogoutAlert = false }) {
@@ -214,6 +220,7 @@ fun PreferenceRootScope.SettingsHomeGroup() {
 @Composable
 fun PreferenceRootScope.SettingsAdvancedGroup() {
     val model: SettingsPageViewModel = viewModel()
+    val context = LocalContext.current
     var showJwtToken by remember { mutableStateOf(false) }
 
     PreferenceSectionHeader(title = { Text(text = "高级", color = MaterialTheme.colorScheme.error) })
@@ -221,6 +228,26 @@ fun PreferenceRootScope.SettingsAdvancedGroup() {
         onClick = { model.showReloadListAlert = true },
         title = { Text(text = "刷新歌曲列表") },
         icon = { Icon(imageVector = Icons.Default.List, contentDescription = "刷新歌曲列表") }
+    )
+    PreferenceButton(
+        onClick = {
+            try {
+                model.clearCoilCache(context)
+            } catch (e: Exception) {
+                Log.e("SettingsPage", "Cannot clear coil cache, error: $e")
+                Toast.makeText(context, "无法清除缓存，请稍后重试", Toast.LENGTH_SHORT).show()
+            }
+        },
+        title = { Text(text = "清空图片缓存") },
+        subtitle = {
+            val sizeString = model.diskCacheSize
+            if (sizeString.isNotEmpty()) {
+                Text(text = "当前占用：$sizeString")
+            } else {
+                Text(text = "暂无缓存")
+            }
+        },
+        icon = { Icon(imageVector = Icons.Default.Delete, contentDescription = "清除图片缓存") }
     )
     PreferenceButton(
         onClick = { showJwtToken = !showJwtToken },
@@ -270,7 +297,8 @@ fun PreferenceRootScope.SettingsAboutGroup(navController: NavController) {
             }
         },
         title = { Text(text = "前往Github") },
-        subtitle = { Text(text = "查看App代码") }
+        subtitle = { Text(text = "查看App代码") },
+        icon = { Icon(imageVector = Icons.Default.Code, contentDescription = "前往Github") }
     )
     /*PreferenceButton(
         onClick = {

@@ -9,6 +9,9 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import coil.annotation.ExperimentalCoilApi
+import coil.imageLoader
+import coil.util.CoilUtils
 import com.nltv.chafenqi.BuildConfig
 import com.nltv.chafenqi.cacheStore
 import com.nltv.chafenqi.networking.CFQServer
@@ -53,6 +56,7 @@ class SettingsPageViewModel : ViewModel() {
     var showReloadListAlert by mutableStateOf(false)
 
     var isReloadingList by mutableStateOf(false)
+    var diskCacheSize by mutableStateOf("")
 
     val user = CFQUser
     val username = user.username
@@ -111,6 +115,29 @@ class SettingsPageViewModel : ViewModel() {
         } catch (e: Exception) {
             Log.e("SettingsPageViewModel", "Failed to save credentials to cache.")
             false
+        }
+    }
+
+    @OptIn(ExperimentalCoilApi::class)
+    fun clearCoilCache(context: Context) {
+        val imageLoader = context.imageLoader
+        val diskCache = imageLoader.diskCache
+        val memoryCache = imageLoader.memoryCache
+
+        diskCache?.clear()
+        memoryCache?.clear()
+        getCoilDiskCacheSize(context)
+    }
+
+    @OptIn(ExperimentalCoilApi::class)
+    fun getCoilDiskCacheSize(context: Context) {
+        val diskCache = context.imageLoader.diskCache
+        diskCacheSize = when (val sizeInBytes = diskCache?.size ?: 0) {
+            in 1..1024 -> { "${sizeInBytes}B" }
+            in 1025..1024 * 1024 -> { "${String.format("%.2f", sizeInBytes / 1024f)}KB" }
+            in 1024 * 1024 + 1..1024 * 1024 * 1024 -> { "${String.format("%.2f", sizeInBytes / 1024f / 1024f)}MB" }
+            in 1024 * 1024 * 1024 + 1..Long.MAX_VALUE -> { "${String.format("%.2f", sizeInBytes / 1024f / 1024f / 1024f)}GB" }
+            else -> { "" }
         }
     }
 

@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
@@ -25,6 +26,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import coil.Coil
+import coil.ImageLoader
+import coil.disk.DiskCache
+import coil.memory.MemoryCache
 import com.nltv.chafenqi.ui.theme.ChafenqiTheme
 import com.nltv.chafenqi.view.home.HomeNavItem
 import com.nltv.chafenqi.view.home.HomePage
@@ -74,8 +79,24 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ChafenqiApp() {
     val navController = rememberNavController()
-
+    val context = LocalContext.current
     val userState = LocalUserState.current
+    val imageLoader = ImageLoader.Builder(context)
+        .memoryCache {
+            MemoryCache.Builder(context)
+                .maxSizePercent(0.25)
+                .build()
+        }
+        .diskCache {
+            DiskCache.Builder()
+                .maxSizePercent(0.05)
+                .directory(context.cacheDir.resolve("cover_cache"))
+                .build()
+        }
+        .crossfade(true)
+        .build()
+
+    Coil.setImageLoader(imageLoader)
 
     ChafenqiTheme {
         // A surface container using the 'background' color from the theme
