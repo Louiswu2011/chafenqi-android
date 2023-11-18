@@ -22,35 +22,42 @@ class FishServer {
         }
 
         suspend fun getUserToken(username: String, password: String): String {
-            val response =
-                CFQServer.client.post {
-                    url("https://www.diving-fish.com/api/maimaidxprober/login")
-                    contentType(ContentType.Application.Json)
-                    accept(ContentType.Application.Json)
-                    setBody(hashMapOf(
-                        "username" to username,
-                        "password" to password
-                    ))
-                    contentLength()
+            try {
+                val response =
+                    CFQServer.client.post {
+                        url("https://www.diving-fish.com/api/maimaidxprober/login")
+                        contentType(ContentType.Application.Json)
+                        accept(ContentType.Application.Json)
+                        setBody(
+                            hashMapOf(
+                                "username" to username,
+                                "password" to password
+                            )
+                        )
+                        contentLength()
+                    }
+
+                if (response.status.value == 401) {
+                    return ""
                 }
 
-            if (response.status.value == 401) {
-                return ""
-            }
+                val cookies = response.headers["Set-Cookie"] ?: ""
+                if (cookies.isEmpty()) {
+                    Log.e("FishServer", "Set-Cookie is empty :(")
+                    return ""
+                }
+                val tokenComponent = cookies.split(";")[0]
+                val token = tokenComponent.substringAfter("=", "")
+                if (token.isEmpty()) {
+                    Log.e("FishServer", "Cannot parse token component $tokenComponent")
+                    return ""
+                }
 
-            val cookies = response.headers["Set-Cookie"] ?: ""
-            if (cookies.isEmpty()) {
-                Log.e("FishServer", "Set-Cookie is empty :(")
+                return token
+            } catch (e: Exception) {
+                Log.e("FishServer", "Cannot get fish token, error: $e")
                 return ""
             }
-            val tokenComponent = cookies.split(";")[0]
-            val token = tokenComponent.substringAfter("=", "")
-            if (token.isEmpty()) {
-                Log.e("FishServer", "Cannot parse token component $tokenComponent")
-                return ""
-            }
-
-            return token
         }
 
         suspend fun checkTokenValidity(fishToken: String): Boolean {
