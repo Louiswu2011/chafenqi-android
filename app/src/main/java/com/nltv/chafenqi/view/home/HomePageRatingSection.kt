@@ -197,7 +197,7 @@ fun HomePageRatingIndicators() {
 }
 
 @Composable
-fun HomePageRatingSelection() {
+fun HomePageRatingSelection(navController: NavController) {
     val model = viewModel<HomePageViewModel>()
     val uiState by model.uiState.collectAsState()
 
@@ -211,25 +211,28 @@ fun HomePageRatingSelection() {
     ) {
         when (it) {
             0 -> {
-                HomePageChunithmRatingSelection()
+                HomePageChunithmRatingSelection(navController)
             }
 
             1 -> {
-                HomePageMaimaiRatingSelection()
+                HomePageMaimaiRatingSelection(navController)
             }
         }
     }
 }
 
 @Composable
-fun HomePageMaimaiRatingSelection() {
+fun HomePageMaimaiRatingSelection(navController: NavController) {
     val model = viewModel<HomePageViewModel>()
     val uiState by model.uiState.collectAsState()
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(64.dp),
+            .height(64.dp)
+            .clickable {
+                model.navigateToMusicEntry(uiState.maiCurrentSelectedRatingEntry, navController)
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -301,14 +304,17 @@ fun HomePageMaimaiRatingSelection() {
 }
 
 @Composable
-fun HomePageChunithmRatingSelection() {
+fun HomePageChunithmRatingSelection(navController: NavController) {
     val model = viewModel<HomePageViewModel>()
     val uiState by model.uiState.collectAsState()
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(64.dp),
+            .height(64.dp)
+            .clickable {
+                model.navigateToMusicEntry(uiState.chuCurrentSelectedRatingEntry, navController)
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

@@ -18,6 +18,7 @@ import com.nltv.chafenqi.storage.ChunithmRecentLineup
 import com.nltv.chafenqi.storage.MaimaiRecentLineup
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRatingEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiBestScoreEntry
+import com.nltv.chafenqi.storage.`object`.CFQPersistentData
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -256,5 +257,25 @@ class HomePageViewModel(
             Log.e(tag, "Failed to save credentials to cache.")
             false
         }
+    }
+
+    fun navigateToMusicEntry(bestEntry: MaimaiBestScoreEntry, navController: NavController) {
+        if (CFQPersistentData.Maimai.musicList.isEmpty()) return
+
+        val maiMusicEntryIndex =
+            CFQPersistentData.Maimai.musicList.indexOf(bestEntry.associatedMusicEntry)
+        if (maiMusicEntryIndex < 0) return
+
+        navController.navigate(HomeNavItem.SongList.route + "/maimai/$maiMusicEntryIndex")
+    }
+
+    fun navigateToMusicEntry(ratingEntry: ChunithmRatingEntry, navController: NavController) {
+        if (CFQPersistentData.Chunithm.musicList.isEmpty()) return
+
+        val chuMusicEntryIndex =
+            CFQPersistentData.Chunithm.musicList.indexOf(ratingEntry.associatedMusicEntry)
+        if (chuMusicEntryIndex < 0) return
+
+        navController.navigate(HomeNavItem.SongList.route + "/chunithm/$chuMusicEntryIndex")
     }
 }

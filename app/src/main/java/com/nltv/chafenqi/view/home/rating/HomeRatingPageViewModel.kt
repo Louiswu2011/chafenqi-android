@@ -65,6 +65,6 @@ class HomeRatingPageViewModel : ViewModel() {
             CFQPersistentData.Chunithm.musicList.indexOf(ratingEntry.associatedMusicEntry)
         if (chuMusicEntryIndex < 0) return
 
-        navController.navigate(HomeNavItem.SongList.route + "/maimai/$chuMusicEntryIndex")
+        navController.navigate(HomeNavItem.SongList.route + "/chunithm/$chuMusicEntryIndex")
     }
 }

@@ -62,7 +62,7 @@ class SongDetailViewModel : ViewModel() {
             coverUrl = "http://43.139.107.206:8083/api/chunithm/cover?musicId=${chuMusic?.musicID}"
             title = chuMusic?.title ?: ""
             artist = chuMusic?.artist ?: ""
-            constants = chuMusic?.charts?.constants?.map { String.format("%.1f", it) } ?: listOf()
+            constants = chuMusic?.charts?.constants?.map { String.format("%.1f", it) }?.filterNot { it == "0.0" } ?: listOf()
             bpm = chuMusic?.bpm?.toString() ?: ""
             version = chuMusic?.from ?: ""
             genre = chuMusic?.genre ?: ""
