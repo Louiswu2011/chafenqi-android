@@ -29,7 +29,6 @@ import com.github.tehras.charts.line.renderer.point.FilledCircularPointDrawer
 import com.github.tehras.charts.line.renderer.xaxis.SimpleXAxisDrawer
 import com.github.tehras.charts.line.renderer.yaxis.SimpleYAxisDrawer
 import com.github.tehras.charts.piechart.animation.simpleChartAnimation
-import com.nltv.chafenqi.extension.rememberMarker
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
