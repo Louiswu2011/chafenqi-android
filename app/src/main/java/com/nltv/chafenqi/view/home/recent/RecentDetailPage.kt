@@ -36,6 +36,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.nltv.chafenqi.SCREEN_PADDING
+import com.nltv.chafenqi.view.module.RatingBadge
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -128,7 +129,7 @@ fun RecentDetailPage(
                     fontWeight = FontWeight.Bold,
                     fontSize = 24.sp
                 )
-                // TODO: Add rate badge
+                RatingBadge(rate = model.rateString)
             }
 
             if (mode == 0) {
@@ -248,7 +249,8 @@ fun RecentDetailChunithmScoreGrid() {
         Modifier.fillMaxWidth()
     ) {
         Row (
-            Modifier.padding(SCREEN_PADDING)
+            Modifier
+                .padding(SCREEN_PADDING)
                 .padding(horizontal = SCREEN_PADDING),
             horizontalArrangement = Arrangement.spacedBy(20.dp),
             verticalAlignment = Alignment.CenterVertically

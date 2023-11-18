@@ -115,6 +115,24 @@ fun Int.toRateString(): String = when (this) {
     else -> "D"
 }
 
+fun Float.toRateString(): String = when (this) {
+    in 0.0..49.9999 -> "D"
+    in 50.0000..59.0000 -> "C"
+    in 60.0000..69.9999 -> "B"
+    in 70.0000..74.9999 -> "BB"
+    in 75.0000..79.9999 -> "BBB"
+    in 80.0000..89.9999 -> "A"
+    in 90.0000..93.0000 -> "AA"
+    in 94.0000..96.9999 -> "AAA"
+    in 97.0000..97.9999 -> "S"
+    in 98.0000..98.9999 -> "S+"
+    in 99.0000..99.4999 -> "SS"
+    in 99.5000..99.9999 -> "SS+"
+    in 100.0000..100.4999 -> "SSS"
+    in 100.5000..101.0000 -> "SSS+"
+    else -> ""
+}
+
 fun Double.cutForRating(): Double {
     val df = DecimalFormat("#.##")
     df.roundingMode = RoundingMode.FLOOR

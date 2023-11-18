@@ -31,7 +31,7 @@ class RecentDetailPageViewModel : ViewModel() {
     var playDateString: String = ""
 
     var score: String = ""
-    var badge: String = ""
+    var rateString: String = ""
 
     val maiJudgeTexts = listOf("Critical", "Perfect", "Great", "Good", "Miss")
     var maiJudges: List<List<String>> = listOf()
@@ -64,7 +64,7 @@ class RecentDetailPageViewModel : ViewModel() {
             artist = chuMusic?.artist ?: ""
             playDateString = chuEntry?.timestamp?.toDateString() ?: ""
             score = chuEntry?.score.toString()
-            badge = chuEntry?.score?.toRateString() ?: ""
+            rateString = chuEntry?.score?.toRateString() ?: ""
 
             chuMusicEntryIndex =
                 CFQPersistentData.Chunithm.musicList.indexOf(chuMusic ?: ChunithmMusicEntry())
@@ -80,6 +80,7 @@ class RecentDetailPageViewModel : ViewModel() {
             artist = maiMusic?.basicInfo?.artist ?: ""
             playDateString = maiEntry?.timestamp?.toDateString() ?: ""
             score = String.format("%.4f", maiEntry?.achievements) + "%"
+            rateString = maiEntry?.achievements?.toRateString() ?: ""
 
             maiTap = maiEntry?.notesTap?.split(",") ?: listOf()
             maiHold = maiEntry?.notesHold?.split(",") ?: listOf()
