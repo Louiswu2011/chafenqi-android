@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ScubaDiving
 import androidx.compose.material.icons.filled.Token
+import androidx.compose.material.icons.filled.Update
 import androidx.compose.material.icons.filled.VideogameAsset
 import androidx.compose.material.icons.filled.WorkspacePremium
 import androidx.compose.material3.Card
@@ -259,6 +260,7 @@ fun PreferenceRootScope.SettingsAdvancedGroup() {
 
 @Composable
 fun PreferenceRootScope.SettingsAboutGroup(navController: NavController) {
+    val model: SettingsPageViewModel = viewModel()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val uriHandler = LocalUriHandler.current
@@ -268,6 +270,21 @@ fun PreferenceRootScope.SettingsAboutGroup(navController: NavController) {
         title = { Text(text = "版本") },
         subtitle = { Text(text = BuildConfig.VERSION_NAME) },
         icon = { Icon(imageVector = Icons.Default.Info, contentDescription = "版本") }
+    )
+    PreferenceButton(
+        onClick = {
+            scope.launch {
+                if (model.isAppVersionLatest()) {
+                    Toast.makeText(context, "已经是最新版本", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, "检测到新版本，请前往QQ群下载最新版本", Toast.LENGTH_LONG).show()
+                    // TODO: Add update confirm dialog
+                    // TODO: Auto download apk and install
+                }
+            }
+        },
+        title = { Text(text = "检查新版本") },
+        icon = { Icon(imageVector = Icons.Default.Update, contentDescription = "检查新版本") }
     )
     PreferenceButton(
         onClick = {
@@ -282,7 +299,7 @@ fun PreferenceRootScope.SettingsAboutGroup(navController: NavController) {
             }
         },
         title = { Text(text = "加入QQ群") },
-        subtitle = { Text(text = "进行反馈或交流") },
+        subtitle = { Text(text = "提供反馈或交流") },
         icon = { Icon(imageVector = Icons.Default.Chat, contentDescription = "加入QQ群") }
     )
     PreferenceButton(
@@ -300,15 +317,6 @@ fun PreferenceRootScope.SettingsAboutGroup(navController: NavController) {
         subtitle = { Text(text = "查看App代码") },
         icon = { Icon(imageVector = Icons.Default.Code, contentDescription = "前往Github") }
     )
-    /*PreferenceButton(
-        onClick = {
-            scope.launch {
-                uriHandler.openUri("http://43.139.107.206:8083/download/android/latest")
-            }
-        },
-        title = { Text(text = "检查新版本") },
-        icon = { Icon(imageVector = Icons.Default.Update, contentDescription = "检查新版本") }
-    )*/
     PreferenceButton(
         onClick = { navController.navigate(HomeNavItem.Home.route + "/settings/acknowledge") },
         title = { Text(text = "鸣谢") },

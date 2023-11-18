@@ -64,7 +64,13 @@ class SettingsPageViewModel : ViewModel() {
 
     suspend fun isAppVersionLatest(): Boolean {
         val versionData = CFQServer.apiFetchLatestVersion()
-        return versionData.isLatest(BuildConfig.VERSION_CODE.toString())
+        val fullVersionString = BuildConfig.VERSION_NAME
+        val versionCode = fullVersionString.split(" ")[0]
+        val buildNumber = fullVersionString.split(" ")[1]
+            .removePrefix("(")
+            .removeSuffix(")")
+            .toInt()
+        return versionData.isLatest(versionCode, buildNumber)
     }
 
     fun updateSponsorList() {

@@ -47,7 +47,7 @@ android {
         versionProperties["VERSION_BUILD"] = (versionProperties.getProperty("VERSION_BUILD").toInt() + 1).toString()
 
         versionProperties.store(versionFile.writer(), null)
-        mVersionName = "v$majorVersion.$minorVersion.${versionProperties.getProperty("VERSION_PATCH")}"
+        mVersionName = "$majorVersion.$minorVersion.${versionProperties.getProperty("VERSION_PATCH")}"
 
         defaultConfig {
             applicationId = "com.nltv.chafenqi"
