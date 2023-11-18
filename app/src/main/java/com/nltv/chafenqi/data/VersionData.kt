@@ -7,8 +7,7 @@ data class VersionData(
     val androidFullVersion: String = "",
     val androidBuild: String = ""
 ) {
-    fun isLatest(currentVersion: String, currentBuild: String): Boolean {
-        if (androidFullVersion != currentVersion) { return false }
+    fun isLatest(currentBuild: String): Boolean {
         if (androidBuild != currentBuild) { return false }
         return true
     }

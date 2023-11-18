@@ -9,6 +9,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nltv.chafenqi.BuildConfig
 import com.nltv.chafenqi.cacheStore
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.CFQUser
@@ -56,6 +57,11 @@ class SettingsPageViewModel : ViewModel() {
     val user = CFQUser
     val username = user.username
     val token = user.token
+
+    suspend fun isAppVersionLatest(): Boolean {
+        val versionData = CFQServer.apiFetchLatestVersion()
+        return versionData.isLatest(BuildConfig.VERSION_CODE.toString())
+    }
 
     fun updateSponsorList() {
         viewModelScope.launch {

@@ -35,6 +35,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -230,17 +231,24 @@ fun PreferenceRootScope.SettingsAdvancedGroup() {
 
 @Composable
 fun PreferenceRootScope.SettingsAboutGroup(navController: NavController) {
+    val scope = rememberCoroutineScope()
+    val uriHandler = LocalUriHandler.current
+
     PreferenceSectionHeader(title = { Text(text = "关于") })
     PreferenceInfo(
         title = { Text(text = "版本") },
         subtitle = { Text(text = BuildConfig.VERSION_NAME) },
         icon = { Icon(imageVector = Icons.Default.Info, contentDescription = "版本") }
     )
-    PreferenceButton(
-        onClick = { /*TODO*/ },
+    /*PreferenceButton(
+        onClick = {
+            scope.launch {
+                uriHandler.openUri("http://43.139.107.206:8083/download/android/latest")
+            }
+        },
         title = { Text(text = "检查新版本") },
         icon = { Icon(imageVector = Icons.Default.Update, contentDescription = "检查新版本") }
-    )
+    )*/
     PreferenceButton(
         onClick = { navController.navigate(HomeNavItem.Home.route + "/settings/acknowledge") },
         title = { Text(text = "鸣谢") },
