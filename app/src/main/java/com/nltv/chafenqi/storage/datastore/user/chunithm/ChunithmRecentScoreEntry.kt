@@ -46,17 +46,17 @@ data class ChunithmRecentScoreEntry(
 
     init {
         judges = mapOf(
-            "critical" to judgesCritical,
-            "justice" to judgesJustice,
-            "attack" to judgesAttack,
-            "miss" to judgesMiss
+            "Critical" to judgesCritical,
+            "Justice" to judgesJustice,
+            "Attack" to judgesAttack,
+            "Miss" to judgesMiss
         )
         notes = mapOf(
-            "tap" to notesTap,
-            "hold" to notesHold,
-            "slide" to notesSlide,
-            "air" to notesAir,
-            "flick" to notesFlick
+            "Tap" to notesTap,
+            "Hold" to notesHold,
+            "Slide" to notesSlide,
+            "Air" to notesAir,
+            "Flick" to notesFlick
         )
     }
 }

@@ -80,10 +80,10 @@ fun HomePageRecentLineup(navController: NavController) {
                         modifier = Modifier.padding(horizontal = 10.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        uiState.chuRecentLineup.onEachIndexed { index, entry ->
+                        uiState.chuRecentLineup.onEach { entry ->
                             Column(
                                 Modifier.clickable {
-                                    model.navigateToRecentLog(navController, index)
+                                    model.navigateToRecentLog(navController, entry)
                                 }
                             ) {
                                 HomePageRecentChunithmEntry(entry)
@@ -97,10 +97,10 @@ fun HomePageRecentLineup(navController: NavController) {
                         modifier = Modifier.padding(horizontal = 10.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        uiState.maiRecentLineup.onEachIndexed { index, entry ->
+                        uiState.maiRecentLineup.onEach { entry ->
                             Column(
                                 Modifier.clickable {
-                                    model.navigateToRecentLog(navController, index)
+                                    model.navigateToRecentLog(navController, entry)
                                 }
                             ) {
                                 HomePageRecentMaimaiEntry(entry)

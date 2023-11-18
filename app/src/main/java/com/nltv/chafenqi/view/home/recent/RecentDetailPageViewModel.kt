@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.nltv.chafenqi.extension.toDateString
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
+import com.nltv.chafenqi.extension.toRateString
 import com.nltv.chafenqi.storage.CFQUser
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
@@ -30,6 +31,7 @@ class RecentDetailPageViewModel : ViewModel() {
     var playDateString: String = ""
 
     var score: String = ""
+    var badge: String = ""
 
     val maiJudgeTexts = listOf("Critical", "Perfect", "Great", "Good", "Miss")
     var maiJudges: List<List<String>> = listOf()
@@ -62,6 +64,7 @@ class RecentDetailPageViewModel : ViewModel() {
             artist = chuMusic?.artist ?: ""
             playDateString = chuEntry?.timestamp?.toDateString() ?: ""
             score = chuEntry?.score.toString()
+            badge = chuEntry?.score?.toRateString() ?: ""
 
             chuMusicEntryIndex =
                 CFQPersistentData.Chunithm.musicList.indexOf(chuMusic ?: ChunithmMusicEntry())

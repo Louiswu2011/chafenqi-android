@@ -150,11 +150,17 @@ class HomePageViewModel(
         navController.navigate(HomeNavItem.Home.route + "/recent")
     }
 
-    fun navigateToRecentLog(navController: NavController, index: Int = -1) {
+    fun navigateToRecentLog(navController: NavController, item: MaimaiRecentLineup) {
+        val index = user.maimai.recent.indexOf(item.entry)
         if (!_uiState.value.canNavigateToRecentList || index < 0) return
 
-        val navigationKeyword = if (user.mode == 0) "chunithm" else "maimai"
-        navController.navigate(HomeNavItem.Home.route + "/recent/$navigationKeyword/$index")
+        navController.navigate(HomeNavItem.Home.route + "/recent/maimai/$index")
+    }
+    fun navigateToRecentLog(navController: NavController, item: ChunithmRecentLineup) {
+        val index = user.chunithm.recent.indexOf(item.entry)
+        if (!_uiState.value.canNavigateToRecentList || index < 0) return
+
+        navController.navigate(HomeNavItem.Home.route + "/recent/chunithm/$index")
     }
 
     fun updateRatingIndicators(touchPoint: Offset, maxWidth: Dp, density: Density) {

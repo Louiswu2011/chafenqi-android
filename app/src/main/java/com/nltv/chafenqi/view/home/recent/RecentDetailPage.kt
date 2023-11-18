@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -128,6 +129,7 @@ fun RecentDetailPage(
                     fontWeight = FontWeight.Bold,
                     fontSize = 24.sp
                 )
+                // TODO: Add rate badge
             }
 
             if (mode == 0) {
@@ -242,6 +244,43 @@ fun RecentDetailMaimaiSyncCard() {
 
 @Composable
 fun RecentDetailChunithmScoreGrid() {
-    // val model: RecentDetailPageViewModel = viewModel()
-    // TODO: Implement this
+    val model: RecentDetailPageViewModel = viewModel()
+    Card (
+        Modifier.fillMaxWidth()
+    ) {
+        Row (
+            Modifier.padding(SCREEN_PADDING)
+                .padding(horizontal = SCREEN_PADDING),
+            horizontalArrangement = Arrangement.spacedBy(20.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column (
+                Modifier.weight(0.5f),
+                horizontalAlignment = Alignment.Start,
+            ) {
+                model.chuEntry?.judges?.forEach { (type, count) ->
+                    Row (
+                        Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = type)
+                        Text(text = count.toString(), fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+            Column (
+                Modifier.weight(0.5f)
+            ) {
+                model.chuEntry?.notes?.forEach { (type, count) ->
+                    Row (
+                        Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = type)
+                        Text(text = count, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+        }
+    }
 }
