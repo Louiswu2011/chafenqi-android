@@ -1,6 +1,7 @@
 package com.nltv.chafenqi.view.login
 
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -96,6 +97,7 @@ class LoginPageViewModel(
                     userState.isLoggedIn = true
                 } else {
                     updateLoginState(UIState.Pending)
+                    Toast.makeText(context, "用户名或密码错误，请重试", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
                 updateLoginState(UIState.Pending)

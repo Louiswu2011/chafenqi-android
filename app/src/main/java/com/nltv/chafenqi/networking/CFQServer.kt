@@ -97,20 +97,25 @@ class CFQServer {
         }
 
         suspend fun authLogin(username: String, password: String): String {
-            val response = fetchFromServer(
-                "POST",
-                "api/auth",
-                payload = hashMapOf(
-                    "username" to username,
-                    "password" to password
+            try {
+                val response = fetchFromServer(
+                    "POST",
+                    "api/auth",
+                    payload = hashMapOf(
+                        "username" to username,
+                        "password" to password
+                    )
                 )
-            )
-            val errorCode = response.bodyAsText()
-            val header = response.headers["Authorization"]?.substring(7)
+                val errorCode = response.bodyAsText()
+                val header = response.headers["Authorization"]?.substring(7)
 
-            Log.i("CFQServer", "auth login: $errorCode")
+                Log.i("CFQServer", "auth login: $errorCode")
 
-            return header ?: ""
+                return header ?: ""
+            } catch (e: Exception) {
+                Log.e("CFQServer", "$e")
+                return ""
+            }
         }
 
         suspend fun authCheckUsername(username: String): Boolean {
