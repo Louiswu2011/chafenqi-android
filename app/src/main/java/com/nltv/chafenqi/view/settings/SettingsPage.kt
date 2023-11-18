@@ -259,6 +259,20 @@ fun PreferenceRootScope.SettingsAboutGroup(navController: NavController) {
         subtitle = { Text(text = "进行反馈或交流") },
         icon = { Icon(imageVector = Icons.Default.Chat, contentDescription = "加入QQ群") }
     )
+    PreferenceButton(
+        onClick = {
+            scope.launch {
+                try {
+                    uriHandler.openUri("https://github.com/louiswu2011/chafenqi-android")
+                } catch (e: Exception) {
+                    Log.e("Settings", "Failed to open url, error: $e")
+                    Toast.makeText(context, "无法打开Github，请稍后重试", Toast.LENGTH_SHORT).show()
+                }
+            }
+        },
+        title = { Text(text = "前往Github") },
+        subtitle = { Text(text = "查看App代码") }
+    )
     /*PreferenceButton(
         onClick = {
             scope.launch {
