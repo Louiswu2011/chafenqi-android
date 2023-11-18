@@ -1,11 +1,13 @@
 package com.nltv.chafenqi.view.settings
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CardGiftcard
+import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Logout
@@ -231,6 +233,7 @@ fun PreferenceRootScope.SettingsAdvancedGroup() {
 
 @Composable
 fun PreferenceRootScope.SettingsAboutGroup(navController: NavController) {
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val uriHandler = LocalUriHandler.current
 
@@ -239,6 +242,22 @@ fun PreferenceRootScope.SettingsAboutGroup(navController: NavController) {
         title = { Text(text = "版本") },
         subtitle = { Text(text = BuildConfig.VERSION_NAME) },
         icon = { Icon(imageVector = Icons.Default.Info, contentDescription = "版本") }
+    )
+    PreferenceButton(
+        onClick = {
+            scope.launch {
+                try {
+                    val key = "Eov_F10167LaSygnlljvkT2pNQahaIB4"
+                    uriHandler.openUri("mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26jump_from%3Dwebapi%26k%3D$key")
+                } catch (e: Exception) {
+                    Log.e("Settings", "Failed to open url, error: $e")
+                    Toast.makeText(context, "无法打开加群链接，请稍后重试", Toast.LENGTH_SHORT).show()
+                }
+            }
+        },
+        title = { Text(text = "加入QQ群") },
+        subtitle = { Text(text = "进行反馈或交流") },
+        icon = { Icon(imageVector = Icons.Default.Chat, contentDescription = "加入QQ群") }
     )
     /*PreferenceButton(
         onClick = {
