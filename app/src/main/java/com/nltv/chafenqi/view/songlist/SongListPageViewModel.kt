@@ -35,7 +35,7 @@ class SongListPageViewModel: ViewModel() {
                     user.mode == 0 -> emptyList()
                     query.isNotEmpty() -> {
                         musicList.filter { entry ->
-                            entry.title.contains(query) || entry.basicInfo.artist.contains(query)
+                            entry.title.contains(query, ignoreCase = true) || entry.basicInfo.artist.contains(query, ignoreCase = true)
                         }
                     }
                     else -> emptyList()
@@ -55,7 +55,7 @@ class SongListPageViewModel: ViewModel() {
                     user.mode == 1 -> emptyList()
                     query.isNotEmpty() -> {
                         musicList.filter { entry ->
-                            entry.title.contains(query) || entry.artist.contains(query)
+                            entry.title.contains(query, ignoreCase = true) || entry.artist.contains(query, ignoreCase = true)
                         }
                     }
                     else -> emptyList()
