@@ -118,7 +118,9 @@ fun SongDetailPage(
                     )
                     Text(
                         text = model.artist,
-                        fontSize = 18.sp
+                        fontSize = 18.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
             }
