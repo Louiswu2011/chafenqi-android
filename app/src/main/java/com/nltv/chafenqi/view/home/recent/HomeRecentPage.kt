@@ -31,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -99,6 +100,8 @@ fun HomeRecentPage(navController: NavController) {
 
 @Composable
 fun HomeRecentPageEntry(entry: MaimaiRecentScoreEntry, index: Int, navController: NavController) {
+    val context = LocalContext.current
+
     Row(
         Modifier
             .fillMaxWidth()
@@ -127,7 +130,7 @@ fun HomeRecentPageEntry(entry: MaimaiRecentScoreEntry, index: Int, navController
             Modifier.fillMaxHeight(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(entry.timestamp.toDateString(), fontSize = 14.sp)
+            Text(entry.timestamp.toDateString(context), fontSize = 14.sp)
             Row(
                 Modifier.fillMaxWidth(),
                 Arrangement.SpaceBetween,
@@ -146,6 +149,8 @@ fun HomeRecentPageEntry(entry: MaimaiRecentScoreEntry, index: Int, navController
 
 @Composable
 fun HomeRecentPageEntry(entry: ChunithmRecentScoreEntry, index: Int, navController: NavController) {
+    val context = LocalContext.current
+
     Row(
         Modifier
             .fillMaxWidth()
@@ -174,7 +179,7 @@ fun HomeRecentPageEntry(entry: ChunithmRecentScoreEntry, index: Int, navControll
             Modifier.fillMaxHeight(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(entry.timestamp.toDateString(), fontSize = 14.sp)
+            Text(entry.timestamp.toDateString(context), fontSize = 14.sp)
             Row(
                 Modifier.fillMaxWidth(),
                 Arrangement.SpaceBetween,

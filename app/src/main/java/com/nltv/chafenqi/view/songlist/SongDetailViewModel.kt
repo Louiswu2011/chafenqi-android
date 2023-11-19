@@ -54,7 +54,7 @@ class SongDetailViewModel : ViewModel() {
 
     fun update(mode: Int, index: Int) {
         if (mode == 0 && CFQPersistentData.Chunithm.musicList.isNotEmpty()) {
-            chuMusic = CFQPersistentData.Chunithm.musicList[index]
+            chuMusic = CFQPersistentData.Chunithm.musicList.getOrNull(index)
             if (chuMusic == null) return
 
             coverUrl = "http://43.139.107.206:8083/api/chunithm/cover?musicId=${chuMusic?.musicID}"
@@ -77,7 +77,7 @@ class SongDetailViewModel : ViewModel() {
                 }
             }
         } else if (mode == 1 && CFQPersistentData.Maimai.musicList.isNotEmpty()) {
-            maiMusic = CFQPersistentData.Maimai.musicList[index]
+            maiMusic = CFQPersistentData.Maimai.musicList.getOrNull(index)
             if (maiMusic == null) return
 
             coverUrl = maiMusic?.musicID?.toMaimaiCoverPath() ?: ""

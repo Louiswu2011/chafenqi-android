@@ -5,11 +5,15 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
@@ -55,7 +59,9 @@ import com.nltv.chafenqi.SCREEN_PADDING
 import com.nltv.chafenqi.storage.datastore.user.SettingsStore
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class,
+    ExperimentalLayoutApi::class
+)
 @Composable
 fun HomePage(navController: NavController) {
     val model: HomePageViewModel = viewModel<HomePageViewModel>().also { it.update() }
@@ -66,7 +72,7 @@ fun HomePage(navController: NavController) {
     val store = SettingsStore(context)
     val homeShowRefreshButton by store.homeShowRefreshButton.collectAsStateWithLifecycle(initialValue = false)
     
-    val refreshState = rememberPullRefreshState(refreshing = userState.isRefreshing, onRefresh = { model.refreshUserData(userState) }, refreshThreshold = 120.dp)
+    val refreshState = rememberPullRefreshState(refreshing = userState.isRefreshing, onRefresh = { model.refreshUserData(userState, context) }, refreshThreshold = 120.dp)
 
     LaunchedEffect(Unit) {
         scope.launch {
@@ -97,7 +103,7 @@ fun HomePage(navController: NavController) {
                 ),
                 actions = {
                     if (homeShowRefreshButton) {
-                        IconButton(onClick = { model.refreshUserData(userState) }) {
+                        IconButton(onClick = { model.refreshUserData(userState, context) }) {
                             Icon(imageVector = Icons.Default.Refresh, contentDescription = "刷新")
                         }
                     }

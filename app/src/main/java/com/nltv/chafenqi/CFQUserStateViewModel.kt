@@ -1,5 +1,6 @@
 package com.nltv.chafenqi
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
@@ -25,7 +26,7 @@ class CFQUserStateViewModel : ViewModel() {
         isLoggedIn = false
     }
 
-    suspend fun loadMaimaiData() {
+    suspend fun loadMaimaiData(context: Context) {
         val tag = "Login.User.MaimaiData"
         val token = user.token
         val deserializer = Json { ignoreUnknownKeys = true }
@@ -44,7 +45,7 @@ class CFQUserStateViewModel : ViewModel() {
                 maimai.best = deserializer.decodeFromString(bestString)
                 maimai.recent = deserializer.decodeFromString(recentString)
 
-                maimai.addAuxiliaryData()
+                maimai.addAuxiliaryData(context)
                 maimai.isBasicEmpty = false
                 Log.i(tag, "Loaded user maimai basic data.")
             } catch (e: Exception) {
@@ -69,7 +70,7 @@ class CFQUserStateViewModel : ViewModel() {
         }
     }
 
-    suspend fun loadChunithmData() {
+    suspend fun loadChunithmData(context: Context) {
         val tag = "Login.User.ChunithmData"
         val token = user.token
         val deserializer = Json { ignoreUnknownKeys = true }
@@ -90,7 +91,7 @@ class CFQUserStateViewModel : ViewModel() {
                 chunithm.recent = deserializer.decodeFromString(recentString)
                 chunithm.rating = deserializer.decodeFromString(ratingString)
 
-                chunithm.addAuxiliaryData()
+                chunithm.addAuxiliaryData(context)
                 chunithm.isBasicEmpty = false
                 Log.i(tag, "Loaded user chunithm basic data.")
             } catch (e: Exception) {

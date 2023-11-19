@@ -31,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -47,9 +48,10 @@ fun RecentDetailPage(
     index: Int,
     navController: NavController
 ) {
+    val context = LocalContext.current
     val model: RecentDetailPageViewModel = viewModel<RecentDetailPageViewModel>().also {
         Log.i("HomeRecentDetailPage", "Showing detail page for mode $mode index $index")
-        it.update(mode, index)
+        it.update(mode, index, context)
     }
     val scrollState = rememberScrollState()
 

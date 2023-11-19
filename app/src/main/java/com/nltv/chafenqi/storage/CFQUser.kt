@@ -1,5 +1,7 @@
 package com.nltv.chafenqi.storage
 
+import android.content.Context
+import android.text.format.DateFormat
 import android.util.Log
 import com.nltv.chafenqi.extension.associatedMusicEntry
 import com.nltv.chafenqi.extension.cutForRating
@@ -42,7 +44,8 @@ object CFQUser {
     var chunithm = Chunithm
 
     val isoTimeParser: DateTimeFormatter = DateTimeFormatter.ISO_INSTANT
-    val nameplateDateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MM-dd hh:mm")
+    val nameplateDateTimeFormatterWithIndicator: DateTimeFormatter = DateTimeFormatter.ofPattern("MM-dd hh:mm a")
+    val nameplateDateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MM-dd HH:mm")
 
     object Maimai {
         var info = MaimaiUserInfo()
@@ -75,7 +78,7 @@ object CFQUser {
             }
         }
 
-        fun addAuxiliaryData() {
+        fun addAuxiliaryData(context: Context) {
             if (CFQPersistentData.Maimai.musicList.isNotEmpty()) {
                 best.forEach {
                     it.associatedMusicEntry = it.associatedMusicEntry()
@@ -102,7 +105,7 @@ object CFQUser {
                 aux.updateTime = Instant.from(isoTimeParser.parse(info.updatedAt))
                     .atZone(ZoneId.systemDefault())
                     .toLocalDateTime()
-                    .format(nameplateDateFormatter)
+                    .format(if (DateFormat.is24HourFormat(context)) nameplateDateFormatter else nameplateDateTimeFormatterWithIndicator)
 
                 val mostRecent = recent.take(30).toMutableList()
                 mostRecent.firstOrNull { it.fc == "applus" }
@@ -175,7 +178,7 @@ object CFQUser {
             }
         }
 
-        fun addAuxiliaryData() {
+        fun addAuxiliaryData(context: Context) {
             if (CFQPersistentData.Chunithm.musicList.isNotEmpty()) {
                 best.forEach {
                     it.associatedMusicEntry = it.associatedMusicEntry()
@@ -199,10 +202,11 @@ object CFQUser {
                 aux.recentRating =
                     (recentSlice.fold(0.0) { acc, chunithmRatingEntry -> acc + chunithmRatingEntry.rating() } / 10).cutForRating()
 
+
                 aux.updateTime = Instant.from(isoTimeParser.parse(info.updatedAt))
                     .atZone(ZoneId.systemDefault())
                     .toLocalDateTime()
-                    .format(nameplateDateFormatter)
+                    .format(if (DateFormat.is24HourFormat(context)) nameplateDateFormatter else nameplateDateTimeFormatterWithIndicator)
 
                 val mostRecent = recent.take(30).toMutableList()
                 mostRecent.firstOrNull { it.score == 1010000 }
@@ -246,13 +250,15 @@ object CFQUser {
         this.username = username
 
         this.isPremium = CFQServer.apiIsPremium(username)
-        this.fishToken = try {
-            CFQServer.fishFetchToken(authToken)
+        try {
+            this.fishToken = CFQServer.fishFetchToken(authToken)
+            Log.i(tag, "Fetched user fish token: ${this.fishToken}")
         } catch (e: Exception) {
-            ""
+            Log.i(tag, "User did not bind fish account.")
+            this.fishToken = ""
         }
 
-        Log.i(tag, "User is ${if (isPremium) "" else "not"} premium")
+        Log.i(tag, "User is${if (isPremium) "" else " not"} premium")
         // registerOneSignal(username)
     }
 

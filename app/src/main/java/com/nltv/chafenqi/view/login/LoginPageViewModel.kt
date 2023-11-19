@@ -51,10 +51,10 @@ class LoginPageViewModel(
                 loadPersistentStorage(context)
 
                 updateLoginPromptText("加载舞萌DX数据...")
-                userState.loadMaimaiData()
+                userState.loadMaimaiData(context)
 
                 updateLoginPromptText("加载中二节奏数据...")
-                userState.loadChunithmData()
+                userState.loadChunithmData(context)
 
                 updateLoginState(UIState.Pending)
                 userState.isLoggedIn = true
@@ -90,10 +90,10 @@ class LoginPageViewModel(
                     loadPersistentStorage(context)
 
                     updateLoginPromptText("加载舞萌DX数据...")
-                    userState.loadMaimaiData()
+                    userState.loadMaimaiData(context)
 
                     updateLoginPromptText("加载中二节奏数据...")
-                    userState.loadChunithmData()
+                    userState.loadChunithmData(context)
 
                     updateLoginState(UIState.Pending)
                     userState.isLoggedIn = true

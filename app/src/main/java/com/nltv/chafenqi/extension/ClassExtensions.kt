@@ -1,5 +1,7 @@
 package com.nltv.chafenqi.extension
 
+import android.content.Context
+import android.text.format.DateFormat
 import android.util.Log
 import androidx.compose.ui.Modifier
 import com.nltv.chafenqi.storage.CFQUser
@@ -89,11 +91,13 @@ fun String.toChunithmTrophyType(): String {
     }
 }
 
-fun Int.toDateString(): String {
+fun Int.toDateString(context: Context): String {
+    val hourFormat = if (DateFormat.is24HourFormat(context)) "HH" else "hh"
+    val indicatorFormat = if (hourFormat == "hh") "a" else ""
     return Instant.ofEpochSecond(this.toLong())
         .atZone(ZoneId.systemDefault())
         .toLocalDateTime()
-        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm"))
+        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd $hourFormat:mm $indicatorFormat"))
 }
 
 fun Int.toChunithmCoverPath(): String =

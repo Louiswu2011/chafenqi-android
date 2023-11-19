@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
@@ -115,6 +116,8 @@ fun HomePageRecentLineup(navController: NavController) {
 
 @Composable
 fun HomePageRecentMaimaiEntry(item: MaimaiRecentLineup) {
+    val context = LocalContext.current
+
     Row(
         Modifier
             .fillMaxWidth()
@@ -145,7 +148,7 @@ fun HomePageRecentMaimaiEntry(item: MaimaiRecentLineup) {
                 Modifier.fillMaxWidth(),
                 Arrangement.SpaceBetween
             ) {
-                Text(item.entry.timestamp.toDateString(), fontSize = 14.sp)
+                Text(item.entry.timestamp.toDateString(context), fontSize = 14.sp)
                 Text(text = item.tag, fontWeight = FontWeight.Bold)
             }
             Row(
@@ -166,6 +169,8 @@ fun HomePageRecentMaimaiEntry(item: MaimaiRecentLineup) {
 
 @Composable
 fun HomePageRecentChunithmEntry(item: ChunithmRecentLineup) {
+    val context = LocalContext.current
+
     Row(
         Modifier
             .fillMaxWidth()
@@ -196,7 +201,7 @@ fun HomePageRecentChunithmEntry(item: ChunithmRecentLineup) {
                 Modifier.fillMaxWidth(),
                 Arrangement.SpaceBetween
             ) {
-                Text(item.entry.timestamp.toDateString(), fontSize = 14.sp)
+                Text(item.entry.timestamp.toDateString(context), fontSize = 14.sp)
                 Text(text = item.tag, fontWeight = FontWeight.Bold)
             }
             Row(

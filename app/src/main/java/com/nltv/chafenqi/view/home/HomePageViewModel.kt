@@ -253,12 +253,12 @@ class HomePageViewModel(
         }
     }
 
-    fun refreshUserData(userState: CFQUserStateViewModel) {
+    fun refreshUserData(userState: CFQUserStateViewModel, context: Context) {
         userState.isRefreshing = true
         viewModelScope.launch {
             async {
-                userState.loadMaimaiData()
-                userState.loadChunithmData()
+                userState.loadMaimaiData(context)
+                userState.loadChunithmData(context)
             }.invokeOnCompletion {
                 userState.isRefreshing = false
                 update()

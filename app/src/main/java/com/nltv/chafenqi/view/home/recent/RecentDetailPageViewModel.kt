@@ -1,5 +1,6 @@
 package com.nltv.chafenqi.view.home.recent
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
@@ -51,7 +52,7 @@ class RecentDetailPageViewModel : ViewModel() {
 
     var canNavigate = false
 
-    fun update(mode: Int, index: Int) {
+    fun update(mode: Int, index: Int, context: Context) {
         this.mode = mode
         if (mode == 0 && CFQPersistentData.Chunithm.musicList.isNotEmpty() && CFQUser.chunithm.recent.isNotEmpty()) {
             chuEntry = CFQUser.chunithm.recent[index]
@@ -62,7 +63,7 @@ class RecentDetailPageViewModel : ViewModel() {
             coverUrl = "http://43.139.107.206:8083/api/chunithm/cover?musicId=${chuMusic?.musicID}"
             title = chuMusic?.title ?: ""
             artist = chuMusic?.artist ?: ""
-            playDateString = chuEntry?.timestamp?.toDateString() ?: ""
+            playDateString = chuEntry?.timestamp?.toDateString(context) ?: ""
             score = chuEntry?.score.toString()
             rateString = chuEntry?.score?.toRateString() ?: ""
 
@@ -78,7 +79,7 @@ class RecentDetailPageViewModel : ViewModel() {
             coverUrl = maiMusic?.musicID?.toMaimaiCoverPath() ?: ""
             title = maiMusic?.title ?: ""
             artist = maiMusic?.basicInfo?.artist ?: ""
-            playDateString = maiEntry?.timestamp?.toDateString() ?: ""
+            playDateString = maiEntry?.timestamp?.toDateString(context) ?: ""
             score = String.format("%.4f", maiEntry?.achievements) + "%"
             rateString = maiEntry?.achievements?.toRateString() ?: ""
 

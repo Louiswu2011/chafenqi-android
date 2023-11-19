@@ -77,7 +77,7 @@ fun SongListPage(navController: NavController) {
     }
 
     Scaffold(
-        topBar = {
+        /*topBar = {
             CenterAlignedTopAppBar(
                 title = { Text(text = "歌曲列表") },
                 scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
@@ -86,7 +86,7 @@ fun SongListPage(navController: NavController) {
                     titleContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
-        },
+        },*/
         floatingActionButton = {
             if (!model.isSearchBarActive) {
                 FloatingActionButton(onClick = {
@@ -104,7 +104,6 @@ fun SongListPage(navController: NavController) {
             Modifier.padding(paddingValues)
         ) {
             SongListSearchBar(navController)
-            Divider()
             AnimatedVisibility(visible = !model.isSearchBarActive) {
                 LazyColumn(
                     modifier = Modifier
