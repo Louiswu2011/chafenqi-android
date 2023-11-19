@@ -17,11 +17,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SwapHoriz
+import androidx.compose.material.icons.filled.Update
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -41,6 +43,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -67,12 +71,19 @@ fun HomePage(navController: NavController) {
     LaunchedEffect(Unit) {
         scope.launch {
             Firebase.crashlytics.setUserId(model.user.username)
+            model.checkUpdates()
             model.saveCredentialsToCache(context)
         }
     }
 
     BackHandler(true) {
         // Prevent accidental back action when dragging rating indicators
+    }
+
+    if (model.showNewVersionDialog) {
+        NewVersionDialog(onDismissRequest = { model.showNewVersionDialog = false }) {
+            // TODO: Start new version download
+        }
     }
 
     Scaffold(
@@ -187,4 +198,24 @@ fun EmptyDataPage() {
         Text(text = "未找到玩家数据", Modifier.padding(bottom = SCREEN_PADDING))
         Text(text = "请先进行一次传分后下拉刷新")
     }
+}
+
+@Composable
+fun NewVersionDialog(onDismissRequest: () -> Unit, onConfirmRequest: () -> Unit) {
+    val model: HomePageViewModel = viewModel()
+
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        confirmButton = { Button(onClick = onConfirmRequest) {
+            Text(text = "更新")
+        } },
+        dismissButton = { Button(onClick = onDismissRequest) {
+            Text(text = "忽略")
+        } },
+        icon = { Icon(imageVector = Icons.Default.Update, contentDescription = "发现新版本") },
+        title = { Text(text = "发现新版本") },
+        text = { Text(text = "当前版本为：${model.currentVersionCode} (${model.currentBuildNumber})" +
+                "\n最新版本为：${model.latestVersionCode} (${model.latestBuildNumber}" +
+                "\n是否更新？)") }
+    )
 }

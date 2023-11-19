@@ -12,11 +12,14 @@ import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material.icons.filled.QrCode
 import androidx.compose.material.icons.filled.Upload
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -58,6 +61,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun UpdaterHomePage(navController: NavController) {
     val model: UpdaterViewModel = viewModel()
+    val snackbarHostState = remember {
+        SnackbarHostState()
+    }
 
     LaunchedEffect(Unit) {
         while (true) {
@@ -71,7 +77,7 @@ fun UpdaterHomePage(navController: NavController) {
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = { Text(text = "传分") },
                 scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -85,7 +91,8 @@ fun UpdaterHomePage(navController: NavController) {
                 }
             )
         },
-        containerColor = MaterialTheme.colorScheme.surface
+        containerColor = MaterialTheme.colorScheme.surface,
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         Box {
             PreferenceScreen (
@@ -93,27 +100,27 @@ fun UpdaterHomePage(navController: NavController) {
                 scrollable = true,
                 modifier = Modifier.padding(paddingValues)
             ) {
-                UpdaterProxyGroup()
+                UpdaterProxyGroup(snackbarHostState)
                 PreferenceDivider()
                 
-                UpdaterQuickActionsGroup()
+                UpdaterQuickActionsGroup(snackbarHostState)
                 PreferenceDivider()
                 
-                UpdaterClipboardGroup()
+                UpdaterClipboardGroup(snackbarHostState)
                 PreferenceDivider()
                 
                 UpdaterSettingsGroup()
                 // PreferenceDivider()
             }
             if (model.shouldShowQRCode) {
-                UpdaterQRCodePage()
+                UpdaterQRCodePage(snackbarHostState)
             }
         }
     }
 }
 
 @Composable
-fun PreferenceRootScope.UpdaterProxyGroup() {
+fun PreferenceRootScope.UpdaterProxyGroup(snackbarHostState: SnackbarHostState) {
     val model: UpdaterViewModel = viewModel()
     val uiState by model.uiState.collectAsState()
 
@@ -129,7 +136,7 @@ fun PreferenceRootScope.UpdaterProxyGroup() {
         subtitle = { Text(text = "舞萌DX: ${uiState.maiServerStat}\n" + "中二节奏: ${uiState.chuServerStat}") },
         // icon = { Icon(imageVector = Icons.Default.AccessTime, contentDescription = "服务器状态") }
     )
-    UpdaterWechatActions()
+    UpdaterWechatActions(snackbarHostState)
 }
 
 @Composable
@@ -167,15 +174,16 @@ fun PreferenceRootScope.ProxyToggle() {
 }
 
 @Composable
-fun PreferenceRootScope.UpdaterClipboardGroup() {
+fun PreferenceRootScope.UpdaterClipboardGroup(snackbarHostState: SnackbarHostState) {
     val model: UpdaterViewModel = viewModel()
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     val store = SettingsStore(context)
     val shouldForward by store.uploadShouldForward.collectAsState(initial = false)
 
     fun makeToast() {
-        Toast.makeText(context, "已复制到剪贴板", Toast.LENGTH_SHORT).show()
+        scope.launch { snackbarHostState.showSnackbar("已复制到剪贴板") }
     }
 
     PreferenceSectionHeader(title = { Text(text = "链接和二维码") })
@@ -204,20 +212,20 @@ fun PreferenceRootScope.UpdaterClipboardGroup() {
 }
 
 @Composable
-fun PreferenceRootScope.UpdaterWechatActions() {
+fun PreferenceRootScope.UpdaterWechatActions(snackbarHostState: SnackbarHostState) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
     val model: UpdaterViewModel = viewModel()
 
     PreferenceButton(
-        onClick = { model.openWeChat(context, uriHandler) },
+        onClick = { model.openWeChat(context, uriHandler, snackbarHostState) },
         title = { Text(text = "跳转到微信") },
         icon = { Icon(imageVector = Icons.Default.OpenInNew, contentDescription = "跳转到微信") }
     )
 }
 
 @Composable
-fun PreferenceRootScope.UpdaterQuickActionsGroup() {
+fun PreferenceRootScope.UpdaterQuickActionsGroup(snackbarHostState: SnackbarHostState) {
     val model: UpdaterViewModel = viewModel()
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -252,9 +260,9 @@ fun PreferenceRootScope.UpdaterQuickActionsGroup() {
         onClick = {
             scope.launch {
                 if (model.triggerQuickUpload(uploadGame, shouldForward)) {
-                    Toast.makeText(context, "提交成功，请留意传分状态", Toast.LENGTH_SHORT).show()
+                    snackbarHostState.showSnackbar("提交成功，请留意传分状态")
                 } else {
-                    Toast.makeText(context, "已有上传任务，请勿重复提交", Toast.LENGTH_SHORT).show()
+                    snackbarHostState.showSnackbar("已有上传任务，请勿重复提交")
                 }
             }
         },

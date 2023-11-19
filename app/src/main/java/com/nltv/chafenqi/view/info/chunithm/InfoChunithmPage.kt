@@ -26,8 +26,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -47,9 +49,10 @@ import coil.compose.AsyncImage
 import com.nltv.chafenqi.SCREEN_PADDING
 import com.nltv.chafenqi.storage.CFQUser
 import com.nltv.chafenqi.view.home.HomeNavItem
+import kotlinx.coroutines.launch
 
 @Composable
-fun InfoChunithmPage(navController: NavController) {
+fun InfoChunithmPage(navController: NavController, snackbarHostState: SnackbarHostState) {
     val isEmpty = CFQUser.chunithm.isExtraEmpty
     val scrollState = rememberScrollState()
 
@@ -62,7 +65,7 @@ fun InfoChunithmPage(navController: NavController) {
         InfoChunithmActiveSkill()
         InfoChunithmStats()
         InfoChunithmDetailButtons(navController)
-        InfoChunithmFriendCode()
+        InfoChunithmFriendCode(snackbarHostState)
     }
 }
 
@@ -307,8 +310,9 @@ fun InfoChunithmNavigationButton(
 }
 
 @Composable
-fun InfoChunithmFriendCode() {
+fun InfoChunithmFriendCode(snackbarHostState: SnackbarHostState) {
     val model: InfoChunithmPageViewModel = viewModel()
+    val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val clipboardManager = LocalClipboardManager.current
 
@@ -327,7 +331,7 @@ fun InfoChunithmFriendCode() {
             Text(text = model.info.friendCode, fontWeight = FontWeight.Bold)
             Text(text = "复制", modifier = Modifier.clickable {
                 clipboardManager.setText(AnnotatedString(model.info.friendCode))
-                Toast.makeText(context, "已复制到剪贴板", Toast.LENGTH_SHORT).show()
+                scope.launch { snackbarHostState.showSnackbar("已复制到剪贴板") }
             }, color = MaterialTheme.colorScheme.primary)
         }
     }

@@ -2,6 +2,9 @@ package com.nltv.chafenqi.view.home
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
@@ -11,8 +14,10 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.nltv.chafenqi.BuildConfig
 import com.nltv.chafenqi.CFQUserStateViewModel
 import com.nltv.chafenqi.cacheStore
+import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.CFQUser
 import com.nltv.chafenqi.storage.ChunithmRecentLineup
 import com.nltv.chafenqi.storage.MaimaiRecentLineup
@@ -67,7 +72,7 @@ data class HomePageUiState(
 class HomePageViewModel(
 
 ) : ViewModel() {
-    val tag = "HomePageViewModel"
+    private val tag = "HomePageViewModel"
     val user = CFQUser
 
     private val _uiState = MutableStateFlow(HomePageUiState())
@@ -78,10 +83,30 @@ class HomePageViewModel(
 
     private var previousIndex = -1
 
+    var showNewVersionDialog by mutableStateOf(false)
+    var latestVersionCode = ""
+    var latestBuildNumber = 0
+    private val currentVersionString = BuildConfig.VERSION_NAME
+    val currentVersionCode = currentVersionString.split(" ")[0]
+    val currentBuildNumber = currentVersionString.split(" ")[1]
+        .removePrefix("(")
+        .removeSuffix(")")
+        .toInt()
+
+    suspend fun checkUpdates() {
+        viewModelScope.launch {
+            val versionData = CFQServer.apiFetchLatestVersion()
+            val fullVersionString = BuildConfig.VERSION_NAME
+            Log.i(tag, "Current version: $currentVersionCode (${currentBuildNumber}), latest version: ${versionData.androidVersionCode} (${versionData.androidBuild})")
+            if (!versionData.isLatest(currentVersionCode, currentBuildNumber)) {
+                latestVersionCode = versionData.androidVersionCode
+                latestBuildNumber = versionData.androidBuild.toInt()
+                showNewVersionDialog = true
+            }
+        }
+    }
+
     fun update() {
-        // TODO: Add recent lineup picking strategy
-        // Log.i(tag, "Updating home data for game ${user.mode}...")
-        // Log.i(tag, user.maimai.info.updatedAt)
         _uiState.update { currentState ->
             when (user.mode) {
                 1 -> {

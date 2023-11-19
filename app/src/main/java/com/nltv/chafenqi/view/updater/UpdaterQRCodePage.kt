@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -48,7 +49,7 @@ import io.github.alexzhirkevich.qrose.rememberQrCodePainter
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun UpdaterQRCodePage() {
+fun UpdaterQRCodePage(snackbarHostState: SnackbarHostState) {
     val model: UpdaterViewModel = viewModel()
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
@@ -145,7 +146,7 @@ fun UpdaterQRCodePage() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Button(onClick = {
-                    model.openWeChatScan(context, uriHandler)
+                    model.openWeChatScan(context, uriHandler, snackbarHostState)
                 }) {
                     Text(text = "跳转到微信")
                 }

@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.Timelapse
 import androidx.compose.material.icons.filled.ToggleOn
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -192,24 +193,24 @@ class UpdaterViewModel : ViewModel() {
             .toString()
     }
 
-    fun openWeChat(context: Context, uriHandler: UriHandler) {
+    fun openWeChat(context: Context, uriHandler: UriHandler, snackbarHostState: SnackbarHostState) {
         try {
             uriHandler.openUri("weixin://")
         } catch (e: Exception) {
             // No WeChat?
             Log.e("Updater", "Cannot jump to WeChat, error: $e")
             Firebase.crashlytics.recordException(e)
-            Toast.makeText(context, "无法打开微信，请检查权限或是否已安装", Toast.LENGTH_LONG).show()
+            viewModelScope.launch { snackbarHostState.showSnackbar("无法打开微信，请检查权限或是否已安装") }
         }
     }
 
-    fun openWeChatScan(context: Context, uriHandler: UriHandler) {
+    fun openWeChatScan(context: Context, uriHandler: UriHandler, snackbarHostState: SnackbarHostState) {
         try {
             uriHandler.openUri("weixin://")
         } catch (e: Exception) {
             // No WeChat?
             Log.e("Updater", "Cannot jump to WeChat, error: $e")
-            Toast.makeText(context, "无法打开微信，请检查权限或是否已安装", Toast.LENGTH_LONG).show()
+            viewModelScope.launch { snackbarHostState.showSnackbar("无法打开微信，请检查权限或是否已安装") }
         }
     }
 

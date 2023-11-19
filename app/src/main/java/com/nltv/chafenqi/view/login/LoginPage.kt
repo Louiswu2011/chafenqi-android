@@ -26,6 +26,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -71,6 +74,8 @@ fun LoginPage() {
     val context = LocalContext.current
     val userState = LocalUserState.current
     val loginUiState by model.loginUiState.collectAsStateWithLifecycle()
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
 
 
     LaunchedEffect(Unit) {
@@ -87,49 +92,57 @@ fun LoginPage() {
             model.login(token, username, context, userState, loadFromCache = true)
         } catch (e: Exception) {
             Log.e("Login", "Error login from cached token, error: ${e.localizedMessage}")
-            Toast.makeText(context, "登陆状态失效，请重试", Toast.LENGTH_LONG).show()
+            scope.launch {
+                snackbarHostState.showSnackbar("登陆状态失效，请重试")
+            }
         }
     }
 
-    Column(
-        Modifier
-            .padding(all = 8.dp)
-            .fillMaxWidth()
-            .fillMaxHeight(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        AppIconWithFrame()
-        Spacer(modifier = Modifier.padding(all = 30.dp))
-
-        AnimatedContent(
-            targetState = loginUiState.loginState,
-            label = "LoginScreenAnimatedContent"
+    Scaffold (
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { paddingValues ->
+        Column(
+            Modifier
+                .padding(paddingValues)
+                .padding(all = 8.dp)
+                .fillMaxWidth()
+                .fillMaxHeight(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            when (it) {
-                UIState.Pending -> {
-                    LoginField(model)
-                }
+            AppIconWithFrame()
+            Spacer(modifier = Modifier.padding(all = 30.dp))
 
-                UIState.Loading -> {
-                    Column(
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(32.dp),
-                            color = MaterialTheme.colorScheme.surfaceVariant
-                        )
-                        Text(text = loginUiState.loginPromptText, modifier = Modifier.padding(8.dp))
+            AnimatedContent(
+                targetState = loginUiState.loginState,
+                label = "LoginScreenAnimatedContent"
+            ) {
+                when (it) {
+                    UIState.Pending -> {
+                        LoginField(snackbarHostState)
                     }
-                }
 
-                UIState.Finished -> {
+                    UIState.Loading -> {
+                        Column(
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(32.dp),
+                                color = MaterialTheme.colorScheme.surfaceVariant
+                            )
+                            Text(text = loginUiState.loginPromptText, modifier = Modifier.padding(8.dp))
+                        }
+                    }
 
+                    UIState.Finished -> {
+
+                    }
                 }
             }
         }
     }
+
 }
 
 @Composable
@@ -172,7 +185,8 @@ fun AppIconWithFrame() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginField(model: LoginPageViewModel) {
+fun LoginField(snackbarHostState: SnackbarHostState) {
+    val model: LoginPageViewModel = viewModel()
     val loginUiState by model.loginUiState.collectAsStateWithLifecycle()
     val userState = LocalUserState.current
 
@@ -239,37 +253,39 @@ fun LoginField(model: LoginPageViewModel) {
             onClick = {
                 if (registerMode) {
                     if (username.isEmpty() || password.isEmpty()) {
-                        Toast.makeText(context, "请输入用户名和密码", Toast.LENGTH_LONG).show()
+                        scope.launch {
+                            snackbarHostState.showSnackbar("请输入用户名和密码")
+                        }
                         return@Button
                     }
                     scope.launch {
                         try {
                             if (CFQServer.authRegister(username, password.sha256())) {
-                                Toast.makeText(context, "注册成功", Toast.LENGTH_SHORT).show()
+                                snackbarHostState.showSnackbar("注册成功")
                                 registerMode = false
                             }
                         } catch (e: UsernameOccupiedException) {
-                            Toast.makeText(context, "该用户名已被占用", Toast.LENGTH_LONG).show()
+                            snackbarHostState.showSnackbar("该用户名已被占用")
                         } catch (e: Exception) {
-                            Toast.makeText(context, "出错了：${e.localizedMessage}", Toast.LENGTH_LONG).show()
+                            snackbarHostState.showSnackbar("出错了：${e.localizedMessage}")
                         }
                     }
                 } else {
                     if (loginUiState.loginState == UIState.Pending) {
                         try {
-                            model.login(username, password.sha256(), context, userState)
+                            model.login(username, password.sha256(), context, userState, snackbarHostState)
                             model.user.mode = defaultGame
                         } catch (e: Exception) {
                             when (e) {
                                 is CredentialsMismatchException,
                                 is UserNotFoundException -> {
-                                    Toast.makeText(context, "用户名或密码错误", Toast.LENGTH_LONG).show()
+                                    scope.launch { snackbarHostState.showSnackbar("用户名或密码错误") }
                                 }
                                 is CFQServerSideException -> {
-                                    Toast.makeText(context, "服务器出错，请稍后再试", Toast.LENGTH_LONG).show()
+                                    scope.launch { snackbarHostState.showSnackbar("服务器出错，请稍后再试") }
                                 }
                                 else -> {
-                                    Toast.makeText(context, "未知错误: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+                                    scope.launch { snackbarHostState.showSnackbar("未知错误: ${e.localizedMessage}") }
                                 }
                             }
                         }

@@ -28,6 +28,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -36,6 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,6 +54,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.nltv.chafenqi.SCREEN_PADDING
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,7 +68,11 @@ fun SongDetailPage(
     }
     val uriHandler = LocalUriHandler.current
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
+    val snackbarHostState = remember {
+        SnackbarHostState()
+    }
 
     Scaffold (
         topBar = {
@@ -85,7 +93,10 @@ fun SongDetailPage(
                 }
             )
         },
-        containerColor = MaterialTheme.colorScheme.surface
+        containerColor = MaterialTheme.colorScheme.surface,
+        snackbarHost = {
+            SnackbarHost(snackbarHostState)
+        }
     ) { paddingValues ->
         Column(
             Modifier
@@ -158,12 +169,7 @@ fun SongDetailPage(
                                 .toString()
                         )
                     } catch (e: Exception) {
-                        Toast.makeText(
-                            context,
-                            "无法打开B站客户端，请检查权限或是否已安装B站",
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
+                        scope.launch { snackbarHostState.showSnackbar("无法打开B站客户端，请检查权限或是否已安装B站") }
                     }
                 },
                 // modifier = Modifier.fillMaxWidth()

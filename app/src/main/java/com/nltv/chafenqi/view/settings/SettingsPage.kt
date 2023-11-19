@@ -25,6 +25,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -66,6 +68,9 @@ fun SettingsPage(navController: NavController) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val userState = LocalUserState.current
+    val snackbarHostState = remember {
+        SnackbarHostState()
+    }
 
     LaunchedEffect(Unit) {
         model.getCoilDiskCacheSize(context)
@@ -122,30 +127,31 @@ fun SettingsPage(navController: NavController) {
                 }
             )
         },
-        containerColor = MaterialTheme.colorScheme.surface
+        containerColor = MaterialTheme.colorScheme.surface,
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         PreferenceScreen (
             settings = PreferenceSettingsDefaults.settings(),
             scrollable = true,
             modifier = Modifier.padding(paddingValues)
         ) {
-            SettingsEntry(navController)
+            SettingsEntry(navController, snackbarHostState)
         }
     }
 }
 
 @Composable
-fun PreferenceRootScope.SettingsEntry(navController: NavController) {
+fun PreferenceRootScope.SettingsEntry(navController: NavController, snackbarHostState: SnackbarHostState) {
     SettingsUserGroup(navController)
     PreferenceDivider()
 
     SettingsHomeGroup()
     PreferenceDivider()
 
-    SettingsAdvancedGroup()
+    SettingsAdvancedGroup(snackbarHostState)
     PreferenceDivider()
 
-    SettingsAboutGroup(navController)
+    SettingsAboutGroup(navController, snackbarHostState)
 }
 
 @Composable
@@ -220,8 +226,9 @@ fun PreferenceRootScope.SettingsHomeGroup() {
 }
 
 @Composable
-fun PreferenceRootScope.SettingsAdvancedGroup() {
+fun PreferenceRootScope.SettingsAdvancedGroup(snackbarHostState: SnackbarHostState) {
     val model: SettingsPageViewModel = viewModel()
+    val scope = rememberCoroutineScope()
     val context = LocalContext.current
     var showJwtToken by remember { mutableStateOf(false) }
 
@@ -237,7 +244,7 @@ fun PreferenceRootScope.SettingsAdvancedGroup() {
                 model.clearCoilCache(context)
             } catch (e: Exception) {
                 Log.e("SettingsPage", "Cannot clear coil cache, error: $e")
-                Toast.makeText(context, "无法清除缓存，请稍后重试", Toast.LENGTH_SHORT).show()
+                scope.launch { snackbarHostState.showSnackbar("无法清除缓存，请稍后重试") }
             }
         },
         title = { Text(text = "清空图片缓存") },
@@ -260,7 +267,7 @@ fun PreferenceRootScope.SettingsAdvancedGroup() {
 }
 
 @Composable
-fun PreferenceRootScope.SettingsAboutGroup(navController: NavController) {
+fun PreferenceRootScope.SettingsAboutGroup(navController: NavController, snackbarHostState: SnackbarHostState) {
     val model: SettingsPageViewModel = viewModel()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -276,9 +283,9 @@ fun PreferenceRootScope.SettingsAboutGroup(navController: NavController) {
         onClick = {
             scope.launch {
                 if (model.isAppVersionLatest()) {
-                    Toast.makeText(context, "已经是最新版本", Toast.LENGTH_SHORT).show()
+                    snackbarHostState.showSnackbar("已经是最新版本")
                 } else {
-                    Toast.makeText(context, "检测到新版本，请前往QQ群下载最新版本", Toast.LENGTH_LONG).show()
+                    snackbarHostState.showSnackbar("检测到新版本，请前往QQ群下载最新版本")
                     // TODO: Add update confirm dialog
                     // TODO: Auto download apk and install
                 }
@@ -295,7 +302,7 @@ fun PreferenceRootScope.SettingsAboutGroup(navController: NavController) {
                     uriHandler.openUri("mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26jump_from%3Dwebapi%26k%3D$key")
                 } catch (e: Exception) {
                     Log.e("Settings", "Failed to open url, error: $e")
-                    Toast.makeText(context, "无法打开加群链接，请稍后重试", Toast.LENGTH_SHORT).show()
+                    snackbarHostState.showSnackbar("无法打开加群链接，请稍后重试")
                 }
             }
         },
@@ -310,7 +317,7 @@ fun PreferenceRootScope.SettingsAboutGroup(navController: NavController) {
                     uriHandler.openUri("https://github.com/louiswu2011/chafenqi-android")
                 } catch (e: Exception) {
                     Log.e("Settings", "Failed to open url, error: $e")
-                    Toast.makeText(context, "无法打开Github，请稍后重试", Toast.LENGTH_SHORT).show()
+                    snackbarHostState.showSnackbar("无法打开Github，请稍后重试")
                 }
             }
         },

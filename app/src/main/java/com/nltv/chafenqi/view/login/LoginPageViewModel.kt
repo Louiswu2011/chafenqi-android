@@ -2,6 +2,7 @@ package com.nltv.chafenqi.view.login
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -68,7 +69,8 @@ class LoginPageViewModel(
         username: String,
         passwordHash: String,
         context: Context,
-        userState: CFQUserStateViewModel
+        userState: CFQUserStateViewModel,
+        snackbarHostState: SnackbarHostState
     ) {
         updateLoginState(UIState.Loading)
         updateLoginPromptText("登陆中...")
@@ -97,7 +99,7 @@ class LoginPageViewModel(
                     userState.isLoggedIn = true
                 } else {
                     updateLoginState(UIState.Pending)
-                    Toast.makeText(context, "用户名或密码错误，请重试", Toast.LENGTH_SHORT).show()
+                    snackbarHostState.showSnackbar("用户名或密码错误，请重试")
                 }
             } catch (e: Exception) {
                 updateLoginState(UIState.Pending)

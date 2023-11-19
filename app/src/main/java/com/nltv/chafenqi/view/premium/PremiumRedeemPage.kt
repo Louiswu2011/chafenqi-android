@@ -37,6 +37,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -68,6 +70,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun PremiumRedeemPage(navController: NavController) {
     val scrollState = rememberScrollState()
+    val snackbarHostState = remember {
+        SnackbarHostState()
+    }
 
     Scaffold(
         topBar = {
@@ -88,10 +93,12 @@ fun PremiumRedeemPage(navController: NavController) {
                 }
             )
         },
-        containerColor = MaterialTheme.colorScheme.surface
+        containerColor = MaterialTheme.colorScheme.surface,
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         Column (
-            Modifier.padding(paddingValues)
+            Modifier
+                .padding(paddingValues)
                 .fillMaxWidth()
                 .fillMaxHeight()
         ) {
@@ -104,7 +111,7 @@ fun PremiumRedeemPage(navController: NavController) {
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                PremiumRedeemInputField(navController)
+                PremiumRedeemInputField(navController, snackbarHostState)
                 PremiumRedeemInfo()
             }
         }
@@ -166,7 +173,7 @@ fun PremiumPerksPage(modifier: Modifier) {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun PremiumRedeemInputField(navController: NavController) {
+fun PremiumRedeemInputField(navController: NavController, snackbarHostState: SnackbarHostState) {
     val model: PremiumRedeemPageViewModel = viewModel()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -229,7 +236,7 @@ fun PremiumRedeemInputField(navController: NavController) {
             onClick = {
                 scope.launch {
                     if (redeemCode.isEmpty()) {
-                        Toast.makeText(context, "请输入兑换码", Toast.LENGTH_SHORT).show()
+                        snackbarHostState.showSnackbar("请输入兑换码")
                         return@launch
                     }
                     redeemCode = redeemCode.filter { !it.isWhitespace() }
@@ -241,7 +248,7 @@ fun PremiumRedeemInputField(navController: NavController) {
                         }
                     } catch (e: Exception) {
                         Log.e("PremiumRedeem", "Failed to validate redeem code $redeemCode, error: ${e.localizedMessage}")
-                        Toast.makeText(context, "兑换失败，请检查兑换码是否有效", Toast.LENGTH_LONG).show()
+                        snackbarHostState.showSnackbar("兑换失败，请检查兑换码是否有效")
                     }
                 }
             },

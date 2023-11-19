@@ -9,10 +9,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -23,6 +26,9 @@ import com.nltv.chafenqi.view.info.maimai.InfoMaimaiPage
 @Composable
 fun InfoPage(navController: NavController) {
     val model: InfoPageViewModel = viewModel()
+    val snackbarHostState = remember {
+        SnackbarHostState()
+    }
 
     Scaffold(
         topBar = {
@@ -43,13 +49,14 @@ fun InfoPage(navController: NavController) {
                 }
             )
         },
-        containerColor = MaterialTheme.colorScheme.surface
+        containerColor = MaterialTheme.colorScheme.surface,
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { innerPadding ->
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
             if (model.mode == 0) {
-                InfoChunithmPage(navController)
+                InfoChunithmPage(navController, snackbarHostState)
             } else {
                 InfoMaimaiPage(navController)
             }

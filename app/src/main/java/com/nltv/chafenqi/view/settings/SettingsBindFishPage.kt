@@ -13,6 +13,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -44,6 +46,9 @@ fun SettingsBindFishPage(navController: NavController) {
     val model: SettingsPageViewModel = viewModel()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    val snackbarHostState = remember {
+        SnackbarHostState()
+    }
 
     var fishUsername by remember {
         mutableStateOf("")
@@ -71,7 +76,8 @@ fun SettingsBindFishPage(navController: NavController) {
                 }
             )
         },
-        containerColor = MaterialTheme.colorScheme.surface
+        containerColor = MaterialTheme.colorScheme.surface,
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         PreferenceScreen (
             Modifier.padding(paddingValues),
@@ -100,19 +106,19 @@ fun SettingsBindFishPage(navController: NavController) {
             PreferenceButton(
                 onClick = {
                     if (fishUsername.isEmpty() || fishPassword.isEmpty()) {
-                        Toast.makeText(context, "请输入用户名和密码", Toast.LENGTH_SHORT).show()
+                        scope.launch { snackbarHostState.showSnackbar("请输入用户名和密码") }
                         return@PreferenceButton
                     }
 
                     scope.launch {
                         val token = FishServer.getUserToken(fishUsername, fishPassword)
                         if (token.isEmpty()) {
-                            Toast.makeText(context, "用户名或密码错误", Toast.LENGTH_SHORT).show()
+                            scope.launch { snackbarHostState.showSnackbar("用户名或密码错误") }
                             return@launch
                         }
 
                         model.user.fishToken = token
-                        Toast.makeText(context, "绑定成功！", Toast.LENGTH_SHORT).show()
+                        scope.launch { snackbarHostState.showSnackbar("绑定成功！") }
                         fishUsername = ""
                         fishPassword = ""
                         navController.navigateUp()
