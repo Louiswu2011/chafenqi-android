@@ -375,7 +375,7 @@ fun HomePageChunithmRatingSelection(navController: NavController) {
                     modifier = Modifier.width(220.dp)
                 )
                 Text(
-                    text = uiState.chuCurrentSelectedRatingEntry.score.toString() + "%",
+                    text = uiState.chuCurrentSelectedRatingEntry.score.toString(),
                     maxLines = 1
                 )
             }
