@@ -37,6 +37,7 @@ import com.michaelflisar.composepreferences.core.classes.PreferenceStyle
 import com.michaelflisar.composepreferences.core.classes.PreferenceStyleDefaults
 import com.michaelflisar.composepreferences.screen.button.PreferenceButton
 import com.michaelflisar.composepreferences.screen.input.PreferenceInputText
+import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.networking.FishServer
 import kotlinx.coroutines.launch
 
@@ -118,6 +119,7 @@ fun SettingsBindFishPage(navController: NavController) {
                         }
 
                         model.user.fishToken = token
+                        CFQServer.fishUploadToken(model.user.token, token)
                         scope.launch { snackbarHostState.showSnackbar("绑定成功！") }
                         fishUsername = ""
                         fishPassword = ""
