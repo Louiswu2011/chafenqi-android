@@ -45,6 +45,8 @@ import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
 import com.nltv.chafenqi.view.home.HomeNavItem
+import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
+import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,8 +61,8 @@ fun HomeRecentPage(navController: NavController) {
                 title = { Text(text = "最近动态") },
                 scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
                 ),
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
@@ -71,7 +73,8 @@ fun HomeRecentPage(navController: NavController) {
                     }
                 }
             )
-        }
+        },
+        containerColor = MaterialTheme.colorScheme.surface
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
@@ -117,7 +120,7 @@ fun HomeRecentPageEntry(entry: MaimaiRecentScoreEntry, index: Int, navController
                 .size(72.dp)
                 .border(
                     border = BorderStroke(
-                        width = 4.dp, color = MaterialTheme.colorScheme.primaryContainer
+                        width = 2.dp, color = maimaiDifficultyColors[entry.levelIndex]
                     ), shape = RoundedCornerShape(10.dp)
                 )
                 .padding(2.dp)
@@ -164,7 +167,7 @@ fun HomeRecentPageEntry(entry: ChunithmRecentScoreEntry, index: Int, navControll
                 .size(72.dp)
                 .border(
                     border = BorderStroke(
-                        width = 4.dp, color = MaterialTheme.colorScheme.primaryContainer
+                        width = 2.dp, color = chunithmDifficultyColors[entry.levelIndex]
                     ), shape = RoundedCornerShape(10.dp)
                 )
                 .padding(2.dp)

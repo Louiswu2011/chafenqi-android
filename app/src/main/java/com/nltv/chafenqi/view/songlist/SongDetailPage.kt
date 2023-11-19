@@ -72,8 +72,8 @@ fun SongDetailPage(
                 title = { Text(text = "歌曲详情") },
                 scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
                 ),
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
@@ -84,7 +84,8 @@ fun SongDetailPage(
                     }
                 }
             )
-        }
+        },
+        containerColor = MaterialTheme.colorScheme.surface
     ) { paddingValues ->
         Column(
             Modifier
@@ -148,15 +149,6 @@ fun SongDetailPage(
             TextButton(
                 onClick = {
                     val gameName = if (mode == 0) "中二节奏" else "maimai"
-                    if (!model.checkBilibili(context)) {
-                        Toast.makeText(
-                            context,
-                            "无法打开B站客户端，请检查权限或是否已安装B站",
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
-                        return@TextButton
-                    }
                     try {
                         uriHandler.openUri(
                             Uri.parse("bilibili://search")

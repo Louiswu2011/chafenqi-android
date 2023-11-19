@@ -194,8 +194,6 @@ class UpdaterViewModel : ViewModel() {
 
     fun openWeChat(context: Context, uriHandler: UriHandler) {
         try {
-            val mananger = context.packageManager
-            mananger.getPackageInfo("com.tencent.mm", PackageManager.GET_ACTIVITIES)
             uriHandler.openUri("weixin://")
         } catch (e: Exception) {
             // No WeChat?
@@ -207,8 +205,6 @@ class UpdaterViewModel : ViewModel() {
 
     fun openWeChatScan(context: Context, uriHandler: UriHandler) {
         try {
-            val manager = context.packageManager
-            manager.getPackageInfo("com.tencent.mm", PackageManager.GET_ACTIVITIES)
             uriHandler.openUri("weixin://")
         } catch (e: Exception) {
             // No WeChat?

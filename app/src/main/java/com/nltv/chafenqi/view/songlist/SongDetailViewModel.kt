@@ -32,8 +32,6 @@ val chunithmDifficultyColors = listOf(
     Color.White
 )
 
-val bilibiliPackageName = "tv.danmaku.bili"
-
 class SongDetailViewModel : ViewModel() {
     private val tag = this::class.java.canonicalName
 
@@ -101,18 +99,6 @@ class SongDetailViewModel : ViewModel() {
                     )
                 )
             }
-        }
-    }
-
-    fun checkBilibili(context: Context): Boolean {
-        return try {
-            context.packageManager.getPackageInfo(
-                bilibiliPackageName,
-                PackageManager.GET_ACTIVITIES
-            )
-            true
-        } catch (e: Exception) {
-            false
         }
     }
 }

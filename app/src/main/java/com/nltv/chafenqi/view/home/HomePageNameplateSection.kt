@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,10 +14,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -105,22 +109,29 @@ fun HomePageMaimaiNameplate(navController: NavController) {
             }
             Row(
                 modifier = Modifier
-                    .padding(end = 16.dp, top = 5.dp)
+                    .padding(end = 12.dp, top = 5.dp)
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End
             ) {
-                TextButton(onClick = {
-                    if (!model.user.isPremium) {
-                        navController.navigate(HomeNavItem.Home.route + "/settings/redeem")
-                        return@TextButton
-                    }
-                    if (uiState.canOpenMaimaiInfo) {
-                        navController.navigate(HomeNavItem.Home.route + "/info")
-                    } else {
-                        showEmptyDataAlert = true
-                    }
-                }) {
+                Button(
+                    onClick = {
+                        if (!model.user.isPremium) {
+                            navController.navigate(HomeNavItem.Home.route + "/settings/redeem")
+                            return@Button
+                        }
+                        if (uiState.canOpenMaimaiInfo) {
+                            navController.navigate(HomeNavItem.Home.route + "/info")
+                        } else {
+                            showEmptyDataAlert = true
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.primary
+                    ),
+                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 0.dp)
+                ) {
                     Icon(
                         imageVector = Icons.Default.Person,
                         contentDescription = "user info Icon",
@@ -138,7 +149,8 @@ fun HomePageMaimaiNameplate(navController: NavController) {
                     text = uiState.nickname,
                     fontSize = TextUnit(20f, TextUnitType.Sp),
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 12.dp)
+                    modifier = Modifier.padding(bottom = 12.dp),
+                    color = Color.Black
                 )
                 HomePageNameplateInfoRow(title = "Rating", content = uiState.rating)
                 Row(
@@ -196,23 +208,30 @@ fun HomePageChunithmNameplate(navController: NavController) {
             }
             Row(
                 modifier = Modifier
-                    .padding(end = 16.dp, top = 5.dp)
+                    .padding(end = 12.dp, top = 5.dp)
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End
             ) {
-                TextButton(onClick = {
-                    if (!model.user.isPremium) {
-                        navController.navigate(HomeNavItem.Home.route + "/settings/redeem")
-                        return@TextButton
-                    }
+                Button(
+                    onClick = {
+                        if (!model.user.isPremium) {
+                            navController.navigate(HomeNavItem.Home.route + "/settings/redeem")
+                            return@Button
+                        }
 
-                    if (uiState.canOpenChunithmInfo) {
-                        navController.navigate(HomeNavItem.Home.route + "/info")
-                    } else {
-                        showEmptyDataAlert = true
-                    }
-                }) {
+                        if (uiState.canOpenChunithmInfo) {
+                            navController.navigate(HomeNavItem.Home.route + "/info")
+                        } else {
+                            showEmptyDataAlert = true
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.primary
+                    ),
+                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp)
+                ) {
                     Icon(
                         imageVector = Icons.Default.Person,
                         contentDescription = "user info Icon",
@@ -230,7 +249,8 @@ fun HomePageChunithmNameplate(navController: NavController) {
                     text = uiState.nickname,
                     fontSize = TextUnit(20f, TextUnitType.Sp),
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 12.dp)
+                    modifier = Modifier.padding(bottom = 12.dp),
+                    color = Color.Black
                 )
                 HomePageNameplateInfoRow(
                     title = "Rating",
@@ -255,7 +275,7 @@ fun HomePageNameplateInfoRow(title: String, content: String) {
     Row(
         verticalAlignment = Alignment.Bottom
     ) {
-        Text(text = title, modifier = Modifier.padding(end = 8.dp))
-        Text(text = content, fontWeight = FontWeight.Bold)
+        Text(text = title, modifier = Modifier.padding(end = 8.dp), color = Color.Black)
+        Text(text = content, fontWeight = FontWeight.Bold, color = Color.Black)
     }
 }

@@ -75,8 +75,8 @@ fun PremiumRedeemPage(navController: NavController) {
                 title = { Text(text = "会员兑换") },
                 scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
                 ),
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
@@ -87,11 +87,13 @@ fun PremiumRedeemPage(navController: NavController) {
                     }
                 }
             )
-        }
+        },
+        containerColor = MaterialTheme.colorScheme.surface
     ) { paddingValues ->
         Column (
             Modifier.padding(paddingValues)
-                .verticalScroll(scrollState)
+                .fillMaxWidth()
+                .fillMaxHeight()
         ) {
             PremiumPerksPage(Modifier.weight(0.7f))
             Divider()

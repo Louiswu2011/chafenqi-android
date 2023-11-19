@@ -40,8 +40,7 @@ data class ChunithmRecentScoreEntry(
         "advanced" -> 1
         "expert" -> 2
         "master" -> 3
-        "ultima" -> 4
-        else -> 5
+        else -> 4
     }
 
     init {

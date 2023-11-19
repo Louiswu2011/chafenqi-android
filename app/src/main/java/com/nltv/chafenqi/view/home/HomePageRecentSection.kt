@@ -129,7 +129,7 @@ fun HomePageRecentMaimaiEntry(item: MaimaiRecentLineup) {
                 .size(72.dp)
                 .border(
                     border = BorderStroke(
-                        width = 4.dp,
+                        width = 2.dp,
                         color = maimaiDifficultyColors[item.entry.levelIndex]
                     ),
                     shape = RoundedCornerShape(10.dp)
@@ -180,7 +180,7 @@ fun HomePageRecentChunithmEntry(item: ChunithmRecentLineup) {
                 .size(72.dp)
                 .border(
                     border = BorderStroke(
-                        width = 4.dp,
+                        width = 2.dp,
                         color = chunithmDifficultyColors[item.entry.levelIndex]
                     ),
                     shape = RoundedCornerShape(10.dp)

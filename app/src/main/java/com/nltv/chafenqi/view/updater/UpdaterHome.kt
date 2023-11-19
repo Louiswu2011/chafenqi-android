@@ -75,8 +75,8 @@ fun UpdaterHomePage(navController: NavController) {
                 title = { Text(text = "传分") },
                 scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
                 ),
                 actions = {
                     IconButton(onClick = { navController.navigate(HomeNavItem.Uploader.route + "/help") }) {
@@ -84,7 +84,8 @@ fun UpdaterHomePage(navController: NavController) {
                     }
                 }
             )
-        }
+        },
+        containerColor = MaterialTheme.colorScheme.surface
     ) { paddingValues ->
         Box {
             PreferenceScreen (
