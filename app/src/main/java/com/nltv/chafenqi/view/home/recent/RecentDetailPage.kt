@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.OpenInNew
@@ -49,6 +51,7 @@ fun RecentDetailPage(
         Log.i("HomeRecentDetailPage", "Showing detail page for mode $mode index $index")
         it.update(mode, index)
     }
+    val scrollState = rememberScrollState()
 
     Scaffold (
         topBar = {
@@ -73,7 +76,8 @@ fun RecentDetailPage(
         Column(
             Modifier
                 .padding(paddingValues)
-                .padding(SCREEN_PADDING),
+                .padding(SCREEN_PADDING)
+                .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
