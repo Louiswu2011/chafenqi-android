@@ -152,7 +152,7 @@ fun HomeRecentPageEntry(entry: ChunithmRecentScoreEntry, index: Int, navControll
             .height(72.dp)
             .clickable {
                 Log.i("HomeRecentPageEntry", "Jump from index $index")
-                navController.navigate(HomeNavItem.Home.route + "/recent/maimai/${index}")
+                navController.navigate(HomeNavItem.Home.route + "/recent/chunithm/${index}")
             },
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
