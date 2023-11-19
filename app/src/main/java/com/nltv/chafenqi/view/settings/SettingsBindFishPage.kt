@@ -31,6 +31,8 @@ import com.michaelflisar.composepreferences.core.PreferenceInfo
 import com.michaelflisar.composepreferences.core.PreferenceScreen
 import com.michaelflisar.composepreferences.core.PreferenceSectionHeader
 import com.michaelflisar.composepreferences.core.classes.PreferenceSettingsDefaults
+import com.michaelflisar.composepreferences.core.classes.PreferenceStyle
+import com.michaelflisar.composepreferences.core.classes.PreferenceStyleDefaults
 import com.michaelflisar.composepreferences.screen.button.PreferenceButton
 import com.michaelflisar.composepreferences.screen.input.PreferenceInputText
 import com.nltv.chafenqi.networking.FishServer

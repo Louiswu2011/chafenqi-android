@@ -61,7 +61,8 @@ fun SettingsAcknowledgePage(navController: NavController) {
         }
     ) { paddingValues ->
         LazyColumn(
-            Modifier.padding(paddingValues),
+            Modifier.padding(paddingValues)
+                .fillMaxWidth(),
             contentPadding = PaddingValues(SCREEN_PADDING)
         ) {
             item {
