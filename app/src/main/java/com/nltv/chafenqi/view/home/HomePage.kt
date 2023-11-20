@@ -35,6 +35,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -42,7 +44,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -57,6 +62,8 @@ import com.google.firebase.ktx.Firebase
 import com.nltv.chafenqi.LocalUserState
 import com.nltv.chafenqi.SCREEN_PADDING
 import com.nltv.chafenqi.storage.datastore.user.SettingsStore
+import com.nltv.chafenqi.view.module.AppUpdaterDialog
+import com.nltv.chafenqi.view.module.AppUpdaterViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class,
@@ -65,6 +72,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomePage(navController: NavController) {
     val model: HomePageViewModel = viewModel<HomePageViewModel>().also { it.update() }
+    val updaterModel: AppUpdaterViewModel = viewModel()
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
     val userState = LocalUserState.current
@@ -73,24 +81,20 @@ fun HomePage(navController: NavController) {
     val homeShowRefreshButton by store.homeShowRefreshButton.collectAsStateWithLifecycle(initialValue = false)
     
     val refreshState = rememberPullRefreshState(refreshing = userState.isRefreshing, onRefresh = { model.refreshUserData(userState, context) }, refreshThreshold = 120.dp)
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
-        scope.launch {
-            Firebase.crashlytics.setUserId(model.user.username)
-            model.checkUpdates()
-            model.saveCredentialsToCache(context)
-        }
+        updaterModel.checkUpdates()
+        Firebase.crashlytics.setUserId(model.user.username)
+        model.checkUpdates()
+        model.saveCredentialsToCache(context)
     }
 
     BackHandler(true) {
         // Prevent accidental back action when dragging rating indicators
     }
 
-    if (model.showNewVersionDialog) {
-        NewVersionDialog(onDismissRequest = { model.showNewVersionDialog = false }) {
-            // TODO: Start new version download
-        }
-    }
+    AppUpdaterDialog(snackbarHostState = snackbarHostState)
 
     Scaffold(
         topBar = {
@@ -116,7 +120,8 @@ fun HomePage(navController: NavController) {
                 }
             )
         },
-        containerColor = MaterialTheme.colorScheme.surface
+        containerColor = MaterialTheme.colorScheme.surface,
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         Box(
             Modifier.pullRefresh(refreshState, !userState.isRefreshing)
@@ -204,24 +209,4 @@ fun EmptyDataPage() {
         Text(text = "未找到玩家数据", Modifier.padding(bottom = SCREEN_PADDING))
         Text(text = "请先进行一次传分后下拉刷新")
     }
-}
-
-@Composable
-fun NewVersionDialog(onDismissRequest: () -> Unit, onConfirmRequest: () -> Unit) {
-    val model: HomePageViewModel = viewModel()
-
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        confirmButton = { Button(onClick = onConfirmRequest) {
-            Text(text = "更新")
-        } },
-        dismissButton = { Button(onClick = onDismissRequest) {
-            Text(text = "忽略")
-        } },
-        icon = { Icon(imageVector = Icons.Default.Update, contentDescription = "发现新版本") },
-        title = { Text(text = "发现新版本") },
-        text = { Text(text = "当前版本为：${model.currentVersionCode} (${model.currentBuildNumber})" +
-                "\n最新版本为：${model.latestVersionCode} (${model.latestBuildNumber}" +
-                "\n是否更新？)") }
-    )
 }

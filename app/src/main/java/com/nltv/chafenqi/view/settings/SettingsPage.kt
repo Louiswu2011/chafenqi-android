@@ -1,5 +1,6 @@
 package com.nltv.chafenqi.view.settings
 
+import android.Manifest
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -45,6 +46,9 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import com.michaelflisar.composepreferences.core.PreferenceDivider
 import com.michaelflisar.composepreferences.core.PreferenceInfo
 import com.michaelflisar.composepreferences.core.PreferenceScreen
@@ -59,9 +63,11 @@ import com.nltv.chafenqi.LocalUserState
 import com.nltv.chafenqi.storage.datastore.user.SettingsStore
 import com.nltv.chafenqi.storage.`object`.CFQPersistentData
 import com.nltv.chafenqi.view.home.HomeNavItem
+import com.nltv.chafenqi.view.module.AppUpdaterDialog
+import com.nltv.chafenqi.view.module.AppUpdaterViewModel
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun SettingsPage(navController: NavController) {
     val model: SettingsPageViewModel = viewModel()
@@ -266,12 +272,17 @@ fun PreferenceRootScope.SettingsAdvancedGroup(snackbarHostState: SnackbarHostSta
     )
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun PreferenceRootScope.SettingsAboutGroup(navController: NavController, snackbarHostState: SnackbarHostState) {
     val model: SettingsPageViewModel = viewModel()
+    val updaterModel: AppUpdaterViewModel = viewModel()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val uriHandler = LocalUriHandler.current
+    val packageInstallPermissionState = rememberPermissionState(permission = Manifest.permission.REQUEST_INSTALL_PACKAGES)
+
+    AppUpdaterDialog(snackbarHostState = snackbarHostState)
 
     PreferenceSectionHeader(title = { Text(text = "关于") })
     PreferenceInfo(
@@ -282,13 +293,8 @@ fun PreferenceRootScope.SettingsAboutGroup(navController: NavController, snackba
     PreferenceButton(
         onClick = {
             scope.launch {
-                if (model.isAppVersionLatest()) {
-                    snackbarHostState.showSnackbar("已经是最新版本")
-                } else {
-                    snackbarHostState.showSnackbar("检测到新版本，请前往QQ群下载最新版本")
-                    // TODO: Add update confirm dialog
-                    // TODO: Auto download apk and install
-                }
+                if (!packageInstallPermissionState.status.isGranted) { packageInstallPermissionState.launchPermissionRequest() }
+                updaterModel.checkUpdates()
             }
         },
         title = { Text(text = "检查新版本") },
