@@ -165,8 +165,13 @@ class HomePageViewModel(
     }
 
     fun switchGame() {
-        // Log.i(tag, "Switching game mode from ${user.mode} to ${1 - user.mode}...")
         user.mode = 1 - user.mode
+        update()
+    }
+
+    fun switchGame(game: Int) {
+        // Log.i(tag, "Switching game mode from ${user.mode} to ${1 - user.mode}...")
+        user.mode = game
         update()
     }
 

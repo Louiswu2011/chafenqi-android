@@ -79,6 +79,7 @@ fun HomePage(navController: NavController) {
     val context = LocalContext.current
     val store = SettingsStore(context)
     val homeShowRefreshButton by store.homeShowRefreshButton.collectAsStateWithLifecycle(initialValue = false)
+    val defaultGame by store.homeDefaultGame.collectAsStateWithLifecycle(initialValue = 1)
     
     val refreshState = rememberPullRefreshState(refreshing = userState.isRefreshing, onRefresh = { model.refreshUserData(userState, context) }, refreshThreshold = 120.dp)
     val snackbarHostState = remember { SnackbarHostState() }
@@ -88,6 +89,7 @@ fun HomePage(navController: NavController) {
         Firebase.crashlytics.setUserId(model.user.username)
         model.checkUpdates()
         model.saveCredentialsToCache(context)
+        model.switchGame(defaultGame)
     }
 
     BackHandler(true) {
