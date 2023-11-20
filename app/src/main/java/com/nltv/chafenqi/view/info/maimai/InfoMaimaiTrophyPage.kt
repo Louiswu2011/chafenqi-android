@@ -41,8 +41,8 @@ fun InfoMaimaiTrophyPage(navController: NavController) {
                 title = { Text(text = "称号一览") },
                 scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
                 ),
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
@@ -53,7 +53,8 @@ fun InfoMaimaiTrophyPage(navController: NavController) {
                     }
                 }
             )
-        }
+        },
+        containerColor = MaterialTheme.colorScheme.surface
     ) { innerPadding ->
         LazyColumn(
             Modifier

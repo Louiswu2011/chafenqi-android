@@ -37,8 +37,8 @@ fun InfoChunithmNameplatePage(navController: NavController) {
                 title = { Text(text = "名牌版一览") },
                 scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
                 ),
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
@@ -49,7 +49,8 @@ fun InfoChunithmNameplatePage(navController: NavController) {
                     }
                 }
             )
-        }
+        },
+        containerColor = MaterialTheme.colorScheme.surface
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
