@@ -2,16 +2,11 @@ package com.nltv.chafenqi
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -189,9 +184,21 @@ fun LogonPage(navController: NavHostController) {
             composable(HomeNavItem.Home.route + "/rating") { HomeRatingPage(navController) }
 
             composable(HomeNavItem.Home.route + "/settings") { SettingsPage(navController) }
-            composable(HomeNavItem.Home.route + "/settings/redeem") { PremiumRedeemPage(navController) }
-            composable(HomeNavItem.Home.route + "/settings/bind/fish") { SettingsBindFishPage(navController) }
-            composable(HomeNavItem.Home.route + "/settings/acknowledge") { SettingsAcknowledgePage(navController) }
+            composable(HomeNavItem.Home.route + "/settings/redeem") {
+                PremiumRedeemPage(
+                    navController
+                )
+            }
+            composable(HomeNavItem.Home.route + "/settings/bind/fish") {
+                SettingsBindFishPage(
+                    navController
+                )
+            }
+            composable(HomeNavItem.Home.route + "/settings/acknowledge") {
+                SettingsAcknowledgePage(
+                    navController
+                )
+            }
 
             composable(HomeNavItem.Home.route + "/info") { InfoPage(navController) }
             composable(HomeNavItem.Home.route + "/info/maimai/trophy") {

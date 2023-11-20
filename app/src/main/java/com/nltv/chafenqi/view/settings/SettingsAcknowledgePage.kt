@@ -62,15 +62,20 @@ fun SettingsAcknowledgePage(navController: NavController) {
         containerColor = MaterialTheme.colorScheme.surface
     ) { paddingValues ->
         LazyColumn(
-            Modifier.padding(paddingValues)
+            Modifier
+                .padding(paddingValues)
                 .fillMaxWidth(),
             contentPadding = PaddingValues(SCREEN_PADDING)
         ) {
             item {
                 Column {
-                    Text(text = "制作人员", Modifier.padding(vertical = SCREEN_PADDING), color = MaterialTheme.colorScheme.primary)
+                    Text(
+                        text = "制作人员",
+                        Modifier.padding(vertical = SCREEN_PADDING),
+                        color = MaterialTheme.colorScheme.primary
+                    )
                     DEVELOPERS.forEach { developer ->
-                        Row (
+                        Row(
                             Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
@@ -82,13 +87,17 @@ fun SettingsAcknowledgePage(navController: NavController) {
                 }
             }
             item {
-                Text(text = "爱发电贡献名单 (排名不分先后)", Modifier.padding(vertical = SCREEN_PADDING), color = MaterialTheme.colorScheme.primary)
+                Text(
+                    text = "爱发电贡献名单 (排名不分先后)",
+                    Modifier.padding(vertical = SCREEN_PADDING),
+                    color = MaterialTheme.colorScheme.primary
+                )
             }
             if (uiState.sponsorList.isNotEmpty()) {
                 items(
                     count = uiState.sponsorList.size,
                     key = { index -> uiState.sponsorList[index] }
-                ) { index ->  
+                ) { index ->
                     Text(text = uiState.sponsorList[index])
                 }
             } else {

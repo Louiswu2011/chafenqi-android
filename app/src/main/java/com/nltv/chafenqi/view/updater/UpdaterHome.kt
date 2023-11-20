@@ -1,7 +1,6 @@
 package com.nltv.chafenqi.view.updater
 
 import android.app.Activity
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
@@ -21,7 +20,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -95,20 +93,20 @@ fun UpdaterHomePage(navController: NavController) {
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         Box {
-            PreferenceScreen (
+            PreferenceScreen(
                 settings = PreferenceSettingsDefaults.settings(),
                 scrollable = true,
                 modifier = Modifier.padding(paddingValues)
             ) {
                 UpdaterProxyGroup(snackbarHostState)
                 PreferenceDivider()
-                
+
                 UpdaterQuickActionsGroup(snackbarHostState)
                 PreferenceDivider()
-                
+
                 UpdaterClipboardGroup(snackbarHostState)
                 PreferenceDivider()
-                
+
                 UpdaterSettingsGroup()
                 // PreferenceDivider()
             }
@@ -158,7 +156,7 @@ fun PreferenceRootScope.ProxyToggle() {
         })
     PreferenceBool(
         value = isVpnOn,
-        onValueChange = { value -> 
+        onValueChange = { value ->
             isVpnOn = value
             if (isVpnOn) {
                 val intent = model.prepareVPN(context)
@@ -287,8 +285,8 @@ fun PreferenceRootScope.UpdaterSettingsGroup() {
     PreferenceSectionHeader(title = { Text(text = "设置") })
     PreferenceBool(
         value = shouldForward,
-        onValueChange = { 
-            scope.launch { 
+        onValueChange = {
+            scope.launch {
                 store.setUploadShouldForward(it)
             }
         },

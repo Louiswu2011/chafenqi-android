@@ -60,9 +60,12 @@ fun ReloadSongListDialog(onDismissRequest: () -> Unit) {
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .size(100.dp)
-                .background(MaterialTheme.colorScheme.secondaryContainer, shape = RoundedCornerShape(15.dp))
+                .background(
+                    MaterialTheme.colorScheme.secondaryContainer,
+                    shape = RoundedCornerShape(15.dp)
+                )
         ) {
-            Column (
+            Column(
                 verticalArrangement = Arrangement.spacedBy(SCREEN_PADDING),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

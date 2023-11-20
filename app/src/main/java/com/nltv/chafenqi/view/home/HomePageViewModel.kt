@@ -97,7 +97,10 @@ class HomePageViewModel(
         viewModelScope.launch {
             val versionData = CFQServer.apiFetchLatestVersion()
             val fullVersionString = BuildConfig.VERSION_NAME
-            Log.i(tag, "Current version: $currentVersionCode (${currentBuildNumber}), latest version: ${versionData.androidVersionCode} (${versionData.androidBuild})")
+            Log.i(
+                tag,
+                "Current version: $currentVersionCode (${currentBuildNumber}), latest version: ${versionData.androidVersionCode} (${versionData.androidBuild})"
+            )
             if (!versionData.isLatest(currentVersionCode, currentBuildNumber)) {
                 latestVersionCode = versionData.androidVersionCode
                 latestBuildNumber = versionData.androidBuild.toInt()
@@ -187,6 +190,7 @@ class HomePageViewModel(
 
         navController.navigate(HomeNavItem.Home.route + "/recent/maimai/$index")
     }
+
     fun navigateToRecentLog(navController: NavController, item: ChunithmRecentLineup) {
         val index = user.chunithm.recent.indexOf(item.entry)
         if (!_uiState.value.canNavigateToRecentList || index < 0) return

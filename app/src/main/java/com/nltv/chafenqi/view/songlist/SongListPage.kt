@@ -24,8 +24,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -34,8 +32,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -100,7 +96,7 @@ fun SongListPage(navController: NavController) {
         },
         containerColor = MaterialTheme.colorScheme.surface
     ) { paddingValues ->
-        Column (
+        Column(
             Modifier.padding(paddingValues)
         ) {
             SongListSearchBar(navController)
@@ -153,7 +149,12 @@ fun SongListSearchBar(navController: NavController) {
         active = model.isSearchBarActive,
         onActiveChange = { activeChange -> model.isSearchBarActive = activeChange },
         placeholder = { Text(text = "输入曲名或作曲家") },
-        leadingIcon = { Icon(imageVector = Icons.Default.Search, contentDescription = "搜索歌曲列表") },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = "搜索歌曲列表"
+            )
+        },
         trailingIcon = {
             if (model.isSearchBarActive) {
                 IconButton(onClick = {
@@ -179,7 +180,7 @@ fun SongListSearchBar(navController: NavController) {
             0 -> {
                 when {
                     chuSearchResult.isNotEmpty() -> {
-                        LazyColumn (
+                        LazyColumn(
                             Modifier.fillMaxWidth(),
                             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                             state = chuResultListState
@@ -198,15 +199,17 @@ fun SongListSearchBar(navController: NavController) {
                             }
                         }
                     }
+
                     model.searchQuery.isNotEmpty() -> {
                         SongListSearchEmptyState()
                     }
                 }
             }
+
             1 -> {
                 when {
                     maiSearchResult.isNotEmpty() -> {
-                        LazyColumn (
+                        LazyColumn(
                             Modifier.fillMaxWidth(),
                             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                             state = maiResultListState
@@ -225,6 +228,7 @@ fun SongListSearchBar(navController: NavController) {
                             }
                         }
                     }
+
                     model.searchQuery.isNotEmpty() -> {
                         SongListSearchEmptyState()
                     }

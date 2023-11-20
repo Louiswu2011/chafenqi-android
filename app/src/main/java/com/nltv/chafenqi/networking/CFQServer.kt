@@ -218,7 +218,11 @@ class CFQServer {
             return response.status.value == 200
         }
 
-        suspend fun apiTriggerQuickUpload(gameType: Int, shouldForward: Boolean, authToken: String) {
+        suspend fun apiTriggerQuickUpload(
+            gameType: Int,
+            shouldForward: Boolean,
+            authToken: String
+        ) {
             fetchFromServer(
                 "POST",
                 "api/quick_upload",
@@ -313,5 +317,5 @@ class CredentialsMismatchException : Exception()
 class InvalidTokenException : Exception()
 class UserNotFoundException : Exception()
 class EmptyUserDataException : Exception()
-class UsernameOccupiedException: Exception()
+class UsernameOccupiedException : Exception()
 class CFQServerSideException(errorCode: String) : Exception(errorCode)

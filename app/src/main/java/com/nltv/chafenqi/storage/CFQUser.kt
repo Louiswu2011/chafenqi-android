@@ -44,7 +44,8 @@ object CFQUser {
     var chunithm = Chunithm
 
     val isoTimeParser: DateTimeFormatter = DateTimeFormatter.ISO_INSTANT
-    val nameplateDateTimeFormatterWithIndicator: DateTimeFormatter = DateTimeFormatter.ofPattern("MM-dd hh:mm a")
+    val nameplateDateTimeFormatterWithIndicator: DateTimeFormatter =
+        DateTimeFormatter.ofPattern("MM-dd hh:mm a")
     val nameplateDateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MM-dd HH:mm")
 
     object Maimai {
@@ -127,7 +128,8 @@ object CFQUser {
                     mostRecent.filter { it.isNewRecord == 1 }
                         .maxByOrNull { it.timestamp }
                         ?.also { aux.recommendList.add(MaimaiRecentLineup(it, "新纪录")) }
-                } catch (_: Exception) {}
+                } catch (_: Exception) {
+                }
 
                 Log.i(tag, "Loaded maimai auxiliary data.")
             }
@@ -215,7 +217,11 @@ object CFQUser {
                 mostRecent.firstOrNull { it.fullCombo == "alljustice" }
                     ?.also { aux.recommendList.add(ChunithmRecentLineup(it, "AJ")) }
                     ?.also { mostRecent.remove(it) }
-                mostRecent.firstOrNull { it.fullCombo.contains("fullcombo") || it.fullChain.contains("fullchain") }
+                mostRecent.firstOrNull {
+                    it.fullCombo.contains("fullcombo") || it.fullChain.contains(
+                        "fullchain"
+                    )
+                }
                     ?.also { aux.recommendList.add(ChunithmRecentLineup(it, "FC")) }
                     ?.also { mostRecent.remove(it) }
                 mostRecent.maxByOrNull { it.score }
@@ -228,7 +234,8 @@ object CFQUser {
                     mostRecent.filter { it.isNewRecord == 1 }
                         .maxByOrNull { it.timestamp }
                         ?.also { aux.recommendList.add(ChunithmRecentLineup(it, "新纪录")) }
-                } catch (_: Exception) {}
+                } catch (_: Exception) {
+                }
             }
         }
 

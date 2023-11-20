@@ -35,7 +35,7 @@ fun SongRecordPage(navController: NavController, mode: Int, index: Int, levelInd
         it.update(mode, index, levelIndex)
     }
 
-    Scaffold (
+    Scaffold(
         topBar = {
             TopAppBar(
                 title = { androidx.compose.material3.Text(text = "历史记录") },
@@ -56,7 +56,7 @@ fun SongRecordPage(navController: NavController, mode: Int, index: Int, levelInd
         },
         containerColor = MaterialTheme.colorScheme.surface
     ) { paddingValues ->
-        Column (
+        Column(
             Modifier
                 .padding(paddingValues)
                 .fillMaxWidth()
@@ -73,18 +73,33 @@ fun SongRecordChart() {
 
     val chartData = when (model.mode) {
         0 -> {
-            listOf(LineChartData(
-                points = uiState.chuHistoryEntries.map { LineChartData.Point(it.score.toFloat(), it.timestamp.toString()) },
-                startAtZero = false,
-                lineDrawer = SolidLineDrawer()
-            ))
+            listOf(
+                LineChartData(
+                    points = uiState.chuHistoryEntries.map {
+                        LineChartData.Point(
+                            it.score.toFloat(),
+                            it.timestamp.toString()
+                        )
+                    },
+                    startAtZero = false,
+                    lineDrawer = SolidLineDrawer()
+                )
+            )
         }
+
         else -> {
-            listOf(LineChartData(
-                points = uiState.maiHistoryEntries.map { LineChartData.Point(it.achievements, it.timestamp.toString()) },
-                startAtZero = false,
-                lineDrawer = SolidLineDrawer()
-            ))
+            listOf(
+                LineChartData(
+                    points = uiState.maiHistoryEntries.map {
+                        LineChartData.Point(
+                            it.achievements,
+                            it.timestamp.toString()
+                        )
+                    },
+                    startAtZero = false,
+                    lineDrawer = SolidLineDrawer()
+                )
+            )
         }
     }
 

@@ -40,7 +40,7 @@ val DEFAULT_BADGE_BACKGROUND_COLOR = Color.Gray
 
 @Composable
 fun RatingBadge(rate: String) {
-    Row (
+    Row(
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier.width(45.dp)
     ) {

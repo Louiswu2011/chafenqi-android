@@ -1,7 +1,6 @@
 package com.nltv.chafenqi.view.module
 
 import android.Manifest
-import android.content.pm.PackageManager
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PermDeviceInformation
 import androidx.compose.material.icons.filled.Update
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -49,7 +47,7 @@ fun AppUpdaterDialog(snackbarHostState: SnackbarHostState) {
     }
 
     if (model.showDownloadDialog) {
-        AppUpdaterDownloadDialog (snackbarHostState) {
+        AppUpdaterDownloadDialog(snackbarHostState) {
             model.showConfirmDialog = false
         }
     }
@@ -67,22 +65,30 @@ fun AppUpdaterInfoDialog(
 
     AlertDialog(
         onDismissRequest = { model.showConfirmDialog = false },
-        confirmButton = { Button(onClick = {
-            val permission = context.checkSelfPermission(Manifest.permission.INSTALL_PACKAGES)
-            Log.i("AppUpdater", "Permission status: $permission")
-            model.showConfirmDialog = false
-            model.showDownloadDialog = true
-        }) {
-            Text(text = "更新")
-        } },
-        dismissButton = { Button(onClick = { model.showConfirmDialog = false }) {
-            Text(text = "忽略")
-        } },
+        confirmButton = {
+            Button(onClick = {
+                val permission = context.checkSelfPermission(Manifest.permission.INSTALL_PACKAGES)
+                Log.i("AppUpdater", "Permission status: $permission")
+                model.showConfirmDialog = false
+                model.showDownloadDialog = true
+            }) {
+                Text(text = "更新")
+            }
+        },
+        dismissButton = {
+            Button(onClick = { model.showConfirmDialog = false }) {
+                Text(text = "忽略")
+            }
+        },
         icon = { Icon(imageVector = Icons.Default.Update, contentDescription = "发现新版本") },
         title = { Text(text = "发现新版本") },
-        text = { Text(text = "当前版本为：${currentVersionCode} (${currentBuildNumber})" +
-                "\n最新版本为：${latestVersionCode} (${latestBuildNumber})" +
-                "\n是否更新？") }
+        text = {
+            Text(
+                text = "当前版本为：${currentVersionCode} (${currentBuildNumber})" +
+                        "\n最新版本为：${latestVersionCode} (${latestBuildNumber})" +
+                        "\n是否更新？"
+            )
+        }
     )
 }
 
@@ -123,7 +129,7 @@ fun AppUpdaterDownloadDialog(snackbarHostState: SnackbarHostState, onDismissRequ
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.padding(top = SCREEN_PADDING))
-                Row (
+                Row(
                     Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {

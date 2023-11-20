@@ -1,6 +1,5 @@
 package com.nltv.chafenqi.view.settings
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -33,8 +32,6 @@ import com.michaelflisar.composepreferences.core.PreferenceInfo
 import com.michaelflisar.composepreferences.core.PreferenceScreen
 import com.michaelflisar.composepreferences.core.PreferenceSectionHeader
 import com.michaelflisar.composepreferences.core.classes.PreferenceSettingsDefaults
-import com.michaelflisar.composepreferences.core.classes.PreferenceStyle
-import com.michaelflisar.composepreferences.core.classes.PreferenceStyleDefaults
 import com.michaelflisar.composepreferences.screen.button.PreferenceButton
 import com.michaelflisar.composepreferences.screen.input.PreferenceInputText
 import com.nltv.chafenqi.networking.CFQServer
@@ -80,7 +77,7 @@ fun SettingsBindFishPage(navController: NavController) {
         containerColor = MaterialTheme.colorScheme.surface,
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
-        PreferenceScreen (
+        PreferenceScreen(
             Modifier.padding(paddingValues),
             settings = PreferenceSettingsDefaults.settings(),
             scrollable = true
@@ -139,7 +136,13 @@ fun SettingsBindFishPage(navController: NavController) {
             PreferenceInfo(
                 title = { Text(text = "查分器将严格保护您的数据安全") },
                 subtitle = { Text(text = "您的用户名和密码将只用于和水鱼服务器进行认证，不会存储至云端") },
-                icon = { Icon(imageVector = Icons.Default.Security, contentDescription = "保障", tint = MaterialTheme.colorScheme.primary) }
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Security,
+                        contentDescription = "保障",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
             )
         }
     }

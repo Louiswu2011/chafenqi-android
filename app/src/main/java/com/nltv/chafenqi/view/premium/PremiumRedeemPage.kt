@@ -1,7 +1,6 @@
 package com.nltv.chafenqi.view.premium
 
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,7 +20,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CardGiftcard
@@ -96,7 +94,7 @@ fun PremiumRedeemPage(navController: NavController) {
         containerColor = MaterialTheme.colorScheme.surface,
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
-        Column (
+        Column(
             Modifier
                 .padding(paddingValues)
                 .fillMaxWidth()
@@ -104,7 +102,7 @@ fun PremiumRedeemPage(navController: NavController) {
         ) {
             PremiumPerksPage(Modifier.weight(0.7f))
             Divider()
-            Column (
+            Column(
                 Modifier
                     .fillMaxWidth()
                     .weight(0.3f),
@@ -125,7 +123,7 @@ fun PremiumPerksPage(modifier: Modifier) {
         pageCount = { PREMIUM_PERKS.size }
     )
 
-    Box (
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .then(modifier)
@@ -206,7 +204,7 @@ fun PremiumRedeemInputField(navController: NavController, snackbarHostState: Sna
         )
     }
 
-    Column (
+    Column(
         Modifier
             .padding(SCREEN_PADDING)
             .fillMaxWidth(),
@@ -247,7 +245,10 @@ fun PremiumRedeemInputField(navController: NavController, snackbarHostState: Sna
                             navController.navigateUp()
                         }
                     } catch (e: Exception) {
-                        Log.e("PremiumRedeem", "Failed to validate redeem code $redeemCode, error: ${e.localizedMessage}")
+                        Log.e(
+                            "PremiumRedeem",
+                            "Failed to validate redeem code $redeemCode, error: ${e.localizedMessage}"
+                        )
                         snackbarHostState.showSnackbar("兑换失败，请检查兑换码是否有效")
                     }
                 }
@@ -265,7 +266,7 @@ fun PremiumRedeemInfo() {
     val model: PremiumRedeemPageViewModel = viewModel()
     val uriHandler = LocalUriHandler.current
 
-    Row (
+    Row(
         Modifier
             .fillMaxWidth()
             .fillMaxHeight()
@@ -273,12 +274,20 @@ fun PremiumRedeemInfo() {
         horizontalArrangement = Arrangement.SpaceAround
     ) {
         TextButton(onClick = { model.openPremiumPurchaseWebpage(uriHandler) }) {
-            Icon(imageVector = Icons.Default.OpenInNew, contentDescription = "获取兑换码", Modifier.size(ButtonDefaults.IconSize))
+            Icon(
+                imageVector = Icons.Default.OpenInNew,
+                contentDescription = "获取兑换码",
+                Modifier.size(ButtonDefaults.IconSize)
+            )
             Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
             Text(text = "获取兑换码")
         }
         TextButton(onClick = { /*TODO*/ }) {
-            Icon(imageVector = Icons.Default.CardGiftcard, contentDescription = "了解订阅功能", Modifier.size(ButtonDefaults.IconSize))
+            Icon(
+                imageVector = Icons.Default.CardGiftcard,
+                contentDescription = "了解订阅功能",
+                Modifier.size(ButtonDefaults.IconSize)
+            )
             Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
             Text(text = "了解订阅功能")
         }

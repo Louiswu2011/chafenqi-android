@@ -7,13 +7,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
@@ -21,13 +18,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SwapHoriz
-import androidx.compose.material.icons.filled.Update
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,21 +34,16 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -64,9 +54,9 @@ import com.nltv.chafenqi.SCREEN_PADDING
 import com.nltv.chafenqi.storage.datastore.user.SettingsStore
 import com.nltv.chafenqi.view.module.AppUpdaterDialog
 import com.nltv.chafenqi.view.module.AppUpdaterViewModel
-import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class,
+@OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class,
     ExperimentalLayoutApi::class
 )
 @Composable
@@ -78,10 +68,16 @@ fun HomePage(navController: NavController) {
     val userState = LocalUserState.current
     val context = LocalContext.current
     val store = SettingsStore(context)
-    val homeShowRefreshButton by store.homeShowRefreshButton.collectAsStateWithLifecycle(initialValue = false)
+    val homeShowRefreshButton by store.homeShowRefreshButton.collectAsStateWithLifecycle(
+        initialValue = false
+    )
     val defaultGame by store.homeDefaultGame.collectAsStateWithLifecycle(initialValue = 1)
-    
-    val refreshState = rememberPullRefreshState(refreshing = userState.isRefreshing, onRefresh = { model.refreshUserData(userState, context) }, refreshThreshold = 120.dp)
+
+    val refreshState = rememberPullRefreshState(
+        refreshing = userState.isRefreshing,
+        onRefresh = { model.refreshUserData(userState, context) },
+        refreshThreshold = 120.dp
+    )
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
@@ -130,7 +126,7 @@ fun HomePage(navController: NavController) {
         ) {
             Crossfade(targetState = userState.isRefreshing, label = "refresh animation") {
                 if (it) {
-                    Column (
+                    Column(
                         Modifier
                             .padding(paddingValues)
                             .fillMaxWidth()
@@ -199,15 +195,20 @@ fun EmptyDataAlert(onDismissRequest: () -> Unit, onConfirmRequest: () -> Unit) {
 
 @Composable
 fun EmptyDataPage() {
-    Column (
+    Column(
         Modifier
             .fillMaxWidth()
             .fillMaxHeight(),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Icon(imageVector = Icons.Default.Warning, contentDescription = "数据为空警告", Modifier.padding(
-            SCREEN_PADDING))
+        Icon(
+            imageVector = Icons.Default.Warning,
+            contentDescription = "数据为空警告",
+            Modifier.padding(
+                SCREEN_PADDING
+            )
+        )
         Text(text = "未找到玩家数据", Modifier.padding(bottom = SCREEN_PADDING))
         Text(text = "请先进行一次传分后下拉刷新")
     }

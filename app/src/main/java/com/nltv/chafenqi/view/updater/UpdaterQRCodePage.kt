@@ -56,7 +56,7 @@ fun UpdaterQRCodePage(snackbarHostState: SnackbarHostState) {
     val logoPainter = painterResource(id = R.drawable.app_icon)
     val pagerState = rememberPagerState { 2 }
     val store = SettingsStore(context)
-    
+
     val shouldForward by store.uploadShouldForward.collectAsState(initial = false)
 
     val maiQrCodePainter = rememberQrCodePainter(model.buildUri(1, shouldForward)) {
@@ -71,7 +71,7 @@ fun UpdaterQRCodePage(snackbarHostState: SnackbarHostState) {
             darkPixel = QrPixelShape.Default
         }
 
-        colors { 
+        colors {
             dark = QrBrush.solid(nameplateMaimaiBottomColor)
         }
     }
@@ -93,7 +93,7 @@ fun UpdaterQRCodePage(snackbarHostState: SnackbarHostState) {
     }
 
     ModalBottomSheet(onDismissRequest = { model.shouldShowQRCode = false }) {
-        Column (
+        Column(
             Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
@@ -112,6 +112,7 @@ fun UpdaterQRCodePage(snackbarHostState: SnackbarHostState) {
                             Modifier.fillMaxWidth()
 
                         )
+
                         1 -> Image(
                             painter = chuQrCodePainter,
                             contentDescription = "chunithm QRCode",
@@ -139,7 +140,7 @@ fun UpdaterQRCodePage(snackbarHostState: SnackbarHostState) {
                     )
                 }
             }
-            Column (
+            Column(
                 modifier = Modifier
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.Center,

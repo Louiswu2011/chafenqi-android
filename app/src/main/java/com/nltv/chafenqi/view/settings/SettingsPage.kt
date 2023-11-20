@@ -2,7 +2,6 @@ package com.nltv.chafenqi.view.settings
 
 import android.Manifest
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -136,7 +135,7 @@ fun SettingsPage(navController: NavController) {
         containerColor = MaterialTheme.colorScheme.surface,
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
-        PreferenceScreen (
+        PreferenceScreen(
             settings = PreferenceSettingsDefaults.settings(),
             scrollable = true,
             modifier = Modifier.padding(paddingValues)
@@ -147,7 +146,10 @@ fun SettingsPage(navController: NavController) {
 }
 
 @Composable
-fun PreferenceRootScope.SettingsEntry(navController: NavController, snackbarHostState: SnackbarHostState) {
+fun PreferenceRootScope.SettingsEntry(
+    navController: NavController,
+    snackbarHostState: SnackbarHostState
+) {
     SettingsUserGroup(navController)
     PreferenceDivider()
 
@@ -189,14 +191,25 @@ fun PreferenceRootScope.SettingsUserGroup(navController: NavController) {
     PreferenceButton(
         onClick = { navController.navigate(HomeNavItem.Home.route + "/settings/bind/fish") },
         title = { Text(text = "绑定水鱼网账号") },
-        icon = { Icon(imageVector = Icons.Default.ScubaDiving, contentDescription = "绑定水鱼网账号") }
+        icon = {
+            Icon(
+                imageVector = Icons.Default.ScubaDiving,
+                contentDescription = "绑定水鱼网账号"
+            )
+        }
     )
     PreferenceButton(
         onClick = {
             model.showLogoutAlert = true
         },
         title = { Text("登出", color = MaterialTheme.colorScheme.error) },
-        icon = { Icon(imageVector = Icons.Default.Logout, contentDescription = "登出", tint = MaterialTheme.colorScheme.error) }
+        icon = {
+            Icon(
+                imageVector = Icons.Default.Logout,
+                contentDescription = "登出",
+                tint = MaterialTheme.colorScheme.error
+            )
+        }
     )
 }
 
@@ -206,7 +219,9 @@ fun PreferenceRootScope.SettingsHomeGroup() {
     val scope = rememberCoroutineScope()
     val store = SettingsStore(context)
     val homeDefaultGame by store.homeDefaultGame.collectAsStateWithLifecycle(initialValue = 1)
-    val homeShowRefreshButton by store.homeShowRefreshButton.collectAsStateWithLifecycle(initialValue = false)
+    val homeShowRefreshButton by store.homeShowRefreshButton.collectAsStateWithLifecycle(
+        initialValue = false
+    )
 
     PreferenceSectionHeader(title = { Text(text = "主页") })
     PreferenceList(
@@ -218,7 +233,12 @@ fun PreferenceRootScope.SettingsHomeGroup() {
         itemTextProvider = { index -> GAME_LIST[index] },
         title = { Text(text = "默认游戏") },
         subtitle = { Text(text = "设置登录后显示的游戏") },
-        icon = { Icon(imageVector = Icons.Default.VideogameAsset, contentDescription = "默认游戏") },
+        icon = {
+            Icon(
+                imageVector = Icons.Default.VideogameAsset,
+                contentDescription = "默认游戏"
+            )
+        },
         style = PreferenceList.Style.Spinner
     )
     PreferenceBool(
@@ -238,7 +258,12 @@ fun PreferenceRootScope.SettingsAdvancedGroup(snackbarHostState: SnackbarHostSta
     val context = LocalContext.current
     var showJwtToken by remember { mutableStateOf(false) }
 
-    PreferenceSectionHeader(title = { Text(text = "高级", color = MaterialTheme.colorScheme.error) })
+    PreferenceSectionHeader(title = {
+        Text(
+            text = "高级",
+            color = MaterialTheme.colorScheme.error
+        )
+    })
     PreferenceButton(
         onClick = { model.showReloadListAlert = true },
         title = { Text(text = "刷新歌曲列表") },
@@ -274,13 +299,17 @@ fun PreferenceRootScope.SettingsAdvancedGroup(snackbarHostState: SnackbarHostSta
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun PreferenceRootScope.SettingsAboutGroup(navController: NavController, snackbarHostState: SnackbarHostState) {
+fun PreferenceRootScope.SettingsAboutGroup(
+    navController: NavController,
+    snackbarHostState: SnackbarHostState
+) {
     val model: SettingsPageViewModel = viewModel()
     val updaterModel: AppUpdaterViewModel = viewModel()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val uriHandler = LocalUriHandler.current
-    val packageInstallPermissionState = rememberPermissionState(permission = Manifest.permission.REQUEST_INSTALL_PACKAGES)
+    val packageInstallPermissionState =
+        rememberPermissionState(permission = Manifest.permission.REQUEST_INSTALL_PACKAGES)
 
     AppUpdaterDialog(snackbarHostState = snackbarHostState)
 
@@ -293,7 +322,9 @@ fun PreferenceRootScope.SettingsAboutGroup(navController: NavController, snackba
     PreferenceButton(
         onClick = {
             scope.launch {
-                if (!packageInstallPermissionState.status.isGranted) { packageInstallPermissionState.launchPermissionRequest() }
+                if (!packageInstallPermissionState.status.isGranted) {
+                    packageInstallPermissionState.launchPermissionRequest()
+                }
                 updaterModel.checkUpdates(snackbarHostState)
             }
         },

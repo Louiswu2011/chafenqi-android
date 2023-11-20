@@ -1,7 +1,5 @@
 package com.nltv.chafenqi.view.songlist
 
-import android.content.Context
-import android.content.pm.PackageManager
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
@@ -60,7 +58,8 @@ class SongDetailViewModel : ViewModel() {
             coverUrl = "http://43.139.107.206:8083/api/chunithm/cover?musicId=${chuMusic?.musicID}"
             title = chuMusic?.title ?: ""
             artist = chuMusic?.artist ?: ""
-            constants = chuMusic?.charts?.constants?.map { String.format("%.1f", it) }?.filterNot { it == "0.0" } ?: listOf()
+            constants = chuMusic?.charts?.constants?.map { String.format("%.1f", it) }
+                ?.filterNot { it == "0.0" } ?: listOf()
             bpm = chuMusic?.bpm?.toString() ?: ""
             version = chuMusic?.from ?: ""
             genre = chuMusic?.genre ?: ""

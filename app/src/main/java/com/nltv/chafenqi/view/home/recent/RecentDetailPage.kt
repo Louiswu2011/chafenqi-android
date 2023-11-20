@@ -55,7 +55,7 @@ fun RecentDetailPage(
     }
     val scrollState = rememberScrollState()
 
-    Scaffold (
+    Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = "歌曲详情") },
@@ -252,22 +252,22 @@ fun RecentDetailMaimaiSyncCard() {
 @Composable
 fun RecentDetailChunithmScoreGrid() {
     val model: RecentDetailPageViewModel = viewModel()
-    Card (
+    Card(
         Modifier.fillMaxWidth()
     ) {
-        Row (
+        Row(
             Modifier
                 .padding(SCREEN_PADDING)
                 .padding(horizontal = SCREEN_PADDING),
             horizontalArrangement = Arrangement.spacedBy(20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column (
+            Column(
                 Modifier.weight(0.5f),
                 horizontalAlignment = Alignment.Start,
             ) {
                 model.chuEntry?.judges?.forEach { (type, count) ->
-                    Row (
+                    Row(
                         Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
@@ -276,11 +276,11 @@ fun RecentDetailChunithmScoreGrid() {
                     }
                 }
             }
-            Column (
+            Column(
                 Modifier.weight(0.5f)
             ) {
                 model.chuEntry?.notes?.forEach { (type, count) ->
-                    Row (
+                    Row(
                         Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {

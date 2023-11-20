@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
-import coil.util.CoilUtils
 import com.nltv.chafenqi.BuildConfig
 import com.nltv.chafenqi.cacheStore
 import com.nltv.chafenqi.networking.CFQServer
@@ -29,6 +28,7 @@ data class SettingsUiState(
     val sponsorList: List<String> = listOf(),
     val membershipStatus: String = ""
 )
+
 data class DeveloperInfo(
     val name: String = "",
     val contribution: String = ""
@@ -75,7 +75,7 @@ class SettingsPageViewModel : ViewModel() {
 
     fun updateSponsorList() {
         viewModelScope.launch {
-            _uiState.update {  currentValue ->
+            _uiState.update { currentValue ->
                 currentValue.copy(
                     sponsorList = CFQServer.statSponsorList()
                 )
@@ -99,7 +99,7 @@ class SettingsPageViewModel : ViewModel() {
                 "已于${dateString}过期"
             }
 
-            _uiState.update {  currentValue ->
+            _uiState.update { currentValue ->
                 currentValue.copy(
                     membershipStatus = statusString
                 )
@@ -139,11 +139,25 @@ class SettingsPageViewModel : ViewModel() {
     fun getCoilDiskCacheSize(context: Context) {
         val diskCache = context.imageLoader.diskCache
         diskCacheSize = when (val sizeInBytes = diskCache?.size ?: 0) {
-            in 1..1024 -> { "${sizeInBytes}B" }
-            in 1025..1024 * 1024 -> { "${String.format("%.2f", sizeInBytes / 1024f)}KB" }
-            in 1024 * 1024 + 1..1024 * 1024 * 1024 -> { "${String.format("%.2f", sizeInBytes / 1024f / 1024f)}MB" }
-            in 1024 * 1024 * 1024 + 1..Long.MAX_VALUE -> { "${String.format("%.2f", sizeInBytes / 1024f / 1024f / 1024f)}GB" }
-            else -> { "" }
+            in 1..1024 -> {
+                "${sizeInBytes}B"
+            }
+
+            in 1025..1024 * 1024 -> {
+                "${String.format("%.2f", sizeInBytes / 1024f)}KB"
+            }
+
+            in 1024 * 1024 + 1..1024 * 1024 * 1024 -> {
+                "${String.format("%.2f", sizeInBytes / 1024f / 1024f)}MB"
+            }
+
+            in 1024 * 1024 * 1024 + 1..Long.MAX_VALUE -> {
+                "${String.format("%.2f", sizeInBytes / 1024f / 1024f / 1024f)}GB"
+            }
+
+            else -> {
+                ""
+            }
         }
     }
 

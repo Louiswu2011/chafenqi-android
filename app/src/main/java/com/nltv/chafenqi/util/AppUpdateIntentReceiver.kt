@@ -10,7 +10,7 @@ import android.os.Build.VERSION.SDK_INT
 import android.os.Parcelable
 import android.util.Log
 
-class AppUpdateIntentReceiver: BroadcastReceiver() {
+class AppUpdateIntentReceiver : BroadcastReceiver() {
     private val tag = "AppInstaller"
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -24,9 +24,11 @@ class AppUpdateIntentReceiver: BroadcastReceiver() {
                     context.startActivity(activityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
                 }
             }
+
             PackageInstaller.STATUS_SUCCESS ->
                 ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100)
                     .startTone(ToneGenerator.TONE_PROP_ACK)
+
             else -> {
                 val msg = intent.getStringExtra(PackageInstaller.EXTRA_STATUS_MESSAGE)
 

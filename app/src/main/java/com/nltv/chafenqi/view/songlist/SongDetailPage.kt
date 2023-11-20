@@ -1,7 +1,6 @@
 package com.nltv.chafenqi.view.songlist
 
 import android.net.Uri
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
@@ -74,7 +73,7 @@ fun SongDetailPage(
         SnackbarHostState()
     }
 
-    Scaffold (
+    Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = "歌曲详情") },

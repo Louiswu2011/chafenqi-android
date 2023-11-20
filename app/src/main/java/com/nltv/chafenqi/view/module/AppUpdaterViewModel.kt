@@ -2,8 +2,6 @@ package com.nltv.chafenqi.view.module
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
-import android.provider.Settings
 import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.getValue
@@ -31,7 +29,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.nio.file.Files
 
-class AppUpdaterViewModel: ViewModel() {
+class AppUpdaterViewModel : ViewModel() {
     private var _progress = MutableStateFlow(0f)
     val progress: StateFlow<Float> = _progress.asStateFlow()
     var showConfirmDialog by mutableStateOf(false)
@@ -76,7 +74,10 @@ class AppUpdaterViewModel: ViewModel() {
                                 offset / contentLength
                             }
                             offset += bytes.size
-                            Log.i("AppUpdater", "Downloading latest apk ${offset / contentLength * 100}% ($offset/$contentLength)")
+                            Log.i(
+                                "AppUpdater",
+                                "Downloading latest apk ${offset / contentLength * 100}% ($offset/$contentLength)"
+                            )
                         }
                     }
                     Log.i("AppUpdater", "Finished download latest apk, start installing...")
@@ -106,7 +107,10 @@ class AppUpdaterViewModel: ViewModel() {
     suspend fun checkUpdates(snackbarHostState: SnackbarHostState) {
         viewModelScope.launch {
             val versionData = CFQServer.apiFetchLatestVersion()
-            Log.i("AppUpdater", "Current version: $currentVersionCode (${currentBuildNumber}), latest version: ${versionData.androidVersionCode} (${versionData.androidBuild})")
+            Log.i(
+                "AppUpdater",
+                "Current version: $currentVersionCode (${currentBuildNumber}), latest version: ${versionData.androidVersionCode} (${versionData.androidBuild})"
+            )
             if (!versionData.isLatest(currentVersionCode, currentBuildNumber)) {
                 latestVersionCode = versionData.androidVersionCode
                 latestBuildNumber = versionData.androidBuild.toInt()

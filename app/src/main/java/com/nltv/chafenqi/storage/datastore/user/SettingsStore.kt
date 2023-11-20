@@ -23,32 +23,41 @@ class SettingsStore(private val context: Context) {
         private val homeShowRefreshButtonKey = booleanPreferencesKey("homeShowRefreshButton")
     }
 
-    var loginBiometricEnabled: Flow<Boolean> = context.settingsStore.data.map { it[loginBiometricEnabledKey] ?: false }
+    var loginBiometricEnabled: Flow<Boolean> =
+        context.settingsStore.data.map { it[loginBiometricEnabledKey] ?: false }
         private set
+
     suspend fun setLoginBiometricEnabled(value: Boolean) {
         context.settingsStore.edit { it[loginBiometricEnabledKey] = value }
     }
 
-    var uploadShouldForward: Flow<Boolean> = context.settingsStore.data.map { it[uploadShouldForwardKey] ?: false }
+    var uploadShouldForward: Flow<Boolean> =
+        context.settingsStore.data.map { it[uploadShouldForwardKey] ?: false }
         private set
+
     suspend fun setUploadShouldForward(value: Boolean) {
         context.settingsStore.edit { it[uploadShouldForwardKey] = value }
     }
 
-    var uploadShouldAutoJump: Flow<Boolean> = context.settingsStore.data.map { it[uploadShouldAutoJumpKey] ?: false }
+    var uploadShouldAutoJump: Flow<Boolean> =
+        context.settingsStore.data.map { it[uploadShouldAutoJumpKey] ?: false }
         private set
+
     suspend fun setUploadShouldAutoJump(value: Boolean) {
         context.settingsStore.edit { it[uploadShouldAutoJumpKey] = value }
     }
 
     var homeDefaultGame: Flow<Int> = context.settingsStore.data.map { it[homeDefaultGameKey] ?: 1 }
         private set
+
     suspend fun setHomeDefaultGame(value: Int) {
         context.settingsStore.edit { it[homeDefaultGameKey] = value }
     }
 
-    var homeShowRefreshButton: Flow<Boolean> = context.settingsStore.data.map { it[homeShowRefreshButtonKey] ?: false }
+    var homeShowRefreshButton: Flow<Boolean> =
+        context.settingsStore.data.map { it[homeShowRefreshButtonKey] ?: false }
         private set
+
     suspend fun setHomeShowRefreshButton(value: Boolean) {
         context.settingsStore.edit { it[homeShowRefreshButtonKey] = value }
     }

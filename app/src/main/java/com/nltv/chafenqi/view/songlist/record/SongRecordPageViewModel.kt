@@ -17,7 +17,7 @@ data class SongRecordPageUiState(
     val chuHistoryEntries: List<ChunithmRecentScoreEntry> = listOf()
 )
 
-class SongRecordPageViewModel: ViewModel() {
+class SongRecordPageViewModel : ViewModel() {
     private var maiMusic = MaimaiMusicEntry()
     private var chuMusic = ChunithmMusicEntry()
 
@@ -45,6 +45,7 @@ class SongRecordPageViewModel: ViewModel() {
                     )
                 }
             }
+
             mode == 1 && maiMusicList.isNotEmpty() -> {
                 maiMusic = maiMusicList[index]
                 val entries = maiRecentEntries.filter {

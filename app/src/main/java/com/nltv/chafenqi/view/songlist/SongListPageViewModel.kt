@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 
-class SongListPageViewModel: ViewModel() {
+class SongListPageViewModel : ViewModel() {
     val user = CFQUser
 
     val maiMusicList = CFQPersistentData.Maimai.musicList
@@ -35,9 +35,13 @@ class SongListPageViewModel: ViewModel() {
                     user.mode == 0 -> emptyList()
                     query.isNotEmpty() -> {
                         musicList.filter { entry ->
-                            entry.title.contains(query, ignoreCase = true) || entry.basicInfo.artist.contains(query, ignoreCase = true)
+                            entry.title.contains(
+                                query,
+                                ignoreCase = true
+                            ) || entry.basicInfo.artist.contains(query, ignoreCase = true)
                         }
                     }
+
                     else -> emptyList()
                 }
             }
@@ -55,9 +59,13 @@ class SongListPageViewModel: ViewModel() {
                     user.mode == 1 -> emptyList()
                     query.isNotEmpty() -> {
                         musicList.filter { entry ->
-                            entry.title.contains(query, ignoreCase = true) || entry.artist.contains(query, ignoreCase = true)
+                            entry.title.contains(query, ignoreCase = true) || entry.artist.contains(
+                                query,
+                                ignoreCase = true
+                            )
                         }
                     }
+
                     else -> emptyList()
                 }
             }

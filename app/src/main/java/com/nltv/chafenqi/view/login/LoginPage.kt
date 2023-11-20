@@ -1,11 +1,9 @@
 package com.nltv.chafenqi.view.login
 
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -80,12 +78,16 @@ fun LoginPage() {
 
     LaunchedEffect(Unit) {
         val credentials = model.getCachedCredentials(context)
-        if (credentials.size < 2) { return@LaunchedEffect }
+        if (credentials.size < 2) {
+            return@LaunchedEffect
+        }
 
         val token = credentials[0]
         val username = credentials[1]
 
-        if (token.isEmpty() || username.isEmpty()) { return@LaunchedEffect }
+        if (token.isEmpty() || username.isEmpty()) {
+            return@LaunchedEffect
+        }
         Log.i("Login", "Cached username: $username, token: $token")
 
         try {
@@ -98,7 +100,7 @@ fun LoginPage() {
         }
     }
 
-    Scaffold (
+    Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         Column(
@@ -131,7 +133,10 @@ fun LoginPage() {
                                 modifier = Modifier.size(32.dp),
                                 color = MaterialTheme.colorScheme.surfaceVariant
                             )
-                            Text(text = loginUiState.loginPromptText, modifier = Modifier.padding(8.dp))
+                            Text(
+                                text = loginUiState.loginPromptText,
+                                modifier = Modifier.padding(8.dp)
+                            )
                         }
                     }
 
@@ -273,7 +278,13 @@ fun LoginField(snackbarHostState: SnackbarHostState) {
                 } else {
                     if (loginUiState.loginState == UIState.Pending) {
                         try {
-                            model.login(username, password.sha256(), context, userState, snackbarHostState)
+                            model.login(
+                                username,
+                                password.sha256(),
+                                context,
+                                userState,
+                                snackbarHostState
+                            )
                             model.user.mode = defaultGame
                         } catch (e: Exception) {
                             when (e) {
@@ -281,9 +292,11 @@ fun LoginField(snackbarHostState: SnackbarHostState) {
                                 is UserNotFoundException -> {
                                     scope.launch { snackbarHostState.showSnackbar("用户名或密码错误") }
                                 }
+
                                 is CFQServerSideException -> {
                                     scope.launch { snackbarHostState.showSnackbar("服务器出错，请稍后再试") }
                                 }
+
                                 else -> {
                                     scope.launch { snackbarHostState.showSnackbar("未知错误: ${e.localizedMessage}") }
                                 }
@@ -301,7 +314,10 @@ fun LoginField(snackbarHostState: SnackbarHostState) {
                 registerMode = !registerMode
             }
         ) {
-            Text(text = if (!registerMode) "新用户注册" else "登录已有账号", color = MaterialTheme.colorScheme.primary)
+            Text(
+                text = if (!registerMode) "新用户注册" else "登录已有账号",
+                color = MaterialTheme.colorScheme.primary
+            )
         }
         /*TextButton(
             onClick = {

@@ -290,7 +290,7 @@ fun ChunithmRecentScoreEntry.rating(): Double =
 fun ChunithmRatingEntry.rating(): Double =
     chunithmRatingOf(this.associatedMusicEntry.charts.constants[this.levelIndex], this.score)
 
-fun Modifier.conditional(condition : Boolean, modifier : Modifier.() -> Modifier) : Modifier {
+fun Modifier.conditional(condition: Boolean, modifier: Modifier.() -> Modifier): Modifier {
     return if (condition) {
         then(modifier(Modifier))
     } else {

@@ -47,7 +47,7 @@ fun UpdaterHelpPage(navController: NavController) {
         },
         containerColor = MaterialTheme.colorScheme.surface
     ) { paddingValues ->
-        Column (
+        Column(
             Modifier
                 .padding(paddingValues)
                 .fillMaxHeight()
@@ -64,8 +64,9 @@ fun UpdaterHelpPage(navController: NavController) {
 @Composable
 fun UpdaterHelpStepBlock() {
     HELPS.forEach { info ->
-        Row (
-            Modifier.fillMaxWidth()
+        Row(
+            Modifier
+                .fillMaxWidth()
                 .padding(SCREEN_PADDING),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(20.dp)

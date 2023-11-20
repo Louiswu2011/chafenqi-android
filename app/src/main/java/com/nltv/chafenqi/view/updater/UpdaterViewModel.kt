@@ -2,11 +2,9 @@ package com.nltv.chafenqi.view.updater
 
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.net.VpnService
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AdsClick
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -45,12 +43,14 @@ data class UpdaterUiState(
     val canPerformMaiQuickUpload: Boolean = false,
     val canPerformChuQuickUpload: Boolean = false
 )
+
 data class UpdaterHelpInfo(
     val icon: ImageVector = Icons.Default.ArrowDropDown,
     val contentDescription: String = "",
     val title: String = "",
     val text: String = ""
 )
+
 val HELPS = listOf(
     UpdaterHelpInfo(
         Icons.Default.Link,
@@ -103,7 +103,7 @@ class UpdaterViewModel : ViewModel() {
         viewModelScope.launch {
             val chuServerStat = CFQServer.statUploadTime(0).toDouble()
             val maiServerStat = CFQServer.statUploadTime(1).toDouble()
-            _uiState.update {  currentValue ->
+            _uiState.update { currentValue ->
                 currentValue.copy(
                     chuServerStat = makeServerStatText(chuServerStat),
                     maiServerStat = makeServerStatText(maiServerStat)
@@ -124,6 +124,7 @@ class UpdaterViewModel : ViewModel() {
             6 -> "更新Rating列表"
             else -> "未开始上传"
         }
+
         fun makeMaimaiUploadStatText(phase: Int): String = when (phase) {
             0 -> "认证中"
             1 -> "更新玩家信息"
@@ -204,7 +205,11 @@ class UpdaterViewModel : ViewModel() {
         }
     }
 
-    fun openWeChatScan(context: Context, uriHandler: UriHandler, snackbarHostState: SnackbarHostState) {
+    fun openWeChatScan(
+        context: Context,
+        uriHandler: UriHandler,
+        snackbarHostState: SnackbarHostState
+    ) {
         try {
             uriHandler.openUri("weixin://")
         } catch (e: Exception) {
@@ -216,7 +221,9 @@ class UpdaterViewModel : ViewModel() {
 
     suspend fun triggerQuickUpload(game: Int, shouldForward: Boolean): Boolean {
         try {
-            if (CFQServer.apiIsUploading(game, token)) { return false }
+            if (CFQServer.apiIsUploading(game, token)) {
+                return false
+            }
 
             CFQServer.apiTriggerQuickUpload(game, shouldForward, token)
             return true

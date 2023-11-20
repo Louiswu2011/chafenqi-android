@@ -156,7 +156,12 @@ fun HomePageRecentMaimaiEntry(item: MaimaiRecentLineup) {
                 Arrangement.SpaceBetween,
                 Alignment.CenterVertically
             ) {
-                Text(item.entry.title, fontSize = 16.sp, overflow = TextOverflow.Ellipsis, maxLines = 2)
+                Text(
+                    item.entry.title,
+                    fontSize = 16.sp,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 2
+                )
                 Text(
                     text = "%.4f".format(item.entry.achievements).plus("%"),
                     fontWeight = FontWeight.Bold,
@@ -209,8 +214,17 @@ fun HomePageRecentChunithmEntry(item: ChunithmRecentLineup) {
                 Arrangement.SpaceBetween,
                 Alignment.CenterVertically
             ) {
-                Text(item.entry.title, fontSize = 16.sp, overflow = TextOverflow.Ellipsis, maxLines = 2)
-                Text(text = item.entry.score.toString(), fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text(
+                    item.entry.title,
+                    fontSize = 16.sp,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 2
+                )
+                Text(
+                    text = item.entry.score.toString(),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                )
             }
         }
     }
