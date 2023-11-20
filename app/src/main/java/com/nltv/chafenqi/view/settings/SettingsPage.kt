@@ -258,6 +258,18 @@ fun PreferenceRootScope.SettingsAdvancedGroup(snackbarHostState: SnackbarHostSta
     val context = LocalContext.current
     var showJwtToken by remember { mutableStateOf(false) }
 
+    if (model.showClearCacheAlert) {
+        ClearCacheAlertDialog(onDismissRequest = { model.showClearCacheAlert = false }) {
+            try {
+                model.clearCoilCache(context)
+                model.showClearCacheAlert = false
+            } catch (e: Exception) {
+                Log.e("SettingsPage", "Cannot clear coil cache, error: $e")
+                scope.launch { snackbarHostState.showSnackbar("无法清除缓存，请稍后重试") }
+            }
+        }
+    }
+
     PreferenceSectionHeader(title = {
         Text(
             text = "高级",
@@ -271,11 +283,8 @@ fun PreferenceRootScope.SettingsAdvancedGroup(snackbarHostState: SnackbarHostSta
     )
     PreferenceButton(
         onClick = {
-            try {
-                model.clearCoilCache(context)
-            } catch (e: Exception) {
-                Log.e("SettingsPage", "Cannot clear coil cache, error: $e")
-                scope.launch { snackbarHostState.showSnackbar("无法清除缓存，请稍后重试") }
+            if (model.diskCacheSize.isNotEmpty()) {
+                model.showClearCacheAlert = true
             }
         },
         title = { Text(text = "清空图片缓存") },

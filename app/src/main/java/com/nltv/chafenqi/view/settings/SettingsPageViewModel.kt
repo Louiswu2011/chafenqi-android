@@ -54,6 +54,7 @@ class SettingsPageViewModel : ViewModel() {
 
     var showLogoutAlert by mutableStateOf(false)
     var showReloadListAlert by mutableStateOf(false)
+    var showClearCacheAlert by mutableStateOf(false)
 
     var isReloadingList by mutableStateOf(false)
     var diskCacheSize by mutableStateOf("")

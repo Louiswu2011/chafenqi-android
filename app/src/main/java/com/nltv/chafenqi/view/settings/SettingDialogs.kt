@@ -102,6 +102,32 @@ fun ReloadSongListAlertDialog(onDismissRequest: () -> Unit, onConfirmation: () -
     )
 }
 
+@Composable
+fun ClearCacheAlertDialog(onDismissRequest: () -> Unit, onConfirmation: () -> Unit) {
+    AlertDialog(
+        icon = {
+            Icon(imageVector = Icons.Default.Warning, contentDescription = "警告")
+        },
+        title = {
+            Text(text = "确定要刷新吗？")
+        },
+        text = {
+            Text(text = "所有图片将需要重新加载。")
+        },
+        onDismissRequest = onDismissRequest,
+        confirmButton = {
+            TextButton(onClick = onConfirmation) {
+                Text(text = "确定")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismissRequest) {
+                Text(text = "取消")
+            }
+        }
+    )
+}
+
 @Preview
 @Composable
 fun ReloadDialogPreview() {
