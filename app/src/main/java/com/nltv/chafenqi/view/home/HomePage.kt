@@ -51,7 +51,7 @@ import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 import com.nltv.chafenqi.LocalUserState
 import com.nltv.chafenqi.SCREEN_PADDING
-import com.nltv.chafenqi.storage.datastore.user.SettingsStore
+import com.nltv.chafenqi.storage.SettingsStore
 import com.nltv.chafenqi.view.module.AppUpdaterDialog
 import com.nltv.chafenqi.view.module.AppUpdaterViewModel
 

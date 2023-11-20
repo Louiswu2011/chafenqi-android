@@ -31,6 +31,20 @@
                 <action android:name="android.net.VpnService"/>
             </intent-filter>
         </service>
+        <service
+            android:name=".tile.UpdaterTileService"
+            android:exported="true"
+            android:label="@string/tile_title"
+            android:icon="@drawable/app_icon"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+            </intent-filter>
+            <meta-data android:name="android.service.quicksettings.TOGGLEABLE_TILE"
+                android:value="true" />
+            <meta-data android:name="android.service.quicksettings.ACTIVE_TILE"
+                android:value="true" />
+        </service>
         <provider
             android:authorities="com.nltv.chafenqi.provider"
             android:name="androidx.core.content.FileProvider"

@@ -8,7 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.networking.FishServer
-import com.nltv.chafenqi.storage.datastore.user.SettingsStore.Companion.settingsStore
+import com.nltv.chafenqi.storage.SettingsStore.Companion.settingsStore
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import kotlinx.coroutines.Dispatchers

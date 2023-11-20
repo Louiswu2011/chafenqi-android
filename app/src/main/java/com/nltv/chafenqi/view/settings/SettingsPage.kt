@@ -1,7 +1,10 @@
 package com.nltv.chafenqi.view.settings
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -59,7 +62,8 @@ import com.michaelflisar.composepreferences.screen.button.PreferenceButton
 import com.michaelflisar.composepreferences.screen.list.PreferenceList
 import com.nltv.chafenqi.BuildConfig
 import com.nltv.chafenqi.LocalUserState
-import com.nltv.chafenqi.storage.datastore.user.SettingsStore
+import com.nltv.chafenqi.storage.SettingsStore
+import com.nltv.chafenqi.storage.SettingsStore.Companion.settingsStore
 import com.nltv.chafenqi.storage.`object`.CFQPersistentData
 import com.nltv.chafenqi.view.home.HomeNavItem
 import com.nltv.chafenqi.view.module.AppUpdaterDialog
@@ -156,6 +160,9 @@ fun PreferenceRootScope.SettingsEntry(
     SettingsHomeGroup()
     PreferenceDivider()
 
+    SettingsQSTileGroup()
+    PreferenceDivider()
+
     SettingsAdvancedGroup(snackbarHostState)
     PreferenceDivider()
 
@@ -249,6 +256,54 @@ fun PreferenceRootScope.SettingsHomeGroup() {
         title = { Text(text = "显示刷新按钮") },
         subtitle = { Text(text = "无法下拉刷新时可以使用") }
     )
+}
+
+@Composable
+fun PreferenceRootScope.SettingsQSTileGroup() {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val store = SettingsStore(context)
+    val qsInheritBaseSettings by store.qsInheritBaseSettings.collectAsStateWithLifecycle(initialValue = true)
+    val qsCopyTargetGame by store.qsCopyTargetGame.collectAsStateWithLifecycle(initialValue = 1)
+    val qsCopyToClipboard by store.qsCopyToClipboard.collectAsStateWithLifecycle(initialValue = false)
+    val qsShouldForward by store.qsShouldForward.collectAsStateWithLifecycle(initialValue = false)
+    val qsShouldAutoJump by store.qsShouldAutoJump.collectAsStateWithLifecycle(initialValue = false)
+
+    PreferenceSectionHeader(title = { Text(text = "快捷设置") })
+    PreferenceBool(
+        value = qsCopyToClipboard,
+        onValueChange = { scope.launch { store.setQsCopyToClipboard(it) } },
+        title = { Text(text = "自动复制传分链接") }
+    )
+    if (qsCopyToClipboard) {
+        PreferenceList(
+            value = qsCopyTargetGame,
+            onValueChange = { scope.launch { store.setQsCopyTargetGameKey(it) } },
+            items = listOf(1, 0),
+            itemTextProvider = { GAME_LIST[it] },
+            title = { Text(text = "目标游戏") },
+            subtitle = { Text(text = "选择需要上传的游戏") },
+            style = PreferenceList.Style.Spinner
+        )
+    }
+    PreferenceBool(
+        value = qsInheritBaseSettings,
+        onValueChange = { scope.launch { store.setQsInheritBaseSettings(it) } },
+        title = { Text(text = "与传分设置保持一致") },
+        subtitle = { Text(text = "关闭来自定义快捷设置行为") }
+    )
+    if (!qsInheritBaseSettings) {
+        PreferenceBool(
+            value = qsShouldAutoJump,
+            onValueChange = { scope.launch { store.setQsShouldAutoJumpKey(it) } },
+            title = { Text(text = "自动跳转至微信") }
+        )
+        PreferenceBool(
+            value = qsShouldForward,
+            onValueChange = { scope.launch { store.setQsShouldForwardKey(it) } },
+            title = { Text(text = "同步至水鱼网") }
+        )
+    }
 }
 
 @Composable

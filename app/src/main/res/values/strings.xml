@@ -2,4 +2,5 @@
     <string name="app_name">Chafenqi</string>
     <string name="vpn_connected">代理已连接</string>
     <string name="msg_start_failed">代理启动失败</string>
+    <string name="tile_title">传分代理</string>
 </resources>

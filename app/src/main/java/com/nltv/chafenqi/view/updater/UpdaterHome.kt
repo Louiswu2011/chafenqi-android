@@ -49,7 +49,7 @@ import com.michaelflisar.composepreferences.core.hierarchy.PreferenceRootScope
 import com.michaelflisar.composepreferences.screen.bool.PreferenceBool
 import com.michaelflisar.composepreferences.screen.button.PreferenceButton
 import com.michaelflisar.composepreferences.screen.list.PreferenceList
-import com.nltv.chafenqi.storage.datastore.user.SettingsStore
+import com.nltv.chafenqi.storage.SettingsStore
 import com.nltv.chafenqi.view.home.HomeNavItem
 import com.nltv.chafenqi.view.settings.GAME_LIST
 import kotlinx.coroutines.delay

@@ -1,13 +1,19 @@
-package com.nltv.chafenqi.storage.datastore.user
+package com.nltv.chafenqi.storage
 
 import android.content.Context
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.nltv.chafenqi.storage.SettingsStore.Companion.settingsStore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class SettingsStore(private val context: Context) {
@@ -21,6 +27,12 @@ class SettingsStore(private val context: Context) {
 
         private val homeDefaultGameKey = intPreferencesKey("homeDefaultGame")
         private val homeShowRefreshButtonKey = booleanPreferencesKey("homeShowRefreshButton")
+
+        private val qsInheritBaseSettingsKey = booleanPreferencesKey("qsInheritBaseSettings")
+        private val qsCopyToClipboardKey = booleanPreferencesKey("qsCopyToClipboard")
+        private val qsCopyTargetGameKey = intPreferencesKey("qsCopyTargetGame")
+        private val qsShouldForwardKey = booleanPreferencesKey("qsShouldForward")
+        private val qsShouldAutoJumpKey = booleanPreferencesKey("qsShouldAutoJump")
     }
 
     var loginBiometricEnabled: Flow<Boolean> =
@@ -60,5 +72,45 @@ class SettingsStore(private val context: Context) {
 
     suspend fun setHomeShowRefreshButton(value: Boolean) {
         context.settingsStore.edit { it[homeShowRefreshButtonKey] = value }
+    }
+
+    var qsInheritBaseSettings: Flow<Boolean> =
+        context.settingsStore.data.map { it[qsInheritBaseSettingsKey] ?: false }
+        private set
+
+    suspend fun setQsInheritBaseSettings(value: Boolean) {
+        context.settingsStore.edit { it[qsInheritBaseSettingsKey] = value }
+    }
+
+    var qsCopyToClipboard: Flow<Boolean> =
+        context.settingsStore.data.map { it[qsCopyToClipboardKey] ?: false }
+        private set
+
+    suspend fun setQsCopyToClipboard(value: Boolean) {
+        context.settingsStore.edit { it[qsCopyToClipboardKey] = value }
+    }
+
+    var qsCopyTargetGame: Flow<Int> =
+        context.settingsStore.data.map { it[qsCopyTargetGameKey] ?: 1 }
+        private set
+
+    suspend fun setQsCopyTargetGameKey(value: Int) {
+        context.settingsStore.edit { it[qsCopyTargetGameKey] = value }
+    }
+
+    var qsShouldForward: Flow<Boolean> =
+        context.settingsStore.data.map { it[qsShouldForwardKey] ?: false }
+        private set
+
+    suspend fun setQsShouldForwardKey(value: Boolean) {
+        context.settingsStore.edit { it[qsShouldForwardKey] = value }
+    }
+
+    var qsShouldAutoJump: Flow<Boolean> =
+        context.settingsStore.data.map { it[qsShouldAutoJumpKey] ?: false }
+        private set
+
+    suspend fun setQsShouldAutoJumpKey(value: Boolean) {
+        context.settingsStore.edit { it[qsShouldAutoJumpKey] = value }
     }
 }

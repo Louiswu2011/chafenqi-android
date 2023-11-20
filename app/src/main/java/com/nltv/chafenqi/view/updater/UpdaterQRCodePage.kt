@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.nltv.chafenqi.R
 import com.nltv.chafenqi.SCREEN_PADDING
-import com.nltv.chafenqi.storage.datastore.user.SettingsStore
+import com.nltv.chafenqi.storage.SettingsStore
 import com.nltv.chafenqi.view.home.nameplateChunithmBottomColor
 import com.nltv.chafenqi.view.home.nameplateMaimaiBottomColor
 import io.github.alexzhirkevich.qrose.options.QrBrush
