@@ -85,7 +85,7 @@ fun HomePage(navController: NavController) {
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
-        updaterModel.checkUpdates()
+        updaterModel.checkUpdates(snackbarHostState)
         Firebase.crashlytics.setUserId(model.user.username)
         model.checkUpdates()
         model.saveCredentialsToCache(context)

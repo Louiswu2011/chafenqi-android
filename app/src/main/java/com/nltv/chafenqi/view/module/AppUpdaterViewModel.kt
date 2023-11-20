@@ -46,11 +46,6 @@ class AppUpdaterViewModel: ViewModel() {
         .removeSuffix(")")
         .toInt()
 
-    fun openSettings(context: Context) {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", context.packageName, null))
-        context.startActivity(intent)
-    }
-
     fun startUpdate(context: Context, snackbarHostState: SnackbarHostState) {
         viewModelScope.launch {
             withContext(Dispatchers.Main) {
@@ -108,7 +103,7 @@ class AppUpdaterViewModel: ViewModel() {
         context.startActivity(intent)
     }
 
-    suspend fun checkUpdates() {
+    suspend fun checkUpdates(snackbarHostState: SnackbarHostState) {
         viewModelScope.launch {
             val versionData = CFQServer.apiFetchLatestVersion()
             Log.i("AppUpdater", "Current version: $currentVersionCode (${currentBuildNumber}), latest version: ${versionData.androidVersionCode} (${versionData.androidBuild})")
@@ -116,6 +111,8 @@ class AppUpdaterViewModel: ViewModel() {
                 latestVersionCode = versionData.androidVersionCode
                 latestBuildNumber = versionData.androidBuild.toInt()
                 showConfirmDialog = true
+            } else {
+                snackbarHostState.showSnackbar("当前已是最新版本")
             }
         }
     }

@@ -294,7 +294,7 @@ fun PreferenceRootScope.SettingsAboutGroup(navController: NavController, snackba
         onClick = {
             scope.launch {
                 if (!packageInstallPermissionState.status.isGranted) { packageInstallPermissionState.launchPermissionRequest() }
-                updaterModel.checkUpdates()
+                updaterModel.checkUpdates(snackbarHostState)
             }
         },
         title = { Text(text = "检查新版本") },
