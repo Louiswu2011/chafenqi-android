@@ -104,7 +104,7 @@ class AppUpdaterViewModel : ViewModel() {
         context.startActivity(intent)
     }
 
-    suspend fun checkUpdates(snackbarHostState: SnackbarHostState) {
+    suspend fun checkUpdates(snackbarHostState: SnackbarHostState, silent: Boolean = false) {
         viewModelScope.launch {
             val versionData = CFQServer.apiFetchLatestVersion()
             Log.i(
@@ -116,7 +116,9 @@ class AppUpdaterViewModel : ViewModel() {
                 latestBuildNumber = versionData.androidBuild.toInt()
                 showConfirmDialog = true
             } else {
-                snackbarHostState.showSnackbar("当前已是最新版本")
+                if (!silent) {
+                    snackbarHostState.showSnackbar("当前已是最新版本")
+                }
             }
         }
     }
