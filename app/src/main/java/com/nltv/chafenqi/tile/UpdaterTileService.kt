@@ -1,5 +1,6 @@
 package com.nltv.chafenqi.tile
 
+import android.app.PendingIntent
 import android.content.ClipData
 import android.content.ClipDescription
 import android.content.ClipboardManager
@@ -70,8 +71,8 @@ class UpdaterTileService: TileService() {
             val updaterShouldForward = store.uploadShouldForward.firstOrNull()
             val updaterShouldAutoJump = store.uploadShouldAutoJump.firstOrNull()
 
-            var autoJump: Boolean
-            var syncToFish: Int
+            val autoJump: Boolean
+            val syncToFish: Int
 
             if (qsInheritBaseSettings != false) {
                 autoJump = qsShouldAutoJump ?: false
@@ -80,6 +81,9 @@ class UpdaterTileService: TileService() {
                 autoJump = updaterShouldAutoJump ?: false
                 syncToFish = if (updaterShouldForward == true) 1 else 0
             }
+
+            // Log.i("TileService", "$token, $qsInheritBaseSettings, $qsCopyTargetGame, $qsCopyToClipboard, $qsShouldForward, $qsShouldAutoJump, $updaterShouldForward, $updaterShouldAutoJump")
+            // Log.i("TileService", "$autoJump, $syncToFish")
 
             if (qsCopyToClipboard == true) {
                 val link = Uri.parse(PORTAL_ADDRESS)
@@ -95,14 +99,27 @@ class UpdaterTileService: TileService() {
                     }
                 }
                 clipboardManager.setPrimaryClip(clipData)
+                // Log.i("TileService", link)
             }
 
             if (autoJump) {
-                val handler = AndroidUriHandler(applicationContext)
                 try {
-                    handler.openUri("weixin://")
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    intent.data = Uri.parse("weixin://")
+                    if (android.os.Build.VERSION.SDK_INT >= 34) {
+                        val pendingIntent = PendingIntent.getBroadcast(
+                            applicationContext,
+                            0,
+                            intent,
+                            PendingIntent.FLAG_IMMUTABLE
+                        )
+                        startActivityAndCollapse(pendingIntent)
+                    } else {
+                        startActivity(intent)
+                    }
                 } catch (e: Exception) {
-                    Log.e("TileService", "Cannot open weixin...")
+                    Log.e("TileService", "Cannot open weixin, error: $e")
                 }
             }
         }
@@ -110,6 +127,7 @@ class UpdaterTileService: TileService() {
 
     private fun startVPN() {
         val intent = VpnService.prepare(applicationContext)
+        intent?.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         intent?.also { startActivity(it) }.run {
             Intent(applicationContext, ChafenqiProxy::class.java).also {
                 ChafenqiProxy().start(applicationContext)
