@@ -1,6 +1,8 @@
 package com.nltv.chafenqi.view.home.recent
 
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -40,6 +42,8 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.nltv.chafenqi.SCREEN_PADDING
 import com.nltv.chafenqi.view.module.RatingBadge
+import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
+import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -94,7 +98,16 @@ fun RecentDetailPage(
                     contentDescription = "歌曲封面",
                     modifier = Modifier
                         .size(128.dp)
-                        .clip(RoundedCornerShape(12.dp))
+                        .border(
+                            border = BorderStroke(
+                                width = 3.dp,
+                                color = if (mode == 0) chunithmDifficultyColors[model.chuEntry?.levelIndex
+                                    ?: 0] else maimaiDifficultyColors[model.maiEntry?.levelIndex
+                                    ?: 0]
+                            ), shape = RoundedCornerShape(12.dp)
+                        )
+                        .padding(2.dp)
+                        .clip(RoundedCornerShape(size = 12.dp))
                 )
                 Column(
                     horizontalAlignment = Alignment.Start
