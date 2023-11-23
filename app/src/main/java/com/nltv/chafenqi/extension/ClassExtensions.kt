@@ -100,6 +100,13 @@ fun Int.toDateString(context: Context): String {
         .format(DateTimeFormatter.ofPattern("yyyy-MM-dd $hourFormat:mm $indicatorFormat"))
 }
 
+fun Int.toMonthDayString(): String {
+    return Instant.ofEpochSecond(this.toLong())
+        .atZone(ZoneId.systemDefault())
+        .toLocalDateTime()
+        .format(DateTimeFormatter.ofPattern("MM-dd"))
+}
+
 fun Int.toChunithmCoverPath(): String =
     "http://43.139.107.206:8083/api/chunithm/cover?musicId=${this}"
 

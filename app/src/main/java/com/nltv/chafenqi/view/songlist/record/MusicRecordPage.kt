@@ -1,0 +1,301 @@
+package com.nltv.chafenqi.view.songlist.record
+
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import com.nltv.chafenqi.SCREEN_PADDING
+import com.nltv.chafenqi.extension.associatedMusicEntry
+import com.nltv.chafenqi.extension.rating
+import com.nltv.chafenqi.extension.toChunithmCoverPath
+import com.nltv.chafenqi.extension.toDateString
+import com.nltv.chafenqi.extension.toMaimaiCoverPath
+import com.nltv.chafenqi.extension.toMonthDayString
+import com.nltv.chafenqi.extension.toRateString
+import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
+import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
+import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
+import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
+import com.nltv.chafenqi.util.navigateToMusicEntry
+import com.nltv.chafenqi.util.navigateToRecentEntry
+import com.nltv.chafenqi.view.module.RatingBadge
+import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
+import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
+import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
+import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
+import com.patrykandpatrick.vico.compose.chart.Chart
+import com.patrykandpatrick.vico.compose.chart.line.lineChart
+import com.patrykandpatrick.vico.compose.component.marker.markerComponent
+import com.patrykandpatrick.vico.core.axis.Axis
+import com.patrykandpatrick.vico.core.axis.AxisPosition
+import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter
+import com.patrykandpatrick.vico.core.chart.line.LineChart
+import com.patrykandpatrick.vico.core.chart.scale.AutoScaleUp
+import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
+import com.patrykandpatrick.vico.core.component.text.TextComponent
+import com.patrykandpatrick.vico.core.component.text.textComponent
+import com.patrykandpatrick.vico.core.marker.Marker
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MusicRecordPage(navController: NavController, mode: Int, index: Int, levelIndex: Int) {
+    val model = viewModel<MusicRecordPageViewModel>().also {
+        it.update(mode, index, levelIndex)
+    }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { androidx.compose.material3.Text(text = "历史记录") },
+                scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
+                ),
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "返回上一级"
+                        )
+                    }
+                }
+            )
+        },
+        containerColor = MaterialTheme.colorScheme.surface
+    ) { paddingValues ->
+        Column(
+            Modifier
+                .padding(paddingValues)
+                .fillMaxWidth()
+        ) {
+            MusicRecordScoreChart()
+            if (mode == 0) {
+                MusicRecordChunithmEntryList(navController)
+            } else if (mode == 1) {
+                MusicRecordMaimaiEntryList(navController)
+            }
+        }
+    }
+}
+
+@Composable
+fun MusicRecordScoreChart() {
+    val model: MusicRecordPageViewModel = viewModel()
+    val uiState by model.uiState.collectAsStateWithLifecycle()
+
+    Chart(
+        chart = lineChart(
+            // TODO: Add custom min and max value
+            axisValuesOverrider = AxisValuesOverrider.fixed(
+                minY = 0f,
+                maxY = if (model.mode == 0) 1010000f else 101f
+            )
+        ),
+        chartModelProducer = if (model.mode == 0) model.chuEntryProvider else model.maiEntryProvider,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(SCREEN_PADDING),
+        startAxis = rememberStartAxis(
+            valueFormatter = { value, _ ->
+                if (model.mode == 0) {
+                    String.format("%.0f", value)
+                } else {
+                    String.format("%.2f", value) + "%"
+                }
+            }
+        ),
+        bottomAxis = rememberBottomAxis(
+            valueFormatter = { value, _ ->
+                if (model.mode == 0) {
+                    uiState.chuHistoryDateStringMap[value.toInt()] ?: ""
+                } else {
+                    uiState.maiHistoryDateStringMap[value.toInt()] ?: ""
+                }
+            }
+        )
+    )
+}
+
+@Composable
+fun MusicRecordMaimaiEntryList(navController: NavController) {
+    val model: MusicRecordPageViewModel = viewModel()
+    val uiState by model.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    LazyColumn(
+        Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(SCREEN_PADDING)
+    ) {
+        items(
+            count = uiState.maiHistoryEntries.size,
+            key = { index ->
+                uiState.maiHistoryEntries[index].timestamp
+            }
+        ) { index ->
+            val entry = uiState.maiHistoryEntries[index]
+            MusicRecordEntry(
+                modifier = Modifier.padding(horizontal = SCREEN_PADDING),
+                mode = 1,
+                coverUrl = entry.associatedMusicEntry.musicID.toMaimaiCoverPath(),
+                title = entry.title,
+                levelIndex = entry.levelIndex,
+                playDate = entry.timestamp.toDateString(context),
+                badge = entry.achievements.toRateString(),
+                score = String.format("%.2f", entry.achievements) + "%",
+                navController = navController,
+                maiRecentEntry = entry
+            )
+        }
+    }
+}
+
+@Composable
+fun MusicRecordChunithmEntryList(navController: NavController) {
+    val model: MusicRecordPageViewModel = viewModel()
+    val uiState by model.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    LazyColumn(
+        Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(SCREEN_PADDING)
+    ) {
+        items(
+            count = uiState.chuHistoryEntries.size,
+            key = { index ->
+                uiState.chuHistoryEntries[index].timestamp
+            }
+        ) { index ->
+            val entry = uiState.chuHistoryEntries[index]
+            MusicRecordEntry(
+                modifier = Modifier.padding(horizontal = SCREEN_PADDING),
+                mode = 0,
+                coverUrl = entry.associatedMusicEntry.musicID.toChunithmCoverPath(),
+                title = entry.title,
+                levelIndex = entry.levelIndex,
+                playDate = entry.timestamp.toDateString(context),
+                badge = entry.score.toRateString(),
+                score = entry.score.toString(),
+                navController = navController,
+                chuRecentEntry = entry
+            )
+        }
+    }
+}
+
+@Composable
+fun MusicRecordEntry(
+    modifier: Modifier = Modifier,
+    mode: Int,
+    coverUrl: String,
+    title: String,
+    levelIndex: Int,
+    playDate: String,
+    badge: String,
+    score: String,
+    navController: NavController? = null,
+    maiRecentEntry: MaimaiRecentScoreEntry? = null,
+    chuRecentEntry: ChunithmRecentScoreEntry? = null
+) {
+    Row(
+        modifier = Modifier
+            .then(modifier)
+            .fillMaxWidth()
+            .height(64.dp)
+            .clickable (enabled = navController != null) {
+                if (navController == null) return@clickable
+                if (maiRecentEntry != null) {
+                    navigateToRecentEntry(maiRecentEntry, navController)
+                    return@clickable
+                }
+                if (chuRecentEntry != null) {
+                    navigateToRecentEntry(chuRecentEntry, navController)
+                    return@clickable
+                }
+            },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        AsyncImage(
+            model = coverUrl,
+            contentDescription = "歌曲封面",
+            modifier = Modifier
+                .padding(end = 8.dp)
+                .size(64.dp)
+                .border(
+                    border = BorderStroke(
+                        width = 3.dp,
+                        color = if (mode == 0) chunithmDifficultyColors[levelIndex] else maimaiDifficultyColors[levelIndex]
+                    ), shape = RoundedCornerShape(8.dp)
+                )
+                .padding(2.dp)
+                .clip(RoundedCornerShape(size = 8.dp))
+        )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(64.dp),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.Start
+        ) {
+            Row(
+                Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = playDate)
+                RatingBadge(rate = badge)
+            }
+            Row(
+                Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = title,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1,
+                    modifier = Modifier.width(220.dp)
+                )
+                Text(
+                    text = score,
+                    maxLines = 1
+                )
+            }
+        }
+    }
+}

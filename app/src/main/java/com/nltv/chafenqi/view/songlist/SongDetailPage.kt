@@ -18,6 +18,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -53,6 +54,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.nltv.chafenqi.SCREEN_PADDING
+import com.nltv.chafenqi.view.home.HomeNavItem
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -197,11 +199,11 @@ fun SongDetailPage(
             }
             if (mode == 1) {
                 model.maiDiffInfos.onEach {
-                    MaimaiDifficultyCard(info = it)
+                    MaimaiDifficultyCard(info = it, navController)
                 }
             } else if (mode == 0) {
                 model.chuDiffInfos.onEach {
-                    ChunithmDifficultyCard(info = it)
+                    ChunithmDifficultyCard(info = it, navController)
                 }
             }
         }
@@ -209,7 +211,9 @@ fun SongDetailPage(
 }
 
 @Composable
-fun MaimaiDifficultyCard(info: MaimaiDifficultyInfo) {
+fun MaimaiDifficultyCard(info: MaimaiDifficultyInfo, navController: NavController) {
+    val model: SongDetailViewModel = viewModel()
+
     var isExpanded by remember {
         mutableStateOf(false)
     }
@@ -238,6 +242,15 @@ fun MaimaiDifficultyCard(info: MaimaiDifficultyInfo) {
                 Text(text = info.difficultyName)
                 Row {
                     Text(text = if (info.bestEntry == null) "暂未游玩" else info.bestScore)
+                    if (info.hasRecentEntry) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "查看详情",
+                            modifier = Modifier.clickable {
+                                navController.navigate(HomeNavItem.SongList.route + "/maimai/${model.index}/${info.levelIndex}")
+                            }
+                        )
+                    }
                     Icon(
                         imageVector = Icons.Default.ArrowDropDown,
                         contentDescription = "展开按钮图标",
@@ -263,7 +276,9 @@ fun MaimaiDifficultyCard(info: MaimaiDifficultyInfo) {
 }
 
 @Composable
-fun ChunithmDifficultyCard(info: ChunithmDifficultyInfo) {
+fun ChunithmDifficultyCard(info: ChunithmDifficultyInfo, navController: NavController) {
+    val model: SongDetailViewModel = viewModel()
+
     var isExpanded by remember {
         mutableStateOf(false)
     }
@@ -292,6 +307,15 @@ fun ChunithmDifficultyCard(info: ChunithmDifficultyInfo) {
                 Text(text = info.difficultyName)
                 Row {
                     Text(text = if (info.bestEntry == null) "暂未游玩" else info.bestScore)
+                    if (info.hasRecentEntry) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "查看详情",
+                            modifier = Modifier.clickable {
+                                navController.navigate(HomeNavItem.SongList.route + "/chunithm/${model.index}/${info.levelIndex}")
+                            }
+                        )
+                    }
                     Icon(
                         imageVector = Icons.Default.ArrowDropDown,
                         contentDescription = "展开按钮图标",

@@ -55,6 +55,7 @@ import com.nltv.chafenqi.view.settings.SettingsBindFishPage
 import com.nltv.chafenqi.view.settings.SettingsPage
 import com.nltv.chafenqi.view.songlist.SongDetailPage
 import com.nltv.chafenqi.view.songlist.SongListPage
+import com.nltv.chafenqi.view.songlist.record.MusicRecordPage
 import com.nltv.chafenqi.view.updater.UpdaterHelpPage
 import com.nltv.chafenqi.view.updater.UpdaterHomePage
 
@@ -266,11 +267,27 @@ fun LogonPage(navController: NavHostController) {
                     navController = navController
                 )
             }
+            composable(HomeNavItem.SongList.route + "/maimai/{index}/{levelIndex}") {navBackStackEntry ->
+                MusicRecordPage(
+                    navController = navController,
+                    mode = 1,
+                    index = navBackStackEntry.arguments?.getString("index")?.toInt() ?: 0,
+                    levelIndex = navBackStackEntry.arguments?.getString("levelIndex")?.toInt() ?: 0
+                )
+            }
             composable(HomeNavItem.SongList.route + "/chunithm/{index}") { navBackStackEntry ->
                 SongDetailPage(
                     mode = 0,
                     index = navBackStackEntry.arguments?.getString("index")?.toInt() ?: 0,
                     navController = navController
+                )
+            }
+            composable(HomeNavItem.SongList.route + "/chunithm/{index}/{levelIndex}") {navBackStackEntry ->
+                MusicRecordPage(
+                    navController = navController,
+                    mode = 0,
+                    index = navBackStackEntry.arguments?.getString("index")?.toInt() ?: 0,
+                    levelIndex = navBackStackEntry.arguments?.getString("levelIndex")?.toInt() ?: 0
                 )
             }
         }

@@ -33,6 +33,8 @@ val chunithmDifficultyColors = listOf(
 class SongDetailViewModel : ViewModel() {
     private val tag = this::class.java.canonicalName
 
+    val user = CFQUser
+
     var maiScores: List<MaimaiBestScoreEntry> = listOf()
     var chuScores: List<ChunithmBestScoreEntry> = listOf()
 
@@ -46,11 +48,13 @@ class SongDetailViewModel : ViewModel() {
     var bpm: String = ""
     var version: String = ""
     var genre: String = ""
+    var index: Int = 0
 
     val maiDiffInfos: MutableList<MaimaiDifficultyInfo> = mutableListOf()
     val chuDiffInfos: MutableList<ChunithmDifficultyInfo> = mutableListOf()
 
     fun update(mode: Int, index: Int) {
+        this.index = index
         if (mode == 0 && CFQPersistentData.Chunithm.musicList.isNotEmpty()) {
             chuMusic = CFQPersistentData.Chunithm.musicList.getOrNull(index)
             if (chuMusic == null) return
@@ -107,6 +111,7 @@ class MaimaiDifficultyInfo(
     difficultyIndex: Int,
     musicEntry: MaimaiMusicEntry
 ) {
+    var levelIndex: Int = difficultyIndex
     var difficultyName: String = ""
 
     var color: Color = maimaiDifficultyColors[difficultyIndex]
@@ -114,17 +119,19 @@ class MaimaiDifficultyInfo(
     var charter: String = ""
     var bestScore: String = "暂未游玩"
     var bestEntry: MaimaiBestScoreEntry? = null
+    var hasRecentEntry: Boolean = false
 
     init {
         difficultyName = maimaiDifficultyTitles[difficultyIndex]
         constant = String.format("%.1f", musicEntry.constants[difficultyIndex])
         charter = musicEntry.charts[difficultyIndex].charter
         bestEntry = CFQUser.maimai.best.firstOrNull {
-            it.title == title && it.levelIndex == difficultyIndex
+            it.associatedMusicEntry == musicEntry && it.levelIndex == difficultyIndex
         }
         if (bestEntry != null) {
             bestScore = String.format("%.4f", bestEntry!!.achievements) + "%"
         }
+        hasRecentEntry = CFQUser.maimai.recent.firstOrNull { it.associatedMusicEntry == musicEntry && it.levelIndex == levelIndex } != null
     }
 }
 
@@ -133,6 +140,7 @@ class ChunithmDifficultyInfo(
     difficultyIndex: Int,
     musicEntry: ChunithmMusicEntry
 ) {
+    var levelIndex: Int = difficultyIndex
     var difficultyName: String = ""
 
     var color: Color = chunithmDifficultyColors[difficultyIndex]
@@ -140,16 +148,18 @@ class ChunithmDifficultyInfo(
     var charter: String = ""
     var bestScore: String = "暂未游玩"
     var bestEntry: ChunithmBestScoreEntry? = null
+    var hasRecentEntry: Boolean = false
 
     init {
         difficultyName = chunithmDifficultyTitles[difficultyIndex]
         constant = String.format("%.1f", musicEntry.charts.constants[difficultyIndex])
         charter = musicEntry.charts.charters[difficultyIndex] ?: "-"
         bestEntry = CFQUser.chunithm.best.firstOrNull {
-            it.title == title && it.levelIndex == difficultyIndex
+            it.associatedMusicEntry == musicEntry && it.levelIndex == difficultyIndex
         }
         if (bestEntry != null) {
             bestScore = bestEntry!!.score.toString()
         }
+        hasRecentEntry = CFQUser.chunithm.recent.firstOrNull { it.associatedMusicEntry == musicEntry && it.levelIndex == levelIndex } != null
     }
 }
