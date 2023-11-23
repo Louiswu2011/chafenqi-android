@@ -93,6 +93,8 @@ class HomePageViewModel(
         .removeSuffix(")")
         .toInt()
 
+    var isLoaded: Boolean = false
+
     suspend fun checkUpdates() {
         viewModelScope.launch {
             val versionData = CFQServer.apiFetchLatestVersion()

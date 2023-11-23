@@ -85,8 +85,12 @@ fun HomePage(navController: NavController) {
         Firebase.crashlytics.setUserId(model.user.username)
         model.checkUpdates()
         model.saveCredentialsToCache(context)
-        model.switchGame(defaultGame)
+        if (!model.isLoaded) {
+            model.switchGame(defaultGame)
+            model.isLoaded = true
+        }
     }
+
 
     BackHandler(true) {
         // Prevent accidental back action when dragging rating indicators
