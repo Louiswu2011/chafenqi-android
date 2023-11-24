@@ -21,6 +21,7 @@ class SettingsStore(private val context: Context) {
         val Context.settingsStore: DataStore<Preferences> by preferencesDataStore(name = "settingsStore")
 
         private val loginBiometricEnabledKey = booleanPreferencesKey("loginBiometricEnabled")
+        private val loginAutoUpdateSongListKey = booleanPreferencesKey("loginAutoUpdateSongList")
 
         private val uploadShouldForwardKey = booleanPreferencesKey("uploadShouldForward")
         private val uploadShouldAutoJumpKey = booleanPreferencesKey("uploadShouldAutoJump")
@@ -41,6 +42,14 @@ class SettingsStore(private val context: Context) {
 
     suspend fun setLoginBiometricEnabled(value: Boolean) {
         context.settingsStore.edit { it[loginBiometricEnabledKey] = value }
+    }
+
+    var loginAutoUpdateSongList: Flow<Boolean> =
+        context.settingsStore.data.map { it[loginAutoUpdateSongListKey] ?: true }
+        private set
+
+    suspend fun setLoginAutoUpdateSongList(value: Boolean) {
+        context.settingsStore.edit { it[loginAutoUpdateSongListKey] = value }
     }
 
     var uploadShouldForward: Flow<Boolean> =

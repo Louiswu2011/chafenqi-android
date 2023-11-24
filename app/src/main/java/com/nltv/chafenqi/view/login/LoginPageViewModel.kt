@@ -38,6 +38,7 @@ class LoginPageViewModel(
         token: String,
         username: String,
         context: Context,
+        shouldValidate: Boolean = true,
         userState: CFQUserStateViewModel,
         loadFromCache: Boolean = true
     ) {
@@ -47,7 +48,7 @@ class LoginPageViewModel(
             try {
                 user.createProfile(token, username)
 
-                loadPersistentStorage(context)
+                loadPersistentStorage(context, shouldValidate)
 
                 updateLoginPromptText("加载舞萌DX数据...")
                 userState.loadMaimaiData(context)
@@ -68,6 +69,7 @@ class LoginPageViewModel(
         username: String,
         passwordHash: String,
         context: Context,
+        shouldValidate: Boolean = true,
         userState: CFQUserStateViewModel,
         snackbarHostState: SnackbarHostState
     ) {
@@ -86,7 +88,7 @@ class LoginPageViewModel(
                     // updateLoginPromptText("以${username}的身份登录...")
                     user.createProfile(response, username)
 
-                    loadPersistentStorage(context)
+                    loadPersistentStorage(context, shouldValidate)
 
                     updateLoginPromptText("加载舞萌DX数据...")
                     userState.loadMaimaiData(context)
@@ -107,9 +109,9 @@ class LoginPageViewModel(
         }
     }
 
-    private suspend fun loadPersistentStorage(context: Context) {
+    private suspend fun loadPersistentStorage(context: Context, shouldValidate: Boolean) {
         updateLoginPromptText("加载歌曲列表...")
-        CFQPersistentData.loadData(shouldValidate = false, context = context)
+        CFQPersistentData.loadData(shouldValidate = shouldValidate, context = context)
     }
 
     fun clearPersistentStorage(context: Context) {

@@ -70,8 +70,10 @@ import kotlinx.coroutines.launch
 fun LoginPage() {
     val model: LoginPageViewModel = viewModel()
     val context = LocalContext.current
+    val store = SettingsStore(context)
     val userState = LocalUserState.current
     val loginUiState by model.loginUiState.collectAsStateWithLifecycle()
+    val shouldValidate by store.loginAutoUpdateSongList.collectAsStateWithLifecycle(initialValue = true)
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -91,7 +93,7 @@ fun LoginPage() {
         Log.i("Login", "Cached username: $username, token: $token")
 
         try {
-            model.login(token, username, context, userState, loadFromCache = true)
+            model.login(token, username, context, shouldValidate, userState, loadFromCache = true)
         } catch (e: Exception) {
             Log.e("Login", "Error login from cached token, error: ${e.localizedMessage}")
             scope.launch {
@@ -199,6 +201,7 @@ fun LoginField(snackbarHostState: SnackbarHostState) {
     val context = LocalContext.current
     val store = SettingsStore(context)
     val defaultGame by store.homeDefaultGame.collectAsStateWithLifecycle(initialValue = 1)
+    val shouldValidate by store.loginAutoUpdateSongList.collectAsStateWithLifecycle(initialValue = true)
 
     var registerMode by remember {
         mutableStateOf(false)
@@ -282,6 +285,7 @@ fun LoginField(snackbarHostState: SnackbarHostState) {
                                 username,
                                 password.sha256(),
                                 context,
+                                shouldValidate,
                                 userState,
                                 snackbarHostState
                             )
