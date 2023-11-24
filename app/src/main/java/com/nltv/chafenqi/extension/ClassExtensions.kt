@@ -168,9 +168,9 @@ fun maimaiRatingOf(constant: Double, achievements: Float): Int {
 fun MaimaiBestScoreEntry.associatedMusicEntry(): MaimaiMusicEntry {
     return try {
         if (CFQPersistentData.Maimai.musicList.isNotEmpty()) {
-            if (this.title == "D✪N’T ST✪P R✪CKIN’") {
+            if (this.title.replace("　", " ") == "D✪N’T ST✪P R✪CKIN’") {
                 CFQPersistentData.Maimai.musicList.first {
-                    it.musicID == "299" && it.type == this.type
+                    it.musicID == "364" && it.type == this.type
                 }
             } else {
                 CFQPersistentData.Maimai.musicList.first {
@@ -190,9 +190,9 @@ fun MaimaiBestScoreEntry.associatedMusicEntry(): MaimaiMusicEntry {
 fun MaimaiRecentScoreEntry.associatedMusicEntry(): MaimaiMusicEntry {
     return try {
         if (CFQUser.Maimai.best.isNotEmpty() && CFQPersistentData.Maimai.musicList.isNotEmpty()) {
-            if (this.title == "D✪N’T ST✪P R✪CKIN’") {
+            if (this.title.replace("　", " ") == "D✪N’T ST✪P R✪CKIN’") {
                 CFQPersistentData.Maimai.musicList.first {
-                    it.musicID == "299" && it.type == this.type
+                    it.musicID == "364" && it.type == this.type
                 }
             } else {
                 CFQUser.Maimai.best.first {
