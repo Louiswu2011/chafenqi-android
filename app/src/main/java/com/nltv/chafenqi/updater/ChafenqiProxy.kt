@@ -1,9 +1,15 @@
 package com.nltv.chafenqi.updater
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.VpnService
 import android.os.Binder
+import android.os.Build
 import android.os.IBinder
 import android.os.Parcel
 import android.os.ParcelFileDescriptor
@@ -13,6 +19,8 @@ import android.os.RemoteException
 import android.preference.PreferenceManager
 import android.text.TextUtils
 import android.util.Log
+import androidx.core.app.NotificationCompat
+import com.google.android.datatransport.Priority
 import com.nltv.chafenqi.ChafenqiApplication
 import com.nltv.chafenqi.R
 import java.io.IOException
@@ -50,13 +58,13 @@ class ChafenqiProxy : VpnService() {
     fun start(context: Context) {
         val intent = Intent(context, ChafenqiProxy::class.java)
         intent.action = ACTION_START
-        context.startService(intent)
+        context.startForegroundService(intent)
     }
 
     fun stop(context: Context) {
         val intent = Intent(context, ChafenqiProxy::class.java)
         intent.action = ACTION_STOP
-        context.startService(intent)
+        context.startForegroundService(intent)
     }
 
     private external fun jni_init()
@@ -98,7 +106,7 @@ class ChafenqiProxy : VpnService() {
             stopVPN(vpn!!)
             vpn = null
         }
-        stopForeground(true)
+        stopForeground(Service.STOP_FOREGROUND_REMOVE)
     }
 
     override fun onRevoke() {
@@ -213,6 +221,25 @@ class ChafenqiProxy : VpnService() {
         // Native init
         jni_init()
         super.onCreate()
+        val channelId = createNotificationChannel("chafenqi-proxy", "vpn-service")
+        val notificationBuilder = NotificationCompat.Builder(this, channelId)
+        val notification = notificationBuilder.setOngoing(true)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setCategory(Notification.CATEGORY_SERVICE)
+            .setContentTitle("查分器代理")
+            .setContentText("代理正在运行中")
+            .build()
+        startForeground(101, notification)
+    }
+
+    private fun createNotificationChannel(channelId: String, channelName: String): String{
+        val chan = NotificationChannel(channelId,
+            channelName, NotificationManager.IMPORTANCE_NONE)
+        chan.lightColor = Color.BLUE
+        chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+        val service = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        service.createNotificationChannel(chan)
+        return channelId
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
