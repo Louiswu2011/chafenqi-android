@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.VpnService
 import android.os.Binder
+import android.os.Build
 import android.os.IBinder
 import android.os.Parcel
 import android.os.ParcelFileDescriptor
@@ -50,13 +51,13 @@ class ChafenqiProxy : VpnService() {
     fun start(context: Context) {
         val intent = Intent(context, ChafenqiProxy::class.java)
         intent.action = ACTION_START
-        context.startService(intent)
+        context.startForegroundService(intent)
     }
 
     fun stop(context: Context) {
         val intent = Intent(context, ChafenqiProxy::class.java)
         intent.action = ACTION_STOP
-        context.startService(intent)
+        context.startForegroundService(intent)
     }
 
     private external fun jni_init()
