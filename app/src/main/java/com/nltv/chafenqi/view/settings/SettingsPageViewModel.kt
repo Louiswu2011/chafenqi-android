@@ -14,7 +14,7 @@ import coil.imageLoader
 import com.nltv.chafenqi.BuildConfig
 import com.nltv.chafenqi.cacheStore
 import com.nltv.chafenqi.networking.CFQServer
-import com.nltv.chafenqi.storage.CFQUser
+import com.nltv.chafenqi.storage.user.CFQUser
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

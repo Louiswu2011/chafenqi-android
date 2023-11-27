@@ -23,7 +23,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 import com.nltv.chafenqi.networking.CFQServer
-import com.nltv.chafenqi.storage.CFQUser
+import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.updater.ChafenqiProxy
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

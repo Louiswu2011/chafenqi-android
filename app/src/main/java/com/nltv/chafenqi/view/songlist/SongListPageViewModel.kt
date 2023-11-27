@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nltv.chafenqi.storage.CFQUser
+import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.storage.`object`.CFQPersistentData
 import com.nltv.chafenqi.storage.songlist.MusicEntry
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry

@@ -4,7 +4,7 @@ import android.content.Context
 import android.text.format.DateFormat
 import android.util.Log
 import androidx.compose.ui.Modifier
-import com.nltv.chafenqi.storage.CFQUser
+import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmBestScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRatingEntry
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
@@ -109,6 +109,12 @@ fun Int.toMonthDayString(): String {
 
 fun Int.toChunithmCoverPath(): String =
     "http://43.139.107.206:8083/api/chunithm/cover?musicId=${this}"
+
+fun Int.toMaimaiLevelString(): String {
+    if (this <= 6) return this.toString()
+    if (this % 2 != 0) return ((this - 7) / 2 + 7).toString()
+    return ((this - 8) / 2 + 7).toString() + "+"
+}
 
 fun Int.toRateString(): String = when (this) {
     in Int.MIN_VALUE..499999 -> "D"

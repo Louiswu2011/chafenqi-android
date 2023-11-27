@@ -44,10 +44,12 @@ import com.nltv.chafenqi.view.info.chunithm.InfoChunithmNameplatePage
 import com.nltv.chafenqi.view.info.chunithm.InfoChunithmSkillPage
 import com.nltv.chafenqi.view.info.chunithm.InfoChunithmTicketPage
 import com.nltv.chafenqi.view.info.chunithm.InfoChunithmTrophyPage
+import com.nltv.chafenqi.view.info.chunithm.level.InfoChunithmLevelsPage
 import com.nltv.chafenqi.view.info.maimai.InfoMaimaiCharacterPage
 import com.nltv.chafenqi.view.info.maimai.InfoMaimaiFramePage
 import com.nltv.chafenqi.view.info.maimai.InfoMaimaiNameplatePage
 import com.nltv.chafenqi.view.info.maimai.InfoMaimaiTrophyPage
+import com.nltv.chafenqi.view.info.maimai.level.InfoMaimaiLevelsPage
 import com.nltv.chafenqi.view.login.LoginPage
 import com.nltv.chafenqi.view.premium.PremiumRedeemPage
 import com.nltv.chafenqi.view.settings.SettingsAcknowledgePage
@@ -224,6 +226,11 @@ fun LogonPage(navController: NavHostController) {
                     navController
                 )
             }
+            composable(HomeNavItem.Home.route + "/info/maimai/levels") {
+                InfoMaimaiLevelsPage(
+                    navController
+                )
+            }
 
             composable(HomeNavItem.Home.route + "/info/chunithm/character") {
                 InfoChunithmCharacterPage(
@@ -252,6 +259,11 @@ fun LogonPage(navController: NavHostController) {
             }
             composable(HomeNavItem.Home.route + "/info/chunithm/mapIcon") {
                 InfoChunithmMapIconPage(
+                    navController
+                )
+            }
+            composable(HomeNavItem.Home.route + "/info/chunithm/levels") {
+                InfoChunithmLevelsPage(
                     navController
                 )
             }

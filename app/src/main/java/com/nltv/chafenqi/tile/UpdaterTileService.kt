@@ -11,25 +11,14 @@ import android.os.PersistableBundle
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import android.util.Log
-import android.widget.Toast
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.AndroidUriHandler
-import androidx.compose.ui.platform.UriHandler
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.nltv.chafenqi.storage.CFQUser
+import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.storage.SettingsStore
 import com.nltv.chafenqi.updater.ChafenqiProxy
 import com.nltv.chafenqi.view.updater.PORTAL_ADDRESS
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import kotlin.coroutines.coroutineContext
 
 class UpdaterTileService: TileService() {
     private var isVpnRunning = false

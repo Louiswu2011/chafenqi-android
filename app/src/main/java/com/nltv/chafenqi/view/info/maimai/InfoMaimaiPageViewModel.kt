@@ -1,7 +1,7 @@
 package com.nltv.chafenqi.view.info.maimai
 
 import androidx.lifecycle.ViewModel
-import com.nltv.chafenqi.storage.CFQUser
+import com.nltv.chafenqi.storage.user.CFQUser
 
 class InfoMaimaiPageViewModel : ViewModel() {
     val user = CFQUser

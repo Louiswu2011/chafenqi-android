@@ -35,8 +35,8 @@ import coil.compose.AsyncImage
 import com.nltv.chafenqi.extension.toChunithmCoverPath
 import com.nltv.chafenqi.extension.toDateString
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
-import com.nltv.chafenqi.storage.ChunithmRecentLineup
-import com.nltv.chafenqi.storage.MaimaiRecentLineup
+import com.nltv.chafenqi.storage.user.ChunithmRecentLineup
+import com.nltv.chafenqi.storage.user.MaimaiRecentLineup
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
 import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
 

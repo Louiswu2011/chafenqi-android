@@ -7,7 +7,7 @@ import androidx.navigation.NavController
 import com.nltv.chafenqi.extension.toDateString
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.extension.toRateString
-import com.nltv.chafenqi.storage.CFQUser
+import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
 import com.nltv.chafenqi.storage.`object`.CFQPersistentData

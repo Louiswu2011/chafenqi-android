@@ -18,9 +18,9 @@ import com.nltv.chafenqi.BuildConfig
 import com.nltv.chafenqi.CFQUserStateViewModel
 import com.nltv.chafenqi.cacheStore
 import com.nltv.chafenqi.networking.CFQServer
-import com.nltv.chafenqi.storage.CFQUser
-import com.nltv.chafenqi.storage.ChunithmRecentLineup
-import com.nltv.chafenqi.storage.MaimaiRecentLineup
+import com.nltv.chafenqi.storage.user.CFQUser
+import com.nltv.chafenqi.storage.user.ChunithmRecentLineup
+import com.nltv.chafenqi.storage.user.MaimaiRecentLineup
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRatingEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiBestScoreEntry
 import com.nltv.chafenqi.storage.`object`.CFQPersistentData

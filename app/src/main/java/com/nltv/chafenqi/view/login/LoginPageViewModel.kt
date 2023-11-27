@@ -12,7 +12,7 @@ import com.nltv.chafenqi.CFQUserStateViewModel
 import com.nltv.chafenqi.UIState
 import com.nltv.chafenqi.cacheStore
 import com.nltv.chafenqi.networking.CFQServer
-import com.nltv.chafenqi.storage.CFQUser
+import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.storage.`object`.CFQPersistentData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

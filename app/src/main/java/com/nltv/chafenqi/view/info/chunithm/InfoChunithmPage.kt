@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.PersonPin
 import androidx.compose.material.icons.filled.PhotoLibrary
+import androidx.compose.material.icons.filled.PieChart
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -46,7 +47,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.nltv.chafenqi.SCREEN_PADDING
-import com.nltv.chafenqi.storage.CFQUser
+import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.view.home.HomeNavItem
 import kotlinx.coroutines.launch
 
@@ -279,6 +280,19 @@ fun InfoChunithmDetailButtons(navController: NavController) {
                 additionalRoute = "mapIcon",
                 modifier = Modifier.weight(1f)
             )
+        }
+        Button(
+            onClick = { navController.navigate(HomeNavItem.Home.route + "/info/chunithm/levels") },
+            Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(10.dp))
+        {
+            Icon(
+                imageVector = Icons.Default.PieChart,
+                contentDescription = "歌曲完成度按钮图标",
+                Modifier.size(ButtonDefaults.IconSize)
+            )
+            Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+            Text(text = "歌曲完成度")
         }
     }
 }

@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.UriHandler
 import androidx.lifecycle.ViewModel
 import com.nltv.chafenqi.networking.CFQServer
-import com.nltv.chafenqi.storage.CFQUser
+import com.nltv.chafenqi.storage.user.CFQUser
 
 class PremiumRedeemPageViewModel : ViewModel() {
     val user = CFQUser

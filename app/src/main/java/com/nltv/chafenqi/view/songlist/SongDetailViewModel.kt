@@ -3,7 +3,7 @@ package com.nltv.chafenqi.view.songlist
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
-import com.nltv.chafenqi.storage.CFQUser
+import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmBestScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiBestScoreEntry
 import com.nltv.chafenqi.storage.`object`.CFQPersistentData

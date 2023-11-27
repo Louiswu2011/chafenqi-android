@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -44,7 +43,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.nltv.chafenqi.SCREEN_PADDING
-import com.nltv.chafenqi.storage.CFQUser
+import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiCharacterEntry
 import com.nltv.chafenqi.view.home.HomeNavItem
 
@@ -210,7 +209,11 @@ fun InfoMaimaiDetailButtons(navController: NavController) {
                 Text(text = "底板一览")
             }
         }
-        /*Button(onClick = { *//*TODO*//* }, Modifier.fillMaxWidth(), shape = RoundedCornerShape(10.dp)) {
+        Button(
+            onClick = { navController.navigate(HomeNavItem.Home.route + "/info/maimai/levels") },
+            Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(10.dp))
+        {
             Icon(
                 imageVector = Icons.Default.PieChart,
                 contentDescription = "歌曲完成度按钮图标",
@@ -218,7 +221,7 @@ fun InfoMaimaiDetailButtons(navController: NavController) {
             )
             Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
             Text(text = "歌曲完成度")
-        }*/
+        }
     }
 }
 
