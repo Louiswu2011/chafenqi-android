@@ -1,5 +1,6 @@
 package com.nltv.chafenqi.view.info.maimai.level
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
@@ -41,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -56,6 +58,7 @@ import com.nltv.chafenqi.extension.RATE_COLORS_MAIMAI
 import com.nltv.chafenqi.extension.RATE_STRINGS_MAIMAI
 import com.nltv.chafenqi.extension.rating
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
+import com.nltv.chafenqi.storage.SettingsStore
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiBestScoreEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import com.nltv.chafenqi.util.navigateToMusicEntry
@@ -68,11 +71,15 @@ fun InfoMaimaiLevelsPage(navController: NavController) {
     // TODO: Add song sort (by score, by play time...)
     val model: InfoMaimaiLevelsViewModel = viewModel()
     val uiState by model.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val store = SettingsStore(context)
+    val maiDefaultLevelIndex by store.infoLevelsMaimaiDefaultLevel.collectAsStateWithLifecycle(initialValue = 18)
 
     LaunchedEffect(Unit) {
-        // TODO: Add settings for default level
-        if (model.currentPosition == 0) {
-            model.assignCurrentPosition(18)
+        if (!model.isLoaded) {
+            Log.i("MaimaiLevels", "Default level index is $maiDefaultLevelIndex")
+            model.assignCurrentPosition(maiDefaultLevelIndex)
+            model.isLoaded = true
         }
     }
 

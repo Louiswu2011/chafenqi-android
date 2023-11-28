@@ -3,6 +3,7 @@ package com.nltv.chafenqi.view.info.maimai.level
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -29,6 +30,7 @@ class InfoMaimaiLevelsViewModel: ViewModel() {
     val uiState = _uiState.asStateFlow()
 
     var currentPosition by mutableIntStateOf(0)
+    var isLoaded = false
 
     private fun setCurrentLevel(level: String) {
         Log.i("Levels", "Current Level is $level")

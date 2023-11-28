@@ -1,12 +1,16 @@
 package com.nltv.chafenqi.view.info.chunithm.level
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.nltv.chafenqi.extension.LEVEL_STRINGS
+import com.nltv.chafenqi.storage.SettingsStore
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmBestScoreEntry
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.user.CFQUser
@@ -29,12 +33,13 @@ class InfoChunithmLevelsViewModel: ViewModel() {
     val uiState = _uiState.asStateFlow()
 
     var currentPosition by mutableIntStateOf(0)
+    var isLoaded = false
 
     private fun setCurrentLevel(level: String) {
         viewModelScope.launch {
             val info = levelInfo.firstOrNull { it.levelString == level }
             if (info != null) {
-                Log.i("ChunithmLevels", info.entryPerRate.toString())
+                // Log.i("ChunithmLevels", info.entryPerRate.toString())
                 _uiState.update { currentValue ->
                     currentValue.copy(
                         levelEntries = info.playedBestEntries,

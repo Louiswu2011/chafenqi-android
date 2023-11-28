@@ -40,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -59,6 +60,7 @@ import com.nltv.chafenqi.extension.rating
 import com.nltv.chafenqi.extension.toChunithmCoverPath
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.extension.toRateString
+import com.nltv.chafenqi.storage.SettingsStore
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmBestScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiBestScoreEntry
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
@@ -80,11 +82,15 @@ fun InfoChunithmLevelsPage(navController: NavController) {
 // TODO: Add song sort (by score, by play time...)
     val model: InfoChunithmLevelsViewModel = viewModel()
     val uiState by model.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val store = SettingsStore(context)
+    val chuDefaultLevelIndex by store.infoLevelsChunithmDefaultLevel.collectAsStateWithLifecycle(initialValue = 18)
 
     LaunchedEffect(Unit) {
-        // TODO: Add settings for default level
-        if (model.currentPosition == 0) {
-            model.assignCurrentPosition(18)
+        if (!model.isLoaded) {
+            Log.i("ChunithmLevels", "Default level index is $chuDefaultLevelIndex")
+            model.assignCurrentPosition(chuDefaultLevelIndex)
+            model.isLoaded = true
         }
     }
 
@@ -279,10 +285,6 @@ fun InfoChunithmLevelEntry(music: ChunithmMusicEntry, best: ChunithmBestScoreEnt
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Log.i(
-                    "ChunithmLevels",
-                    "Current music: ${music.title}, levels: ${music.charts.levels}, current level: ${LEVEL_STRINGS[model.currentPosition]}"
-                )
                 val index = music.charts.levels.indexOf(LEVEL_STRINGS[model.currentPosition])
                 Text(
                     text = String.format("%.1f", music.charts.constants[index]) +

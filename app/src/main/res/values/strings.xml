@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Chafenqi</string>
+    <string name="app_name">查分器NEW</string>
     <string name="vpn_connected">代理已连接</string>
     <string name="msg_start_failed">代理启动失败</string>
     <string name="tile_title">传分代理</string>
