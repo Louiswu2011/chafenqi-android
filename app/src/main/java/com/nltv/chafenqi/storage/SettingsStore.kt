@@ -29,6 +29,9 @@ class SettingsStore(private val context: Context) {
         private val homeDefaultGameKey = intPreferencesKey("homeDefaultGame")
         private val homeShowRefreshButtonKey = booleanPreferencesKey("homeShowRefreshButton")
 
+        private val infoLevelsChunithmDefaultLevelKey = intPreferencesKey("infoLevelsChunithmDefaultLevel")
+        private val infoLevelsMaimaiDefaultLevelKey = intPreferencesKey("infoLevelsMaimaiDefaultLevel")
+
         private val qsInheritBaseSettingsKey = booleanPreferencesKey("qsInheritBaseSettings")
         private val qsCopyToClipboardKey = booleanPreferencesKey("qsCopyToClipboard")
         private val qsCopyTargetGameKey = intPreferencesKey("qsCopyTargetGame")
@@ -81,6 +84,22 @@ class SettingsStore(private val context: Context) {
 
     suspend fun setHomeShowRefreshButton(value: Boolean) {
         context.settingsStore.edit { it[homeShowRefreshButtonKey] = value }
+    }
+
+    var infoLevelsChunithmDefaultLevel: Flow<Int> =
+        context.settingsStore.data.map { it[infoLevelsChunithmDefaultLevelKey] ?: 18 }
+        private set
+
+    suspend fun setInfoLevelsChunithmDefaultLevel(value: Int) {
+        context.settingsStore.edit { it[infoLevelsChunithmDefaultLevelKey] = value }
+    }
+
+    var infoLevelsMaimaiDefaultLevel: Flow<Int> =
+        context.settingsStore.data.map { it[infoLevelsMaimaiDefaultLevelKey] ?: 18 }
+        private set
+
+    suspend fun setInfoLevelsMaimaiDefaultLevel(value: Int) {
+        context.settingsStore.edit { it[infoLevelsMaimaiDefaultLevelKey] = value }
     }
 
     var qsInheritBaseSettings: Flow<Boolean> =

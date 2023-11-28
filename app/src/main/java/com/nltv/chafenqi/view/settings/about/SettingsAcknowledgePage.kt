@@ -1,4 +1,4 @@
-package com.nltv.chafenqi.view.settings
+package com.nltv.chafenqi.view.settings.about
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,6 +27,8 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.nltv.chafenqi.SCREEN_PADDING
+import com.nltv.chafenqi.view.settings.DEVELOPERS
+import com.nltv.chafenqi.view.settings.SettingsPageViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

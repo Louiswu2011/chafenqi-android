@@ -3,7 +3,6 @@ package com.nltv.chafenqi
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.fillMaxSize
@@ -52,9 +51,15 @@ import com.nltv.chafenqi.view.info.maimai.InfoMaimaiTrophyPage
 import com.nltv.chafenqi.view.info.maimai.level.InfoMaimaiLevelsPage
 import com.nltv.chafenqi.view.login.LoginPage
 import com.nltv.chafenqi.view.premium.PremiumRedeemPage
-import com.nltv.chafenqi.view.settings.SettingsAcknowledgePage
-import com.nltv.chafenqi.view.settings.SettingsBindFishPage
+import com.nltv.chafenqi.view.settings.about.SettingsAcknowledgePage
+import com.nltv.chafenqi.view.settings.user.SettingsBindFishPage
 import com.nltv.chafenqi.view.settings.SettingsPage
+import com.nltv.chafenqi.view.settings.about.SettingsAboutPage
+import com.nltv.chafenqi.view.settings.advanced.SettingsAdvancedPage
+import com.nltv.chafenqi.view.settings.home.SettingsHomePage
+import com.nltv.chafenqi.view.settings.playerInfo.SettingsInfoPage
+import com.nltv.chafenqi.view.settings.qs.SettingsQSTilePage
+import com.nltv.chafenqi.view.settings.user.SettingsUserPage
 import com.nltv.chafenqi.view.songlist.SongDetailPage
 import com.nltv.chafenqi.view.songlist.SongListPage
 import com.nltv.chafenqi.view.songlist.record.MusicRecordPage
@@ -189,17 +194,23 @@ fun LogonPage(navController: NavHostController) {
             composable(HomeNavItem.Home.route + "/rating") { HomeRatingPage(navController) }
 
             composable(HomeNavItem.Home.route + "/settings") { SettingsPage(navController) }
-            composable(HomeNavItem.Home.route + "/settings/redeem") {
+            composable(HomeNavItem.Home.route + "/settings/user") { SettingsUserPage(navController) }
+            composable(HomeNavItem.Home.route + "/settings/home") { SettingsHomePage(navController) }
+            composable(HomeNavItem.Home.route + "/settings/playerInfo") { SettingsInfoPage(navController) }
+            composable(HomeNavItem.Home.route + "/settings/qsTile") { SettingsQSTilePage(navController) }
+            composable(HomeNavItem.Home.route + "/settings/advanced") { SettingsAdvancedPage(navController) }
+            composable(HomeNavItem.Home.route + "/settings/about") { SettingsAboutPage(navController) }
+            composable(HomeNavItem.Home.route + "/settings/user/redeem") {
                 PremiumRedeemPage(
                     navController
                 )
             }
-            composable(HomeNavItem.Home.route + "/settings/bind/fish") {
+            composable(HomeNavItem.Home.route + "/settings/user/bind/fish") {
                 SettingsBindFishPage(
                     navController
                 )
             }
-            composable(HomeNavItem.Home.route + "/settings/acknowledge") {
+            composable(HomeNavItem.Home.route + "/settings/about/acknowledge") {
                 SettingsAcknowledgePage(
                     navController
                 )

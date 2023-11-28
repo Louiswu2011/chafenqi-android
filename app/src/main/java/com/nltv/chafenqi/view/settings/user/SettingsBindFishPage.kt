@@ -1,4 +1,4 @@
-package com.nltv.chafenqi.view.settings
+package com.nltv.chafenqi.view.settings.user
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -36,6 +36,7 @@ import com.michaelflisar.composepreferences.screen.button.PreferenceButton
 import com.michaelflisar.composepreferences.screen.input.PreferenceInputText
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.networking.FishServer
+import com.nltv.chafenqi.view.settings.SettingsPageViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
