@@ -115,7 +115,7 @@ fun HomePageMaimaiNameplate(navController: NavController) {
                 Button(
                     onClick = {
                         if (!model.user.isPremium) {
-                            navController.navigate(HomeNavItem.Home.route + "/settings/redeem")
+                            navController.navigate(HomeNavItem.Home.route + "/settings/user/redeem")
                             return@Button
                         }
                         if (uiState.canOpenMaimaiInfo) {
@@ -214,7 +214,7 @@ fun HomePageChunithmNameplate(navController: NavController) {
                 Button(
                     onClick = {
                         if (!model.user.isPremium) {
-                            navController.navigate(HomeNavItem.Home.route + "/settings/redeem")
+                            navController.navigate(HomeNavItem.Home.route + "/settings/user/redeem")
                             return@Button
                         }
 
