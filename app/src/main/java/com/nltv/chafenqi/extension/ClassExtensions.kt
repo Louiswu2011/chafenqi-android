@@ -181,7 +181,7 @@ fun MaimaiBestScoreEntry.associatedMusicEntry(): MaimaiMusicEntry {
             } else {
                 CFQPersistentData.Maimai.musicList.first {
                     it.title.replace("　", " ") == this.title.replace("　", " ") &&
-                            it.type == this.type
+                            it.type.lowercase() == this.type.lowercase()
                 }
             }
         } else {
@@ -203,7 +203,7 @@ fun MaimaiRecentScoreEntry.associatedMusicEntry(): MaimaiMusicEntry {
             } else {
                 CFQUser.Maimai.best.first {
                     it.title.replace("　", " ") == this.title.replace("　", " ") &&
-                            it.type == this.type
+                            it.type.lowercase() == this.type.lowercase()
                 }.associatedMusicEntry
             }
         } else {
