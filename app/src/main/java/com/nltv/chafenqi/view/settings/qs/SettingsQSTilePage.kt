@@ -1,5 +1,6 @@
 package com.nltv.chafenqi.view.settings.qs
 
+import android.os.Build
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -9,15 +10,20 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.michaelflisar.composepreferences.core.PreferenceDivider
+import com.michaelflisar.composepreferences.core.PreferenceInfo
 import com.michaelflisar.composepreferences.core.PreferenceScreen
 import com.michaelflisar.composepreferences.core.PreferenceSectionHeader
 import com.michaelflisar.composepreferences.core.classes.PreferenceSettingsDefaults
 import com.michaelflisar.composepreferences.core.hierarchy.PreferenceRootScope
 import com.michaelflisar.composepreferences.screen.bool.PreferenceBool
+import com.michaelflisar.composepreferences.screen.button.PreferenceButton
 import com.michaelflisar.composepreferences.screen.list.PreferenceList
 import com.nltv.chafenqi.storage.SettingsStore
 import com.nltv.chafenqi.view.settings.GAME_LIST
+import com.nltv.chafenqi.view.settings.SettingsPageViewModel
 import com.nltv.chafenqi.view.settings.SettingsTopBar
 import com.nltv.chafenqi.view.settings.home.SettingsHomeGroup
 import kotlinx.coroutines.launch
@@ -39,6 +45,7 @@ fun SettingsQSTilePage(navController: NavController) {
 
 @Composable
 fun PreferenceRootScope.SettingsQSTileGroup() {
+    val model: SettingsPageViewModel = viewModel()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val store = SettingsStore(context)
@@ -81,5 +88,11 @@ fun PreferenceRootScope.SettingsQSTileGroup() {
             onValueChange = { scope.launch { store.setQsShouldForwardKey(it) } },
             title = { Text(text = "同步至水鱼网") }
         )
+    }
+    PreferenceDivider()
+    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
+        PreferenceButton(onClick = { model.requestAddTile(context) }, title = { Text(text = "添加到控制中心...") })
+    } else {
+        PreferenceInfo(title = { Text(text = "若要使用快捷设置，请在控制中心中添加“传分代理”") })
     }
 }

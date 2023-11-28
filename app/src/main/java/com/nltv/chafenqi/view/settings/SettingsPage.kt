@@ -14,6 +14,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -39,7 +40,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsTopBar(titleText: String, navController: NavController) {
-    TopAppBar(
+    LargeTopAppBar(
         title = { Text(text = titleText) },
         scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
         colors = TopAppBarDefaults.topAppBarColors(
@@ -63,10 +64,6 @@ fun SettingsPage(navController: NavController) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val userState = LocalUserState.current
-
-    LaunchedEffect(Unit) {
-        model.getCoilDiskCacheSize(context)
-    }
 
     if (model.showLogoutAlert) {
         LogoutAlertDialog(onDismissRequest = { model.showLogoutAlert = false }) {
@@ -130,12 +127,13 @@ fun PreferenceRootScope.SettingsEntry(
         subtitle = { Text(text = "默认显示游戏、刷新按钮") },
         icon = { Icon(imageVector = Icons.Default.Home, contentDescription = "主页") }
     )
-    PreferenceButton(
+    // TODO: Fix default level index not working
+    /*PreferenceButton(
         onClick = { navController.navigate(HomeNavItem.Home.route + "/settings/playerInfo") },
         title = { Text(text = "玩家信息") },
         subtitle = { Text(text = "歌曲完成度") },
         icon = { Icon(imageVector = Icons.Default.Info, contentDescription = "玩家信息") }
-    )
+    )*/
     PreferenceButton(
         onClick = { navController.navigate(HomeNavItem.Home.route + "/settings/qsTile") },
         title = { Text(text = "快捷设置") },

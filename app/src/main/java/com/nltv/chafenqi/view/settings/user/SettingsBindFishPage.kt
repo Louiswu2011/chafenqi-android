@@ -37,9 +37,9 @@ import com.michaelflisar.composepreferences.screen.input.PreferenceInputText
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.networking.FishServer
 import com.nltv.chafenqi.view.settings.SettingsPageViewModel
+import com.nltv.chafenqi.view.settings.SettingsTopBar
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsBindFishPage(navController: NavController) {
     val model: SettingsPageViewModel = viewModel()
@@ -58,22 +58,7 @@ fun SettingsBindFishPage(navController: NavController) {
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(text = "绑定水鱼网账号") },
-                scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
-                ),
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "返回上一级"
-                        )
-                    }
-                }
-            )
+            SettingsTopBar(titleText = "绑定水鱼网账号", navController = navController)
         },
         containerColor = MaterialTheme.colorScheme.surface,
         snackbarHost = { SnackbarHost(snackbarHostState) }

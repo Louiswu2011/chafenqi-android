@@ -14,6 +14,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,6 +40,12 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsAdvancedPage(navController: NavController) {
+    val model: SettingsPageViewModel = viewModel()
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        model.getCoilDiskCacheSize(context)
+    }
+
     val snackbarHostState = remember {
         SnackbarHostState()
     }
@@ -76,13 +83,6 @@ fun PreferenceRootScope.SettingsAdvancedGroup(snackbarHostState: SnackbarHostSta
             }
         }
     }
-
-    PreferenceSectionHeader(title = {
-        Text(
-            text = "高级",
-            color = MaterialTheme.colorScheme.error
-        )
-    })
     PreferenceBool(
         value = loginAutoUpdateSongList,
         onValueChange = { scope.launch { store.setLoginAutoUpdateSongList(it) } },

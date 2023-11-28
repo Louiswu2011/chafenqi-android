@@ -1,7 +1,12 @@
 package com.nltv.chafenqi.view.settings
 
+import android.app.StatusBarManager
+import android.content.ComponentName
 import android.content.Context
+import android.graphics.drawable.Icon
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -12,9 +17,11 @@ import androidx.lifecycle.viewModelScope
 import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
 import com.nltv.chafenqi.BuildConfig
+import com.nltv.chafenqi.R
 import com.nltv.chafenqi.cacheStore
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.user.CFQUser
+import com.nltv.chafenqi.tile.UpdaterTileService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,6 +30,7 @@ import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.util.concurrent.Executor
 
 data class SettingsUiState(
     val sponsorList: List<String> = listOf(),
@@ -160,6 +168,17 @@ class SettingsPageViewModel : ViewModel() {
                 ""
             }
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    fun requestAddTile(context: Context) {
+        val statusBarManager = context.getSystemService(StatusBarManager::class.java)
+        statusBarManager.requestAddTileService(
+            ComponentName(context, UpdaterTileService::class.java),
+            "传分代理",
+            Icon.createWithResource(context, R.drawable.tile_upload_icon),
+            Executor {  }
+        ) { }
     }
 
 }
