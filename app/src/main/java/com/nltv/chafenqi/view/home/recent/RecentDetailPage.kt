@@ -54,7 +54,7 @@ fun RecentDetailPage(
 ) {
     val context = LocalContext.current
     val model: RecentDetailPageViewModel = viewModel<RecentDetailPageViewModel>().also {
-        Log.i("HomeRecentDetailPage", "Showing detail page for mode $mode index $index")
+        // Log.i("HomeRecentDetailPage", "Showing detail page for mode $mode index $index")
         it.update(mode, index, context)
     }
     val scrollState = rememberScrollState()

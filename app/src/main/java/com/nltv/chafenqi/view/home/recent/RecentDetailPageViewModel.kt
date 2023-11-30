@@ -58,7 +58,7 @@ class RecentDetailPageViewModel : ViewModel() {
             chuEntry = CFQUser.chunithm.recent[index]
             chuMusic =
                 CFQPersistentData.Chunithm.musicList.firstOrNull { it.musicID.toString() == chuEntry?.idx }
-            Log.i(tag, "Loaded chunithm music ${chuMusic?.title} from ${chuEntry?.title}")
+            // Log.i(tag, "Loaded chunithm music ${chuMusic?.title} from ${chuEntry?.title}")
 
             coverUrl = "http://43.139.107.206:8083/api/chunithm/cover?musicId=${chuMusic?.musicID}"
             title = chuMusic?.title ?: ""
@@ -74,7 +74,7 @@ class RecentDetailPageViewModel : ViewModel() {
             maiEntry = CFQUser.maimai.recent[index]
             maiMusic =
                 CFQPersistentData.Maimai.musicList.firstOrNull { it.title == maiEntry?.title }
-            Log.i(tag, "Loaded maimai music ${maiMusic?.title} from ${maiEntry?.title}")
+            // Log.i(tag, "Loaded maimai music ${maiMusic?.title} from ${maiEntry?.title}")
 
             coverUrl = maiMusic?.musicID?.toMaimaiCoverPath() ?: ""
             title = maiMusic?.title ?: ""

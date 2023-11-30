@@ -145,8 +145,8 @@ fun SongDetailPage(
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    model.constants.forEach {
-                        Text(text = it, fontSize = 16.sp)
+                    model.constants.forEachIndexed { index, string ->
+                        Text(text = string, fontSize = 16.sp, color = model.difficultyColors[index])
                     }
                 }
                 Text(text = "BPM: ${model.bpm}", fontSize = 16.sp)

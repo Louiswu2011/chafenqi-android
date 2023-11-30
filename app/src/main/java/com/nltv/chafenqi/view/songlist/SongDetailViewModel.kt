@@ -50,6 +50,8 @@ class SongDetailViewModel : ViewModel() {
     var genre: String = ""
     var index: Int = 0
 
+    var difficultyColors: List<Color> = listOf()
+
     val maiDiffInfos: MutableList<MaimaiDifficultyInfo> = mutableListOf()
     val chuDiffInfos: MutableList<ChunithmDifficultyInfo> = mutableListOf()
 
@@ -79,6 +81,8 @@ class SongDetailViewModel : ViewModel() {
                     }
                 }
             }
+
+            difficultyColors = chunithmDifficultyColors
         } else if (mode == 1 && CFQPersistentData.Maimai.musicList.isNotEmpty()) {
             maiMusic = CFQPersistentData.Maimai.musicList.getOrNull(index)
             if (maiMusic == null) return
@@ -102,6 +106,8 @@ class SongDetailViewModel : ViewModel() {
                     )
                 )
             }
+
+            difficultyColors = maimaiDifficultyColors
         }
     }
 }

@@ -90,29 +90,23 @@ fun InfoMaimaiCollectionArea() {
                 contentScale = ContentScale.Crop
             )
             Card(
-                modifier = Modifier
-                    .fillMaxWidth(0.65f)
-                    .height(55.dp),
                 shape = RoundedCornerShape(5.dp)
             ) {
                 Column(
                     Modifier
-                        .padding(5.dp)
-                        .fillMaxWidth()
-                        .fillMaxHeight(),
-                    horizontalAlignment = Alignment.End,
-                    verticalArrangement = Arrangement.SpaceBetween
+                        .padding(5.dp),
+                    horizontalAlignment = Alignment.End
                 ) {
                     Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
+                        horizontalArrangement = Arrangement.spacedBy(15.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(text = "Rating")
                         Text(text = "${model.info.rating}", fontWeight = FontWeight.Bold)
                     }
                     Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
+                        horizontalArrangement = Arrangement.spacedBy(15.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(text = "游玩次数")
                         Text(text = "${model.info.playCount}", fontWeight = FontWeight.Bold)
