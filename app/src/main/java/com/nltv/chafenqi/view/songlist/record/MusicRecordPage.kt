@@ -135,7 +135,7 @@ fun MusicRecordScoreChart() {
                 if (model.mode == 0) {
                     String.format("%.0f", value)
                 } else {
-                    String.format("%.2f", value) + "%"
+                    String.format("%.4f", value) + "%"
                 }
             }
         ),
@@ -176,7 +176,7 @@ fun MusicRecordMaimaiEntryList(navController: NavController) {
                 levelIndex = entry.levelIndex,
                 playDate = entry.timestamp.toDateString(context),
                 badge = entry.achievements.toRateString(),
-                score = String.format("%.2f", entry.achievements) + "%",
+                score = String.format("%.4f", entry.achievements) + "%",
                 navController = navController,
                 maiRecentEntry = entry
             )
