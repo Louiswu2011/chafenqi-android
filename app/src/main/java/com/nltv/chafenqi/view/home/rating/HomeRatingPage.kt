@@ -42,6 +42,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.nltv.chafenqi.SCREEN_PADDING
+import com.nltv.chafenqi.extension.cutForRating
 import com.nltv.chafenqi.extension.rating
 import com.nltv.chafenqi.extension.toChunithmCoverPath
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
@@ -380,7 +381,7 @@ fun HomeRatingChunithmEntry(entry: ChunithmRatingEntry, index: Int, navControlle
                                 "%.1f",
                                 entry.associatedMusicEntry.charts.constants[entry.levelIndex]
                             )
-                        }/${String.format("%.2f", entry.rating())}", fontWeight = FontWeight.Bold
+                        }/${String.format("%.2f", entry.rating().cutForRating())}", fontWeight = FontWeight.Bold
                     )
                 }
                 RatingBadge(rate = entry.score.toRateString())

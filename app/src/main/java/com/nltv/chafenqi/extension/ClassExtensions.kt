@@ -170,7 +170,7 @@ fun maimaiRatingOf(constant: Double, achievements: Float): Int {
         factor = floor(achievements / 10.0)
     }
 
-    return (constant * min(achievements, 100.5f) * factor / 100).toInt()
+    return (constant * min(achievements, 100.5f) * factor / 100.0).toInt()
 }
 
 fun MaimaiBestScoreEntry.associatedMusicEntry(): MaimaiMusicEntry {
@@ -271,22 +271,22 @@ fun ChunithmRatingEntry.associatedMusicEntry(): ChunithmMusicEntry {
 fun chunithmRatingOf(constant: Double, score: Int): Double {
     return when (score) {
         in 925000..949999 ->
-            constant - 3.0 + (score - 950000) * 3 / 50000
+            constant - 3.0 + (score.toDouble() - 950000.0) * 3.0 / 50000.0
 
         in 950000..974999 ->
-            constant - 1.5 + (score - 950000) * 3 / 50000
+            constant - 1.5 + (score.toDouble() - 950000.0) * 3.0 / 50000.0
 
         in 975000..999999 ->
-            constant + (score - 975000) / 2500 * 0.1
+            constant + (score.toDouble() - 975000.0) / 2500.0 * 0.1
 
         in 1000000..1004999 ->
-            constant + 1.0 + (score - 1000000) / 1000 * 0.1
+            constant + 1.0 + (score.toDouble() - 1000000.0) / 1000.0 * 0.1
 
         in 1005000..1007499 ->
-            constant + 1.5 + (score - 1005000) / 500 * 0.1
+            constant + 1.5 + (score.toDouble() - 1005000.0) / 500.0 * 0.1
 
         in 1007500..1008999 ->
-            constant + 2.0 + (score - 1007500) / 100 * 0.01
+            constant + 2.0 + (score.toDouble() - 1007500.0) / 100.0 * 0.01
 
         in 1009000..1010000 ->
             constant + 2.15
