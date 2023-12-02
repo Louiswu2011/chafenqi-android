@@ -25,9 +25,7 @@ class AppUpdateIntentReceiver : BroadcastReceiver() {
                 }
             }
 
-            PackageInstaller.STATUS_SUCCESS ->
-                ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100)
-                    .startTone(ToneGenerator.TONE_PROP_ACK)
+            PackageInstaller.STATUS_SUCCESS -> {}
 
             else -> {
                 val msg = intent.getStringExtra(PackageInstaller.EXTRA_STATUS_MESSAGE)
