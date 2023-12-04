@@ -62,6 +62,7 @@ import com.nltv.chafenqi.view.module.AppUpdaterViewModel
 @Composable
 fun HomePage(navController: NavController) {
     val model: HomePageViewModel = viewModel<HomePageViewModel>().also { it.update() }
+    val uiState by model.uiState.collectAsStateWithLifecycle()
     val updaterModel: AppUpdaterViewModel = viewModel()
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
@@ -156,13 +157,14 @@ fun HomePage(navController: NavController) {
                             HomePageRecentBar(navController)
                             HomePageRecentLineup(navController)
                             HomePageRatingBar(navController)
-                            if (model.user.isPremium) {
+                            if (model.user.isPremium && uiState.shouldShowRatingBar) {
                                 HomePageRatingIndicators()
                                 HomePageRatingSelection(navController)
-                                // TODO: Implement Logs
-                                // HomePageLogBar(navController)
-                                // HomePageLogInfo()
                             }
+                            // TODO: Implement Logs
+                            // if (model.user.isPremium)
+                            // HomePageLogBar(navController)
+                            // HomePageLogInfo()
                         }
                     }
                 }

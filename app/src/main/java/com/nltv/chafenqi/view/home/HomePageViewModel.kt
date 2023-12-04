@@ -42,6 +42,7 @@ data class HomePageUiState(
     val canNavigateToRatingList: Boolean = true,
     val canOpenMaimaiInfo: Boolean = false,
     val canOpenChunithmInfo: Boolean = false,
+    val shouldShowRatingBar: Boolean = true,
 
     val nameplateUpdateTime: String = "",
 
@@ -136,7 +137,8 @@ class HomePageViewModel(
                         maiCurrentSelectedRatingEntryType = "旧曲",
                         maiCurrentSelectedRatingEntryRank = 1,
                         currentSelectedIndicatorIndex = 0,
-                        canOpenMaimaiInfo = user.isPremium && !user.maimai.isExtraEmpty
+                        canOpenMaimaiInfo = user.isPremium && !user.maimai.isExtraEmpty,
+                        shouldShowRatingBar = user.maimai.aux.newBest.isNotEmpty() || user.maimai.aux.pastBest.isNotEmpty()
                     )
                 }
 
@@ -158,7 +160,8 @@ class HomePageViewModel(
                         indicatorHeights = MutableList(this.chuIndicatorsCount) { 20.dp },
                         chuCurrentSelectedRatingEntry = if (user.chunithm.aux.bestList.isNotEmpty()) user.chunithm.aux.bestList.first() else ChunithmRatingEntry(),
                         currentSelectedIndicatorIndex = 0,
-                        canOpenChunithmInfo = user.isPremium && !user.chunithm.isExtraEmpty
+                        canOpenChunithmInfo = user.isPremium && !user.chunithm.isExtraEmpty,
+                        shouldShowRatingBar = user.chunithm.aux.bestList.isNotEmpty()
                     )
                 }
 
