@@ -77,6 +77,7 @@ fun HomePageRecentLineup(navController: NavController) {
         Crossfade(targetState = uiState.mode, label = "home recent entries crossfade") {
             when (it) {
                 0 -> {
+                    if (uiState.chuRecentLineup.isEmpty()) { return@Crossfade }
                     Column(
                         modifier = Modifier.padding(horizontal = 10.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -94,6 +95,7 @@ fun HomePageRecentLineup(navController: NavController) {
                 }
 
                 1 -> {
+                    if (uiState.maiRecentLineup.isEmpty()) { return@Crossfade }
                     Column(
                         modifier = Modifier.padding(horizontal = 10.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
