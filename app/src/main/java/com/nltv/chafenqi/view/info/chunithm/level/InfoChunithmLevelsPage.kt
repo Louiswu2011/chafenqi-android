@@ -286,8 +286,9 @@ fun InfoChunithmLevelEntry(music: ChunithmMusicEntry, best: ChunithmBestScoreEnt
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 val index = music.charts.levels.indexOf(LEVEL_STRINGS[model.currentPosition])
+                val constant = if (index != -1) music.charts.constants[index] else 0.0
                 Text(
-                    text = String.format("%.1f", music.charts.constants[index]) +
+                    text = String.format("%.1f", constant) +
                             if (best != null) "/${String.format("%.2f", best.rating())}" else ""
                 )
                 if (best != null) {
