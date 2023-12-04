@@ -59,6 +59,15 @@ class ChafenqiProxy : VpnService() {
         val intent = Intent(context, ChafenqiProxy::class.java)
         intent.action = ACTION_START
         context.startForegroundService(intent)
+        val channelId = createNotificationChannel("chafenqi-proxy", "vpn-service")
+        val notificationBuilder = NotificationCompat.Builder(this, channelId)
+        val notification = notificationBuilder.setOngoing(true)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setCategory(Notification.CATEGORY_SERVICE)
+            .setContentTitle("查分器代理")
+            .setContentText("代理正在运行中")
+            .build()
+        startForeground(101, notification)
     }
 
     fun stop(context: Context) {
@@ -221,15 +230,6 @@ class ChafenqiProxy : VpnService() {
         // Native init
         jni_init()
         super.onCreate()
-        val channelId = createNotificationChannel("chafenqi-proxy", "vpn-service")
-        val notificationBuilder = NotificationCompat.Builder(this, channelId)
-        val notification = notificationBuilder.setOngoing(true)
-            .setSmallIcon(R.mipmap.ic_launcher)
-            .setCategory(Notification.CATEGORY_SERVICE)
-            .setContentTitle("查分器代理")
-            .setContentText("代理正在运行中")
-            .build()
-        startForeground(101, notification)
     }
 
     private fun createNotificationChannel(channelId: String, channelName: String): String{
