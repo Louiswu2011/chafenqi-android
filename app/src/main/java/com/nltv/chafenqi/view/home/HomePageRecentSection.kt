@@ -77,36 +77,44 @@ fun HomePageRecentLineup(navController: NavController) {
         Crossfade(targetState = uiState.mode, label = "home recent entries crossfade") {
             when (it) {
                 0 -> {
-                    if (uiState.chuRecentLineup.isEmpty()) { return@Crossfade }
                     Column(
                         modifier = Modifier.padding(horizontal = 10.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        uiState.chuRecentLineup.onEach { entry ->
-                            Column(
-                                Modifier.clickable {
-                                    model.navigateToRecentLog(navController, entry)
+                        if (uiState.chuRecentLineup.isEmpty()) {
+                            Text(text = "暂无数据", modifier = Modifier.fillMaxWidth())
+                        } else {
+                            uiState.chuRecentLineup.onEach { entry ->
+                                Column(
+                                    Modifier.clickable {
+                                        model.navigateToRecentLog(navController, entry)
+                                    }
+                                ) {
+                                    HomePageRecentChunithmEntry(entry)
                                 }
-                            ) {
-                                HomePageRecentChunithmEntry(entry)
                             }
                         }
                     }
                 }
 
                 1 -> {
-                    if (uiState.maiRecentLineup.isEmpty()) { return@Crossfade }
                     Column(
                         modifier = Modifier.padding(horizontal = 10.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        uiState.maiRecentLineup.onEach { entry ->
-                            Column(
-                                Modifier.clickable {
-                                    model.navigateToRecentLog(navController, entry)
+                        if (uiState.maiRecentLineup.isEmpty()) {
+                            Text(text = "暂无数据", modifier = Modifier.fillMaxWidth())
+                        } else {
+                            uiState.maiRecentLineup.onEach { entry ->
+                                Column(
+                                    Modifier.clickable {
+                                        model.navigateToRecentLog(navController, entry)
+                                    }
+                                ) {
+                                    HomePageRecentMaimaiEntry(entry)
                                 }
-                            ) {
-                                HomePageRecentMaimaiEntry(entry)
                             }
                         }
                     }
