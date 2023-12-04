@@ -298,7 +298,9 @@ fun InfoMaimaiLevelEntry(music: MaimaiMusicEntry, best: MaimaiBestScoreEntry?, n
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = String.format("%.1f", music.constants[music.level.indexOf(LEVEL_STRINGS[model.currentPosition])]) +
+                val index = music.level.indexOf(LEVEL_STRINGS[model.currentPosition])
+                val constant = if (index != -1) music.constants[index] else 0.0
+                Text(text = String.format("%.1f", constant) +
                         if (best != null) "/${best.rating()}" else ""
                 )
                 if (best != null) {
