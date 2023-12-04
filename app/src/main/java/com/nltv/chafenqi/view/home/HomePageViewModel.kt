@@ -92,7 +92,7 @@ class HomePageViewModel(
     val currentBuildNumber = currentVersionString.split(" ")[1]
         .removePrefix("(")
         .removeSuffix(")")
-        .toInt()
+        .toIntOrNull() ?: 0
 
     var isLoaded: Boolean = false
 
@@ -106,7 +106,7 @@ class HomePageViewModel(
             )
             if (!versionData.isLatest(currentVersionCode, currentBuildNumber)) {
                 latestVersionCode = versionData.androidVersionCode
-                latestBuildNumber = versionData.androidBuild.toInt()
+                latestBuildNumber = versionData.androidBuild.toIntOrNull() ?: 0
                 showNewVersionDialog = true
             }
         }
