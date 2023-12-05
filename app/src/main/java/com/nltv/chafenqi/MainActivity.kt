@@ -59,6 +59,7 @@ import com.nltv.chafenqi.view.settings.advanced.SettingsAdvancedPage
 import com.nltv.chafenqi.view.settings.home.SettingsHomePage
 import com.nltv.chafenqi.view.settings.playerInfo.SettingsInfoPage
 import com.nltv.chafenqi.view.settings.qs.SettingsQSTilePage
+import com.nltv.chafenqi.view.settings.user.SettingsBindQQPage
 import com.nltv.chafenqi.view.settings.user.SettingsUserPage
 import com.nltv.chafenqi.view.songlist.SongDetailPage
 import com.nltv.chafenqi.view.songlist.SongListPage
@@ -210,6 +211,9 @@ fun LogonPage(navController: NavHostController) {
                     navController
                 )
             }
+            composable(HomeNavItem.Home.route + "/settings/user/bind/qq") { SettingsBindQQPage(
+                navController
+            ) }
             composable(HomeNavItem.Home.route + "/settings/about/acknowledge") {
                 SettingsAcknowledgePage(
                     navController

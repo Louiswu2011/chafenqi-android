@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.CardGiftcard
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ScubaDiving
+import androidx.compose.material.icons.filled.ZoomIn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -76,6 +77,16 @@ fun PreferenceRootScope.SettingsUserGroup(navController: NavController) {
             Icon(
                 imageVector = Icons.Default.ScubaDiving,
                 contentDescription = "绑定水鱼网账号"
+            )
+        }
+    )
+    PreferenceButton(
+        onClick = { navController.navigate(HomeNavItem.Home.route + "/settings/user/bind/qq") },
+        title = { Text(text = "绑定QQ号") },
+        icon = {
+            Icon(
+                imageVector = Icons.Default.ZoomIn,
+                contentDescription = "绑定QQ号"
             )
         }
     )

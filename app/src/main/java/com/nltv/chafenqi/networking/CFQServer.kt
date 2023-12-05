@@ -2,6 +2,7 @@ package com.nltv.chafenqi.networking
 
 import android.util.Log
 import com.nltv.chafenqi.data.VersionData
+import com.nltv.chafenqi.storage.user.CFQUserOptions
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -181,6 +182,37 @@ class CFQServer {
                         "username" to username,
                         "code" to redeemCode
                     )
+                )
+                response.status.value == 200
+            } catch (e: Exception) {
+                false
+            }
+        }
+
+        suspend fun apiFetchUserOptions(token: String): String {
+            Log.i("CFQServer", "Fetching user options.")
+            return try {
+                val response = fetchFromServer(
+                    "GET",
+                    "api/user/options",
+                    token = token
+                )
+                response.bodyAsText()
+            } catch (e: Exception) {
+                ""
+            }
+        }
+
+        suspend fun apiUploadUserOptions(options: CFQUserOptions, token: String): Boolean {
+            Log.i("CFQServer", "Uploading user options.")
+            return try {
+                val response = fetchFromServer(
+                    "POST",
+                    "api/user/options",
+                    payload = hashMapOf(
+                        "bindQQ" to options.bindQQ
+                    ),
+                    token = token
                 )
                 response.status.value == 200
             } catch (e: Exception) {

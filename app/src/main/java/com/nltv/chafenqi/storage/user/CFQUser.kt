@@ -26,6 +26,7 @@ import com.nltv.chafenqi.storage.`object`.CFQPersistentData
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import com.onesignal.OneSignal
+import kotlinx.serialization.json.Json
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -38,6 +39,7 @@ object CFQUser {
 
     var token = ""
     var fishToken = ""
+    var bindQQ = ""
 
     var username = ""
     var isPremium = false
@@ -320,6 +322,17 @@ object CFQUser {
         } catch (e: Exception) {
             Log.i(tag, "User did not bind fish account.")
             fishToken = ""
+        }
+
+        val deserializer = Json { ignoreUnknownKeys = true }
+        try {
+            val options: CFQUserOptions = deserializer.decodeFromString(
+                CFQServer.apiFetchUserOptions(token)
+            )
+            bindQQ = options.bindQQ.toString()
+            Log.i(tag, "Fetched user bind qq: ${options.bindQQ}")
+        } catch (e: Exception) {
+            Log.i(tag, "User did not bind qq.")
         }
 
         Log.i(tag, "User is${if (isPremium) "" else " not"} premium")
