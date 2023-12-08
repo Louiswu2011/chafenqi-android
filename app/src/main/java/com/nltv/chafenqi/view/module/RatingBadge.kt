@@ -46,7 +46,7 @@ fun RatingBadge(rate: String) {
         Text(
             text = rate,
             modifier = Modifier
-                .width(48.dp)
+                .width(52.dp)
                 .clip(RoundedCornerShape(5.dp))
                 .background(
                     when (rate) {

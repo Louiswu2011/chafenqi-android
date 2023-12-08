@@ -170,7 +170,8 @@ fun HomePageRecentMaimaiEntry(item: MaimaiRecentLineup) {
                     item.entry.title,
                     fontSize = 16.sp,
                     overflow = TextOverflow.Ellipsis,
-                    maxLines = 2
+                    maxLines = 1,
+                    modifier = Modifier.fillMaxWidth(0.6f)
                 )
                 Text(
                     text = "%.4f".format(item.entry.achievements).plus("%"),
@@ -228,7 +229,8 @@ fun HomePageRecentChunithmEntry(item: ChunithmRecentLineup) {
                     item.entry.title,
                     fontSize = 16.sp,
                     overflow = TextOverflow.Ellipsis,
-                    maxLines = 2
+                    maxLines = 1,
+                    modifier = Modifier.fillMaxWidth(0.6f)
                 )
                 Text(
                     text = item.entry.score.toString(),
