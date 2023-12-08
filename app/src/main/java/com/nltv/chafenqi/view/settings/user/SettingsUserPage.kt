@@ -1,5 +1,6 @@
 package com.nltv.chafenqi.view.settings.user
 
+import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CardGiftcard
@@ -17,6 +18,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.michaelflisar.composepreferences.core.PreferenceInfo
@@ -25,13 +27,35 @@ import com.michaelflisar.composepreferences.core.PreferenceSectionHeader
 import com.michaelflisar.composepreferences.core.classes.PreferenceSettingsDefaults
 import com.michaelflisar.composepreferences.core.hierarchy.PreferenceRootScope
 import com.michaelflisar.composepreferences.screen.button.PreferenceButton
+import com.nltv.chafenqi.LocalUserState
 import com.nltv.chafenqi.view.home.HomeNavItem
+import com.nltv.chafenqi.view.settings.LogoutAlertDialog
 import com.nltv.chafenqi.view.settings.SettingsPageViewModel
 import com.nltv.chafenqi.view.settings.SettingsTopBar
 import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsUserPage(navController: NavController) {
+    val model: SettingsPageViewModel = viewModel()
+    val scope = rememberCoroutineScope()
+    val userState = LocalUserState.current
+    val context = LocalContext.current
+
+    if (model.showLogoutAlert) {
+        LogoutAlertDialog(onDismissRequest = { model.showLogoutAlert = false }) {
+            // Logout here
+            scope.launch {
+                model.showLogoutAlert = false
+                if (model.clearCachedCredentials(context)) {
+                    userState.logout()
+                } else {
+                    Log.e("Settings", "Failed to clear previous credentials, abort logging out.")
+                }
+            }
+
+        }
+    }
+
     Scaffold (
         topBar = { SettingsTopBar(titleText = "用户", navController = navController) }
     ) {

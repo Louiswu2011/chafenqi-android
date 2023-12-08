@@ -32,7 +32,10 @@ import com.michaelflisar.composepreferences.core.hierarchy.PreferenceRootScope
 import com.michaelflisar.composepreferences.screen.bool.PreferenceBool
 import com.michaelflisar.composepreferences.screen.button.PreferenceButton
 import com.nltv.chafenqi.storage.SettingsStore
+import com.nltv.chafenqi.storage.`object`.CFQPersistentData
 import com.nltv.chafenqi.view.settings.ClearCacheAlertDialog
+import com.nltv.chafenqi.view.settings.ReloadSongListAlertDialog
+import com.nltv.chafenqi.view.settings.ReloadSongListDialog
 import com.nltv.chafenqi.view.settings.SettingsPageViewModel
 import com.nltv.chafenqi.view.settings.SettingsTopBar
 import com.nltv.chafenqi.view.settings.qs.SettingsQSTileGroup
@@ -41,9 +44,28 @@ import kotlinx.coroutines.launch
 @Composable
 fun SettingsAdvancedPage(navController: NavController) {
     val model: SettingsPageViewModel = viewModel()
+    val scope = rememberCoroutineScope()
     val context = LocalContext.current
     LaunchedEffect(Unit) {
         model.getCoilDiskCacheSize(context)
+    }
+
+    if (model.showReloadListAlert) {
+        ReloadSongListAlertDialog(onDismissRequest = { model.showReloadListAlert = false }) {
+            model.showReloadListAlert = false
+            model.isReloadingList = true
+            scope.launch {
+                CFQPersistentData.clearData(context)
+                CFQPersistentData.loadData(context = context)
+                model.isReloadingList = false
+            }
+        }
+    }
+
+    if (model.isReloadingList) {
+        ReloadSongListDialog {
+            model.isReloadingList = false
+        }
     }
 
     val snackbarHostState = remember {

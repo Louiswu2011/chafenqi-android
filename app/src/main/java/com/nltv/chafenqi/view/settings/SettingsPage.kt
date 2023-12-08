@@ -60,43 +60,6 @@ fun SettingsTopBar(titleText: String, navController: NavController) {
 
 @Composable
 fun SettingsPage(navController: NavController) {
-    val model: SettingsPageViewModel = viewModel()
-    val scope = rememberCoroutineScope()
-    val context = LocalContext.current
-    val userState = LocalUserState.current
-
-    if (model.showLogoutAlert) {
-        LogoutAlertDialog(onDismissRequest = { model.showLogoutAlert = false }) {
-            // Logout here
-            scope.launch {
-                model.showLogoutAlert = false
-                if (model.clearCachedCredentials(context)) {
-                    userState.logout()
-                } else {
-                    Log.e("Settings", "Failed to clear previous credentials, abort logging out.")
-                }
-            }
-
-        }
-    }
-    if (model.showReloadListAlert) {
-        ReloadSongListAlertDialog(onDismissRequest = { model.showReloadListAlert = false }) {
-            model.showReloadListAlert = false
-            model.isReloadingList = true
-            scope.launch {
-                CFQPersistentData.clearData(context)
-                CFQPersistentData.loadData(context = context)
-                model.isReloadingList = false
-            }
-        }
-    }
-
-    if (model.isReloadingList) {
-        ReloadSongListDialog {
-            model.isReloadingList = false
-        }
-    }
-
     Scaffold(
         topBar = { SettingsTopBar(titleText = "设置", navController = navController) },
         containerColor = MaterialTheme.colorScheme.surface
