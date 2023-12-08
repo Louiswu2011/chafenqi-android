@@ -102,7 +102,7 @@ fun SettingsBindQQPage(navController: NavController) {
             PreferenceDivider()
             PreferenceInfo(
                 title = { Text(text = "绑定QQ号以授权第三方服务访问您的数据") },
-                subtitle = { Text(text = "") },
+                subtitle = { Text(text = "目前支持的服务: Chieri Bot") },
                 icon = {
                     Icon(
                         imageVector = Icons.Default.Info,
