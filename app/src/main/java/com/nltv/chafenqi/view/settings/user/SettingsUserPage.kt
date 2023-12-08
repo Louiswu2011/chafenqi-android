@@ -11,11 +11,14 @@ import androidx.compose.material.icons.filled.ZoomIn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -40,6 +43,9 @@ fun SettingsUserPage(navController: NavController) {
     val scope = rememberCoroutineScope()
     val userState = LocalUserState.current
     val context = LocalContext.current
+    val snackbarHostState = remember {
+        SnackbarHostState()
+    }
 
     if (model.showLogoutAlert) {
         LogoutAlertDialog(onDismissRequest = { model.showLogoutAlert = false }) {
@@ -49,6 +55,7 @@ fun SettingsUserPage(navController: NavController) {
                 if (model.clearCachedCredentials(context)) {
                     userState.logout()
                 } else {
+                    snackbarHostState.showSnackbar("登出时发生错误，请重试")
                     Log.e("Settings", "Failed to clear previous credentials, abort logging out.")
                 }
             }
@@ -57,7 +64,8 @@ fun SettingsUserPage(navController: NavController) {
     }
 
     Scaffold (
-        topBar = { SettingsTopBar(titleText = "用户", navController = navController) }
+        topBar = { SettingsTopBar(titleText = "用户", navController = navController) },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) {
         PreferenceScreen (
             modifier = Modifier.padding(it),
