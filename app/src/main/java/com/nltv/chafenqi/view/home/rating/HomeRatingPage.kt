@@ -239,7 +239,7 @@ fun HomeRatingMaimaiEntry(entry: MaimaiBestScoreEntry, index: Int, navController
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
                     softWrap = false,
-                    modifier = Modifier.fillMaxWidth(fraction = 0.7f)
+                    modifier = Modifier.fillMaxWidth(fraction = 0.6f)
                 )
                 Text(
                     text = "${String.format("%.4f", entry.achievements)}%",
@@ -396,7 +396,7 @@ fun HomeRatingChunithmEntry(entry: ChunithmRatingEntry, index: Int, navControlle
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
                     softWrap = false,
-                    modifier = Modifier.fillMaxWidth(fraction = 0.7f)
+                    modifier = Modifier.fillMaxWidth(fraction = 0.6f)
                 )
                 Text(text = entry.score.toString(), maxLines = 1, softWrap = false)
             }

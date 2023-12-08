@@ -289,7 +289,7 @@ fun MusicRecordEntry(
                     text = title,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
-                    modifier = Modifier.width(220.dp)
+                    modifier = Modifier.fillMaxWidth(0.6f)
                 )
                 Text(
                     text = score,
