@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CFQUserOptions(
-    var bindQQ: Int = -1
+    var bindQQ: Long = -1
 )

@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Security
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -18,7 +17,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.michaelflisar.composepreferences.core.PreferenceDivider
@@ -29,7 +27,6 @@ import com.michaelflisar.composepreferences.core.classes.PreferenceSettingsDefau
 import com.michaelflisar.composepreferences.screen.button.PreferenceButton
 import com.michaelflisar.composepreferences.screen.input.PreferenceInputText
 import com.nltv.chafenqi.networking.CFQServer
-import com.nltv.chafenqi.networking.FishServer
 import com.nltv.chafenqi.storage.user.CFQUserOptions
 import com.nltv.chafenqi.view.settings.SettingsPageViewModel
 import com.nltv.chafenqi.view.settings.SettingsTopBar
@@ -78,13 +75,13 @@ fun SettingsBindQQPage(navController: NavController) {
                         scope.launch { snackbarHostState.showSnackbar("请输入QQ号") }
                         return@PreferenceButton
                     }
-                    if (userQQ.toIntOrNull() == null) {
+                    if (userQQ.toLongOrNull() == null) {
                         scope.launch { snackbarHostState.showSnackbar("格式错误，请重新输入") }
                         return@PreferenceButton
                     }
 
                     scope.launch {
-                        CFQServer.apiUploadUserOptions(CFQUserOptions(bindQQ = userQQ.toInt()), model.token)
+                        CFQServer.apiUploadUserOptions(CFQUserOptions(bindQQ = userQQ.toLong()), model.token)
                         model.user.bindQQ = userQQ
                         scope.launch { snackbarHostState.showSnackbar("绑定成功！") }
                         userQQ = ""
