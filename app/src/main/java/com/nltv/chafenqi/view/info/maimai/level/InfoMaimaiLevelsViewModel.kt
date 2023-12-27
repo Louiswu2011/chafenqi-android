@@ -7,7 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nltv.chafenqi.extension.LEVEL_STRINGS
+import com.nltv.chafenqi.extension.MAIMAI_LEVEL_STRINGS
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiBestScoreEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
@@ -52,18 +52,18 @@ class InfoMaimaiLevelsViewModel: ViewModel() {
     fun assignCurrentPosition(position: Int) {
         if (position > 22 || position < 0) return
         currentPosition = position
-        setCurrentLevel(LEVEL_STRINGS[currentPosition])
+        setCurrentLevel(MAIMAI_LEVEL_STRINGS[currentPosition])
     }
 
     fun increaseLevel() {
         if (currentPosition == 22) return
         currentPosition += 1
-        setCurrentLevel(LEVEL_STRINGS[currentPosition])
+        setCurrentLevel(MAIMAI_LEVEL_STRINGS[currentPosition])
     }
 
     fun decreaseLevel() {
         if (currentPosition == 0) return
         currentPosition -= 1
-        setCurrentLevel(LEVEL_STRINGS[currentPosition])
+        setCurrentLevel(MAIMAI_LEVEL_STRINGS[currentPosition])
     }
 }

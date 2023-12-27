@@ -17,7 +17,8 @@ import com.michaelflisar.composepreferences.core.classes.PreferenceSettingsDefau
 import com.michaelflisar.composepreferences.core.classes.PreferenceStyleDefaults
 import com.michaelflisar.composepreferences.core.hierarchy.PreferenceRootScope
 import com.michaelflisar.composepreferences.screen.list.PreferenceList
-import com.nltv.chafenqi.extension.LEVEL_STRINGS
+import com.nltv.chafenqi.extension.CHUNITHM_LEVEL_STRINGS
+import com.nltv.chafenqi.extension.MAIMAI_LEVEL_STRINGS
 import com.nltv.chafenqi.storage.SettingsStore
 import com.nltv.chafenqi.view.settings.SettingsTopBar
 import kotlinx.coroutines.launch
@@ -51,7 +52,7 @@ fun PreferenceRootScope.SettingsInfoLevelsGroup() {
         value = maiDefaultLevelIndex,
         onValueChange = { newValue -> scope.launch { store.setInfoLevelsMaimaiDefaultLevel(newValue) } },
         items = (0..22).toList(),
-        itemTextProvider = { LEVEL_STRINGS[it] },
+        itemTextProvider = { MAIMAI_LEVEL_STRINGS[it] },
         title = { Text(text = "舞萌DX默认等级") },
         style = PreferenceList.Style.Spinner
     )
@@ -59,7 +60,7 @@ fun PreferenceRootScope.SettingsInfoLevelsGroup() {
         value = chuDefaultLevelIndex,
         onValueChange = { newValue -> scope.launch { store.setInfoLevelsChunithmDefaultLevel(newValue) } },
         items = (0..22).toList(),
-        itemTextProvider = { LEVEL_STRINGS[it] },
+        itemTextProvider = { CHUNITHM_LEVEL_STRINGS[it] },
         title = { Text(text = "中二节奏默认等级") },
         style = PreferenceList.Style.Spinner
     )

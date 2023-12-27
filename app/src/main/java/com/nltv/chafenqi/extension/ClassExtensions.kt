@@ -80,6 +80,10 @@ fun String.toMaimaiTrophyType(): String {
     }
 }
 
+fun String.toLevelIndex(mode: Int): Int {
+    return if (mode == 0) CHUNITHM_LEVEL_STRINGS.indexOf(this) else MAIMAI_LEVEL_STRINGS.indexOf(this)
+}
+
 fun String.toChunithmTrophyType(): String {
     return when (this) {
         "normal" -> "普通"
@@ -154,7 +158,7 @@ fun Float.toRateString(): String = when (this) {
 
 fun Double.cutForRating(): Double {
     val df = DecimalFormat("#.##")
-    df.roundingMode = RoundingMode.FLOOR
+    df.roundingMode = RoundingMode.DOWN
     return df.format(this).toDouble()
 }
 
@@ -270,20 +274,26 @@ fun ChunithmRatingEntry.associatedMusicEntry(): ChunithmMusicEntry {
 
 fun chunithmRatingOf(constant: Double, score: Int): Double {
     return when (score) {
-        in 925000..949999 ->
-            constant - 3.0 + (score.toDouble() - 950000.0) * 3.0 / 50000.0
+        in 800000..899999 ->
+            (constant - 5.0) / 2
 
-        in 950000..974999 ->
-            constant - 1.5 + (score.toDouble() - 950000.0) * 3.0 / 50000.0
+        in 900000..924999 ->
+            constant - 5.0
 
-        in 975000..999999 ->
+        in 925000..974999 ->
+            constant - 3.0
+
+        in 975000..989999 ->
             constant + (score.toDouble() - 975000.0) / 2500.0 * 0.1
+
+        in 990000..999999 ->
+            constant + 0.6 + (score.toDouble() - 990000) / 2500 * 0.1
 
         in 1000000..1004999 ->
             constant + 1.0 + (score.toDouble() - 1000000.0) / 1000.0 * 0.1
 
         in 1005000..1007499 ->
-            constant + 1.5 + (score.toDouble() - 1005000.0) / 500.0 * 0.1
+            constant + 1.5 + (score.toDouble() - 1005000.0) / 50.0 * 0.01
 
         in 1007500..1008999 ->
             constant + 2.0 + (score.toDouble() - 1007500.0) / 100.0 * 0.01

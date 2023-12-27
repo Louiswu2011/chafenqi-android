@@ -3,7 +3,8 @@ package com.nltv.chafenqi.storage.user
 import android.content.Context
 import android.text.format.DateFormat
 import android.util.Log
-import com.nltv.chafenqi.extension.LEVEL_STRINGS
+import com.nltv.chafenqi.extension.CHUNITHM_LEVEL_STRINGS
+import com.nltv.chafenqi.extension.MAIMAI_LEVEL_STRINGS
 import com.nltv.chafenqi.extension.RATE_STRINGS_CHUNITHM
 import com.nltv.chafenqi.extension.RATE_STRINGS_MAIMAI
 import com.nltv.chafenqi.extension.associatedMusicEntry
@@ -138,7 +139,7 @@ object CFQUser {
                         ?.also { Aux.recommendList.add(MaimaiRecentLineup(it, "新纪录")) }
                 } catch (_: Exception) { }
 
-                LEVEL_STRINGS.forEachIndexed { index, level ->
+                MAIMAI_LEVEL_STRINGS.forEachIndexed { index, level ->
                     val levelMusicEntries = CFQPersistentData.Maimai.musicList.filter { it.level.contains(level) }
                     val playedBestEntries = best.filter { it.level == level }
                     val playedMusicEntries = playedBestEntries.map { it.associatedMusicEntry }
@@ -269,7 +270,7 @@ object CFQUser {
                         ?.also { Aux.recommendList.add(ChunithmRecentLineup(it, "新纪录")) }
                 } catch (_: Exception) { }
 
-                LEVEL_STRINGS.forEachIndexed { index, level ->
+                CHUNITHM_LEVEL_STRINGS.forEachIndexed { index, level ->
                     val levelMusicEntries = CFQPersistentData.Chunithm.musicList.filter { it.charts.levels.contains(level) }
                     val playedBestEntries = best.filter { it.associatedMusicEntry.charts.levels[it.levelIndex] == level }
                     val playedMusicEntries = playedBestEntries.map { it.associatedMusicEntry }

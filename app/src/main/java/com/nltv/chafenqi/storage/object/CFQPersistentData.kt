@@ -6,6 +6,10 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.nltv.chafenqi.extension.CHUNITHM_GENRE_STRINGS
+import com.nltv.chafenqi.extension.CHUNITHM_VERSION_STRINGS
+import com.nltv.chafenqi.extension.MAIMAI_GENRE_STRINGS
+import com.nltv.chafenqi.extension.MAIMAI_VERSION_STRINGS
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.networking.FishServer
 import com.nltv.chafenqi.storage.SettingsStore.Companion.settingsStore
@@ -131,6 +135,7 @@ object CFQPersistentData {
         withContext(Dispatchers.IO) {
             Maimai.loadData(shouldValidate, context)
             Chunithm.loadData(shouldValidate, context)
+            loadFilterResources()
         }
     }
 
@@ -139,5 +144,13 @@ object CFQPersistentData {
         store.edit { it.clear() }
         Maimai.musicList = listOf()
         Chunithm.musicList = listOf()
+    }
+
+    private fun loadFilterResources() {
+        MAIMAI_GENRE_STRINGS = Maimai.musicList.map { it.basicInfo.genre }.distinct()
+        MAIMAI_VERSION_STRINGS = Maimai.musicList.map { it.basicInfo.from }.distinct()
+        CHUNITHM_GENRE_STRINGS = Chunithm.musicList.map { it.genre }.distinct()
+        CHUNITHM_VERSION_STRINGS = Chunithm.musicList.map { it.from }.distinct()
+        Log.i("CFQPD", "Finished loading filter resources.")
     }
 }

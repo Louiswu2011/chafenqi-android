@@ -1,90 +1,230 @@
 package com.nltv.chafenqi.view.songlist
 
+import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nltv.chafenqi.extension.CHUNITHM_GENRE_STRINGS
+import com.nltv.chafenqi.extension.CHUNITHM_LEVEL_STRINGS
+import com.nltv.chafenqi.extension.CHUNITHM_VERSION_STRINGS
+import com.nltv.chafenqi.extension.MAIMAI_GENRE_STRINGS
+import com.nltv.chafenqi.extension.MAIMAI_LEVEL_STRINGS
+import com.nltv.chafenqi.extension.MAIMAI_VERSION_STRINGS
+import com.nltv.chafenqi.extension.toLevelIndex
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.storage.`object`.CFQPersistentData
 import com.nltv.chafenqi.storage.songlist.MusicEntry
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+
+data class SongListUiState(
+    val maiMusicList: List<MaimaiMusicEntry> = CFQPersistentData.Maimai.musicList,
+    val chuMusicList: List<ChunithmMusicEntry> = CFQPersistentData.Chunithm.musicList,
+    val maiSearchResult: List<MaimaiMusicEntry> = listOf(),
+    val chuSearchResult: List<ChunithmMusicEntry> = listOf()
+)
 
 class SongListPageViewModel : ViewModel() {
     val user = CFQUser
+    private val _uiState = MutableStateFlow(SongListUiState())
+    val uiState: StateFlow<SongListUiState> = _uiState.asStateFlow()
 
-    val maiMusicList = CFQPersistentData.Maimai.musicList
-    val chuMusicList = CFQPersistentData.Chunithm.musicList
+    val origMaiMusicList = CFQPersistentData.Maimai.musicList
+    val origChuMusicList = CFQPersistentData.Chunithm.musicList
 
     var searchQuery by mutableStateOf("")
-        private set
     var isSearchBarActive by mutableStateOf(false)
 
-    private val maiSearchFlow = flowOf(maiMusicList)
-    val maiSearchResult: StateFlow<List<MaimaiMusicEntry>> =
-        snapshotFlow { searchQuery }
-            .combine(maiSearchFlow) { query, musicList ->
-                when {
-                    user.mode == 0 -> emptyList()
-                    query.isNotEmpty() -> {
-                        musicList.filter { entry ->
-                            entry.title.contains(
-                                query,
-                                ignoreCase = true
-                            ) || entry.basicInfo.artist.contains(query, ignoreCase = true)
-                        }
+    var filterPlayed by mutableStateOf(false)
+
+    var filterLevel by mutableStateOf(false)
+    var filterMaimaiLevelList = MutableList(MAIMAI_LEVEL_STRINGS.size) { false }.toMutableStateList()
+    var filterChunithmLevelList = MutableList(CHUNITHM_LEVEL_STRINGS.size) { false }.toMutableStateList()
+
+    var filterConstant by mutableStateOf(false)
+    var filterConstantUpperBound by mutableFloatStateOf(0f)
+    var filterConstantLowerBound by mutableFloatStateOf(0f)
+
+    var filterGenre by mutableStateOf(false)
+    var filterMaimaiGenreList = MutableList(MAIMAI_GENRE_STRINGS.size) { false }.toMutableStateList()
+    var filterChunithmGenreList = MutableList(CHUNITHM_GENRE_STRINGS.size) { false }.toMutableStateList()
+
+    var filterVersion by mutableStateOf(false)
+    var filterMaimaiVersionList = MutableList(MAIMAI_VERSION_STRINGS.size) { false }.toMutableStateList()
+    var filterChunithmVersionList = MutableList(CHUNITHM_VERSION_STRINGS.size) { false }.toMutableStateList()
+
+    var filterEnabled = false
+
+    var showFilterLevelDialog by mutableStateOf(false)
+    var showFilterConstantDialog by mutableStateOf(false)
+    var showFilterGenreDialog by mutableStateOf(false)
+    var showFilterVersionDialog by mutableStateOf(false)
+
+    private fun testFilterEnabled(): Boolean {
+        return filterPlayed || filterLevel || filterConstant || filterGenre || filterVersion
+    }
+
+    fun update() {
+        viewModelScope.launch {
+            _uiState.update { currentValue ->
+                when (user.mode) {
+                    0 -> {
+                        val filteredList = filterChunithmList(CFQPersistentData.Chunithm.musicList)
+                        currentValue.copy(
+                            chuMusicList = filteredList,
+                            chuSearchResult = searchChunithmList(filteredList)
+                        )
+                    }
+                    1 -> {
+                        val filteredList = filterMaimaiList(CFQPersistentData.Maimai.musicList)
+                        currentValue.copy(
+                            maiMusicList = filteredList,
+                            maiSearchResult = searchMaimaiList(filteredList)
+                        )
                     }
 
-                    else -> emptyList()
+                    else -> { currentValue }
                 }
             }
-            .stateIn(
-                scope = viewModelScope,
-                initialValue = emptyList(),
-                started = SharingStarted.WhileSubscribed(TIMEOUT_MILLS)
-            )
+        }
+        filterEnabled = testFilterEnabled()
+    }
 
-    private val chuSearchFlow = flowOf(chuMusicList)
-    val chuSearchResult: StateFlow<List<ChunithmMusicEntry>> =
-        snapshotFlow { searchQuery }
-            .combine(chuSearchFlow) { query, musicList ->
-                when {
-                    user.mode == 1 -> emptyList()
-                    query.isNotEmpty() -> {
-                        musicList.filter { entry ->
-                            entry.title.contains(query, ignoreCase = true) || entry.artist.contains(
-                                query,
-                                ignoreCase = true
-                            )
-                        }
+    private fun filterMaimaiList(orig: List<MaimaiMusicEntry>): List<MaimaiMusicEntry> {
+        var result = orig
+        if (filterPlayed) {
+            result = user.maimai.best.map { it.associatedMusicEntry }.distinct()
+        }
+        if (filterConstant && filterConstantLowerBound <= filterConstantUpperBound) {
+            result = result.filter {
+                for (constant in it.constants) {
+                    if ((filterConstantLowerBound..filterConstantUpperBound).contains(constant)) {
+                        return@filter true
                     }
-
-                    else -> emptyList()
+                }
+                return@filter false
+            }
+        }
+        if (filterLevel && filterMaimaiLevelList.any { it }) {
+            result = result.filter {
+                for (level in it.level) {
+                    if (filterMaimaiLevelList[level.toLevelIndex(1)]) {
+                        return@filter true
+                    }
+                }
+                return@filter false
+            }
+        }
+        if (filterGenre && filterMaimaiGenreList.any { it }) {
+            result = result.filter {
+                filterMaimaiGenreList[MAIMAI_GENRE_STRINGS.indexOf(it.basicInfo.genre)]
+            }
+        }
+        if (filterVersion && filterMaimaiVersionList.any { it }) {
+            result = result.filter {
+                filterMaimaiVersionList[MAIMAI_VERSION_STRINGS.indexOf(it.basicInfo.from)]
+            }
+        }
+        return result
+    }
+    private fun searchMaimaiList(orig: List<MaimaiMusicEntry>, query: String = searchQuery): List<MaimaiMusicEntry> {
+        return when {
+            user.mode == 0 -> emptyList()
+            query.isNotEmpty() -> {
+                orig.filter { entry ->
+                    entry.title.contains(
+                        query,
+                        ignoreCase = true
+                    ) || entry.basicInfo.artist.contains(query, ignoreCase = true)
                 }
             }
-            .stateIn(
-                scope = viewModelScope,
-                initialValue = emptyList(),
-                started = SharingStarted.WhileSubscribed(TIMEOUT_MILLS)
-            )
 
-    fun getMusicList(): List<MusicEntry> {
-        return when (user.mode) {
-            0 -> chuMusicList
-            1 -> maiMusicList
+            else -> emptyList()
+        }
+    }
+
+    private fun filterChunithmList(orig: List<ChunithmMusicEntry>): List<ChunithmMusicEntry> {
+        var result = orig
+        if (filterPlayed) {
+            result = user.chunithm.best.map { it.associatedMusicEntry }.distinct()
+        }
+        if (filterConstant && filterConstantLowerBound <= filterConstantUpperBound) {
+            result = result.filter {
+                for (constant in it.charts.constants) {
+                    if ((filterConstantLowerBound..filterConstantUpperBound).contains(constant)) {
+                        return@filter true
+                    }
+                }
+                return@filter false
+            }
+        }
+        if (filterLevel && filterChunithmLevelList.isNotEmpty()) {
+            result = result.filter {
+                for (level in it.charts.levels) {
+                    if (filterChunithmLevelList[level.toLevelIndex(0)]) {
+                        return@filter true
+                    }
+                }
+                return@filter false
+            }
+        }
+        if (filterGenre && filterChunithmGenreList.any { it }) {
+            result = result.filter {
+                filterChunithmGenreList[CHUNITHM_GENRE_STRINGS.indexOf(it.genre)]
+            }
+        }
+        if (filterVersion && filterChunithmVersionList.any { it }) {
+            result = result.filter {
+                filterChunithmVersionList[CHUNITHM_VERSION_STRINGS.indexOf(it.from)]
+            }
+        }
+        return result
+    }
+    private fun searchChunithmList(orig: List<ChunithmMusicEntry>, query: String = searchQuery): List<ChunithmMusicEntry> {
+        return when {
+            user.mode == 1 -> emptyList()
+            query.isNotEmpty() -> {
+                orig.filter { entry ->
+                    entry.title.contains(query, ignoreCase = true) || entry.artist.contains(
+                        query,
+                        ignoreCase = true
+                    )
+                }
+            }
+
             else -> emptyList()
         }
     }
 
     fun onSearchQueryChange(newQuery: String) {
         searchQuery = newQuery
+        when (user.mode) {
+            0 -> {
+                _uiState.update { currentValue ->
+                    currentValue.copy(
+                        chuSearchResult = searchChunithmList(currentValue.chuMusicList, newQuery)
+                    )
+                }
+            }
+            1 -> {
+                _uiState.update { currentValue ->
+                    currentValue.copy(
+                        maiSearchResult = searchMaimaiList(currentValue.maiMusicList, newQuery)
+                    )
+                }
+            }
+        }
     }
 
     companion object {

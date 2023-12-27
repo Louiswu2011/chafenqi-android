@@ -9,7 +9,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
-import com.nltv.chafenqi.extension.LEVEL_STRINGS
+import com.nltv.chafenqi.extension.CHUNITHM_LEVEL_STRINGS
 import com.nltv.chafenqi.storage.SettingsStore
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmBestScoreEntry
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
@@ -55,18 +55,18 @@ class InfoChunithmLevelsViewModel: ViewModel() {
     fun assignCurrentPosition(position: Int) {
         if (position > 22 || position < 0) return
         currentPosition = position
-        setCurrentLevel(LEVEL_STRINGS[currentPosition])
+        setCurrentLevel(CHUNITHM_LEVEL_STRINGS[currentPosition])
     }
 
     fun increaseLevel() {
         if (currentPosition == 22) return
         currentPosition += 1
-        setCurrentLevel(LEVEL_STRINGS[currentPosition])
+        setCurrentLevel(CHUNITHM_LEVEL_STRINGS[currentPosition])
     }
 
     fun decreaseLevel() {
         if (currentPosition == 0) return
         currentPosition -= 1
-        setCurrentLevel(LEVEL_STRINGS[currentPosition])
+        setCurrentLevel(CHUNITHM_LEVEL_STRINGS[currentPosition])
     }
 }

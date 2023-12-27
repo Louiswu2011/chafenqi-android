@@ -51,7 +51,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.nltv.chafenqi.SCREEN_PADDING
-import com.nltv.chafenqi.extension.LEVEL_STRINGS
+import com.nltv.chafenqi.extension.CHUNITHM_LEVEL_STRINGS
 import com.nltv.chafenqi.extension.RATE_COLORS_CHUNITHM
 import com.nltv.chafenqi.extension.RATE_COLORS_MAIMAI
 import com.nltv.chafenqi.extension.RATE_STRINGS_CHUNITHM
@@ -132,7 +132,7 @@ fun InfoChunithmLevelsPage(navController: NavController) {
                     Icon(imageVector = Icons.Default.HorizontalRule, contentDescription = "降低等级")
                 }
                 Text(
-                    text = LEVEL_STRINGS[model.currentPosition],
+                    text = CHUNITHM_LEVEL_STRINGS[model.currentPosition],
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -285,7 +285,7 @@ fun InfoChunithmLevelEntry(music: ChunithmMusicEntry, best: ChunithmBestScoreEnt
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                val index = music.charts.levels.indexOf(LEVEL_STRINGS[model.currentPosition])
+                val index = music.charts.levels.indexOf(CHUNITHM_LEVEL_STRINGS[model.currentPosition])
                 val constant = if (index != -1) music.charts.constants[index] else 0.0
                 Text(
                     text = String.format("%.1f", constant) +
