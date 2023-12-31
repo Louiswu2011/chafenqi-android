@@ -162,7 +162,7 @@ class SongListPageViewModel : ViewModel() {
         if (filterConstant && filterConstantLowerBound <= filterConstantUpperBound) {
             result = result.filter {
                 for (constant in it.charts.constants) {
-                    if ((filterConstantLowerBound..filterConstantUpperBound).contains(constant)) {
+                    if (constant > 0.0 && (filterConstantLowerBound..filterConstantUpperBound).contains(constant)) {
                         return@filter true
                     }
                 }
@@ -172,7 +172,7 @@ class SongListPageViewModel : ViewModel() {
         if (filterLevel && filterChunithmLevelList.isNotEmpty()) {
             result = result.filter {
                 for (level in it.charts.levels) {
-                    if (filterChunithmLevelList[level.toLevelIndex(0)]) {
+                    if (level != "0" && filterChunithmLevelList[level.toLevelIndex(0)]) {
                         return@filter true
                     }
                 }
