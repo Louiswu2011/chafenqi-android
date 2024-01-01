@@ -51,14 +51,14 @@ import com.nltv.chafenqi.view.info.maimai.InfoMaimaiTrophyPage
 import com.nltv.chafenqi.view.info.maimai.level.InfoMaimaiLevelsPage
 import com.nltv.chafenqi.view.login.LoginPage
 import com.nltv.chafenqi.view.premium.PremiumRedeemPage
-import com.nltv.chafenqi.view.settings.about.SettingsAcknowledgePage
-import com.nltv.chafenqi.view.settings.user.SettingsBindFishPage
 import com.nltv.chafenqi.view.settings.SettingsPage
 import com.nltv.chafenqi.view.settings.about.SettingsAboutPage
+import com.nltv.chafenqi.view.settings.about.SettingsAcknowledgePage
 import com.nltv.chafenqi.view.settings.advanced.SettingsAdvancedPage
 import com.nltv.chafenqi.view.settings.home.SettingsHomePage
 import com.nltv.chafenqi.view.settings.playerInfo.SettingsInfoPage
 import com.nltv.chafenqi.view.settings.qs.SettingsQSTilePage
+import com.nltv.chafenqi.view.settings.user.SettingsBindFishPage
 import com.nltv.chafenqi.view.settings.user.SettingsBindQQPage
 import com.nltv.chafenqi.view.settings.user.SettingsUserPage
 import com.nltv.chafenqi.view.songlist.SongDetailPage

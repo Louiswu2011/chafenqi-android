@@ -55,26 +55,16 @@ import com.nltv.chafenqi.extension.CHUNITHM_LEVEL_STRINGS
 import com.nltv.chafenqi.extension.RATE_COLORS_CHUNITHM
 import com.nltv.chafenqi.extension.RATE_COLORS_MAIMAI
 import com.nltv.chafenqi.extension.RATE_STRINGS_CHUNITHM
-import com.nltv.chafenqi.extension.RATE_STRINGS_MAIMAI
 import com.nltv.chafenqi.extension.rating
 import com.nltv.chafenqi.extension.toChunithmCoverPath
-import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.extension.toRateString
 import com.nltv.chafenqi.storage.SettingsStore
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmBestScoreEntry
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiBestScoreEntry
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
-import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import com.nltv.chafenqi.util.navigateToMusicEntry
 import com.nltv.chafenqi.view.info.maimai.level.InfoLevelLegend
-import com.nltv.chafenqi.view.info.maimai.level.InfoMaimaiLevelEntry
-import com.nltv.chafenqi.view.info.maimai.level.InfoMaimaiLevelList
-import com.nltv.chafenqi.view.info.maimai.level.InfoMaimaiLevelsIndicator
-import com.nltv.chafenqi.view.info.maimai.level.InfoMaimaiLevelsLegends
-import com.nltv.chafenqi.view.info.maimai.level.InfoMaimaiLevelsViewModel
 import com.nltv.chafenqi.view.module.RatingBadge
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
-import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

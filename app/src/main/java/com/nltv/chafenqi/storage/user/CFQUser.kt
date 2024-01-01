@@ -23,7 +23,7 @@ import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiDeltaEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiExtraInfo
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiUserInfo
-import com.nltv.chafenqi.storage.`object`.CFQPersistentData
+import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import com.onesignal.OneSignal

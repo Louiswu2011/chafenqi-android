@@ -2,10 +2,10 @@ package com.nltv.chafenqi.view.home.rating
 
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
-import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRatingEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiBestScoreEntry
-import com.nltv.chafenqi.storage.`object`.CFQPersistentData
+import com.nltv.chafenqi.storage.persistent.CFQPersistentData
+import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.view.home.HomeNavItem
 
 class HomeRatingPageViewModel : ViewModel() {

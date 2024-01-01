@@ -1,8 +1,8 @@
 package com.nltv.chafenqi.view.home.recent
 
 import androidx.lifecycle.ViewModel
-import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.storage.datastore.user.RecentScoreEntry
+import com.nltv.chafenqi.storage.user.CFQUser
 
 class HomeRecentViewModel : ViewModel() {
     val user = CFQUser

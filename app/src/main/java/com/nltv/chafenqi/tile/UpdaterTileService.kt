@@ -11,8 +11,8 @@ import android.os.PersistableBundle
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import android.util.Log
-import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.storage.SettingsStore
+import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.updater.ChafenqiProxy
 import com.nltv.chafenqi.view.updater.PORTAL_ADDRESS
 import kotlinx.coroutines.DelicateCoroutinesApi

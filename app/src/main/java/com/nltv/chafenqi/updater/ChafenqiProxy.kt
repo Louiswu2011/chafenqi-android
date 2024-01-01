@@ -9,7 +9,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.VpnService
 import android.os.Binder
-import android.os.Build
 import android.os.IBinder
 import android.os.Parcel
 import android.os.ParcelFileDescriptor
@@ -20,8 +19,6 @@ import android.preference.PreferenceManager
 import android.text.TextUtils
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
-import com.google.android.datatransport.Priority
 import com.nltv.chafenqi.ChafenqiApplication
 import com.nltv.chafenqi.R
 import java.io.IOException

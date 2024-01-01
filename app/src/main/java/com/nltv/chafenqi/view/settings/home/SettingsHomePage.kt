@@ -14,7 +14,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.michaelflisar.composepreferences.core.PreferenceScreen
-import com.michaelflisar.composepreferences.core.PreferenceSectionHeader
 import com.michaelflisar.composepreferences.core.classes.PreferenceSettingsDefaults
 import com.michaelflisar.composepreferences.core.hierarchy.PreferenceRootScope
 import com.michaelflisar.composepreferences.screen.bool.PreferenceBool
@@ -22,7 +21,6 @@ import com.michaelflisar.composepreferences.screen.list.PreferenceList
 import com.nltv.chafenqi.storage.SettingsStore
 import com.nltv.chafenqi.view.settings.GAME_LIST
 import com.nltv.chafenqi.view.settings.SettingsTopBar
-import com.nltv.chafenqi.view.settings.user.SettingsUserGroup
 import kotlinx.coroutines.launch
 
 @Composable
