@@ -1,6 +1,7 @@
 package com.nltv.chafenqi.view.login
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,14 +13,19 @@ import com.nltv.chafenqi.CFQUserStateViewModel
 import com.nltv.chafenqi.UIState
 import com.nltv.chafenqi.cacheStore
 import com.nltv.chafenqi.networking.CFQServer
+import com.nltv.chafenqi.networking.CFQServerSideException
+import com.nltv.chafenqi.networking.CredentialsMismatchException
+import com.nltv.chafenqi.networking.UserNotFoundException
 import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.user.CFQUser
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.net.ConnectException
 
 class LoginPageViewModel(
 
@@ -40,10 +46,12 @@ class LoginPageViewModel(
         context: Context,
         shouldValidate: Boolean = true,
         userState: CFQUserStateViewModel,
+        snackbarHostState: SnackbarHostState,
         loadFromCache: Boolean = true
     ) {
         updateLoginState(UIState.Loading)
         updateLoginPromptText("登陆中...")
+
         viewModelScope.launch {
             try {
                 user.createProfile(token, username)
@@ -59,10 +67,10 @@ class LoginPageViewModel(
                 updateLoginState(UIState.Pending)
                 userState.isLoggedIn = true
             } catch (e: Exception) {
-                updateLoginState(UIState.Pending)
-                throw e
+                loginExceptionHandler(snackbarHostState, e)
             }
         }
+
     }
 
     fun login(
@@ -103,8 +111,26 @@ class LoginPageViewModel(
                     snackbarHostState.showSnackbar("用户名或密码错误，请重试")
                 }
             } catch (e: Exception) {
-                updateLoginState(UIState.Pending)
-                throw e
+                loginExceptionHandler(snackbarHostState, e)
+            }
+        }
+    }
+
+    private suspend fun loginExceptionHandler(snackbarHostState: SnackbarHostState, e: Exception) {
+        updateLoginState(UIState.Pending)
+        Log.e("LoginPageViewModel", "$e ${e::class.simpleName}")
+        when (e) {
+            is UserNotFoundException, is CredentialsMismatchException -> {
+                snackbarHostState.showSnackbar("用户名或密码错误")
+            }
+            is CFQServerSideException -> {
+                snackbarHostState.showSnackbar("服务器出错，请稍后再试")
+            }
+            is ConnectException -> {
+                snackbarHostState.showSnackbar("无法连接到服务器，请稍后再试")
+            }
+            else -> {
+                snackbarHostState.showSnackbar("未知错误: ${e.localizedMessage}")
             }
         }
     }

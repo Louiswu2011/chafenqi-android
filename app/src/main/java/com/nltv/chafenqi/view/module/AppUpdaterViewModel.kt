@@ -113,7 +113,7 @@ class AppUpdaterViewModel : ViewModel() {
             )
             if (!versionData.isLatest(currentVersionCode, currentBuildNumber)) {
                 latestVersionCode = versionData.androidVersionCode
-                latestBuildNumber = versionData.androidBuild.toInt()
+                latestBuildNumber = versionData.androidBuild.toIntOrNull() ?: 0
                 showConfirmDialog = true
             } else {
                 if (!silent) {

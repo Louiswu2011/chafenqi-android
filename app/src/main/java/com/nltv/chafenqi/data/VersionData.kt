@@ -1,5 +1,6 @@
 package com.nltv.chafenqi.data
 
+import com.nltv.chafenqi.BuildConfig
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -11,9 +12,17 @@ data class VersionData(
         if (versionCode != androidVersionCode) {
             return false
         }
-        if (buildNumber < androidBuild.toInt()) {
-            return false
-        }
-        return true
+        return buildNumber >= androidBuild.toInt()
+    }
+
+    companion object {
+        private val currentVersionString = BuildConfig.VERSION_NAME
+        private val currentVersionCode = currentVersionString.split(" ")[0]
+        private val currentBuildNumber = currentVersionString.split(" ")[1]
+            .removePrefix("(")
+            .removeSuffix(")")
+            .toInt()
+
+        val current = VersionData(currentVersionCode, currentBuildNumber.toString())
     }
 }

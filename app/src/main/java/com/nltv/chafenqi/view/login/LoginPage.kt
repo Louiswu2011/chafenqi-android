@@ -74,7 +74,6 @@ fun LoginPage() {
     val userState = LocalUserState.current
     val loginUiState by model.loginUiState.collectAsStateWithLifecycle()
     val shouldValidate by store.loginAutoUpdateSongList.collectAsStateWithLifecycle(initialValue = true)
-    val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
 
@@ -92,14 +91,7 @@ fun LoginPage() {
         }
         Log.i("Login", "Cached username: $username, token: $token")
 
-        try {
-            model.login(token, username, context, shouldValidate, userState, loadFromCache = true)
-        } catch (e: Exception) {
-            Log.e("Login", "Error login from cached token, error: ${e.localizedMessage}")
-            scope.launch {
-                snackbarHostState.showSnackbar("登陆状态失效，请重试")
-            }
-        }
+        model.login(token, username, context, shouldValidate, userState, snackbarHostState, loadFromCache = true)
     }
 
     Scaffold(
@@ -280,32 +272,15 @@ fun LoginField(snackbarHostState: SnackbarHostState) {
                     }
                 } else {
                     if (loginUiState.loginState == UIState.Pending) {
-                        try {
-                            model.login(
-                                username,
-                                password.sha256(),
-                                context,
-                                shouldValidate,
-                                userState,
-                                snackbarHostState
-                            )
-                            model.user.mode = defaultGame
-                        } catch (e: Exception) {
-                            when (e) {
-                                is CredentialsMismatchException,
-                                is UserNotFoundException -> {
-                                    scope.launch { snackbarHostState.showSnackbar("用户名或密码错误") }
-                                }
-
-                                is CFQServerSideException -> {
-                                    scope.launch { snackbarHostState.showSnackbar("服务器出错，请稍后再试") }
-                                }
-
-                                else -> {
-                                    scope.launch { snackbarHostState.showSnackbar("未知错误: ${e.localizedMessage}") }
-                                }
-                            }
-                        }
+                        model.login(
+                            username,
+                            password.sha256(),
+                            context,
+                            shouldValidate,
+                            userState,
+                            snackbarHostState
+                        )
+                        model.user.mode = defaultGame
                     }
                 }
             },
@@ -323,13 +298,6 @@ fun LoginField(snackbarHostState: SnackbarHostState) {
                 color = MaterialTheme.colorScheme.primary
             )
         }
-        /*TextButton(
-            onClick = {
-                model.clearPersistentStorage(context)
-            }
-        ) {
-            Text(text = "清除缓存", color = MaterialTheme.colorScheme.primary)
-        }*/
     }
 }
 

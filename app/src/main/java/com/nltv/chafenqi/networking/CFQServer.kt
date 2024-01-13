@@ -1,6 +1,7 @@
 package com.nltv.chafenqi.networking
 
 import android.util.Log
+import com.nltv.chafenqi.BuildConfig
 import com.nltv.chafenqi.data.VersionData
 import com.nltv.chafenqi.storage.user.CFQUserOptions
 import io.ktor.client.HttpClient
@@ -92,30 +93,25 @@ class CFQServer {
                 deserializer.decodeFromString(responseText)
             } catch (e: Exception) {
                 Log.e("CFQServer", "Failed to obtain latest version data, error: $e")
-                VersionData()
+                VersionData.current
             }
         }
 
         suspend fun authLogin(username: String, password: String): String {
-            try {
-                val response = fetchFromServer(
-                    "POST",
-                    "api/auth",
-                    payload = hashMapOf(
-                        "username" to username,
-                        "password" to password
-                    )
+            val response = fetchFromServer(
+                "POST",
+                "api/auth",
+                payload = hashMapOf(
+                    "username" to username,
+                    "password" to password
                 )
-                val errorCode = response.bodyAsText()
-                val header = response.headers["Authorization"]?.substring(7)
+            )
+            val errorCode = response.bodyAsText()
+            val header = response.headers["Authorization"]?.substring(7)
 
-                Log.i("CFQServer", "auth login: $errorCode")
+            Log.i("CFQServer", "auth login: $errorCode")
 
-                return header ?: ""
-            } catch (e: Exception) {
-                Log.e("CFQServer", "$e")
-                return ""
-            }
+            return header ?: ""
         }
 
         suspend fun authCheckUsername(username: String): Boolean {

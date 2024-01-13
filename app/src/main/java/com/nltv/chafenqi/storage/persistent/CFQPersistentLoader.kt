@@ -20,6 +20,8 @@ data class CFQPersistentLoaderConfig(
 
 class CFQPersistentLoader {
     companion object {
+        val tag = "CFQPersistentLoader"
+
         suspend inline fun <reified T: MusicEntry> loadPersistentData(
             context: Context,
             config: CFQPersistentLoaderConfig,
@@ -27,7 +29,7 @@ class CFQPersistentLoader {
         ): List<T> {
             val cacheStore = context.settingsStore
 
-            Log.i("CFQPersistentLoader", "Loading persistent data for ${config.name}...")
+            Log.i(tag, "Loading persistent data for ${config.name}...")
             return loadPersistentData(cacheStore, config, shouldValidate)
         }
 
@@ -44,9 +46,16 @@ class CFQPersistentLoader {
             // No validation needed, return list as-is.
             if (!shouldValidate) return list
 
-            val remoteString = config.fetcher()
-            // Compare local and remote string, prioritize remote source.
-            return if (musicListString != remoteString) Json.decodeFromString(remoteString) ?: emptyList() else list
+            return try {
+                val remoteString = config.fetcher()
+                // Compare local and remote string, prioritize remote source.
+                if (musicListString != remoteString) Json.decodeFromString(remoteString)
+                    ?: emptyList() else list
+            } catch (e: Exception) {
+                // Network error, return cache or empty list
+                Log.e(tag, "Error loading remote music list: $e")
+                if (musicListString.isNotEmpty()) Json.decodeFromString(musicListString) else emptyList()
+            }
         }
     }
 }
