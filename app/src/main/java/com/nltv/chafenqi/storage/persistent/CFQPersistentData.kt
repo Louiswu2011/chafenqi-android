@@ -2,8 +2,6 @@ package com.nltv.chafenqi.storage.persistent
 
 import android.content.Context
 import android.util.Log
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.nltv.chafenqi.extension.CHUNITHM_GENRE_STRINGS
@@ -11,13 +9,10 @@ import com.nltv.chafenqi.extension.CHUNITHM_VERSION_STRINGS
 import com.nltv.chafenqi.extension.MAIMAI_GENRE_STRINGS
 import com.nltv.chafenqi.extension.MAIMAI_VERSION_STRINGS
 import com.nltv.chafenqi.networking.CFQServer
-import com.nltv.chafenqi.networking.FishServer
 import com.nltv.chafenqi.storage.SettingsStore.Companion.settingsStore
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -26,7 +21,7 @@ object CFQPersistentData {
     val maiConfig = CFQPersistentLoaderConfig(
         name = "Maimai",
         cacheKey = stringPreferencesKey("maimaiMusicList"),
-        fetcher = { FishServer.fetchMaimaiMusicListData() }
+        fetcher = { CFQServer.apiMaimaiMusicData() }
     )
     val chuConfig = CFQPersistentLoaderConfig(
         name = "Chunithm",

@@ -7,20 +7,12 @@ import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.request.url
-import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentLength
 import io.ktor.http.contentType
 
 class FishServer {
     companion object {
-        suspend fun fetchMaimaiMusicListData(): String {
-            Log.i("FishServer", "Fetching maimai music list...")
-            val response =
-                CFQServer.client.get("https://www.diving-fish.com/api/maimaidxprober/music_data")
-            return response.bodyAsText()
-        }
-
         suspend fun getUserToken(username: String, password: String): String {
             try {
                 val response =

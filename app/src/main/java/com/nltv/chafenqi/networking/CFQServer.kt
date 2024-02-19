@@ -1,7 +1,6 @@
 package com.nltv.chafenqi.networking
 
 import android.util.Log
-import com.nltv.chafenqi.BuildConfig
 import com.nltv.chafenqi.data.VersionData
 import com.nltv.chafenqi.storage.user.CFQUserOptions
 import io.ktor.client.HttpClient
@@ -42,7 +41,7 @@ class CFQServer {
             token: String? = null,
             shouldHandleErrorCode: Boolean = true
         ): HttpResponse {
-            var response: HttpResponse
+            val response: HttpResponse
             when (method) {
                 "GET" -> {
                     response = client.get("http://43.139.107.206:8083/$path") {
@@ -220,6 +219,14 @@ class CFQServer {
             val response = fetchFromServer(
                 "GET",
                 path = "api/chunithm/music_data"
+            )
+            return response.bodyAsText()
+        }
+
+        suspend fun apiMaimaiMusicData(): String {
+            val response = fetchFromServer(
+                "GET",
+                path = "api/maimai/music_data"
             )
             return response.bodyAsText()
         }
