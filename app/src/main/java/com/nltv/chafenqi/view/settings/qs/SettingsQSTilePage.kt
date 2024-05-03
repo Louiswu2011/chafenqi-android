@@ -50,7 +50,6 @@ fun PreferenceRootScope.SettingsQSTileGroup() {
     val qsInheritBaseSettings by store.qsInheritBaseSettings.collectAsStateWithLifecycle(initialValue = true)
     val qsCopyTargetGame by store.qsCopyTargetGame.collectAsStateWithLifecycle(initialValue = 1)
     val qsCopyToClipboard by store.qsCopyToClipboard.collectAsStateWithLifecycle(initialValue = false)
-    val qsShouldForward by store.qsShouldForward.collectAsStateWithLifecycle(initialValue = false)
     val qsShouldAutoJump by store.qsShouldAutoJump.collectAsStateWithLifecycle(initialValue = false)
 
     PreferenceBool(
@@ -80,11 +79,6 @@ fun PreferenceRootScope.SettingsQSTileGroup() {
             value = qsShouldAutoJump,
             onValueChange = { scope.launch { store.setQsShouldAutoJumpKey(it) } },
             title = { Text(text = "自动跳转至微信") }
-        )
-        PreferenceBool(
-            value = qsShouldForward,
-            onValueChange = { scope.launch { store.setQsShouldForwardKey(it) } },
-            title = { Text(text = "同步至水鱼网") }
         )
     }
     PreferenceDivider()

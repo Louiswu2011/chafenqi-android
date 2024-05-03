@@ -3,6 +3,7 @@ package com.nltv.chafenqi.view.settings
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Contacts
 import androidx.compose.material.icons.filled.DeveloperMode
@@ -41,7 +42,7 @@ fun SettingsTopBar(titleText: String, navController: NavController) {
         navigationIcon = {
             IconButton(onClick = { navController.navigateUp() }) {
                 Icon(
-                    imageVector = Icons.Default.ArrowBack,
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "返回上一级"
                 )
             }
@@ -91,7 +92,7 @@ fun PreferenceRootScope.SettingsEntry(
     PreferenceButton(
         onClick = { navController.navigate(HomeNavItem.Home.route + "/settings/qsTile") },
         title = { Text(text = "快捷设置") },
-        subtitle = { Text(text = "自动复制链接、跳转至微信、同步至水鱼网") },
+        subtitle = { Text(text = "自动复制链接、跳转至微信") },
         icon = { Icon(imageVector = Icons.Default.Widgets, contentDescription = "快捷设置") }
     )
     PreferenceButton(

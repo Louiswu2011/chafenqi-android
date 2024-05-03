@@ -59,7 +59,7 @@ fun UpdaterQRCodePage(snackbarHostState: SnackbarHostState) {
 
     val shouldForward by store.uploadShouldForward.collectAsState(initial = false)
 
-    val maiQrCodePainter = rememberQrCodePainter(model.buildUri(1, shouldForward)) {
+    val maiQrCodePainter = rememberQrCodePainter(model.buildUri(1)) {
         logo {
             painter = logoPainter
             padding = QrLogoPadding.Natural(.1f)
@@ -75,7 +75,7 @@ fun UpdaterQRCodePage(snackbarHostState: SnackbarHostState) {
             dark = QrBrush.solid(nameplateMaimaiBottomColor)
         }
     }
-    val chuQrCodePainter = rememberQrCodePainter(model.buildUri(0, shouldForward)) {
+    val chuQrCodePainter = rememberQrCodePainter(model.buildUri(0)) {
         logo {
             painter = logoPainter
             padding = QrLogoPadding.Natural(.1f)

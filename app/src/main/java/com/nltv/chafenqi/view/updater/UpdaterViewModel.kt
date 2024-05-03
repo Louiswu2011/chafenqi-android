@@ -85,11 +85,12 @@ val HELPS = listOf(
 )
 
 class UpdaterViewModel : ViewModel() {
-    private val token = CFQUser.token
+    val token = CFQUser.token
     private val _uiState = MutableStateFlow(UpdaterUiState())
     val uiState: StateFlow<UpdaterUiState> = _uiState.asStateFlow()
 
     var shouldShowQRCode by mutableStateOf(false)
+    var fishForward = CFQUser.fishForward
 
     fun updateServerStat() {
         fun makeServerStatText(time: Double): String = when (time) {
@@ -184,12 +185,11 @@ class UpdaterViewModel : ViewModel() {
         }
     }
 
-    fun buildUri(mode: Int, shouldForward: Boolean): String {
+    fun buildUri(mode: Int): String {
         return Uri.parse(PORTAL_ADDRESS)
             .buildUpon()
             .appendPath(if (mode == 0) "upload_chunithm" else "upload_maimai")
             .appendQueryParameter("jwt", token)
-            .appendQueryParameter("forwarding", if (shouldForward) "1" else "0")
             .build()
             .toString()
     }
@@ -219,17 +219,34 @@ class UpdaterViewModel : ViewModel() {
         }
     }
 
-    suspend fun triggerQuickUpload(game: Int, shouldForward: Boolean): Boolean {
+    suspend fun triggerQuickUpload(game: Int): Boolean {
         try {
             if (CFQServer.apiIsUploading(game, token)) {
                 return false
             }
 
-            CFQServer.apiTriggerQuickUpload(game, shouldForward, token)
+            CFQServer.apiTriggerQuickUpload(game, token)
             return true
         } catch (e: Exception) {
             Log.e("Updater", "Failed to trigger quick upload, error: $e")
             return false
+        }
+    }
+
+    // Returns remote setting
+    suspend fun setFishForwardState(state: Boolean): Boolean {
+        return try {
+            val result = CFQServer.apiUploadUserOption(token, "forwarding_fish", if (state) "1" else "0")
+            if (result) {
+                CFQServer.apiFetchUserOption(token, "forwarding_fish") == "1"
+            } else {
+                Log.e("Updater", "Server error while setting forward fish.")
+                !state
+            }
+        } catch (e: Exception) {
+            Log.e("Updater", "Failed to set fish forward to $state")
+            e.printStackTrace()
+            !state
         }
     }
 

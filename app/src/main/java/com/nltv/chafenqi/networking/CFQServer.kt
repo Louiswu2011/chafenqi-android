@@ -184,13 +184,14 @@ class CFQServer {
             }
         }
 
-        suspend fun apiFetchUserOptions(token: String): String {
-            Log.i("CFQServer", "Fetching user options.")
+        suspend fun apiFetchUserOption(token: String, param: String): String {
+            Log.i("CFQServer", "Fetching user option: ${param}.")
             return try {
                 val response = fetchFromServer(
                     "GET",
-                    "api/user/options",
-                    token = token
+                    "api/user/option",
+                    token = token,
+                    queries = mapOf("param" to param)
                 )
                 response.bodyAsText()
             } catch (e: Exception) {
@@ -198,14 +199,15 @@ class CFQServer {
             }
         }
 
-        suspend fun apiUploadUserOptions(options: CFQUserOptions, token: String): Boolean {
-            Log.i("CFQServer", "Uploading user options.")
+        suspend fun apiUploadUserOption(token: String, param: String, value: String): Boolean {
+            Log.i("CFQServer", "Uploading $param option.")
             return try {
                 val response = fetchFromServer(
                     "POST",
-                    "api/user/options",
+                    "api/user/option",
                     payload = hashMapOf(
-                        "bindQQ" to options.bindQQ
+                        "param" to param,
+                        "value" to value
                     ),
                     token = token
                 )
@@ -255,15 +257,13 @@ class CFQServer {
 
         suspend fun apiTriggerQuickUpload(
             gameType: Int,
-            shouldForward: Boolean,
             authToken: String
         ) {
             fetchFromServer(
                 "POST",
                 "api/quick_upload",
                 payload = hashMapOf(
-                    "dest" to gameType,
-                    "forwarding" to if (shouldForward) 1 else 0
+                    "dest" to gameType
                 ),
                 token = authToken
             )

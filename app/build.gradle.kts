@@ -1,4 +1,3 @@
-import com.android.build.api.dsl.Packaging
 import org.jetbrains.kotlin.konan.properties.Properties
 import java.io.FileInputStream
 import java.io.FileNotFoundException
@@ -102,6 +101,7 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
@@ -140,17 +140,20 @@ task("bumpServerBuildVersion") {
 }
 
 val ktorVersion = "2.3.6"
+val composePreferences = "0.4.7"
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.12.0")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+
+    implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
-    implementation("androidx.activity:activity-compose:1.8.2")
+    implementation("androidx.activity:activity-compose:1.9.0")
     implementation(platform("androidx.compose:compose-bom:2024.01.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3:1.2.0-rc01")
-    implementation("com.google.firebase:firebase-analytics:21.5.0")
+    implementation("androidx.compose.material3:material3:1.2.1")
+    implementation("com.google.firebase:firebase-analytics:22.0.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -162,23 +165,32 @@ dependencies {
     implementation("io.ktor:ktor-client-core:2.3.7")
     implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
-    implementation("androidx.navigation:navigation-compose:2.7.6")
-    implementation("androidx.compose.material:material-icons-extended:1.6.0")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation("androidx.compose.material:material-icons-extended:1.6.7")
     implementation("io.ktor:ktor-client-logging:$ktorVersion")
     implementation("org.slf4j:slf4j-simple:2.0.9")
     implementation("io.coil-kt:coil-compose:2.5.0")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation("com.onesignal:OneSignal:5.1.1")
 
     implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
     implementation("com.google.firebase:firebase-crashlytics")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
-    implementation("androidx.compose.material:material:1.6.0")
+    implementation("androidx.compose.material:material:1.6.7")
     implementation("io.github.alexzhirkevich:qrose:1.0.0-beta02")
-    implementation("com.github.MFlisar:ComposePreferences:0.3")
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
     implementation("com.google.accompanist:accompanist-permissions:0.33.2-alpha")
     implementation("com.patrykandpatrick.vico:compose-m3:1.13.0")
+
+    implementation("com.github.MFlisar.ComposePreferences:core:$composePreferences")
+    implementation("com.github.MFlisar.ComposePreferences:screen-bool:$composePreferences")
+    implementation("com.github.MFlisar.ComposePreferences:screen-button:$composePreferences")
+    implementation("com.github.MFlisar.ComposePreferences:screen-input:$composePreferences")
+    implementation("com.github.MFlisar.ComposePreferences:screen-color:$composePreferences")
+    implementation("com.github.MFlisar.ComposePreferences:screen-date:$composePreferences")
+    implementation("com.github.MFlisar.ComposePreferences:screen-time:$composePreferences")
+    implementation("com.github.MFlisar.ComposePreferences:screen-list:$composePreferences")
+    implementation("com.github.MFlisar.ComposePreferences:screen-number:$composePreferences")
 }

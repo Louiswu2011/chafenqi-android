@@ -41,6 +41,7 @@ object CFQUser {
     var token = ""
     var fishToken = ""
     var bindQQ = ""
+    var fishForward = false
 
     var username = ""
     var isPremium = false
@@ -317,24 +318,27 @@ object CFQUser {
         CFQUser.username = username
 
         isPremium = CFQServer.apiIsPremium(username)
-        try {
-            fishToken = CFQServer.fishFetchToken(authToken)
-            Log.i(tag, "Fetched user fish token: $fishToken")
+
+        fishToken = try {
+            CFQServer.fishFetchToken(authToken)
         } catch (e: Exception) {
             Log.i(tag, "User did not bind fish account.")
-            fishToken = ""
-        }
+            ""
+        }.also { Log.i(tag, "Fetched user fish token: $fishToken") }
 
-        val deserializer = Json { ignoreUnknownKeys = true }
-        try {
-            val options: CFQUserOptions = deserializer.decodeFromString(
-                CFQServer.apiFetchUserOptions(token)
-            )
-            bindQQ = options.bindQQ.toString()
-            Log.i(tag, "Fetched user bind qq: ${options.bindQQ}")
+        fishForward = try {
+            CFQServer.apiFetchUserOption(token, "forwarding_fish") == "1"
+        } catch (e: Exception) {
+            Log.i(tag, "User fish forward option failed to load, fallback to false")
+            false
+        }.also { Log.i(tag, "Fetched user fish forward option: $fishForward") }
+
+        bindQQ = try {
+            CFQServer.apiFetchUserOption(token, "bindQQ")
         } catch (e: Exception) {
             Log.i(tag, "User did not bind qq.")
-        }
+            ""
+        }.also { Log.i(tag, "Fetched user bind qq: $bindQQ") }
 
         Log.i(tag, "User is${if (isPremium) "" else " not"} premium")
         // registerOneSignal(username)

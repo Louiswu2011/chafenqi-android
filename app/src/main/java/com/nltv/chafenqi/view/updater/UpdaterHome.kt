@@ -1,6 +1,7 @@
 package com.nltv.chafenqi.view.updater
 
 import android.app.Activity
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
@@ -49,6 +50,7 @@ import com.michaelflisar.composepreferences.core.hierarchy.PreferenceRootScope
 import com.michaelflisar.composepreferences.screen.bool.PreferenceBool
 import com.michaelflisar.composepreferences.screen.button.PreferenceButton
 import com.michaelflisar.composepreferences.screen.list.PreferenceList
+import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.SettingsStore
 import com.nltv.chafenqi.view.home.HomeNavItem
 import com.nltv.chafenqi.view.settings.GAME_LIST
@@ -107,7 +109,7 @@ fun UpdaterHomePage(navController: NavController) {
                 UpdaterClipboardGroup(snackbarHostState)
                 PreferenceDivider()
 
-                UpdaterSettingsGroup()
+                UpdaterSettingsGroup(model, snackbarHostState)
                 // PreferenceDivider()
             }
             if (model.shouldShowQRCode) {
@@ -178,7 +180,6 @@ fun PreferenceRootScope.UpdaterClipboardGroup(snackbarHostState: SnackbarHostSta
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val store = SettingsStore(context)
-    val shouldForward by store.uploadShouldForward.collectAsState(initial = false)
 
     fun makeToast() {
         scope.launch { snackbarHostState.showSnackbar("已复制到剪贴板") }
@@ -188,7 +189,7 @@ fun PreferenceRootScope.UpdaterClipboardGroup(snackbarHostState: SnackbarHostSta
 
     PreferenceButton(
         onClick = {
-            clipboardManager.setText(AnnotatedString(model.buildUri(1, shouldForward)))
+            clipboardManager.setText(AnnotatedString(model.buildUri(1)))
             makeToast()
         },
         title = { Text(text = "复制舞萌DX链接") },
@@ -196,7 +197,7 @@ fun PreferenceRootScope.UpdaterClipboardGroup(snackbarHostState: SnackbarHostSta
     )
     PreferenceButton(
         onClick = {
-            clipboardManager.setText(AnnotatedString(model.buildUri(0, shouldForward)))
+            clipboardManager.setText(AnnotatedString(model.buildUri(0)))
             makeToast()
         },
         title = { Text(text = "复制中二节奏链接") },
@@ -228,7 +229,6 @@ fun PreferenceRootScope.UpdaterQuickActionsGroup(snackbarHostState: SnackbarHost
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val store = SettingsStore(context)
-    val shouldForward by store.uploadShouldForward.collectAsStateWithLifecycle(initialValue = false)
     val uiState by model.uiState.collectAsStateWithLifecycle()
     var uploadGame by rememberSaveable { mutableIntStateOf(1) }
 
@@ -257,7 +257,7 @@ fun PreferenceRootScope.UpdaterQuickActionsGroup(snackbarHostState: SnackbarHost
     PreferenceButton(
         onClick = {
             scope.launch {
-                if (model.triggerQuickUpload(uploadGame, shouldForward)) {
+                if (model.triggerQuickUpload(uploadGame)) {
                     snackbarHostState.showSnackbar("提交成功，请留意传分状态")
                 } else {
                     snackbarHostState.showSnackbar("已有上传任务，请勿重复提交")
@@ -275,23 +275,47 @@ fun PreferenceRootScope.UpdaterQuickActionsGroup(snackbarHostState: SnackbarHost
 }
 
 @Composable
-fun PreferenceRootScope.UpdaterSettingsGroup() {
+fun PreferenceRootScope.UpdaterSettingsGroup(model: UpdaterViewModel, snackbarHostState: SnackbarHostState) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+
     val store = SettingsStore(context)
-    val shouldForward by store.uploadShouldForward.collectAsStateWithLifecycle(initialValue = false)
+    var shouldForward by rememberSaveable {
+        mutableStateOf(false)
+    }
+    var isUploading by rememberSaveable {
+        mutableStateOf(false)
+    }
     val shouldAutoJump by store.uploadShouldAutoJump.collectAsStateWithLifecycle(initialValue = false)
+
+    LaunchedEffect(Unit) {
+        isUploading = true
+        shouldForward = CFQServer.apiFetchUserOption(model.token, "forwarding_fish") == "1"
+        isUploading = false
+    }
 
     PreferenceSectionHeader(title = { Text(text = "设置") })
     PreferenceBool(
         value = shouldForward,
-        onValueChange = {
+        onValueChange = { newValue ->
             scope.launch {
-                store.setUploadShouldForward(it)
+                Log.i("UpdaterHome", "Setting fish forward to $newValue")
+                isUploading = true
+                val remoteSetting = model.setFishForwardState(newValue)
+                if (remoteSetting == newValue) {
+                    shouldForward = newValue
+                    isUploading = false
+                    Log.i("UpdaterHome", "Success, remote setting: $remoteSetting")
+                } else {
+                    isUploading = false
+                    Log.e("UpdaterHome", "Failed, remote setting: $remoteSetting")
+                    snackbarHostState.showSnackbar("更改设置失败，请稍后再试")
+                }
             }
         },
         title = { Text(text = "同步到水鱼网") },
-        subtitle = { Text(text = "需要在设置中绑定账号") }
+        subtitle = { Text(text = "需要在设置中绑定账号") },
+        enabled = if (isUploading) Dependency.Disabled else Dependency.Enabled
     )
     PreferenceBool(
         value = shouldAutoJump,
