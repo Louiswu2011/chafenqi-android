@@ -59,9 +59,6 @@ import com.nltv.chafenqi.R
 import com.nltv.chafenqi.UIState
 import com.nltv.chafenqi.extension.sha256
 import com.nltv.chafenqi.networking.CFQServer
-import com.nltv.chafenqi.networking.CFQServerSideException
-import com.nltv.chafenqi.networking.CredentialsMismatchException
-import com.nltv.chafenqi.networking.UserNotFoundException
 import com.nltv.chafenqi.networking.UsernameOccupiedException
 import com.nltv.chafenqi.storage.SettingsStore
 import kotlinx.coroutines.launch
@@ -91,7 +88,15 @@ fun LoginPage() {
         }
         Log.i("Login", "Cached username: $username, token: $token")
 
-        model.login(token, username, context, shouldValidate, userState, snackbarHostState, loadFromCache = true)
+        model.login(
+            token,
+            username,
+            context,
+            shouldValidate,
+            userState,
+            snackbarHostState,
+            loadFromCache = true
+        )
     }
 
     Scaffold(

@@ -27,7 +27,6 @@ import com.michaelflisar.composepreferences.core.classes.PreferenceSettingsDefau
 import com.michaelflisar.composepreferences.screen.button.PreferenceButton
 import com.michaelflisar.composepreferences.screen.input.PreferenceInputText
 import com.nltv.chafenqi.networking.CFQServer
-import com.nltv.chafenqi.storage.user.CFQUserOptions
 import com.nltv.chafenqi.view.settings.SettingsPageViewModel
 import com.nltv.chafenqi.view.settings.SettingsTopBar
 import kotlinx.coroutines.launch
@@ -51,7 +50,7 @@ fun SettingsBindQQPage(navController: NavController) {
         containerColor = MaterialTheme.colorScheme.surface,
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
-        PreferenceScreen (
+        PreferenceScreen(
             Modifier.padding(paddingValues),
             settings = PreferenceSettingsDefaults.settings(),
             scrollable = true

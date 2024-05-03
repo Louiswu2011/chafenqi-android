@@ -137,7 +137,8 @@ class MaimaiDifficultyInfo(
         if (bestEntry != null) {
             bestScore = String.format("%.4f", bestEntry!!.achievements) + "%"
         }
-        hasRecentEntry = CFQUser.maimai.recent.firstOrNull { it.associatedMusicEntry == musicEntry && it.levelIndex == levelIndex } != null
+        hasRecentEntry =
+            CFQUser.maimai.recent.firstOrNull { it.associatedMusicEntry == musicEntry && it.levelIndex == levelIndex } != null
     }
 }
 
@@ -166,6 +167,7 @@ class ChunithmDifficultyInfo(
         if (bestEntry != null) {
             bestScore = bestEntry!!.score.toString()
         }
-        hasRecentEntry = CFQUser.chunithm.recent.firstOrNull { it.associatedMusicEntry == musicEntry && it.levelIndex == levelIndex } != null
+        hasRecentEntry =
+            CFQUser.chunithm.recent.firstOrNull { it.associatedMusicEntry == musicEntry && it.levelIndex == levelIndex } != null
     }
 }

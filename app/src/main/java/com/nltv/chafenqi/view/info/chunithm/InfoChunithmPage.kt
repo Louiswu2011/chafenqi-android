@@ -284,7 +284,8 @@ fun InfoChunithmDetailButtons(navController: NavController) {
         Button(
             onClick = { navController.navigate(HomeNavItem.Home.route + "/info/chunithm/levels") },
             Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(10.dp))
+            shape = RoundedCornerShape(10.dp)
+        )
         {
             Icon(
                 imageVector = Icons.Default.PieChart,

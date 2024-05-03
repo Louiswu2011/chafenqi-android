@@ -68,11 +68,11 @@ fun SettingsAdvancedPage(navController: NavController) {
     val snackbarHostState = remember {
         SnackbarHostState()
     }
-    Scaffold (
+    Scaffold(
         topBar = { SettingsTopBar(titleText = "高级", navController = navController) },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) {
-        PreferenceScreen (
+        PreferenceScreen(
             modifier = Modifier.padding(it),
             settings = PreferenceSettingsDefaults.settings(),
             scrollable = true
@@ -88,7 +88,9 @@ fun PreferenceRootScope.SettingsAdvancedGroup(snackbarHostState: SnackbarHostSta
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val store = SettingsStore(context)
-    val loginAutoUpdateSongList by store.loginAutoUpdateSongList.collectAsStateWithLifecycle(initialValue = true)
+    val loginAutoUpdateSongList by store.loginAutoUpdateSongList.collectAsStateWithLifecycle(
+        initialValue = true
+    )
     var showJwtToken by remember { mutableStateOf(false) }
 
     if (model.showClearCacheAlert) {
@@ -107,7 +109,12 @@ fun PreferenceRootScope.SettingsAdvancedGroup(snackbarHostState: SnackbarHostSta
         onValueChange = { scope.launch { store.setLoginAutoUpdateSongList(it) } },
         title = { Text(text = "保持歌曲列表为最新") },
         subtitle = { Text(text = "将会在每次启动前检测并自动更新歌曲列表") },
-        icon = { Icon(imageVector = Icons.Default.CloudSync, contentDescription = "保持歌曲列表为最新") }
+        icon = {
+            Icon(
+                imageVector = Icons.Default.CloudSync,
+                contentDescription = "保持歌曲列表为最新"
+            )
+        }
     )
     PreferenceButton(
         onClick = { model.showReloadListAlert = true },

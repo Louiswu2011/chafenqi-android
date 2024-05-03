@@ -197,9 +197,21 @@ fun LogonPage(navController: NavHostController) {
             composable(HomeNavItem.Home.route + "/settings") { SettingsPage(navController) }
             composable(HomeNavItem.Home.route + "/settings/user") { SettingsUserPage(navController) }
             composable(HomeNavItem.Home.route + "/settings/home") { SettingsHomePage(navController) }
-            composable(HomeNavItem.Home.route + "/settings/playerInfo") { SettingsInfoPage(navController) }
-            composable(HomeNavItem.Home.route + "/settings/qsTile") { SettingsQSTilePage(navController) }
-            composable(HomeNavItem.Home.route + "/settings/advanced") { SettingsAdvancedPage(navController) }
+            composable(HomeNavItem.Home.route + "/settings/playerInfo") {
+                SettingsInfoPage(
+                    navController
+                )
+            }
+            composable(HomeNavItem.Home.route + "/settings/qsTile") {
+                SettingsQSTilePage(
+                    navController
+                )
+            }
+            composable(HomeNavItem.Home.route + "/settings/advanced") {
+                SettingsAdvancedPage(
+                    navController
+                )
+            }
             composable(HomeNavItem.Home.route + "/settings/about") { SettingsAboutPage(navController) }
             composable(HomeNavItem.Home.route + "/settings/user/redeem") {
                 PremiumRedeemPage(
@@ -211,9 +223,11 @@ fun LogonPage(navController: NavHostController) {
                     navController
                 )
             }
-            composable(HomeNavItem.Home.route + "/settings/user/bind/qq") { SettingsBindQQPage(
-                navController
-            ) }
+            composable(HomeNavItem.Home.route + "/settings/user/bind/qq") {
+                SettingsBindQQPage(
+                    navController
+                )
+            }
             composable(HomeNavItem.Home.route + "/settings/about/acknowledge") {
                 SettingsAcknowledgePage(
                     navController
@@ -294,7 +308,7 @@ fun LogonPage(navController: NavHostController) {
                     navController = navController
                 )
             }
-            composable(HomeNavItem.SongList.route + "/maimai/{index}/{levelIndex}") {navBackStackEntry ->
+            composable(HomeNavItem.SongList.route + "/maimai/{index}/{levelIndex}") { navBackStackEntry ->
                 MusicRecordPage(
                     navController = navController,
                     mode = 1,
@@ -309,7 +323,7 @@ fun LogonPage(navController: NavHostController) {
                     navController = navController
                 )
             }
-            composable(HomeNavItem.SongList.route + "/chunithm/{index}/{levelIndex}") {navBackStackEntry ->
+            composable(HomeNavItem.SongList.route + "/chunithm/{index}/{levelIndex}") { navBackStackEntry ->
                 MusicRecordPage(
                     navController = navController,
                     mode = 0,

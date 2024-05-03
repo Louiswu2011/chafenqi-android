@@ -81,7 +81,9 @@ fun String.toMaimaiTrophyType(): String {
 }
 
 fun String.toLevelIndex(mode: Int): Int {
-    return if (mode == 0) CHUNITHM_LEVEL_STRINGS.indexOf(this) else MAIMAI_LEVEL_STRINGS.indexOf(this)
+    return if (mode == 0) CHUNITHM_LEVEL_STRINGS.indexOf(this) else MAIMAI_LEVEL_STRINGS.indexOf(
+        this
+    )
 }
 
 fun String.toChunithmTrophyType(): String {

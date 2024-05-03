@@ -14,10 +14,10 @@ fun <T> T.useDebounce(
     delayMillis: Long = 300L,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     onChange: (T) -> Unit
-): T{
+): T {
     val state by rememberUpdatedState(this)
 
-    DisposableEffect(state){
+    DisposableEffect(state) {
         val job = coroutineScope.launch {
             delay(delayMillis)
             onChange(state)

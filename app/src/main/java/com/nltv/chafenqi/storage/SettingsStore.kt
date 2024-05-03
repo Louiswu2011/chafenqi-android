@@ -23,8 +23,10 @@ class SettingsStore(private val context: Context) {
         private val homeDefaultGameKey = intPreferencesKey("homeDefaultGame")
         private val homeShowRefreshButtonKey = booleanPreferencesKey("homeShowRefreshButton")
 
-        private val infoLevelsChunithmDefaultLevelKey = intPreferencesKey("infoLevelsChunithmDefaultLevel")
-        private val infoLevelsMaimaiDefaultLevelKey = intPreferencesKey("infoLevelsMaimaiDefaultLevel")
+        private val infoLevelsChunithmDefaultLevelKey =
+            intPreferencesKey("infoLevelsChunithmDefaultLevel")
+        private val infoLevelsMaimaiDefaultLevelKey =
+            intPreferencesKey("infoLevelsMaimaiDefaultLevel")
 
         private val qsInheritBaseSettingsKey = booleanPreferencesKey("qsInheritBaseSettings")
         private val qsCopyToClipboardKey = booleanPreferencesKey("qsCopyToClipboard")

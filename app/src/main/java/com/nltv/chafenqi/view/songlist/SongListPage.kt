@@ -147,6 +147,7 @@ fun SongListPage(navController: NavController) {
                                 }
                             )
                         }
+
                         1 -> {
                             items(
                                 count = uiState.maiMusicList.size,
@@ -295,12 +296,16 @@ fun SongListFilterChips() {
     val model: SongListPageViewModel = viewModel()
     val levelStrings = if (model.user.mode == 0) CHUNITHM_LEVEL_STRINGS else MAIMAI_LEVEL_STRINGS
     val genreStrings = if (model.user.mode == 0) CHUNITHM_GENRE_STRINGS else MAIMAI_GENRE_STRINGS
-    val versionStrings = if (model.user.mode == 0) CHUNITHM_VERSION_STRINGS else MAIMAI_VERSION_STRINGS
-    val filterLevelList = if (model.user.mode == 0) model.filterChunithmLevelList else model.filterMaimaiLevelList
-    val filterGenreList = if (model.user.mode == 0) model.filterChunithmGenreList else model.filterMaimaiGenreList
-    val filterVersionList = if (model.user.mode == 0) model.filterChunithmVersionList else model.filterMaimaiVersionList
-    
-    Row (
+    val versionStrings =
+        if (model.user.mode == 0) CHUNITHM_VERSION_STRINGS else MAIMAI_VERSION_STRINGS
+    val filterLevelList =
+        if (model.user.mode == 0) model.filterChunithmLevelList else model.filterMaimaiLevelList
+    val filterGenreList =
+        if (model.user.mode == 0) model.filterChunithmGenreList else model.filterMaimaiGenreList
+    val filterVersionList =
+        if (model.user.mode == 0) model.filterChunithmVersionList else model.filterMaimaiVersionList
+
+    Row(
         Modifier
             .fillMaxWidth()
             .horizontalScroll(scrollState),
@@ -312,7 +317,7 @@ fun SongListFilterChips() {
             onClick = {
                 model.filterPlayed = !model.filterPlayed
                 model.update()
-                      },
+            },
             label = {
                 Text(
                     text = "只显示已游玩"
@@ -329,8 +334,12 @@ fun SongListFilterChips() {
                 },
                 label = {
                     Text(text = "Lv " + filterLevelList.foldIndexed("") { index: Int, acc: String, b: Boolean ->
-                        acc + if (b) { levelStrings[index] + ", " } else { "" }
-                    }.removeSuffix(", ") )
+                        acc + if (b) {
+                            levelStrings[index] + ", "
+                        } else {
+                            ""
+                        }
+                    }.removeSuffix(", "))
                 },
                 trailingIcon = {
                     Icon(imageVector = Icons.Default.Close, contentDescription = "清除等级条件")
@@ -354,7 +363,12 @@ fun SongListFilterChips() {
                         text = "定数 " + if (model.filterConstantUpperBound == model.filterConstantLowerBound) {
                             String.format("%.1f", model.filterConstantUpperBound)
                         } else {
-                            "${String.format("%.1f", model.filterConstantLowerBound)}-${String.format("%.1f", model.filterConstantUpperBound)}"
+                            "${
+                                String.format(
+                                    "%.1f",
+                                    model.filterConstantLowerBound
+                                )
+                            }-${String.format("%.1f", model.filterConstantUpperBound)}"
                         }
                     )
                 },
@@ -378,7 +392,11 @@ fun SongListFilterChips() {
                 label = {
                     Text(
                         text = filterGenreList.foldIndexed("") { index: Int, acc: String, b: Boolean ->
-                            acc + if (b) { genreStrings[index] + ", " } else { "" }
+                            acc + if (b) {
+                                genreStrings[index] + ", "
+                            } else {
+                                ""
+                            }
                         }.removeSuffix(", ")
                     )
                 },
@@ -405,7 +423,11 @@ fun SongListFilterChips() {
                 label = {
                     Text(
                         text = filterVersionList.foldIndexed("") { index: Int, acc: String, b: Boolean ->
-                            acc + if (b) { versionStrings[index] + ", " } else { "" }
+                            acc + if (b) {
+                                versionStrings[index] + ", "
+                            } else {
+                                ""
+                            }
                         }.removeSuffix(", ")
                     )
                 },

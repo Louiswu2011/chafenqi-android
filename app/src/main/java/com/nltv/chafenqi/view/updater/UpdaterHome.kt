@@ -275,7 +275,10 @@ fun PreferenceRootScope.UpdaterQuickActionsGroup(snackbarHostState: SnackbarHost
 }
 
 @Composable
-fun PreferenceRootScope.UpdaterSettingsGroup(model: UpdaterViewModel, snackbarHostState: SnackbarHostState) {
+fun PreferenceRootScope.UpdaterSettingsGroup(
+    model: UpdaterViewModel,
+    snackbarHostState: SnackbarHostState
+) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 

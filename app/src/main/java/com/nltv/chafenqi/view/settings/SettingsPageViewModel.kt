@@ -178,7 +178,7 @@ class SettingsPageViewModel : ViewModel() {
             ComponentName(context, UpdaterTileService::class.java),
             "传分代理",
             Icon.createWithResource(context, R.drawable.tile_upload_icon),
-            Executor {  }
+            Executor { }
         ) { }
     }
 

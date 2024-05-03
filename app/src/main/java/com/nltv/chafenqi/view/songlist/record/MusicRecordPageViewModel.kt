@@ -60,9 +60,10 @@ class MusicRecordPageViewModel : ViewModel() {
                     )
                 }
                 viewModelScope.launch {
-                    chuEntryProvider.setEntriesSuspending(entries.reversed().mapIndexed { index, entry ->
-                        entryOf(index, entry.score)
-                    })
+                    chuEntryProvider.setEntriesSuspending(
+                        entries.reversed().mapIndexed { index, entry ->
+                            entryOf(index, entry.score)
+                        })
                 }
             }
 
@@ -82,9 +83,10 @@ class MusicRecordPageViewModel : ViewModel() {
                     )
                 }
                 viewModelScope.launch {
-                    maiEntryProvider.setEntriesSuspending(entries.reversed().mapIndexed { index, entry ->
-                        entryOf(index, entry.achievements)
-                    })
+                    maiEntryProvider.setEntriesSuspending(
+                        entries.reversed().mapIndexed { index, entry ->
+                            entryOf(index, entry.achievements)
+                        })
                 }
             }
         }

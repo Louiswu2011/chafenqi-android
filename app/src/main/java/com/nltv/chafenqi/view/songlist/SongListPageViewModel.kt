@@ -45,20 +45,26 @@ class SongListPageViewModel : ViewModel() {
     var filterPlayed by mutableStateOf(false)
 
     var filterLevel by mutableStateOf(false)
-    var filterMaimaiLevelList = MutableList(MAIMAI_LEVEL_STRINGS.size) { false }.toMutableStateList()
-    var filterChunithmLevelList = MutableList(CHUNITHM_LEVEL_STRINGS.size) { false }.toMutableStateList()
+    var filterMaimaiLevelList =
+        MutableList(MAIMAI_LEVEL_STRINGS.size) { false }.toMutableStateList()
+    var filterChunithmLevelList =
+        MutableList(CHUNITHM_LEVEL_STRINGS.size) { false }.toMutableStateList()
 
     var filterConstant by mutableStateOf(false)
     var filterConstantUpperBound by mutableFloatStateOf(0f)
     var filterConstantLowerBound by mutableFloatStateOf(0f)
 
     var filterGenre by mutableStateOf(false)
-    var filterMaimaiGenreList = MutableList(MAIMAI_GENRE_STRINGS.size) { false }.toMutableStateList()
-    var filterChunithmGenreList = MutableList(CHUNITHM_GENRE_STRINGS.size) { false }.toMutableStateList()
+    var filterMaimaiGenreList =
+        MutableList(MAIMAI_GENRE_STRINGS.size) { false }.toMutableStateList()
+    var filterChunithmGenreList =
+        MutableList(CHUNITHM_GENRE_STRINGS.size) { false }.toMutableStateList()
 
     var filterVersion by mutableStateOf(false)
-    var filterMaimaiVersionList = MutableList(MAIMAI_VERSION_STRINGS.size) { false }.toMutableStateList()
-    var filterChunithmVersionList = MutableList(CHUNITHM_VERSION_STRINGS.size) { false }.toMutableStateList()
+    var filterMaimaiVersionList =
+        MutableList(MAIMAI_VERSION_STRINGS.size) { false }.toMutableStateList()
+    var filterChunithmVersionList =
+        MutableList(CHUNITHM_VERSION_STRINGS.size) { false }.toMutableStateList()
 
     var filterEnabled = false
 
@@ -82,6 +88,7 @@ class SongListPageViewModel : ViewModel() {
                             chuSearchResult = searchChunithmList(filteredList)
                         )
                     }
+
                     1 -> {
                         val filteredList = filterMaimaiList(CFQPersistentData.Maimai.musicList)
                         currentValue.copy(
@@ -90,7 +97,9 @@ class SongListPageViewModel : ViewModel() {
                         )
                     }
 
-                    else -> { currentValue }
+                    else -> {
+                        currentValue
+                    }
                 }
             }
         }
@@ -134,7 +143,11 @@ class SongListPageViewModel : ViewModel() {
         }
         return result
     }
-    private fun searchMaimaiList(orig: List<MaimaiMusicEntry>, query: String = searchQuery): List<MaimaiMusicEntry> {
+
+    private fun searchMaimaiList(
+        orig: List<MaimaiMusicEntry>,
+        query: String = searchQuery
+    ): List<MaimaiMusicEntry> {
         return when {
             user.mode == 0 -> emptyList()
             query.isNotEmpty() -> {
@@ -158,7 +171,10 @@ class SongListPageViewModel : ViewModel() {
         if (filterConstant && filterConstantLowerBound <= filterConstantUpperBound) {
             result = result.filter {
                 for (constant in it.charts.constants) {
-                    if (constant > 0.0 && (filterConstantLowerBound..filterConstantUpperBound).contains(constant)) {
+                    if (constant > 0.0 && (filterConstantLowerBound..filterConstantUpperBound).contains(
+                            constant
+                        )
+                    ) {
                         return@filter true
                     }
                 }
@@ -187,7 +203,11 @@ class SongListPageViewModel : ViewModel() {
         }
         return result
     }
-    private fun searchChunithmList(orig: List<ChunithmMusicEntry>, query: String = searchQuery): List<ChunithmMusicEntry> {
+
+    private fun searchChunithmList(
+        orig: List<ChunithmMusicEntry>,
+        query: String = searchQuery
+    ): List<ChunithmMusicEntry> {
         return when {
             user.mode == 1 -> emptyList()
             query.isNotEmpty() -> {
@@ -213,6 +233,7 @@ class SongListPageViewModel : ViewModel() {
                     )
                 }
             }
+
             1 -> {
                 _uiState.update { currentValue ->
                     currentValue.copy(

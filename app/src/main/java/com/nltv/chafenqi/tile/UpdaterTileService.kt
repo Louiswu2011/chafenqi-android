@@ -20,7 +20,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
-class UpdaterTileService: TileService() {
+class UpdaterTileService : TileService() {
     private var isVpnRunning = false
 
     override fun onStartListening() {
@@ -30,9 +30,11 @@ class UpdaterTileService: TileService() {
         qsTile.state = if (isVpnRunning) Tile.STATE_ACTIVE else Tile.STATE_INACTIVE
         qsTile.updateTile()
     }
+
     override fun onClick() {
         super.onClick()
-        qsTile.state = if (qsTile.state == Tile.STATE_INACTIVE) Tile.STATE_ACTIVE else Tile.STATE_INACTIVE
+        qsTile.state =
+            if (qsTile.state == Tile.STATE_INACTIVE) Tile.STATE_ACTIVE else Tile.STATE_INACTIVE
         isVpnRunning = if (qsTile.state == Tile.STATE_ACTIVE) {
             startVPN()
             doExtraActions()
@@ -49,7 +51,8 @@ class UpdaterTileService: TileService() {
         GlobalScope.launch {
             val store = SettingsStore(applicationContext)
             val token = CFQUser.token
-            val clipboardManager = applicationContext.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+            val clipboardManager =
+                applicationContext.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
 
             val qsInheritBaseSettings = store.qsInheritBaseSettings.firstOrNull()
             val qsCopyTargetGame = store.qsCopyTargetGame.firstOrNull()

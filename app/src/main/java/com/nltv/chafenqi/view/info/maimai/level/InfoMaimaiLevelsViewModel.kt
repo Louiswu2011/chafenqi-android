@@ -22,7 +22,7 @@ data class InfoMaimaiLevelsUiState(
     val entrySize: Int = 0,
 )
 
-class InfoMaimaiLevelsViewModel: ViewModel() {
+class InfoMaimaiLevelsViewModel : ViewModel() {
     private val levelInfo = CFQUser.maimai.aux.levelInfo
 
     private val _uiState = MutableStateFlow(InfoMaimaiLevelsUiState())

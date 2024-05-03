@@ -236,7 +236,8 @@ class UpdaterViewModel : ViewModel() {
     // Returns remote setting
     suspend fun setFishForwardState(state: Boolean): Boolean {
         return try {
-            val result = CFQServer.apiUploadUserOption(token, "forwarding_fish", if (state) "1" else "0")
+            val result =
+                CFQServer.apiUploadUserOption(token, "forwarding_fish", if (state) "1" else "0")
             if (result) {
                 CFQServer.apiFetchUserOption(token, "forwarding_fish") == "1"
             } else {

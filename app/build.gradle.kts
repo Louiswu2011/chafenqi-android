@@ -34,7 +34,7 @@ android {
         value = 1
     }
 
-    var mVersionName: String
+    val mVersionName: String
 
     val appName = "chafenqi"
     val majorVersion = "1"

@@ -50,12 +50,13 @@ import com.nltv.chafenqi.extension.toLevelIndex
 fun SongListLevelFilterDialog() {
     val model: SongListPageViewModel = viewModel()
     val levelStrings = if (model.user.mode == 0) CHUNITHM_LEVEL_STRINGS else MAIMAI_LEVEL_STRINGS
-    val filterLevelList = if (model.user.mode == 0) model.filterChunithmLevelList else model.filterMaimaiLevelList
+    val filterLevelList =
+        if (model.user.mode == 0) model.filterChunithmLevelList else model.filterMaimaiLevelList
     val gridState = rememberLazyGridState()
 
     if (model.showFilterLevelDialog) {
         AlertDialog(onDismissRequest = { model.showFilterLevelDialog = false }) {
-            Surface (
+            Surface(
                 shape = AlertDialogDefaults.shape,
                 color = AlertDialogDefaults.containerColor,
                 tonalElevation = AlertDialogDefaults.TonalElevation
@@ -67,7 +68,11 @@ fun SongListLevelFilterDialog() {
                     verticalArrangement = Arrangement.SpaceBetween,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = "筛选等级", style = MaterialTheme.typography.titleLarge, color = AlertDialogDefaults.textContentColor)
+                    Text(
+                        text = "筛选等级",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = AlertDialogDefaults.textContentColor
+                    )
                     Spacer(modifier = Modifier.padding(vertical = 10.dp))
                     LazyVerticalGrid(
                         columns = GridCells.Adaptive(80.dp),
@@ -75,7 +80,7 @@ fun SongListLevelFilterDialog() {
                         state = gridState
                     ) {
                         items(levelStrings) { level ->
-                            Row (
+                            Row(
                                 Modifier
                                     .toggleable(
                                         value = filterLevelList[level.toLevelIndex(model.user.mode)],
@@ -135,12 +140,13 @@ fun SongListLevelFilterDialog() {
 fun SongListGenreFilterDialog() {
     val model: SongListPageViewModel = viewModel()
     val genreStrings = if (model.user.mode == 0) CHUNITHM_GENRE_STRINGS else MAIMAI_GENRE_STRINGS
-    val filterGenreList = if (model.user.mode == 0) model.filterChunithmGenreList else model.filterMaimaiGenreList
+    val filterGenreList =
+        if (model.user.mode == 0) model.filterChunithmGenreList else model.filterMaimaiGenreList
     val listState = rememberLazyListState()
 
     if (model.showFilterGenreDialog) {
         AlertDialog(onDismissRequest = { model.showFilterGenreDialog = false }) {
-            Surface (
+            Surface(
                 shape = AlertDialogDefaults.shape,
                 color = AlertDialogDefaults.containerColor,
                 tonalElevation = AlertDialogDefaults.TonalElevation
@@ -152,14 +158,18 @@ fun SongListGenreFilterDialog() {
                     verticalArrangement = Arrangement.SpaceBetween,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = "筛选分类", style = MaterialTheme.typography.titleLarge, color = AlertDialogDefaults.textContentColor)
+                    Text(
+                        text = "筛选分类",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = AlertDialogDefaults.textContentColor
+                    )
                     Spacer(modifier = Modifier.padding(vertical = 10.dp))
-                    LazyColumn (
+                    LazyColumn(
                         state = listState,
                         userScrollEnabled = true
                     ) {
                         items(genreStrings) { genre ->
-                            Row (
+                            Row(
                                 Modifier
                                     .toggleable(
                                         value = filterGenreList[genreStrings.indexOf(genre)],
@@ -218,13 +228,15 @@ fun SongListGenreFilterDialog() {
 @Composable
 fun SongListVersionFilterDialog() {
     val model: SongListPageViewModel = viewModel()
-    val versionStrings = if (model.user.mode == 0) CHUNITHM_VERSION_STRINGS else MAIMAI_VERSION_STRINGS
-    val filterVersionList = if (model.user.mode == 0) model.filterChunithmVersionList else model.filterMaimaiVersionList
+    val versionStrings =
+        if (model.user.mode == 0) CHUNITHM_VERSION_STRINGS else MAIMAI_VERSION_STRINGS
+    val filterVersionList =
+        if (model.user.mode == 0) model.filterChunithmVersionList else model.filterMaimaiVersionList
     val listState = rememberLazyListState()
 
     if (model.showFilterVersionDialog) {
         AlertDialog(onDismissRequest = { model.showFilterVersionDialog = false }) {
-            Surface (
+            Surface(
                 shape = AlertDialogDefaults.shape,
                 color = AlertDialogDefaults.containerColor,
                 tonalElevation = AlertDialogDefaults.TonalElevation
@@ -236,14 +248,18 @@ fun SongListVersionFilterDialog() {
                     verticalArrangement = Arrangement.SpaceBetween,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = "筛选分类", style = MaterialTheme.typography.titleLarge, color = AlertDialogDefaults.textContentColor)
+                    Text(
+                        text = "筛选分类",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = AlertDialogDefaults.textContentColor
+                    )
                     Spacer(modifier = Modifier.padding(vertical = 10.dp))
-                    LazyColumn (
+                    LazyColumn(
                         state = listState,
                         userScrollEnabled = true
                     ) {
                         items(versionStrings) { version ->
-                            Row (
+                            Row(
                                 Modifier
                                     .toggleable(
                                         value = filterVersionList[versionStrings.indexOf(version)],
@@ -317,7 +333,7 @@ fun SongListConstantFilterDialog() {
 
     if (model.showFilterConstantDialog) {
         AlertDialog(onDismissRequest = { model.showFilterConstantDialog = false }) {
-            Surface (
+            Surface(
                 shape = AlertDialogDefaults.shape,
                 color = AlertDialogDefaults.containerColor,
                 tonalElevation = AlertDialogDefaults.TonalElevation
@@ -329,9 +345,13 @@ fun SongListConstantFilterDialog() {
                     verticalArrangement = Arrangement.SpaceBetween,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = "筛选定数", style = MaterialTheme.typography.titleLarge, color = AlertDialogDefaults.textContentColor)
+                    Text(
+                        text = "筛选定数",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = AlertDialogDefaults.textContentColor
+                    )
                     Spacer(modifier = Modifier.padding(vertical = 10.dp))
-                    Column (
+                    Column(
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.animateContentSize()
@@ -345,6 +365,7 @@ fun SongListConstantFilterDialog() {
                                     label = { Text(text = "定数") }
                                 )
                             }
+
                             false -> {
                                 TextField(
                                     value = lowerbound,
@@ -362,8 +383,12 @@ fun SongListConstantFilterDialog() {
                         }
                     }
                     Spacer(modifier = Modifier.padding(vertical = 10.dp))
-                    Row (
-                        Modifier.toggleable(value = singleConstant, onValueChange = { singleConstant = it }, role = Role.Checkbox),
+                    Row(
+                        Modifier.toggleable(
+                            value = singleConstant,
+                            onValueChange = { singleConstant = it },
+                            role = Role.Checkbox
+                        ),
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         Checkbox(checked = singleConstant, onCheckedChange = null)

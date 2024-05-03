@@ -28,10 +28,10 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsQSTilePage(navController: NavController) {
-    Scaffold (
+    Scaffold(
         topBar = { SettingsTopBar(titleText = "快捷设置", navController = navController) }
     ) {
-        PreferenceScreen (
+        PreferenceScreen(
             modifier = Modifier.padding(it),
             settings = PreferenceSettingsDefaults.settings(),
             scrollable = true
@@ -47,7 +47,9 @@ fun PreferenceRootScope.SettingsQSTileGroup() {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val store = SettingsStore(context)
-    val qsInheritBaseSettings by store.qsInheritBaseSettings.collectAsStateWithLifecycle(initialValue = true)
+    val qsInheritBaseSettings by store.qsInheritBaseSettings.collectAsStateWithLifecycle(
+        initialValue = true
+    )
     val qsCopyTargetGame by store.qsCopyTargetGame.collectAsStateWithLifecycle(initialValue = 1)
     val qsCopyToClipboard by store.qsCopyToClipboard.collectAsStateWithLifecycle(initialValue = false)
     val qsShouldAutoJump by store.qsShouldAutoJump.collectAsStateWithLifecycle(initialValue = false)
@@ -83,7 +85,9 @@ fun PreferenceRootScope.SettingsQSTileGroup() {
     }
     PreferenceDivider()
     if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
-        PreferenceButton(onClick = { model.requestAddTile(context) }, title = { Text(text = "添加到控制中心...") })
+        PreferenceButton(
+            onClick = { model.requestAddTile(context) },
+            title = { Text(text = "添加到控制中心...") })
     } else {
         PreferenceInfo(title = { Text(text = "若要使用快捷设置，请在控制中心中添加“传分代理”") })
     }

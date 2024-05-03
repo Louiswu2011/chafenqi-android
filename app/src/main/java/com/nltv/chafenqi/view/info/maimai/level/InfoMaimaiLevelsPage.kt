@@ -71,7 +71,9 @@ fun InfoMaimaiLevelsPage(navController: NavController) {
     val uiState by model.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val store = SettingsStore(context)
-    val maiDefaultLevelIndex by store.infoLevelsMaimaiDefaultLevel.collectAsStateWithLifecycle(initialValue = 18)
+    val maiDefaultLevelIndex by store.infoLevelsMaimaiDefaultLevel.collectAsStateWithLifecycle(
+        initialValue = 18
+    )
 
     LaunchedEffect(Unit) {
         if (!model.isLoaded) {
@@ -105,7 +107,7 @@ fun InfoMaimaiLevelsPage(navController: NavController) {
         Column(
             Modifier.padding(paddingValues)
         ) {
-            Row (
+            Row(
                 Modifier
                     .padding(SCREEN_PADDING)
                     .fillMaxWidth(),
@@ -116,7 +118,10 @@ fun InfoMaimaiLevelsPage(navController: NavController) {
                     onClick = { model.decreaseLevel() },
                     enabled = model.currentPosition > 0
                 ) {
-                    Icon(imageVector = Icons.Default.HorizontalRule, contentDescription = "降低等级")
+                    Icon(
+                        imageVector = Icons.Default.HorizontalRule,
+                        contentDescription = "降低等级"
+                    )
                 }
                 Text(
                     text = MAIMAI_LEVEL_STRINGS[model.currentPosition],
@@ -148,7 +153,7 @@ fun InfoMaimaiLevelsIndicator() {
 
     BoxWithConstraints {
         val mWidth = maxWidth
-        Row (
+        Row(
             Modifier
                 .padding(SCREEN_PADDING)
                 .fillMaxWidth()
@@ -191,8 +196,8 @@ fun InfoMaimaiLevelsIndicator() {
 fun InfoMaimaiLevelsLegends() {
     val model: InfoMaimaiLevelsViewModel = viewModel()
     val uiState by model.uiState.collectAsStateWithLifecycle()
-    
-    Row (
+
+    Row(
         Modifier
             .padding(SCREEN_PADDING)
             .fillMaxWidth(),
@@ -200,15 +205,23 @@ fun InfoMaimaiLevelsLegends() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         RATE_STRINGS_MAIMAI.forEachIndexed { index, string ->
-            InfoLevelLegend(color = RATE_COLORS_MAIMAI[index], description = string, count = uiState.rateSizes[index])
+            InfoLevelLegend(
+                color = RATE_COLORS_MAIMAI[index],
+                description = string,
+                count = uiState.rateSizes[index]
+            )
         }
-        InfoLevelLegend(color = Color.LightGray, description = "未游玩", count = uiState.rateSizes.last())
+        InfoLevelLegend(
+            color = Color.LightGray,
+            description = "未游玩",
+            count = uiState.rateSizes.last()
+        )
     }
 }
 
 @Composable
 fun InfoLevelLegend(color: Color, description: String, count: Int) {
-    Column (
+    Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(
@@ -234,23 +247,27 @@ fun InfoLevelLegend(color: Color, description: String, count: Int) {
 fun InfoMaimaiLevelList(navController: NavController) {
     val model: InfoMaimaiLevelsViewModel = viewModel()
     val uiState by model.uiState.collectAsStateWithLifecycle()
-    
+
     LazyColumn(
         Modifier
             .padding(SCREEN_PADDING)
     ) {
-        items (
+        items(
             count = uiState.levelEntries.size,
             key = { index -> uiState.levelEntries[index].title + index }
         ) { index ->
             val entry = uiState.levelEntries[index]
-            InfoMaimaiLevelEntry(music = entry.associatedMusicEntry, best = entry, navController = navController)
+            InfoMaimaiLevelEntry(
+                music = entry.associatedMusicEntry,
+                best = entry,
+                navController = navController
+            )
         }
         if (uiState.musicEntries.isNotEmpty()) {
             items(
                 count = uiState.musicEntries.size,
                 key = { index -> uiState.musicEntries[index].musicID }
-            ) {index ->
+            ) { index ->
                 val entry = uiState.musicEntries[index]
                 InfoMaimaiLevelEntry(music = entry, best = null, navController = navController)
             }
@@ -259,7 +276,11 @@ fun InfoMaimaiLevelList(navController: NavController) {
 }
 
 @Composable
-fun InfoMaimaiLevelEntry(music: MaimaiMusicEntry, best: MaimaiBestScoreEntry?, navController: NavController) {
+fun InfoMaimaiLevelEntry(
+    music: MaimaiMusicEntry,
+    best: MaimaiBestScoreEntry?,
+    navController: NavController
+) {
     val model: InfoMaimaiLevelsViewModel = viewModel()
 
     Row(
@@ -298,8 +319,9 @@ fun InfoMaimaiLevelEntry(music: MaimaiMusicEntry, best: MaimaiBestScoreEntry?, n
             ) {
                 val index = music.level.indexOf(MAIMAI_LEVEL_STRINGS[model.currentPosition])
                 val constant = if (index != -1) music.constants[index] else 0.0
-                Text(text = String.format("%.1f", constant) +
-                        if (best != null) "/${best.rating()}" else ""
+                Text(
+                    text = String.format("%.1f", constant) +
+                            if (best != null) "/${best.rating()}" else ""
                 )
                 if (best != null) {
                     RatingBadge(best.rateString)

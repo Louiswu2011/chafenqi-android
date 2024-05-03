@@ -2,7 +2,6 @@ package com.nltv.chafenqi.networking
 
 import android.util.Log
 import com.nltv.chafenqi.data.VersionData
-import com.nltv.chafenqi.storage.user.CFQUserOptions
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation

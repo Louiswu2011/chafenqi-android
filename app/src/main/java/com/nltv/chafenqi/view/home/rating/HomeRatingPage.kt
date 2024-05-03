@@ -381,7 +381,8 @@ fun HomeRatingChunithmEntry(entry: ChunithmRatingEntry, index: Int, navControlle
                                 "%.1f",
                                 entry.associatedMusicEntry.charts.constants[entry.levelIndex]
                             )
-                        }/${String.format("%.2f", entry.rating().cutForRating())}", fontWeight = FontWeight.Bold
+                        }/${String.format("%.2f", entry.rating().cutForRating())}",
+                        fontWeight = FontWeight.Bold
                     )
                 }
                 RatingBadge(rate = entry.score.toRateString())

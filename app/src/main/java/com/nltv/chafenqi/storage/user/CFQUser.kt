@@ -27,7 +27,6 @@ import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import com.onesignal.OneSignal
-import kotlinx.serialization.json.Json
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -138,13 +137,16 @@ object CFQUser {
                     mostRecent.filter { it.isNewRecord == 1 }
                         .maxByOrNull { it.timestamp }
                         ?.also { Aux.recommendList.add(MaimaiRecentLineup(it, "新纪录")) }
-                } catch (_: Exception) { }
+                } catch (_: Exception) {
+                }
 
                 MAIMAI_LEVEL_STRINGS.forEachIndexed { index, level ->
-                    val levelMusicEntries = CFQPersistentData.Maimai.musicList.filter { it.level.contains(level) }
+                    val levelMusicEntries =
+                        CFQPersistentData.Maimai.musicList.filter { it.level.contains(level) }
                     val playedBestEntries = best.filter { it.level == level }
                     val playedMusicEntries = playedBestEntries.map { it.associatedMusicEntry }
-                    val notPlayedMusicEntries = levelMusicEntries.filterNot { playedMusicEntries.contains(it) }
+                    val notPlayedMusicEntries =
+                        levelMusicEntries.filterNot { playedMusicEntries.contains(it) }
                     val entryPerRate = mutableListOf<Int>()
                     RATE_STRINGS_MAIMAI.forEach { rate ->
                         if (rate == "其他") {
@@ -155,14 +157,16 @@ object CFQUser {
                     }
                     entryPerRate.add(notPlayedMusicEntries.size)
 
-                    Aux.levelInfo.add(MaimaiLevelInfo(
-                        levelString = level,
-                        levelIndex = index,
-                        playedBestEntries = playedBestEntries,
-                        notPlayedMusicEntries = notPlayedMusicEntries,
-                        musicCount = levelMusicEntries.size,
-                        entryPerRate = entryPerRate
-                    ))
+                    Aux.levelInfo.add(
+                        MaimaiLevelInfo(
+                            levelString = level,
+                            levelIndex = index,
+                            playedBestEntries = playedBestEntries,
+                            notPlayedMusicEntries = notPlayedMusicEntries,
+                            musicCount = levelMusicEntries.size,
+                            entryPerRate = entryPerRate
+                        )
+                    )
                 }
 
                 Log.i(tag, "Loaded maimai auxiliary data.")
@@ -269,13 +273,18 @@ object CFQUser {
                     mostRecent.filter { it.isNewRecord == 1 }
                         .maxByOrNull { it.timestamp }
                         ?.also { Aux.recommendList.add(ChunithmRecentLineup(it, "新纪录")) }
-                } catch (_: Exception) { }
+                } catch (_: Exception) {
+                }
 
                 CHUNITHM_LEVEL_STRINGS.forEachIndexed { index, level ->
-                    val levelMusicEntries = CFQPersistentData.Chunithm.musicList.filter { it.charts.levels.contains(level) }
-                    val playedBestEntries = best.filter { it.associatedMusicEntry.charts.levels[it.levelIndex] == level }
+                    val levelMusicEntries = CFQPersistentData.Chunithm.musicList.filter {
+                        it.charts.levels.contains(level)
+                    }
+                    val playedBestEntries =
+                        best.filter { it.associatedMusicEntry.charts.levels[it.levelIndex] == level }
                     val playedMusicEntries = playedBestEntries.map { it.associatedMusicEntry }
-                    val notPlayedMusicEntries = levelMusicEntries.filterNot { playedMusicEntries.contains(it) }
+                    val notPlayedMusicEntries =
+                        levelMusicEntries.filterNot { playedMusicEntries.contains(it) }
                     val entryPerRate = mutableListOf<Int>()
                     RATE_STRINGS_CHUNITHM.forEach { rate ->
                         if (rate == "其他") {
@@ -286,14 +295,16 @@ object CFQUser {
                     }
                     entryPerRate.add(notPlayedMusicEntries.size)
 
-                    Aux.levelInfo.add(ChunithmLevelInfo(
-                        levelString = level,
-                        levelIndex = index,
-                        playedBestEntries = playedBestEntries,
-                        notPlayedMusicEntries = notPlayedMusicEntries,
-                        musicCount = levelMusicEntries.size,
-                        entryPerRate = entryPerRate
-                    ))
+                    Aux.levelInfo.add(
+                        ChunithmLevelInfo(
+                            levelString = level,
+                            levelIndex = index,
+                            playedBestEntries = playedBestEntries,
+                            notPlayedMusicEntries = notPlayedMusicEntries,
+                            musicCount = levelMusicEntries.size,
+                            entryPerRate = entryPerRate
+                        )
+                    )
                 }
 
                 Log.i(tag, "Loaded maimai auxiliary data.")

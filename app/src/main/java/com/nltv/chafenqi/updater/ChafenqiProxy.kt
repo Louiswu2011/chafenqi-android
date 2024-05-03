@@ -219,7 +219,7 @@ class ChafenqiProxy : VpnService() {
         // Native init
         jni_init()
         super.onCreate()
-        val channelId = createNotificationChannel(this,"chafenqi-proxy", "vpn-service")
+        val channelId = createNotificationChannel(this, "chafenqi-proxy", "vpn-service")
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
         val notification = notificationBuilder.setOngoing(true)
             .setSmallIcon(R.drawable.app_icon)
@@ -230,9 +230,15 @@ class ChafenqiProxy : VpnService() {
         startForeground(101, notification)
     }
 
-    private fun createNotificationChannel(context: Context, channelId: String, channelName: String): String{
-        val chan = NotificationChannel(channelId,
-            channelName, NotificationManager.IMPORTANCE_NONE)
+    private fun createNotificationChannel(
+        context: Context,
+        channelId: String,
+        channelName: String
+    ): String {
+        val chan = NotificationChannel(
+            channelId,
+            channelName, NotificationManager.IMPORTANCE_NONE
+        )
         chan.lightColor = Color.BLUE
         chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
         val service = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

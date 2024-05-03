@@ -18,7 +18,6 @@ import com.nltv.chafenqi.networking.CredentialsMismatchException
 import com.nltv.chafenqi.networking.UserNotFoundException
 import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.user.CFQUser
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
@@ -123,12 +122,15 @@ class LoginPageViewModel(
             is UserNotFoundException, is CredentialsMismatchException -> {
                 snackbarHostState.showSnackbar("用户名或密码错误")
             }
+
             is CFQServerSideException -> {
                 snackbarHostState.showSnackbar("服务器出错，请稍后再试")
             }
+
             is ConnectException -> {
                 snackbarHostState.showSnackbar("无法连接到服务器，请稍后再试")
             }
+
             else -> {
                 snackbarHostState.showSnackbar("未知错误: ${e.localizedMessage}")
             }

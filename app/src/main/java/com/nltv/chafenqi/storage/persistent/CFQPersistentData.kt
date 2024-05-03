@@ -39,8 +39,10 @@ object CFQPersistentData {
 
     suspend fun loadData(shouldValidate: Boolean = true, context: Context) {
         withContext(Dispatchers.IO) {
-            Maimai.musicList = CFQPersistentLoader.loadPersistentData(context, maiConfig, shouldValidate)
-            Chunithm.musicList = CFQPersistentLoader.loadPersistentData(context, chuConfig, shouldValidate)
+            Maimai.musicList =
+                CFQPersistentLoader.loadPersistentData(context, maiConfig, shouldValidate)
+            Chunithm.musicList =
+                CFQPersistentLoader.loadPersistentData(context, chuConfig, shouldValidate)
 
             context.settingsStore.edit {
                 it[maiConfig.cacheKey] = Json.encodeToString(Maimai.musicList)

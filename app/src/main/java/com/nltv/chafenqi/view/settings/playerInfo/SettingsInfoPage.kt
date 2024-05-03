@@ -23,10 +23,10 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsInfoPage(navController: NavController) {
-    Scaffold (
+    Scaffold(
         topBar = { SettingsTopBar(titleText = "玩家信息", navController = navController) }
     ) {
-        PreferenceScreen (
+        PreferenceScreen(
             modifier = Modifier.padding(it),
             settings = PreferenceSettingsDefaults.settings(),
             scrollable = true
@@ -41,8 +41,12 @@ fun PreferenceRootScope.SettingsInfoLevelsGroup() {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val store = SettingsStore(context)
-    val chuDefaultLevelIndex by store.infoLevelsChunithmDefaultLevel.collectAsStateWithLifecycle(initialValue = 18)
-    val maiDefaultLevelIndex by store.infoLevelsMaimaiDefaultLevel.collectAsStateWithLifecycle(initialValue = 18)
+    val chuDefaultLevelIndex by store.infoLevelsChunithmDefaultLevel.collectAsStateWithLifecycle(
+        initialValue = 18
+    )
+    val maiDefaultLevelIndex by store.infoLevelsMaimaiDefaultLevel.collectAsStateWithLifecycle(
+        initialValue = 18
+    )
 
     // Log.i("Settings", "Default level indexes: $chuDefaultLevelIndex $maiDefaultLevelIndex")
     PreferenceSectionHeader(title = { Text(text = "歌曲完成度") })
@@ -56,7 +60,13 @@ fun PreferenceRootScope.SettingsInfoLevelsGroup() {
     )
     PreferenceList(
         value = chuDefaultLevelIndex,
-        onValueChange = { newValue -> scope.launch { store.setInfoLevelsChunithmDefaultLevel(newValue) } },
+        onValueChange = { newValue ->
+            scope.launch {
+                store.setInfoLevelsChunithmDefaultLevel(
+                    newValue
+                )
+            }
+        },
         items = (0..22).toList(),
         itemTextProvider = { CHUNITHM_LEVEL_STRINGS[it] },
         title = { Text(text = "中二节奏默认等级") },

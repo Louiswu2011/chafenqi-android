@@ -74,7 +74,9 @@ fun InfoChunithmLevelsPage(navController: NavController) {
     val uiState by model.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val store = SettingsStore(context)
-    val chuDefaultLevelIndex by store.infoLevelsChunithmDefaultLevel.collectAsStateWithLifecycle(initialValue = 18)
+    val chuDefaultLevelIndex by store.infoLevelsChunithmDefaultLevel.collectAsStateWithLifecycle(
+        initialValue = 18
+    )
 
     LaunchedEffect(Unit) {
         if (!model.isLoaded) {
@@ -108,7 +110,7 @@ fun InfoChunithmLevelsPage(navController: NavController) {
         Column(
             Modifier.padding(paddingValues)
         ) {
-            Row (
+            Row(
                 Modifier
                     .padding(SCREEN_PADDING)
                     .fillMaxWidth(),
@@ -119,7 +121,10 @@ fun InfoChunithmLevelsPage(navController: NavController) {
                     onClick = { model.decreaseLevel() },
                     enabled = model.currentPosition > 0
                 ) {
-                    Icon(imageVector = Icons.Default.HorizontalRule, contentDescription = "降低等级")
+                    Icon(
+                        imageVector = Icons.Default.HorizontalRule,
+                        contentDescription = "降低等级"
+                    )
                 }
                 Text(
                     text = CHUNITHM_LEVEL_STRINGS[model.currentPosition],
@@ -151,7 +156,7 @@ fun InfoChunithmLevelsIndicator() {
 
     BoxWithConstraints {
         val mWidth = maxWidth
-        Row (
+        Row(
             Modifier
                 .padding(SCREEN_PADDING)
                 .fillMaxWidth()
@@ -195,7 +200,7 @@ fun InfoChunithmLevelsLegends() {
     val model: InfoChunithmLevelsViewModel = viewModel()
     val uiState by model.uiState.collectAsStateWithLifecycle()
 
-    Row (
+    Row(
         Modifier
             .padding(SCREEN_PADDING)
             .fillMaxWidth(),
@@ -203,9 +208,17 @@ fun InfoChunithmLevelsLegends() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         RATE_STRINGS_CHUNITHM.forEachIndexed { index, string ->
-            InfoLevelLegend(color = RATE_COLORS_MAIMAI[index], description = string, count = uiState.rateSizes[index])
+            InfoLevelLegend(
+                color = RATE_COLORS_MAIMAI[index],
+                description = string,
+                count = uiState.rateSizes[index]
+            )
         }
-        InfoLevelLegend(color = Color.LightGray, description = "未游玩", count = uiState.rateSizes.last())
+        InfoLevelLegend(
+            color = Color.LightGray,
+            description = "未游玩",
+            count = uiState.rateSizes.last()
+        )
     }
 }
 
@@ -218,18 +231,22 @@ fun InfoChunithmLevelList(navController: NavController) {
         Modifier
             .padding(SCREEN_PADDING)
     ) {
-        items (
+        items(
             count = uiState.levelEntries.size,
             key = { index -> uiState.levelEntries[index].title + index }
         ) { index ->
             val entry = uiState.levelEntries[index]
-            InfoChunithmLevelEntry(music = entry.associatedMusicEntry, best = entry, navController = navController)
+            InfoChunithmLevelEntry(
+                music = entry.associatedMusicEntry,
+                best = entry,
+                navController = navController
+            )
         }
         if (uiState.musicEntries.isNotEmpty()) {
             items(
                 count = uiState.musicEntries.size,
                 key = { index -> uiState.musicEntries[index].musicID }
-            ) {index ->
+            ) { index ->
                 val entry = uiState.musicEntries[index]
                 InfoChunithmLevelEntry(music = entry, best = null, navController = navController)
             }
@@ -238,7 +255,11 @@ fun InfoChunithmLevelList(navController: NavController) {
 }
 
 @Composable
-fun InfoChunithmLevelEntry(music: ChunithmMusicEntry, best: ChunithmBestScoreEntry?, navController: NavController) {
+fun InfoChunithmLevelEntry(
+    music: ChunithmMusicEntry,
+    best: ChunithmBestScoreEntry?,
+    navController: NavController
+) {
     val model: InfoChunithmLevelsViewModel = viewModel()
 
     Row(
@@ -275,7 +296,8 @@ fun InfoChunithmLevelEntry(music: ChunithmMusicEntry, best: ChunithmBestScoreEnt
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                val index = music.charts.levels.indexOf(CHUNITHM_LEVEL_STRINGS[model.currentPosition])
+                val index =
+                    music.charts.levels.indexOf(CHUNITHM_LEVEL_STRINGS[model.currentPosition])
                 val constant = if (index != -1) music.charts.constants[index] else 0.0
                 Text(
                     text = String.format("%.1f", constant) +

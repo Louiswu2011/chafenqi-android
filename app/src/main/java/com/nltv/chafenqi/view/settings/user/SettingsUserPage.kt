@@ -62,11 +62,11 @@ fun SettingsUserPage(navController: NavController) {
         }
     }
 
-    Scaffold (
+    Scaffold(
         topBar = { SettingsTopBar(titleText = "用户", navController = navController) },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) {
-        PreferenceScreen (
+        PreferenceScreen(
             modifier = Modifier.padding(it),
             settings = PreferenceSettingsDefaults.settings(),
             scrollable = true

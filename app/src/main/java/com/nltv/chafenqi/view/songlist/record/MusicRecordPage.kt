@@ -217,7 +217,7 @@ fun MusicRecordEntry(
             .then(modifier)
             .fillMaxWidth()
             .height(64.dp)
-            .clickable (enabled = navController != null) {
+            .clickable(enabled = navController != null) {
                 if (navController == null) return@clickable
                 if (maiRecentEntry != null) {
                     navigateToRecentEntry(maiRecentEntry, navController)

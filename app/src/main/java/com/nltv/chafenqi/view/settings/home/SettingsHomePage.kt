@@ -25,10 +25,10 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsHomePage(navController: NavController) {
-    Scaffold (
+    Scaffold(
         topBar = { SettingsTopBar(titleText = "主页", navController = navController) }
     ) {
-        PreferenceScreen (
+        PreferenceScreen(
             modifier = Modifier.padding(it),
             settings = PreferenceSettingsDefaults.settings(),
             scrollable = true

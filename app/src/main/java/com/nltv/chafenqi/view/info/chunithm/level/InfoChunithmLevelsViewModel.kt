@@ -21,7 +21,7 @@ data class InfoChunithmLevelUiState(
     val entrySize: Int = 0
 )
 
-class InfoChunithmLevelsViewModel: ViewModel() {
+class InfoChunithmLevelsViewModel : ViewModel() {
     private val levelInfo = CFQUser.chunithm.aux.levelInfo
 
     private val _uiState = MutableStateFlow(InfoChunithmLevelUiState())

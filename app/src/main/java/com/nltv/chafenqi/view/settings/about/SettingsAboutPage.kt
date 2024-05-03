@@ -44,11 +44,11 @@ fun SettingsAboutPage(navController: NavController) {
         SnackbarHostState()
     }
 
-    Scaffold (
+    Scaffold(
         topBar = { SettingsTopBar(titleText = "关于", navController = navController) },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) {
-        PreferenceScreen (
+        PreferenceScreen(
             modifier = Modifier.padding(it),
             settings = PreferenceSettingsDefaults.settings(),
             scrollable = true
