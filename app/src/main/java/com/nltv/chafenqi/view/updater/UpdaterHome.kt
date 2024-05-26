@@ -18,8 +18,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -66,6 +68,20 @@ fun UpdaterHomePage(navController: NavController) {
     }
 
     LaunchedEffect(Unit) {
+        if (!model.checkFishTokenState()) {
+            when (snackbarHostState.showSnackbar(
+                message = "水鱼网Token已过期，请重新进行登录。",
+                actionLabel = "前往",
+                withDismissAction = true,
+                duration = SnackbarDuration.Indefinite
+            )) {
+                SnackbarResult.ActionPerformed -> {
+                    navController.navigate(HomeNavItem.Home.route + "/settings/user/bind/fish")
+                }
+                else -> {}
+            }
+        }
+
         while (true) {
             // Log.i("Updater", "Fetching stats...")
             model.updateServerStat()

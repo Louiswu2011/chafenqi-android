@@ -23,6 +23,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 import com.nltv.chafenqi.networking.CFQServer
+import com.nltv.chafenqi.networking.FishServer
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.updater.ChafenqiProxy
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -231,6 +232,11 @@ class UpdaterViewModel : ViewModel() {
             Log.e("Updater", "Failed to trigger quick upload, error: $e")
             return false
         }
+    }
+
+    suspend fun checkFishTokenState(): Boolean {
+        if (CFQUser.fishToken.isEmpty()) return true
+        return FishServer.checkTokenValidity(CFQUser.fishToken)
     }
 
     // Returns remote setting
