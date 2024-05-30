@@ -3,9 +3,9 @@ package com.nltv.chafenqi.view.settings.advanced
 import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.CloudSync
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Token
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -119,7 +119,7 @@ fun PreferenceRootScope.SettingsAdvancedGroup(snackbarHostState: SnackbarHostSta
     PreferenceButton(
         onClick = { model.showReloadListAlert = true },
         title = { Text(text = "刷新歌曲列表") },
-        icon = { Icon(imageVector = Icons.Default.List, contentDescription = "刷新歌曲列表") }
+        icon = { Icon(imageVector = Icons.AutoMirrored.Filled.List, contentDescription = "刷新歌曲列表") }
     )
     PreferenceButton(
         onClick = {

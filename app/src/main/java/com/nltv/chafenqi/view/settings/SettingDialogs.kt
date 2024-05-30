@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
@@ -28,7 +28,7 @@ import com.nltv.chafenqi.SCREEN_PADDING
 fun LogoutAlertDialog(onDismissRequest: () -> Unit, onConfirmation: () -> Unit) {
     AlertDialog(
         icon = {
-            Icon(imageVector = Icons.Default.Logout, contentDescription = "登出")
+            Icon(imageVector = Icons.AutoMirrored.Filled.Logout, contentDescription = "登出")
         },
         title = {
             Text(text = "确定要登出吗？")

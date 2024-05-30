@@ -70,9 +70,7 @@ data class HomePageUiState(
     val indicatorHeights: MutableList<Dp> = mutableListOf(),
 )
 
-class HomePageViewModel(
-
-) : ViewModel() {
+class HomePageViewModel: ViewModel() {
     private val tag = "HomePageViewModel"
     val user = CFQUser
 

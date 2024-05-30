@@ -125,8 +125,8 @@ fun AppUpdaterDownloadDialog(snackbarHostState: SnackbarHostState, onDismissRequ
                     .padding(SCREEN_PADDING * 2)
             ) {
                 LinearProgressIndicator(
-                    progress = progress,
-                    modifier = Modifier.fillMaxWidth()
+                    progress = { progress },
+                    modifier = Modifier.fillMaxWidth(),
                 )
                 Spacer(modifier = Modifier.padding(top = SCREEN_PADDING))
                 Row(

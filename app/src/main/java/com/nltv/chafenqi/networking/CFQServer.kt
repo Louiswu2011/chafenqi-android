@@ -112,7 +112,7 @@ class CFQServer {
             return header ?: ""
         }
 
-        suspend fun authCheckUsername(username: String): Boolean {
+        private suspend fun authCheckUsername(username: String): Boolean {
             Log.i("CFQServer", "Checking username $username")
             val usernameCheckResponse = fetchFromServer(
                 "POST",

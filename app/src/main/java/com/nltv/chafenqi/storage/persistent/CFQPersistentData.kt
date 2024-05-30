@@ -18,12 +18,12 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 object CFQPersistentData {
-    val maiConfig = CFQPersistentLoaderConfig(
+    private val maiConfig = CFQPersistentLoaderConfig(
         name = "Maimai",
         cacheKey = stringPreferencesKey("maimaiMusicList"),
         fetcher = { CFQServer.apiMaimaiMusicData() }
     )
-    val chuConfig = CFQPersistentLoaderConfig(
+    private val chuConfig = CFQPersistentLoaderConfig(
         name = "Chunithm",
         cacheKey = stringPreferencesKey("chunithmMusicList"),
         fetcher = { CFQServer.apiChuithmMusicData() }

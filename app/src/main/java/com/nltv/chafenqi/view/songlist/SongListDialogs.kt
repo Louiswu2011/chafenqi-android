@@ -16,8 +16,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AlertDialogDefaults
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -55,7 +55,7 @@ fun SongListLevelFilterDialog() {
     val gridState = rememberLazyGridState()
 
     if (model.showFilterLevelDialog) {
-        AlertDialog(onDismissRequest = { model.showFilterLevelDialog = false }) {
+        BasicAlertDialog(onDismissRequest = { model.showFilterLevelDialog = false }) {
             Surface(
                 shape = AlertDialogDefaults.shape,
                 color = AlertDialogDefaults.containerColor,
@@ -145,7 +145,7 @@ fun SongListGenreFilterDialog() {
     val listState = rememberLazyListState()
 
     if (model.showFilterGenreDialog) {
-        AlertDialog(onDismissRequest = { model.showFilterGenreDialog = false }) {
+        BasicAlertDialog(onDismissRequest = { model.showFilterGenreDialog = false }) {
             Surface(
                 shape = AlertDialogDefaults.shape,
                 color = AlertDialogDefaults.containerColor,
@@ -235,7 +235,7 @@ fun SongListVersionFilterDialog() {
     val listState = rememberLazyListState()
 
     if (model.showFilterVersionDialog) {
-        AlertDialog(onDismissRequest = { model.showFilterVersionDialog = false }) {
+        BasicAlertDialog(onDismissRequest = { model.showFilterVersionDialog = false }) {
             Surface(
                 shape = AlertDialogDefaults.shape,
                 color = AlertDialogDefaults.containerColor,
@@ -332,7 +332,7 @@ fun SongListConstantFilterDialog() {
     }
 
     if (model.showFilterConstantDialog) {
-        AlertDialog(onDismissRequest = { model.showFilterConstantDialog = false }) {
+        BasicAlertDialog(onDismissRequest = { model.showFilterConstantDialog = false }) {
             Surface(
                 shape = AlertDialogDefaults.shape,
                 color = AlertDialogDefaults.containerColor,

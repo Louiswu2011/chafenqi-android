@@ -7,9 +7,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Help
+import androidx.compose.material.icons.automirrored.filled.Help
+import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.Link
-import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material.icons.filled.QrCode
 import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -102,7 +102,7 @@ fun UpdaterHomePage(navController: NavController) {
                 ),
                 actions = {
                     IconButton(onClick = { navController.navigate(HomeNavItem.Uploader.route + "/help") }) {
-                        Icon(imageVector = Icons.Default.Help, contentDescription = "传分帮助")
+                        Icon(imageVector = Icons.AutoMirrored.Filled.Help, contentDescription = "传分帮助")
                     }
                 }
             )
@@ -235,7 +235,7 @@ fun PreferenceRootScope.UpdaterWechatActions(snackbarHostState: SnackbarHostStat
     PreferenceButton(
         onClick = { model.openWeChat(context, uriHandler, snackbarHostState) },
         title = { Text(text = "跳转到微信") },
-        icon = { Icon(imageVector = Icons.Default.OpenInNew, contentDescription = "跳转到微信") }
+        icon = { Icon(imageVector = Icons.AutoMirrored.Filled.OpenInNew, contentDescription = "跳转到微信") }
     )
 }
 

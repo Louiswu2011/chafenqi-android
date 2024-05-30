@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -46,7 +46,7 @@ fun InfoChunithmCharacterPage(navController: NavController) {
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "返回上一级"
                         )
                     }
@@ -99,7 +99,10 @@ fun ChunithmCharacterListEntry(entry: ChunithmCharacterEntry) {
                 )
                 Text(text = "Lv ${entry.rank.uppercase()}")
             }
-            LinearProgressIndicator(entry.exp.toFloat(), Modifier.fillMaxWidth())
+            LinearProgressIndicator(
+                progress = { entry.exp.toFloat() },
+                modifier = Modifier.fillMaxWidth(),
+            )
         }
     }
 }

@@ -50,8 +50,8 @@ class MusicRecordPageViewModel : ViewModel() {
                 val entries = chuRecentEntries.filter {
                     it.idx == chuMusic.musicID.toString() && it.levelIndex == levelIndex
                 }
-                entries.reversed().forEachIndexed { index, entry ->
-                    map[index] = entry.timestamp.toMonthDayString()
+                entries.reversed().forEachIndexed { idx, entry ->
+                    map[idx] = entry.timestamp.toMonthDayString()
                 }
                 _uiState.update { currentValue ->
                     currentValue.copy(
@@ -60,7 +60,7 @@ class MusicRecordPageViewModel : ViewModel() {
                     )
                 }
                 viewModelScope.launch {
-                    chuEntryProvider.setEntriesSuspending(
+                    val result = chuEntryProvider.setEntriesSuspending(
                         entries.reversed().mapIndexed { index, entry ->
                             entryOf(index, entry.score)
                         })
@@ -73,8 +73,8 @@ class MusicRecordPageViewModel : ViewModel() {
                 val entries = maiRecentEntries.filter {
                     it.associatedMusicEntry == maiMusic && it.levelIndex == levelIndex
                 }
-                entries.reversed().forEachIndexed { index, entry ->
-                    map[index] = entry.timestamp.toMonthDayString()
+                entries.reversed().forEachIndexed { idx, entry ->
+                    map[idx] = entry.timestamp.toMonthDayString()
                 }
                 _uiState.update { currentValue ->
                     currentValue.copy(
@@ -83,7 +83,7 @@ class MusicRecordPageViewModel : ViewModel() {
                     )
                 }
                 viewModelScope.launch {
-                    maiEntryProvider.setEntriesSuspending(
+                    val result = maiEntryProvider.setEntriesSuspending(
                         entries.reversed().mapIndexed { index, entry ->
                             entryOf(index, entry.achievements)
                         })

@@ -56,8 +56,7 @@ import com.nltv.chafenqi.view.module.AppUpdaterDialog
 import com.nltv.chafenqi.view.module.AppUpdaterViewModel
 
 @OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class,
-    ExperimentalLayoutApi::class
+    ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class
 )
 @Composable
 fun HomePage(navController: NavController) {

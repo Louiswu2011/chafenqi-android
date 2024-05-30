@@ -3,8 +3,8 @@ package com.nltv.chafenqi.view.settings.user
 import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.CardGiftcard
-import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ScubaDiving
 import androidx.compose.material.icons.filled.ZoomIn
@@ -128,7 +128,7 @@ fun PreferenceRootScope.SettingsUserGroup(navController: NavController) {
         title = { Text("登出", color = MaterialTheme.colorScheme.error) },
         icon = {
             Icon(
-                imageVector = Icons.Default.Logout,
+                imageVector = Icons.AutoMirrored.Filled.Logout,
                 contentDescription = "登出",
                 tint = MaterialTheme.colorScheme.error
             )

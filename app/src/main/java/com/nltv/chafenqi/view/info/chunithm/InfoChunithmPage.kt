@@ -14,7 +14,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AirplaneTicket
+import androidx.compose.material.icons.automirrored.filled.AirplaneTicket
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.PersonPin
@@ -99,8 +99,8 @@ fun InfoChunithmLeader() {
                 Text(text = model.currentCollection.charRank, fontWeight = FontWeight.Bold)
             }
             LinearProgressIndicator(
-                progress = model.currentCollection.charExp.toFloat(),
-                modifier = Modifier.fillMaxWidth()
+                progress = { model.currentCollection.charExp.toFloat() },
+                modifier = Modifier.fillMaxWidth(),
             )
         }
     }
@@ -265,7 +265,7 @@ fun InfoChunithmDetailButtons(navController: NavController) {
             horizontalArrangement = Arrangement.spacedBy(SCREEN_PADDING)
         ) {
             InfoChunithmNavigationButton(
-                icon = Icons.Default.AirplaneTicket,
+                icon = Icons.AutoMirrored.Filled.AirplaneTicket,
                 iconDescription = "功能票一览按钮",
                 text = "功能票一览",
                 navController = navController,

@@ -4,7 +4,7 @@ import android.Manifest
 import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Update
@@ -105,7 +105,7 @@ fun PreferenceRootScope.SettingsAboutGroup(
         },
         title = { Text(text = "加入QQ群") },
         subtitle = { Text(text = "提供反馈或交流") },
-        icon = { Icon(imageVector = Icons.Default.Chat, contentDescription = "加入QQ群") }
+        icon = { Icon(imageVector = Icons.AutoMirrored.Filled.Chat, contentDescription = "加入QQ群") }
     )
     PreferenceButton(
         onClick = {

@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -27,7 +27,7 @@ import coil.compose.AsyncImage
 import com.nltv.chafenqi.SCREEN_PADDING
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiNameplateEntry
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InfoMaimaiNameplatePage(navController: NavController) {
     val model: InfoMaimaiPageViewModel = viewModel()
@@ -44,7 +44,7 @@ fun InfoMaimaiNameplatePage(navController: NavController) {
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "返回上一级"
                         )
                     }

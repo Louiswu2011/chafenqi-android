@@ -21,15 +21,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.CardGiftcard
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -84,7 +84,7 @@ fun PremiumRedeemPage(navController: NavController) {
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "返回上一级"
                         )
                     }
@@ -101,7 +101,7 @@ fun PremiumRedeemPage(navController: NavController) {
                 .fillMaxHeight()
         ) {
             PremiumPerksPage(Modifier.weight(0.7f))
-            Divider()
+            HorizontalDivider()
             Column(
                 Modifier
                     .fillMaxWidth()
@@ -169,7 +169,6 @@ fun PremiumPerksPage(modifier: Modifier) {
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PremiumRedeemInputField(navController: NavController, snackbarHostState: SnackbarHostState) {
     val model: PremiumRedeemPageViewModel = viewModel()
@@ -275,7 +274,7 @@ fun PremiumRedeemInfo() {
     ) {
         TextButton(onClick = { model.openPremiumPurchaseWebpage(uriHandler) }) {
             Icon(
-                imageVector = Icons.Default.OpenInNew,
+                imageVector = Icons.AutoMirrored.Filled.OpenInNew,
                 contentDescription = "获取兑换码",
                 Modifier.size(ButtonDefaults.IconSize)
             )

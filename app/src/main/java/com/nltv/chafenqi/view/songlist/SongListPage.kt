@@ -289,7 +289,6 @@ fun SongListSearchBar(navController: NavController) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SongListFilterChips() {
     val scrollState = rememberScrollState()

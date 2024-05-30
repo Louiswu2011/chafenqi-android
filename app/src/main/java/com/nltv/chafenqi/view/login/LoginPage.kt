@@ -187,7 +187,6 @@ fun AppIconWithFrame() {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginField(snackbarHostState: SnackbarHostState) {
     val model: LoginPageViewModel = viewModel()

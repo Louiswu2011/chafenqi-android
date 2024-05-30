@@ -2,12 +2,12 @@ package com.nltv.chafenqi.view.premium
 
 import android.net.Uri
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ShowChart
 import androidx.compose.material.icons.filled.DashboardCustomize
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PersonSearch
-import androidx.compose.material.icons.filled.ShowChart
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.UriHandler
 import androidx.lifecycle.ViewModel
@@ -44,7 +44,7 @@ val PREMIUM_PERKS = listOf(
     PremiumPerkData(
         title = "单曲历史成绩图表",
         text = "查询和比较单曲的历史游玩成绩和详细信息，并显示成绩趋势图",
-        icon = Icons.Default.ShowChart
+        icon = Icons.AutoMirrored.Filled.ShowChart
     ),
     PremiumPerkData(
         title = "出勤记录",

@@ -24,7 +24,7 @@ import com.nltv.chafenqi.R
 import java.io.IOException
 
 class ChafenqiProxy : VpnService() {
-    val PREF_RUNNING = "pref_running"
+    private val PREF_RUNNING = "pref_running"
     private val TAG = "ChafenqiProxy.Service"
     private val ACTION_START = "start"
     private val ACTION_STOP = "stop"
