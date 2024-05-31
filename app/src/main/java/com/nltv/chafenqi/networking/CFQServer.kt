@@ -2,6 +2,7 @@ package com.nltv.chafenqi.networking
 
 import android.util.Log
 import com.nltv.chafenqi.data.VersionData
+import com.nltv.chafenqi.util.AppAnnouncement
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -213,6 +214,25 @@ class CFQServer {
                 response.status.value == 200
             } catch (e: Exception) {
                 false
+            }
+        }
+
+        suspend fun apiFetchAnnouncement(): List<AppAnnouncement> {
+            Log.i("CFQServer", "Fetching app announcements.")
+            return try {
+                val response = fetchFromServer(
+                    "GET",
+                    "api/announcement",
+                    queries = hashMapOf(
+                        "device" to "Android"
+                    )
+                )
+                if (response.status.value != 200) { return emptyList() }
+
+                val json = response.bodyAsText()
+                return Json.decodeFromString<List<AppAnnouncement>>(json)
+            } catch (e: Exception) {
+                emptyList()
             }
         }
 
