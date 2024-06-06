@@ -33,6 +33,7 @@ import coil.memory.MemoryCache
 import com.nltv.chafenqi.ui.theme.ChafenqiTheme
 import com.nltv.chafenqi.view.home.HomeNavItem
 import com.nltv.chafenqi.view.home.HomePage
+import com.nltv.chafenqi.view.home.announcement.HomeAnnouncementPage
 import com.nltv.chafenqi.view.home.rating.HomeRatingPage
 import com.nltv.chafenqi.view.home.recent.HomeRecentPage
 import com.nltv.chafenqi.view.home.recent.RecentDetailPage
@@ -177,6 +178,11 @@ fun LogonPage(navController: NavHostController) {
             }*/
         ) {
             composable(HomeNavItem.Home.route) { HomePage(navController = navController) }
+
+            composable(HomeNavItem.Home.route + "/announcement") { HomeAnnouncementPage(
+                navController = navController
+            ) }
+
             composable(HomeNavItem.Home.route + "/recent") { HomeRecentPage(navController = navController) }
             composable(HomeNavItem.Home.route + "/recent/maimai/{index}") { navBackStackEntry ->
                 RecentDetailPage(

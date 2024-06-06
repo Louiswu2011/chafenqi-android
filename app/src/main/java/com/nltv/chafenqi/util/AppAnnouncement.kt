@@ -8,5 +8,5 @@ data class AppAnnouncement(
     val announceType: String,
     val title: String,
     val content: String,
-    val issueDate: String
+    val issueDate: Long
 )

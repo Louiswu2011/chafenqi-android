@@ -231,6 +231,7 @@ class CFQServer {
 
                 val json = response.bodyAsText()
                 return Json.decodeFromString<List<AppAnnouncement>>(json)
+                    .sortedByDescending { it.issueDate }
             } catch (e: Exception) {
                 emptyList()
             }

@@ -97,20 +97,31 @@ fun String.toChunithmTrophyType(): String {
     }
 }
 
-fun Int.toDateString(context: Context): String {
+fun Int.toDateString(context: Context) = this.toLong().toDateString(context)
+
+fun Long.toDateString(context: Context): String {
     val hourFormat = if (DateFormat.is24HourFormat(context)) "HH" else "hh"
     val indicatorFormat = if (hourFormat == "hh") "a" else ""
-    return Instant.ofEpochSecond(this.toLong())
+    return Instant.ofEpochSecond(this)
         .atZone(ZoneId.systemDefault())
         .toLocalDateTime()
         .format(DateTimeFormatter.ofPattern("yyyy-MM-dd $hourFormat:mm $indicatorFormat"))
 }
 
-fun Int.toMonthDayString(): String {
-    return Instant.ofEpochSecond(this.toLong())
+fun Int.toMonthDayString() = this.toLong().toMonthDayString()
+
+fun Long.toMonthDayString(): String {
+    return Instant.ofEpochSecond(this)
         .atZone(ZoneId.systemDefault())
         .toLocalDateTime()
         .format(DateTimeFormatter.ofPattern("MM-dd"))
+}
+
+fun Long.toYMDString(): String {
+    return Instant.ofEpochSecond(this)
+        .atZone(ZoneId.systemDefault())
+        .toLocalDateTime()
+        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 }
 
 fun Int.toChunithmCoverPath(): String =
