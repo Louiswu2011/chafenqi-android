@@ -354,6 +354,21 @@ class CFQServer {
             }
         }
 
+        suspend fun statMusicListVersion(gameType: Int): Int {
+            return try {
+                val response = fetchFromServer(
+                    "GET",
+                    "api/stats/songListVersion",
+                    queries = mapOf(
+                        "gameType" to gameType.toString()
+                    )
+                ).bodyAsText()
+                response.toInt()
+            } catch (e: Exception) {
+                Log.e("CFQServer", "Failed to get music list version, defaulting to 0.")
+            }
+        }
+
 
         private fun handleErrorCode(errorCode: String) {
             when (errorCode) {

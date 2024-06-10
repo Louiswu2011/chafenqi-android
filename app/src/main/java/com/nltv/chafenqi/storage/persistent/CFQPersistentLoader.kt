@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.SettingsStore.Companion.settingsStore
 import com.nltv.chafenqi.storage.songlist.MusicEntry
 import kotlinx.coroutines.flow.first
@@ -13,7 +15,9 @@ import kotlinx.serialization.json.Json
 data class CFQPersistentLoaderConfig(
     val name: String,
     val cacheKey: Preferences.Key<String>,
-    val fetcher: suspend () -> String
+    val versionKey: Preferences.Key<Int>,
+    val fetcher: suspend () -> String,
+    val gameType: Int
 )
 
 class CFQPersistentLoader {
@@ -46,10 +50,21 @@ class CFQPersistentLoader {
             if (!shouldValidate) return list
 
             return try {
+                // Compare local and remote music list version.
+                val localVersion = store.data.map { p -> p[config.versionKey] ?: 0 }.first()
+                val remoteVersion = CFQServer.statMusicListVersion(gameType = config.gameType)
+
+                if (localVersion >= remoteVersion) {
+                    Log.i(tag, "Local ${config.name} music list is up to date.")
+                    return list
+                }
+
+                // Update local music list version.
+                Log.i(tag, "Updating local music list data for ${config.name}.")
+                store.edit { p -> p[config.versionKey] = remoteVersion }
+
                 val remoteString = config.fetcher()
-                // Compare local and remote string, prioritize remote source.
-                if (musicListString != remoteString) Json.decodeFromString(remoteString)
-                    ?: emptyList() else list
+                Json.decodeFromString(remoteString) ?: list
             } catch (e: Exception) {
                 // Network error, return cache or empty list
                 Log.e(tag, "Error loading remote music list: $e")

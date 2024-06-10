@@ -3,6 +3,7 @@ package com.nltv.chafenqi.storage.persistent
 import android.content.Context
 import android.util.Log
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.nltv.chafenqi.extension.CHUNITHM_GENRE_STRINGS
 import com.nltv.chafenqi.extension.CHUNITHM_VERSION_STRINGS
@@ -21,12 +22,16 @@ object CFQPersistentData {
     private val maiConfig = CFQPersistentLoaderConfig(
         name = "Maimai",
         cacheKey = stringPreferencesKey("maimaiMusicList"),
-        fetcher = { CFQServer.apiMaimaiMusicData() }
+        versionKey = intPreferencesKey("maimaiMusicListVersion"),
+        fetcher = { CFQServer.apiMaimaiMusicData() },
+        gameType = 0
     )
     private val chuConfig = CFQPersistentLoaderConfig(
         name = "Chunithm",
         cacheKey = stringPreferencesKey("chunithmMusicList"),
-        fetcher = { CFQServer.apiChuithmMusicData() }
+        versionKey = intPreferencesKey("chunithmMusicListVersion"),
+        fetcher = { CFQServer.apiChuithmMusicData() },
+        gameType = 1
     )
 
     object Maimai {
