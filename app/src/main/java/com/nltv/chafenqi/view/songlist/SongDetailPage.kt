@@ -50,6 +50,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -285,6 +286,7 @@ fun ChunithmDifficultyCard(info: ChunithmDifficultyInfo, navController: NavContr
     val rotationState by animateFloatAsState(
         targetValue = if (isExpanded) 180f else 0f, label = "Icon expansion"
     )
+    val statState by model.statState.collectAsStateWithLifecycle()
 
     Card(
         Modifier
@@ -320,20 +322,42 @@ fun ChunithmDifficultyCard(info: ChunithmDifficultyInfo, navController: NavContr
                         imageVector = Icons.Default.ArrowDropDown,
                         contentDescription = "展开按钮图标",
                         modifier = Modifier
-                            .clickable { isExpanded = !isExpanded }
+                            .clickable {
+                                isExpanded = !isExpanded
+                                if (statState.stats.isEmpty()) {
+                                    model.requestMusicStat()
+                                }
+                            }
                             .rotate(rotationState)
                     )
                 }
             }
             AnimatedVisibility(visible = isExpanded) {
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .animateContentSize(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(text = "定数：${info.constant}")
-                    Text(text = "谱师：${info.charter}")
+                Column {
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .animateContentSize(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = "定数：${info.constant}")
+                        Text(text = "谱师：${info.charter}")
+
+                    }
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .animateContentSize(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        if (statState.stats.size > info.levelIndex) {
+                            val stat = statState.stats[info.levelIndex]
+
+                            Text(text = "总游玩人数：${stat.totalPlayed}")
+                            Text(text = "平均分数：${String.format("%.0f" ,stat.totalScore / stat.totalPlayed)}")
+                        }
+                    }
+
                 }
             }
         }

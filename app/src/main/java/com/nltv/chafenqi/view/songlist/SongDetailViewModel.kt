@@ -2,13 +2,21 @@ package com.nltv.chafenqi.view.songlist
 
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.nltv.chafenqi.data.ChunithmMusicStat
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
+import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmBestScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiBestScoreEntry
 import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import com.nltv.chafenqi.storage.user.CFQUser
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 val maimaiDifficultyTitles = listOf("Basic", "Advanced", "Expert", "Master", "Re:Master")
 val chunithmDifficultyTitles =
@@ -28,6 +36,10 @@ val chunithmDifficultyColors = listOf(
     Color(red = 171, green = 104, blue = 249),
     Color(red = 68, green = 63, blue = 63),
     Color.White
+)
+
+data class SongDetailChunithmStatState(
+    val stats: List<ChunithmMusicStat> = emptyList()
 )
 
 class SongDetailViewModel : ViewModel() {
@@ -54,6 +66,9 @@ class SongDetailViewModel : ViewModel() {
 
     val maiDiffInfos: MutableList<MaimaiDifficultyInfo> = mutableListOf()
     val chuDiffInfos: MutableList<ChunithmDifficultyInfo> = mutableListOf()
+
+    private val _state = MutableStateFlow(SongDetailChunithmStatState())
+    val statState: StateFlow<SongDetailChunithmStatState> = _state.asStateFlow()
 
     fun update(mode: Int, index: Int) {
         this.index = index
@@ -108,6 +123,21 @@ class SongDetailViewModel : ViewModel() {
             }
 
             difficultyColors = maimaiDifficultyColors
+        }
+    }
+
+    fun requestMusicStat() {
+        viewModelScope.launch {
+            val stats: MutableList<ChunithmMusicStat> = mutableListOf()
+            chuMusic = CFQPersistentData.Chunithm.musicList.getOrNull(index)
+            chuDiffInfos.forEach { chunithmDifficultyInfo ->
+                stats.add(CFQServer.apiChunithmMusicStat(chuMusic?.musicID ?: 3, chunithmDifficultyInfo.levelIndex))
+            }
+            _state.update { currentValue ->
+                currentValue.copy(
+                    stats = stats
+                )
+            }
         }
     }
 }

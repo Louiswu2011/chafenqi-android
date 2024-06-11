@@ -1,6 +1,7 @@
 package com.nltv.chafenqi.networking
 
 import android.util.Log
+import com.nltv.chafenqi.data.ChunithmMusicStat
 import com.nltv.chafenqi.data.VersionData
 import com.nltv.chafenqi.util.AppAnnouncement
 import io.ktor.client.HttpClient
@@ -366,6 +367,24 @@ class CFQServer {
                 response.toInt()
             } catch (e: Exception) {
                 Log.e("CFQServer", "Failed to get music list version, defaulting to 0.")
+            }
+        }
+
+        suspend fun apiChunithmMusicStat(musicId: Int, difficulty: Int): ChunithmMusicStat {
+            return try {
+                val response = fetchFromServer(
+                    "GET",
+                    "api/chunithm/stats",
+                    queries = mapOf(
+                        "index" to musicId.toString(),
+                        "diff" to difficulty.toString()
+                    ),
+                    shouldHandleErrorCode = false
+                )
+                Json.decodeFromString<ChunithmMusicStat>(response.bodyAsText())
+            } catch (e: Exception) {
+                Log.e("CFQServer", "Failed to fetch chunithm music stat for music ${musicId}, difficulty ${difficulty}.\n${e}")
+                ChunithmMusicStat()
             }
         }
 
