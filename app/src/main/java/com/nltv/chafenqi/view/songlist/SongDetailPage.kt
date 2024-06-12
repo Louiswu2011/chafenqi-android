@@ -4,12 +4,18 @@ import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -40,14 +46,23 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -55,6 +70,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.nltv.chafenqi.SCREEN_PADDING
+import com.nltv.chafenqi.data.ChunithmMusicStat
+import com.nltv.chafenqi.extension.RATE_COLORS_CHUNITHM
+import com.nltv.chafenqi.extension.RATE_STRINGS_CHUNITHM
 import com.nltv.chafenqi.view.home.HomeNavItem
 import kotlinx.coroutines.launch
 
@@ -337,29 +355,126 @@ fun ChunithmDifficultyCard(info: ChunithmDifficultyInfo, navController: NavContr
                     Row(
                         Modifier
                             .fillMaxWidth()
-                            .animateContentSize(),
+                            .animateContentSize()
+                            .padding(bottom = 10.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(text = "定数：${info.constant}")
                         Text(text = "谱师：${info.charter}")
-
                     }
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .animateContentSize(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        if (statState.stats.size > info.levelIndex) {
-                            val stat = statState.stats[info.levelIndex]
-
-                            Text(text = "总游玩人数：${stat.totalPlayed}")
-                            Text(text = "平均分数：${String.format("%.0f" ,stat.totalScore / stat.totalPlayed)}")
-                        }
+                    if (statState.stats.size > info.levelIndex) {
+                        val stat = statState.stats[info.levelIndex]
+                        ChunithmDifficultyStats(stat = stat)
                     }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ChunithmDifficultyStats(stat: ChunithmMusicStat) {
+    var lastValue = -90f
+
+    val splitValues = listOf(stat.ssspSplit, stat.sssSplit, stat.sspSplit, stat.ssSplit, stat.spSplit, stat.sSplit, stat.otherSplit)
+    val chartValues = splitValues
+        .map { (it * 360f / stat.totalPlayed) }
+
+    Column(
+        modifier = Modifier.height(230.dp)
+            .animateContentSize()
+    ) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(bottom = 10.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(text = "总游玩人数：${stat.totalPlayed}")
+            Text(text = "平均分数：${String.format("%.0f" ,stat.totalScore / stat.totalPlayed)}")
+        }
+
+        Row {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.5f)
+                    .fillMaxHeight()
+                    .padding(start = 10.dp),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Canvas(
+                    modifier = Modifier.size(140.dp)
+                ) {
+                    chartValues.forEachIndexed { index, value ->
+                        drawArc(
+                            color = RATE_COLORS_CHUNITHM[index],
+                            startAngle = lastValue,
+                            sweepAngle = value,
+                            useCenter = false,
+                            style = Stroke(35f, cap = StrokeCap.Butt)
+                        )
+
+                        lastValue += value
+                    }
+                }
+
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .padding(vertical = 10.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxHeight(),
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    splitValues.forEachIndexed { index, split ->
+                        Text(
+                            buildAnnotatedString {
+                                withStyle(SpanStyle(fontWeight = FontWeight.Bold ,color = RATE_COLORS_CHUNITHM[index])) {
+                                    append(RATE_STRINGS_CHUNITHM[index])
+                                }
+                                append("：")
+                                withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                                    append(split.toString())
+                                }
+                            }
+                        )
+                    }
+                }
+                Column(
+                    modifier = Modifier.fillMaxHeight(),
+                    horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(text = "拟合定数")
+                    Text(text = "拟合定数", fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.padding(vertical = 10.dp))
+                    Text(text = "最高分")
+                    Text(text = String.format("%.0f", stat.highestScore), fontWeight = FontWeight.Bold)
 
                 }
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ChunithmDifficultyStatsPreview() {
+    ChunithmDifficultyStats(stat = ChunithmMusicStat(
+        totalPlayed = 394,
+        totalScore = 1010000000.0,
+        ssspSplit = 130,
+        sssSplit = 79,
+        sspSplit = 45,
+        ssSplit = 32,
+        spSplit = 30,
+        sSplit = 47,
+        otherSplit = 31
+    ))
 }
