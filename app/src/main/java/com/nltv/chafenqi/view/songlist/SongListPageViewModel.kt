@@ -124,7 +124,8 @@ class SongListPageViewModel : ViewModel() {
         if (filterLevel && filterMaimaiLevelList.any { it }) {
             result = result.filter {
                 for (level in it.level) {
-                    if (filterMaimaiLevelList[level.toLevelIndex(1)]) {
+                    val levelIndex = level.toLevelIndex(1)
+                    if (levelIndex > 0 && filterMaimaiLevelList[level.toLevelIndex(1)]) {
                         return@filter true
                     }
                 }

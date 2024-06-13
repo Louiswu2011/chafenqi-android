@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -153,7 +154,7 @@ fun SongListGenreFilterDialog() {
             ) {
                 Column(
                     Modifier
-                        .fillMaxWidth()
+                        .fillMaxWidth(0.8f)
                         .padding(24.dp),
                     verticalArrangement = Arrangement.SpaceBetween,
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -256,7 +257,8 @@ fun SongListVersionFilterDialog() {
                     Spacer(modifier = Modifier.padding(vertical = 10.dp))
                     LazyColumn(
                         state = listState,
-                        userScrollEnabled = true
+                        userScrollEnabled = true,
+                        modifier = Modifier.fillMaxHeight(0.6f)
                     ) {
                         items(versionStrings) { version ->
                             Row(
