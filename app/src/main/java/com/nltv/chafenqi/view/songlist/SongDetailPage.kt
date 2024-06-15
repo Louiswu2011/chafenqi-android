@@ -25,7 +25,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Leaderboard
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -304,7 +307,6 @@ fun ChunithmDifficultyCard(info: ChunithmDifficultyInfo, navController: NavContr
     val rotationState by animateFloatAsState(
         targetValue = if (isExpanded) 180f else 0f, label = "Icon expansion"
     )
-    val statState by model.statState.collectAsStateWithLifecycle()
 
     Card(
         Modifier
@@ -342,9 +344,6 @@ fun ChunithmDifficultyCard(info: ChunithmDifficultyInfo, navController: NavContr
                         modifier = Modifier
                             .clickable {
                                 isExpanded = !isExpanded
-                                if (statState.stats.isEmpty()) {
-                                    model.requestMusicStat()
-                                }
                             }
                             .rotate(rotationState)
                     )
@@ -362,119 +361,22 @@ fun ChunithmDifficultyCard(info: ChunithmDifficultyInfo, navController: NavContr
                         Text(text = "定数：${info.constant}")
                         Text(text = "谱师：${info.charter}")
                     }
-                    if (statState.stats.size > info.levelIndex) {
-                        val stat = statState.stats[info.levelIndex]
-                        ChunithmDifficultyStats(stat = stat)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        TextButton(onClick = { navController.navigate(HomeNavItem.SongList.route + "/chunithm/stats/${model.index}/${info.levelIndex}") }) {
+                            Icon(
+                                imageVector = Icons.Default.Leaderboard,
+                                contentDescription = "leaderboard icon",
+                                Modifier.size(ButtonDefaults.IconSize)
+                            )
+                            Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+                            Text(text = "排行榜和统计信息")
+                        }
                     }
                 }
             }
         }
     }
-}
-
-@Composable
-fun ChunithmDifficultyStats(stat: ChunithmMusicStat) {
-    var lastValue = -90f
-
-    val splitValues = listOf(stat.ssspSplit, stat.sssSplit, stat.sspSplit, stat.ssSplit, stat.spSplit, stat.sSplit, stat.otherSplit)
-    val chartValues = splitValues
-        .map { (it * 360f / stat.totalPlayed) }
-
-    Column(
-        modifier = Modifier.height(230.dp)
-            .animateContentSize()
-    ) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(bottom = 10.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(text = "总游玩人数：${stat.totalPlayed}")
-            Text(text = "平均分数：${String.format("%.0f" ,stat.totalScore / stat.totalPlayed)}")
-        }
-
-        Row {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(0.5f)
-                    .fillMaxHeight()
-                    .padding(start = 10.dp),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                Canvas(
-                    modifier = Modifier.size(140.dp)
-                ) {
-                    chartValues.forEachIndexed { index, value ->
-                        drawArc(
-                            color = RATE_COLORS_CHUNITHM[index],
-                            startAngle = lastValue,
-                            sweepAngle = value,
-                            useCenter = false,
-                            style = Stroke(35f, cap = StrokeCap.Butt)
-                        )
-
-                        lastValue += value
-                    }
-                }
-
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-                    .padding(vertical = 10.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column(
-                    modifier = Modifier.fillMaxHeight(),
-                    verticalArrangement = Arrangement.SpaceBetween,
-                    horizontalAlignment = Alignment.Start
-                ) {
-                    splitValues.forEachIndexed { index, split ->
-                        Text(
-                            buildAnnotatedString {
-                                withStyle(SpanStyle(fontWeight = FontWeight.Bold ,color = RATE_COLORS_CHUNITHM[index])) {
-                                    append(RATE_STRINGS_CHUNITHM[index])
-                                }
-                                append("：")
-                                withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                                    append(split.toString())
-                                }
-                            }
-                        )
-                    }
-                }
-                Column(
-                    modifier = Modifier.fillMaxHeight(),
-                    horizontalAlignment = Alignment.End,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(text = "拟合定数")
-                    Text(text = "拟合定数", fontWeight = FontWeight.Bold)
-                    Spacer(modifier = Modifier.padding(vertical = 10.dp))
-                    Text(text = "最高分")
-                    Text(text = String.format("%.0f", stat.highestScore), fontWeight = FontWeight.Bold)
-
-                }
-            }
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ChunithmDifficultyStatsPreview() {
-    ChunithmDifficultyStats(stat = ChunithmMusicStat(
-        totalPlayed = 394,
-        totalScore = 1010000000.0,
-        ssspSplit = 130,
-        sssSplit = 79,
-        sspSplit = 45,
-        ssSplit = 32,
-        spSplit = 30,
-        sSplit = 47,
-        otherSplit = 31
-    ))
 }

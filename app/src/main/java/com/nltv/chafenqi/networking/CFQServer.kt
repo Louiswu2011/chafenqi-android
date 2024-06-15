@@ -1,6 +1,7 @@
 package com.nltv.chafenqi.networking
 
 import android.util.Log
+import com.nltv.chafenqi.data.ChunithmLeaderboard
 import com.nltv.chafenqi.data.ChunithmMusicStat
 import com.nltv.chafenqi.data.VersionData
 import com.nltv.chafenqi.util.AppAnnouncement
@@ -371,6 +372,7 @@ class CFQServer {
         }
 
         suspend fun apiChunithmMusicStat(musicId: Int, difficulty: Int): ChunithmMusicStat {
+            Log.i("CFQServer", "Fetching chunithm music stat for music $musicId, difficulty $difficulty")
             return try {
                 val response = fetchFromServer(
                     "GET",
@@ -385,6 +387,25 @@ class CFQServer {
             } catch (e: Exception) {
                 Log.e("CFQServer", "Failed to fetch chunithm music stat for music ${musicId}, difficulty ${difficulty}.\n${e}")
                 ChunithmMusicStat()
+            }
+        }
+
+        suspend fun apiChunithmLeaderboard(musicId: Int, difficulty: Int): ChunithmLeaderboard {
+            Log.i("CFQServer", "Fetching chunithm leaderboard for music $musicId, difficulty $difficulty")
+            return try {
+                val response = fetchFromServer(
+                    "GET",
+                    "api/chunithm/leaderboard",
+                    queries = mapOf(
+                        "index" to musicId.toString(),
+                        "diff" to difficulty.toString()
+                    ),
+                    shouldHandleErrorCode = false
+                )
+                Json.decodeFromString<ChunithmLeaderboard>(response.bodyAsText())
+            } catch (e: Exception) {
+                Log.e("CFQServer", "Failed to fetch chunithm leaderboard for music ${musicId}, difficulty ${difficulty}.\n${e}")
+                emptyList()
             }
         }
 

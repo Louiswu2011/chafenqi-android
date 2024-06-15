@@ -1,6 +1,7 @@
 package com.nltv.chafenqi
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -64,6 +65,7 @@ import com.nltv.chafenqi.view.settings.user.SettingsBindQQPage
 import com.nltv.chafenqi.view.settings.user.SettingsUserPage
 import com.nltv.chafenqi.view.songlist.SongDetailPage
 import com.nltv.chafenqi.view.songlist.SongListPage
+import com.nltv.chafenqi.view.songlist.stats.SongStatsPage
 import com.nltv.chafenqi.view.songlist.record.MusicRecordPage
 import com.nltv.chafenqi.view.updater.UpdaterHelpPage
 import com.nltv.chafenqi.view.updater.UpdaterHomePage
@@ -335,6 +337,14 @@ fun LogonPage(navController: NavHostController) {
                     mode = 0,
                     index = navBackStackEntry.arguments?.getString("index")?.toInt() ?: 0,
                     levelIndex = navBackStackEntry.arguments?.getString("levelIndex")?.toInt() ?: 0
+                )
+            }
+            composable(HomeNavItem.SongList.route + "/chunithm/stats/{index}/{levelIndex}") { navBackStackEntry ->
+                SongStatsPage(
+                    mode = 0,
+                    index = navBackStackEntry.arguments?.getString("index")?.toInt() ?: 0,
+                    difficulty = navBackStackEntry.arguments?.getString("levelIndex")?.toInt() ?: 0,
+                    navController = navController
                 )
             }
         }

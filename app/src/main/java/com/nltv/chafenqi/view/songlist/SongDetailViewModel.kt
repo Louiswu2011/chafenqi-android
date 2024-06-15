@@ -38,10 +38,6 @@ val chunithmDifficultyColors = listOf(
     Color.White
 )
 
-data class SongDetailChunithmStatState(
-    val stats: List<ChunithmMusicStat> = emptyList()
-)
-
 class SongDetailViewModel : ViewModel() {
     private val tag = this::class.java.canonicalName
 
@@ -66,9 +62,6 @@ class SongDetailViewModel : ViewModel() {
 
     val maiDiffInfos: MutableList<MaimaiDifficultyInfo> = mutableListOf()
     val chuDiffInfos: MutableList<ChunithmDifficultyInfo> = mutableListOf()
-
-    private val _state = MutableStateFlow(SongDetailChunithmStatState())
-    val statState: StateFlow<SongDetailChunithmStatState> = _state.asStateFlow()
 
     fun update(mode: Int, index: Int) {
         this.index = index
@@ -123,21 +116,6 @@ class SongDetailViewModel : ViewModel() {
             }
 
             difficultyColors = maimaiDifficultyColors
-        }
-    }
-
-    fun requestMusicStat() {
-        viewModelScope.launch {
-            val stats: MutableList<ChunithmMusicStat> = mutableListOf()
-            chuMusic = CFQPersistentData.Chunithm.musicList.getOrNull(index)
-            chuDiffInfos.forEach { chunithmDifficultyInfo ->
-                stats.add(CFQServer.apiChunithmMusicStat(chuMusic?.musicID ?: 3, chunithmDifficultyInfo.levelIndex))
-            }
-            _state.update { currentValue ->
-                currentValue.copy(
-                    stats = stats
-                )
-            }
         }
     }
 }
