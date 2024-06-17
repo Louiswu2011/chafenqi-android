@@ -43,9 +43,6 @@ class SongDetailViewModel : ViewModel() {
 
     val user = CFQUser
 
-    var maiScores: List<MaimaiBestScoreEntry> = listOf()
-    var chuScores: List<ChunithmBestScoreEntry> = listOf()
-
     var maiMusic: MaimaiMusicEntry? = null
     var chuMusic: ChunithmMusicEntry? = null
 

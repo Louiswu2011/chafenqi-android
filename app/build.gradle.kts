@@ -145,8 +145,8 @@ val composePreferences = "0.4.7"
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
-    implementation(platform("androidx.compose:compose-bom:2024.04.01"))
-    androidTestImplementation(platform("androidx.compose:compose-bom:2024.01.00"))
+    implementation(platform("androidx.compose:compose-bom:2024.06.00"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2024.06.00"))
 
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")

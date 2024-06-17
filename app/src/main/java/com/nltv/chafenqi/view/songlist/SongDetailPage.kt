@@ -264,33 +264,13 @@ fun MaimaiDifficultyCard(info: MaimaiDifficultyInfo, navController: NavControlle
                 Text(text = info.difficultyName)
                 Row {
                     Text(text = if (info.bestEntry == null) "暂未游玩" else info.bestScore)
-                    if (info.hasRecentEntry) {
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = "查看详情",
-                            modifier = Modifier.clickable {
-                                navController.navigate(HomeNavItem.SongList.route + "/maimai/${model.index}/${info.levelIndex}")
-                            }
-                        )
-                    }
                     Icon(
-                        imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = "展开按钮图标",
-                        modifier = Modifier
-                            .clickable { isExpanded = !isExpanded }
-                            .rotate(rotationState)
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "查看详情",
+                        modifier = Modifier.clickable {
+                            navController.navigate(HomeNavItem.SongList.route + "/maimai/stats/${model.index}/${info.levelIndex}")
+                        }
                     )
-                }
-            }
-            AnimatedVisibility(visible = isExpanded) {
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .animateContentSize(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(text = "定数：${info.constant}")
-                    Text(text = "谱师：${info.charter}")
                 }
             }
         }
@@ -329,52 +309,13 @@ fun ChunithmDifficultyCard(info: ChunithmDifficultyInfo, navController: NavContr
                 Text(text = info.difficultyName)
                 Row {
                     Text(text = if (info.bestEntry == null) "暂未游玩" else info.bestScore)
-                    if (info.hasRecentEntry) {
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = "查看详情",
-                            modifier = Modifier.clickable {
-                                navController.navigate(HomeNavItem.SongList.route + "/chunithm/${model.index}/${info.levelIndex}")
-                            }
-                        )
-                    }
                     Icon(
-                        imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = "展开按钮图标",
-                        modifier = Modifier
-                            .clickable {
-                                isExpanded = !isExpanded
-                            }
-                            .rotate(rotationState)
-                    )
-                }
-            }
-            AnimatedVisibility(visible = isExpanded) {
-                Column {
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .animateContentSize()
-                            .padding(bottom = 10.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(text = "定数：${info.constant}")
-                        Text(text = "谱师：${info.charter}")
-                    }
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        TextButton(onClick = { navController.navigate(HomeNavItem.SongList.route + "/chunithm/stats/${model.index}/${info.levelIndex}") }) {
-                            Icon(
-                                imageVector = Icons.Default.Leaderboard,
-                                contentDescription = "leaderboard icon",
-                                Modifier.size(ButtonDefaults.IconSize)
-                            )
-                            Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-                            Text(text = "排行榜和统计信息")
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "查看详情",
+                        modifier = Modifier.clickable {
+                            navController.navigate(HomeNavItem.SongList.route + "/chunithm/stats/${model.index}/${info.levelIndex}")
                         }
-                    }
+                    )
                 }
             }
         }

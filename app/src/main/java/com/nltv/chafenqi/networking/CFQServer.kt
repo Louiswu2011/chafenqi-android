@@ -3,6 +3,7 @@ package com.nltv.chafenqi.networking
 import android.util.Log
 import com.nltv.chafenqi.data.ChunithmLeaderboard
 import com.nltv.chafenqi.data.ChunithmMusicStat
+import com.nltv.chafenqi.data.MaimaiLeaderboard
 import com.nltv.chafenqi.data.VersionData
 import com.nltv.chafenqi.util.AppAnnouncement
 import io.ktor.client.HttpClient
@@ -387,6 +388,26 @@ class CFQServer {
             } catch (e: Exception) {
                 Log.e("CFQServer", "Failed to fetch chunithm music stat for music ${musicId}, difficulty ${difficulty}.\n${e}")
                 ChunithmMusicStat()
+            }
+        }
+
+        suspend fun apiMaimaiLeaderboard(musicId: Int, type: String, difficulty: Int): MaimaiLeaderboard {
+            Log.i("CFQServer", "Fetching maimai leaderboard for music $musicId, difficulty $difficulty")
+            return try {
+                val response = fetchFromServer(
+                    "GET",
+                    "api/maimai/leaderboard",
+                    queries = mapOf(
+                        "index" to musicId.toString(),
+                        "type" to type,
+                        "diff" to difficulty.toString()
+                    ),
+                    shouldHandleErrorCode = false
+                )
+                Json.decodeFromString<MaimaiLeaderboard>(response.bodyAsText())
+            } catch (e: Exception) {
+                Log.e("CFQServer", "Failed to fetch maimai leaderboard for music ${musicId}, type ${type}, difficulty ${difficulty}.\n${e}")
+                emptyList()
             }
         }
 

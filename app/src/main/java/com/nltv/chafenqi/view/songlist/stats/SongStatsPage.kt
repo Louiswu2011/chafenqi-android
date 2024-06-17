@@ -67,12 +67,20 @@ import coil.compose.AsyncImage
 import com.nltv.chafenqi.data.ChunithmLeaderboard
 import com.nltv.chafenqi.data.ChunithmLeaderboardItem
 import com.nltv.chafenqi.data.ChunithmMusicStat
+import com.nltv.chafenqi.data.MaimaiLeaderboard
+import com.nltv.chafenqi.data.MaimaiLeaderboardItem
 import com.nltv.chafenqi.extension.RATE_COLORS_CHUNITHM
 import com.nltv.chafenqi.extension.RATE_STRINGS_CHUNITHM
 import com.nltv.chafenqi.extension.toChunithmCoverPath
+import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.view.module.RatingBadge
+import com.nltv.chafenqi.view.songlist.ChunithmDifficultyInfo
+import com.nltv.chafenqi.view.songlist.MaimaiDifficultyInfo
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
+import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
+import com.nltv.chafenqi.view.songlist.record.MusicRecordPage
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -102,9 +110,9 @@ fun SongStatsPage(mode: Int, index: Int, difficulty: Int, navController: NavCont
             modifier = Modifier.padding(paddingValues)
         ) {
             if (mode == 0) {
-                ChunithmStatView(musicIndex = index, difficulty = difficulty)
+                ChunithmStatView(musicIndex = index, difficulty = difficulty, navController)
             } else {
-                // TODO: Add Maimai leaderboard page
+                MaimaiStatView(musicIndex = index, difficulty = difficulty, navController = navController)
             }
         }
     }
@@ -112,7 +120,7 @@ fun SongStatsPage(mode: Int, index: Int, difficulty: Int, navController: NavCont
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ChunithmStatView(musicIndex: Int, difficulty: Int) {
+fun ChunithmStatView(musicIndex: Int, difficulty: Int, navController: NavController) {
     val model = viewModel<SongStatsPageViewModel>().also { it.loadSong(mode = 0, index = musicIndex) }
     val state by model.statsState.collectAsStateWithLifecycle()
 
@@ -197,12 +205,16 @@ fun ChunithmStatView(musicIndex: Int, difficulty: Int) {
                 .weight(1f)
                 .fillMaxWidth()
         ) { index ->
-            if (index == 0) {
-                // Leaderboard
-                ChunithmLeaderboardPage(index = musicIndex, difficulty = difficulty)
-            } else {
-                // Stats
-                ChunithmMusicStatPage(index = musicIndex, difficulty = difficulty)
+            when (index) {
+                0 -> {
+                    ChunithmLeaderboardPage(index = musicIndex, difficulty = difficulty)
+                }
+                1 -> {
+                    ChunithmMusicStatPage(index = musicIndex, difficulty = difficulty)
+                }
+                2 -> {
+                    MusicRecordPage(navController = navController, mode = 0, index = musicIndex, levelIndex = difficulty)
+                }
             }
         }
     }
@@ -230,12 +242,20 @@ fun ChunithmMusicStatPage(index: Int, difficulty: Int) {
                     }
                 } else {
                     Column(
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier
+                            .fillMaxSize()
                             .padding(10.dp),
                         verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        ChunithmMusicStatTab(musicStat = state.chunithmMusicStat)
+                        ChunithmMusicStatTab(
+                            musicStat = state.chunithmMusicStat,
+                            info = ChunithmDifficultyInfo(
+                                title = state.chunithmMusicEntry.title,
+                                difficultyIndex = difficulty,
+                                musicEntry = state.chunithmMusicEntry
+                            )
+                        )
                     }
                 }
             }
@@ -253,7 +273,7 @@ fun ChunithmMusicStatPage(index: Int, difficulty: Int) {
 }
 
 @Composable
-fun ChunithmMusicStatTab(musicStat: ChunithmMusicStat) {
+fun ChunithmMusicStatTab(musicStat: ChunithmMusicStat, info: ChunithmDifficultyInfo) {
     var lastValue = -90f
 
     val splitValues = listOf(musicStat.ssspSplit, musicStat.sssSplit, musicStat.sspSplit, musicStat.ssSplit, musicStat.spSplit, musicStat.sSplit, musicStat.otherSplit)
@@ -262,9 +282,19 @@ fun ChunithmMusicStatTab(musicStat: ChunithmMusicStat) {
 
     Column(
         modifier = Modifier
-            .height(230.dp)
+            .fillMaxHeight()
             .animateContentSize()
     ) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .animateContentSize(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(text = "定数：${info.constant}")
+            Text(text = "谱师：${info.charter}")
+        }
+
         Row(
             Modifier
                 .fillMaxWidth()
@@ -272,10 +302,12 @@ fun ChunithmMusicStatTab(musicStat: ChunithmMusicStat) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(text = "总游玩人数：${musicStat.totalPlayed}")
-            Text(text = "平均分数：${String.format("%.0f" ,musicStat.totalScore / musicStat.totalPlayed)}")
+            Text(text = "平均分数：${String.format(Locale.ENGLISH, "%.0f" ,musicStat.totalScore / musicStat.totalPlayed)}")
         }
 
-        Row {
+        Row(
+            Modifier.height(200.dp)
+        ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth(0.5f)
@@ -336,7 +368,7 @@ fun ChunithmMusicStatTab(musicStat: ChunithmMusicStat) {
                     Text(text = "拟合定数", fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.padding(vertical = 10.dp))
                     Text(text = "最高分")
-                    Text(text = String.format("%.0f", musicStat.highestScore), fontWeight = FontWeight.Bold)
+                    Text(text = String.format(Locale.ENGLISH, "%.0f", musicStat.highestScore), fontWeight = FontWeight.Bold)
 
                 }
             }
@@ -344,145 +376,140 @@ fun ChunithmMusicStatTab(musicStat: ChunithmMusicStat) {
     }
 }
 
+
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ChunithmLeaderboardPage(index: Int, difficulty: Int) {
-    val model = viewModel<SongStatsPageViewModel>()
+fun MaimaiStatView(musicIndex: Int, difficulty: Int, navController: NavController) {
+    val model = viewModel<SongStatsPageViewModel>().also { it.loadSong(mode = 1, index = musicIndex) }
     val state by model.statsState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        model.fetchLeaderboard(mode = 0, index = index, difficulty = difficulty)
+    var selectedTabIndex by rememberSaveable {
+        mutableIntStateOf(0)
+    }
+    val pagerState = rememberPagerState {
+        model.statsTabs.size
     }
 
-    AnimatedContent(targetState = state.doneLoadingLeaderboard, label = "Load Animation") {
-        when (it) {
-            true -> {
-                if (state.chunithmLeaderboard.isNotEmpty()) {
-                    ChunithmLeaderboardColumn(
-                        leaderboard = state.chunithmLeaderboard
-                    )
-                } else {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(text = "哦不，还没有人游玩过该难度！")
-                    }
-                }
-            }
+    LaunchedEffect(selectedTabIndex) {
+        pagerState.animateScrollToPage(selectedTabIndex)
+    }
 
-            false -> {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    CircularProgressIndicator()
-                }
-            }
+    LaunchedEffect(pagerState.currentPage, pagerState.isScrollInProgress) {
+        if (!pagerState.isScrollInProgress) {
+            selectedTabIndex = pagerState.currentPage
         }
     }
-}
 
-@Composable
-fun ChunithmLeaderboardColumn(leaderboard: ChunithmLeaderboard) {
-    val listState = rememberLazyListState()
-    val userEntry = leaderboard.find { it.username == CFQUser.username }
 
-    Box {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            state = listState,
-            contentPadding = PaddingValues(horizontal = 10.dp)
+    Column {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            items(
-                count = leaderboard.size,
-                key = { index -> leaderboard[index].id },
-                itemContent = { index ->
-                    val item = leaderboard[index]
-                    ChunithmLeaderboardRow(index = index, item = item)
-                }
+            AsyncImage(
+                model = state.maimaiMusicEntry.musicID.toMaimaiCoverPath(),
+                contentDescription = "歌曲封面",
+                modifier = Modifier
+                    .size(128.dp)
+                    .border(
+                        border = BorderStroke(
+                            width = 3.dp,
+                            color = maimaiDifficultyColors[difficulty]
+                        ), shape = RoundedCornerShape(12.dp)
+                    )
+                    .padding(2.dp)
+                    .clip(RoundedCornerShape(size = 12.dp))
             )
+            Column(
+                horizontalAlignment = Alignment.Start
+            ) {
+                Text(
+                    text = state.maimaiMusicEntry.title,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 26.sp,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = state.maimaiMusicEntry.basicInfo.artist,
+                    fontSize = 18.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
 
-        if (userEntry != null) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .background(MaterialTheme.colorScheme.surface)
-                    .drawBehind {
-                        val borderSize = 1.dp
-                        val borderColor = Color.Black
-
-                        drawLine(
-                            color = borderColor,
-                            start = Offset(0f, 0f),
-                            end = Offset(size.width, 0f),
-                            strokeWidth = borderSize.toPx()
+        TabRow(selectedTabIndex = selectedTabIndex) {
+            model.statsTabs.forEachIndexed { index, tab ->
+                Tab(
+                    selected = selectedTabIndex == index,
+                    onClick = { selectedTabIndex = index },
+                    text = { Text(text = tab.title) },
+                    icon = {
+                        Icon(
+                            imageVector = if (selectedTabIndex == index) tab.selectedIcon else tab.unselectedIcon,
+                            contentDescription = tab.title
                         )
                     }
-                    .padding(5.dp)
-            ) {
-                Spacer(modifier = Modifier.weight(1f))
-                ChunithmLeaderboardRow(
-                    index = leaderboard.indexOf(userEntry),
-                    item = userEntry,
-                    disableHighlight = true
                 )
             }
         }
-    }
 
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+        ) { index ->
+            when (index) {
+                0 -> {
+                    MaimaiLeaderboardPage(index = musicIndex, difficulty = difficulty, type = state.maimaiMusicEntry.type)
+                }
+                1 -> {
+                    MaimaiStatPage(
+                        index = musicIndex,
+                        difficulty = difficulty,
+                        type = state.maimaiMusicEntry.type,
+                        info = MaimaiDifficultyInfo(title = state.maimaiMusicEntry.title, difficultyIndex = difficulty, musicEntry = state.maimaiMusicEntry)
+                    )
+                }
+                2 -> {
+                    MusicRecordPage(
+                        navController = navController,
+                        mode = 1,
+                        index = musicIndex,
+                        levelIndex = difficulty
+                    )
+                }
+            }
+        }
+    }
 }
 
 @Composable
-fun ChunithmLeaderboardRow(
-    index: Int,
-    item: ChunithmLeaderboardItem,
-    disableHighlight: Boolean = false
-) {
-    Card(
-        modifier = Modifier.padding(vertical = 5.dp),
-        shape = RoundedCornerShape(5.dp),
-        border = if (item.username == CFQUser.username && !disableHighlight) BorderStroke(
-            2.dp,
-            MaterialTheme.colorScheme.primary
-        ) else null
+fun MaimaiStatPage(index: Int, difficulty: Int, type: String, info: MaimaiDifficultyInfo?) {
+    Column(
+        modifier = Modifier.padding(10.dp),
+        verticalArrangement = Arrangement.Top
     ) {
         Row(
-            modifier = Modifier
+            Modifier
                 .fillMaxWidth()
-                .padding(vertical = 10.dp, horizontal = 5.dp),
-            verticalAlignment = Alignment.CenterVertically,
+                .animateContentSize(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "#${index + 1}",
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.padding(horizontal = 5.dp))
-                Text(text = item.nickname)
-            }
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                if (item.rankIndex > 8) {
-                    RatingBadge(rate = RATE_STRINGS_CHUNITHM[13 - item.rankIndex])
-                }
-
-                Spacer(modifier = Modifier.padding(horizontal = 5.dp))
-                Text(
-                    text = item.highscore.toString(),
-                    fontWeight = FontWeight.Bold
-                )
-            }
+            Text(text = "定数：${info?.constant}")
+            Text(text = "谱师：${info?.charter}")
         }
     }
+}
 
+
+fun String.toRateString(): String {
+    return this.replace("p", "+").uppercase()
 }
 
 @Composable

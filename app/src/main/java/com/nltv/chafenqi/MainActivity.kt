@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -82,6 +83,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         // enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+
         setContent {
             CompositionLocalProvider(LocalUserState provides userState) {
                 ChafenqiApp()
@@ -113,7 +115,6 @@ fun ChafenqiApp() {
     Coil.setImageLoader(imageLoader)
 
     ChafenqiTheme {
-        // A surface container using the 'background' color from the theme
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.surface
@@ -322,6 +323,14 @@ fun LogonPage(navController: NavHostController) {
                     mode = 1,
                     index = navBackStackEntry.arguments?.getString("index")?.toInt() ?: 0,
                     levelIndex = navBackStackEntry.arguments?.getString("levelIndex")?.toInt() ?: 0
+                )
+            }
+            composable(HomeNavItem.SongList.route + "/maimai/stats/{index}/{levelIndex}") { navBackStackEntry ->
+                SongStatsPage(
+                    mode = 1,
+                    index = navBackStackEntry.arguments?.getString("index")?.toInt() ?: 0,
+                    difficulty = navBackStackEntry.arguments?.getString("levelIndex")?.toInt() ?: 0,
+                    navController = navController
                 )
             }
             composable(HomeNavItem.SongList.route + "/chunithm/{index}") { navBackStackEntry ->

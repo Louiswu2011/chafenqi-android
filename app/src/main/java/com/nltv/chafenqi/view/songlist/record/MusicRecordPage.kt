@@ -6,6 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,13 +15,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.OpenInNew
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -41,7 +47,9 @@ import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.extension.toRateString
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
+import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.util.navigateToRecentEntry
+import com.nltv.chafenqi.view.home.HomeNavItem
 import com.nltv.chafenqi.view.module.RatingBadge
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
 import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
@@ -51,37 +59,39 @@ import com.patrykandpatrick.vico.compose.chart.Chart
 import com.patrykandpatrick.vico.compose.chart.line.lineChart
 import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MusicRecordPage(navController: NavController, mode: Int, index: Int, levelIndex: Int) {
     val model = viewModel<MusicRecordPageViewModel>().also {
         it.update(mode, index, levelIndex)
     }
+    val uiState by model.uiState.collectAsStateWithLifecycle()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(text = "历史记录") },
-                scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
-                ),
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "返回上一级"
-                        )
-                    }
+    if (mode == 0 && uiState.chuHistoryEntries.isEmpty() || mode == 1 && uiState.maiHistoryEntries.isEmpty()) {
+        Column(
+            Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = "这里空荡荡的，要不出勤打这首？")
+        }
+    } else if (!CFQUser.isPremium) {
+        Column(
+            Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = "订阅会员以查询游玩记录")
+            TextButton(onClick = { navController.navigate(HomeNavItem.Home.route + "/settings/user/redeem") }) {
+                Row {
+                    Icon(imageVector = Icons.AutoMirrored.Outlined.OpenInNew, contentDescription = "订阅会员")
+                    Spacer(modifier = Modifier.padding(ButtonDefaults.IconSpacing))
+                    Text(text = "了解详情")
                 }
-            )
-        },
-        containerColor = MaterialTheme.colorScheme.surface
-    ) { paddingValues ->
+            }
+        }
+    } else {
         Column(
             Modifier
-                .padding(paddingValues)
                 .fillMaxWidth()
         ) {
             MusicRecordScoreChart()
