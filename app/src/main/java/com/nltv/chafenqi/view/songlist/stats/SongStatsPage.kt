@@ -90,7 +90,7 @@ fun SongStatsPage(mode: Int, index: Int, difficulty: Int, navController: NavCont
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "歌曲排行榜") },
+                title = { Text(text = "排行榜与统计数据") },
                 scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface,
