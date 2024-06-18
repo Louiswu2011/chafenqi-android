@@ -593,7 +593,7 @@ fun MaimaiStatPage(index: Int, difficulty: Int, type: String, info: MaimaiDiffic
                         ) {
                             Text(text = judgeType, fontWeight = FontWeight.Bold)
                             chartEntry.possibleNormalLoss.forEachIndexed { lossIndex, _ ->
-                                if (chartEntry.possibleNormalLoss.isNotEmpty() && judgeIndex < chartEntry.possibleNormalLoss.size - 1) {
+                                if (chartEntry.possibleNormalLoss[lossIndex].isNotEmpty() && judgeIndex < chartEntry.possibleNormalLoss.size - 1) {
                                     Text(text = chartEntry.possibleNormalLoss[lossIndex][judgeIndex])
                                 }
                             }
