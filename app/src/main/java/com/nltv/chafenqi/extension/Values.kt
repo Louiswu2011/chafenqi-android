@@ -86,6 +86,13 @@ var MAIMAI_GENRE_STRINGS = listOf<String>()
 var CHUNITHM_VERSION_STRINGS = listOf<String>()
 var CHUNITHM_GENRE_STRINGS = listOf<String>()
 
+val MAIMAI_NOTE_TYPE = listOf(
+    "Tap", "Hold", "Slide", "Touch"
+)
+val MAIMAI_MISS_JUDGE_TYPE = listOf(
+    "Great", "Good", "Miss"
+)
+
 fun randomColor(): Color = Color(
     red = Random.nextInt(0..255),
     blue = Random.nextInt(0..255),

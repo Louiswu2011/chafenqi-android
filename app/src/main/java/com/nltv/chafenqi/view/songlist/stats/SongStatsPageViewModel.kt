@@ -16,6 +16,7 @@ import com.nltv.chafenqi.data.MaimaiLeaderboard
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
+import com.nltv.chafenqi.storage.songlist.maimai.MaimaiChartEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import com.nltv.chafenqi.view.songlist.ChunithmDifficultyInfo
 import com.nltv.chafenqi.view.songlist.MaimaiDifficultyInfo
@@ -123,6 +124,15 @@ class SongStatsPageViewModel: ViewModel() {
                         currentValue.copy(
                             doneLoadingStats = true,
                             chunithmMusicStat = result
+                        )
+                    }
+                }
+            } else if (mode == 1 && CFQPersistentData.Maimai.musicList.isNotEmpty()) {
+                val maiMusic = CFQPersistentData.Maimai.musicList.getOrNull(index)
+                if (maiMusic != null) {
+                    _uiState.update { currentValue ->
+                        currentValue.copy(
+                            doneLoadingStats = true
                         )
                     }
                 }

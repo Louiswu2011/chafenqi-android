@@ -69,6 +69,8 @@ import com.nltv.chafenqi.data.ChunithmLeaderboardItem
 import com.nltv.chafenqi.data.ChunithmMusicStat
 import com.nltv.chafenqi.data.MaimaiLeaderboard
 import com.nltv.chafenqi.data.MaimaiLeaderboardItem
+import com.nltv.chafenqi.extension.MAIMAI_MISS_JUDGE_TYPE
+import com.nltv.chafenqi.extension.MAIMAI_NOTE_TYPE
 import com.nltv.chafenqi.extension.RATE_COLORS_CHUNITHM
 import com.nltv.chafenqi.extension.RATE_STRINGS_CHUNITHM
 import com.nltv.chafenqi.extension.toChunithmCoverPath
@@ -112,7 +114,11 @@ fun SongStatsPage(mode: Int, index: Int, difficulty: Int, navController: NavCont
             if (mode == 0) {
                 ChunithmStatView(musicIndex = index, difficulty = difficulty, navController)
             } else {
-                MaimaiStatView(musicIndex = index, difficulty = difficulty, navController = navController)
+                MaimaiStatView(
+                    musicIndex = index,
+                    difficulty = difficulty,
+                    navController = navController
+                )
             }
         }
     }
@@ -121,7 +127,8 @@ fun SongStatsPage(mode: Int, index: Int, difficulty: Int, navController: NavCont
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ChunithmStatView(musicIndex: Int, difficulty: Int, navController: NavController) {
-    val model = viewModel<SongStatsPageViewModel>().also { it.loadSong(mode = 0, index = musicIndex) }
+    val model =
+        viewModel<SongStatsPageViewModel>().also { it.loadSong(mode = 0, index = musicIndex) }
     val state by model.statsState.collectAsStateWithLifecycle()
 
     var selectedTabIndex by rememberSaveable {
@@ -209,11 +216,18 @@ fun ChunithmStatView(musicIndex: Int, difficulty: Int, navController: NavControl
                 0 -> {
                     ChunithmLeaderboardPage(index = musicIndex, difficulty = difficulty)
                 }
+
                 1 -> {
                     ChunithmMusicStatPage(index = musicIndex, difficulty = difficulty)
                 }
+
                 2 -> {
-                    MusicRecordPage(navController = navController, mode = 0, index = musicIndex, levelIndex = difficulty)
+                    MusicRecordPage(
+                        navController = navController,
+                        mode = 0,
+                        index = musicIndex,
+                        levelIndex = difficulty
+                    )
                 }
             }
         }
@@ -259,6 +273,7 @@ fun ChunithmMusicStatPage(index: Int, difficulty: Int) {
                     }
                 }
             }
+
             false -> {
                 Column(
                     modifier = Modifier.fillMaxSize(),
@@ -276,7 +291,15 @@ fun ChunithmMusicStatPage(index: Int, difficulty: Int) {
 fun ChunithmMusicStatTab(musicStat: ChunithmMusicStat, info: ChunithmDifficultyInfo) {
     var lastValue = -90f
 
-    val splitValues = listOf(musicStat.ssspSplit, musicStat.sssSplit, musicStat.sspSplit, musicStat.ssSplit, musicStat.spSplit, musicStat.sSplit, musicStat.otherSplit)
+    val splitValues = listOf(
+        musicStat.ssspSplit,
+        musicStat.sssSplit,
+        musicStat.sspSplit,
+        musicStat.ssSplit,
+        musicStat.spSplit,
+        musicStat.sSplit,
+        musicStat.otherSplit
+    )
     val chartValues = splitValues
         .map { (it * 360f / musicStat.totalPlayed) }
 
@@ -302,7 +325,15 @@ fun ChunithmMusicStatTab(musicStat: ChunithmMusicStat, info: ChunithmDifficultyI
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(text = "总游玩人数：${musicStat.totalPlayed}")
-            Text(text = "平均分数：${String.format(Locale.ENGLISH, "%.0f" ,musicStat.totalScore / musicStat.totalPlayed)}")
+            Text(
+                text = "平均分数：${
+                    String.format(
+                        Locale.ENGLISH,
+                        "%.0f",
+                        musicStat.totalScore / musicStat.totalPlayed
+                    )
+                }"
+            )
         }
 
         Row(
@@ -348,7 +379,12 @@ fun ChunithmMusicStatTab(musicStat: ChunithmMusicStat, info: ChunithmDifficultyI
                     splitValues.forEachIndexed { index, split ->
                         Text(
                             buildAnnotatedString {
-                                withStyle(SpanStyle(fontWeight = FontWeight.Bold ,color = RATE_COLORS_CHUNITHM[index])) {
+                                withStyle(
+                                    SpanStyle(
+                                        fontWeight = FontWeight.Bold,
+                                        color = RATE_COLORS_CHUNITHM[index]
+                                    )
+                                ) {
                                     append(RATE_STRINGS_CHUNITHM[index])
                                 }
                                 append("：")
@@ -368,7 +404,10 @@ fun ChunithmMusicStatTab(musicStat: ChunithmMusicStat, info: ChunithmDifficultyI
                     Text(text = "拟合定数", fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.padding(vertical = 10.dp))
                     Text(text = "最高分")
-                    Text(text = String.format(Locale.ENGLISH, "%.0f", musicStat.highestScore), fontWeight = FontWeight.Bold)
+                    Text(
+                        text = String.format(Locale.ENGLISH, "%.0f", musicStat.highestScore),
+                        fontWeight = FontWeight.Bold
+                    )
 
                 }
             }
@@ -380,7 +419,8 @@ fun ChunithmMusicStatTab(musicStat: ChunithmMusicStat, info: ChunithmDifficultyI
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MaimaiStatView(musicIndex: Int, difficulty: Int, navController: NavController) {
-    val model = viewModel<SongStatsPageViewModel>().also { it.loadSong(mode = 1, index = musicIndex) }
+    val model =
+        viewModel<SongStatsPageViewModel>().also { it.loadSong(mode = 1, index = musicIndex) }
     val state by model.statsState.collectAsStateWithLifecycle()
 
     var selectedTabIndex by rememberSaveable {
@@ -466,16 +506,26 @@ fun MaimaiStatView(musicIndex: Int, difficulty: Int, navController: NavControlle
         ) { index ->
             when (index) {
                 0 -> {
-                    MaimaiLeaderboardPage(index = musicIndex, difficulty = difficulty, type = state.maimaiMusicEntry.type)
+                    MaimaiLeaderboardPage(
+                        index = musicIndex,
+                        difficulty = difficulty,
+                        type = state.maimaiMusicEntry.type
+                    )
                 }
+
                 1 -> {
                     MaimaiStatPage(
                         index = musicIndex,
                         difficulty = difficulty,
                         type = state.maimaiMusicEntry.type,
-                        info = MaimaiDifficultyInfo(title = state.maimaiMusicEntry.title, difficultyIndex = difficulty, musicEntry = state.maimaiMusicEntry)
+                        info = MaimaiDifficultyInfo(
+                            title = state.maimaiMusicEntry.title,
+                            difficultyIndex = difficulty,
+                            musicEntry = state.maimaiMusicEntry
+                        )
                     )
                 }
+
                 2 -> {
                     MusicRecordPage(
                         navController = navController,
@@ -491,18 +541,136 @@ fun MaimaiStatView(musicIndex: Int, difficulty: Int, navController: NavControlle
 
 @Composable
 fun MaimaiStatPage(index: Int, difficulty: Int, type: String, info: MaimaiDifficultyInfo?) {
+    val model = viewModel<SongStatsPageViewModel>()
+    val state by model.statsState.collectAsStateWithLifecycle()
+    val chartEntry = state.maimaiMusicEntry.charts[difficulty]
+
+    LaunchedEffect(Unit) {
+        model.fetchStats(mode = 1, index = index, difficulty = difficulty)
+    }
+
     Column(
-        modifier = Modifier.padding(10.dp),
-        verticalArrangement = Arrangement.Top
+        modifier = Modifier.padding(10.dp)
+            .fillMaxWidth()
+            .fillMaxHeight()
     ) {
         Row(
             Modifier
                 .fillMaxWidth()
-                .animateContentSize(),
+                .animateContentSize()
+                .padding(bottom = 20.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(text = "定数：${info?.constant}")
             Text(text = "谱师：${info?.charter}")
+        }
+
+        if (chartEntry.notes.isNotEmpty()) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column (
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Text(text = "")
+                    MAIMAI_NOTE_TYPE.forEachIndexed { index, type ->
+                        if (index == 3 && chartEntry.possibleNormalLoss[3].isNotEmpty()) {
+                            Text(text = type, fontWeight = FontWeight.Bold)
+                        } else if (index != 3) {
+                            Text(text = type, fontWeight = FontWeight.Bold)
+                        }
+                    }
+                }
+
+                Row (
+                    horizontalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    MAIMAI_MISS_JUDGE_TYPE.forEachIndexed { judgeIndex, judgeType ->
+                        Column (
+                            horizontalAlignment = Alignment.End
+                        ) {
+                            Text(text = judgeType, fontWeight = FontWeight.Bold)
+                            chartEntry.possibleNormalLoss.forEachIndexed { lossIndex, _ ->
+                                if (chartEntry.possibleNormalLoss.isNotEmpty() && judgeIndex < chartEntry.possibleNormalLoss.size - 1) {
+                                    Text(text = chartEntry.possibleNormalLoss[lossIndex][judgeIndex])
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+                    .padding(bottom = 10.dp)
+            ) {
+                Text(text = "Break", fontWeight = FontWeight.Bold)
+
+                Row (
+                    horizontalArrangement = Arrangement.spacedBy(20.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column {
+                        Text(text = "${chartEntry.possibleBreakLoss[2]}\n${chartEntry.possibleBreakLoss[4]}")
+                        // Text(text = chartEntry.possibleBreakLoss[4])
+                    }
+
+                    Text(text = chartEntry.possibleBreakLoss[5])
+                    Text(text = chartEntry.possibleBreakLoss[6])
+                }
+            }
+
+            Row (
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
+            ) {
+                Column (
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(text = "50/100落", fontWeight = FontWeight.Bold)
+                    Text(text = "${chartEntry.possibleBreakLoss[0]} /")
+                    Text(text = chartEntry.possibleBreakLoss[1])
+                }
+
+                Column (
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(text = "SSS/SSS+容错", fontWeight = FontWeight.Bold)
+                    Text(
+                        text = "-${
+                            String.format(
+                                Locale.ENGLISH,
+                                "%.1f",
+                                chartEntry.lossUntilSSS
+                            )
+                        } / -${
+                            String.format(
+                                Locale.ENGLISH,
+                                "%.1f",
+                                chartEntry.lossUntilSSSPlus
+                            )
+                        }"
+                    )
+                }
+
+                Column (
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(text = "50落/Great比", fontWeight = FontWeight.Bold)
+                    Text(
+                        text = String.format(
+                            Locale.ENGLISH,
+                            "%.1f",
+                            chartEntry.breakToGreatRatio
+                        )
+                    )
+                }
+            }
         }
     }
 }
