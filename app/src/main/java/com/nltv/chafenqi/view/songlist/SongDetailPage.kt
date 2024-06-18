@@ -236,17 +236,9 @@ fun SongDetailPage(
 fun MaimaiDifficultyCard(info: MaimaiDifficultyInfo, navController: NavController) {
     val model: SongDetailViewModel = viewModel()
 
-    var isExpanded by remember {
-        mutableStateOf(false)
-    }
-    val rotationState by animateFloatAsState(
-        targetValue = if (isExpanded) 180f else 0f, label = "Icon expansion"
-    )
-
     Card(
         Modifier
-            .fillMaxWidth()
-            .clickable { isExpanded = !isExpanded },
+            .fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = info.color),
         shape = RoundedCornerShape(10.dp),
     ) {
@@ -281,17 +273,9 @@ fun MaimaiDifficultyCard(info: MaimaiDifficultyInfo, navController: NavControlle
 fun ChunithmDifficultyCard(info: ChunithmDifficultyInfo, navController: NavController) {
     val model: SongDetailViewModel = viewModel()
 
-    var isExpanded by remember {
-        mutableStateOf(false)
-    }
-    val rotationState by animateFloatAsState(
-        targetValue = if (isExpanded) 180f else 0f, label = "Icon expansion"
-    )
-
     Card(
         Modifier
-            .fillMaxWidth()
-            .clickable { isExpanded = !isExpanded },
+            .fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = info.color),
         shape = RoundedCornerShape(10.dp),
     ) {
