@@ -178,11 +178,11 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation("com.onesignal:OneSignal:5.1.1")
 
-    implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
+    implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
     implementation("com.google.firebase:firebase-crashlytics")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
-    implementation("androidx.compose.material:material:1.6.7")
+    implementation("androidx.compose.material:material:1.6.8")
     implementation("io.github.alexzhirkevich:qrose:1.0.0-beta02")
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
     implementation("com.google.accompanist:accompanist-permissions:0.33.2-alpha")
