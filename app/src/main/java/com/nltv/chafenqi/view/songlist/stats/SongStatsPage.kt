@@ -5,12 +5,10 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -19,14 +17,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -47,9 +42,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.SpanStyle
@@ -64,19 +56,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.nltv.chafenqi.data.ChunithmLeaderboard
-import com.nltv.chafenqi.data.ChunithmLeaderboardItem
+import com.nltv.chafenqi.data.leaderboard.ChunithmDiffLeaderboardItem
 import com.nltv.chafenqi.data.ChunithmMusicStat
-import com.nltv.chafenqi.data.MaimaiLeaderboard
-import com.nltv.chafenqi.data.MaimaiLeaderboardItem
 import com.nltv.chafenqi.extension.MAIMAI_MISS_JUDGE_TYPE
 import com.nltv.chafenqi.extension.MAIMAI_NOTE_TYPE
 import com.nltv.chafenqi.extension.RATE_COLORS_CHUNITHM
 import com.nltv.chafenqi.extension.RATE_STRINGS_CHUNITHM
 import com.nltv.chafenqi.extension.toChunithmCoverPath
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
-import com.nltv.chafenqi.storage.user.CFQUser
-import com.nltv.chafenqi.view.module.RatingBadge
 import com.nltv.chafenqi.view.songlist.ChunithmDifficultyInfo
 import com.nltv.chafenqi.view.songlist.MaimaiDifficultyInfo
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
@@ -685,7 +672,7 @@ fun String.toRateString(): String {
 fun SongLeaderboardPagePreview() {
     ChunithmLeaderboardColumn(
         leaderboard = listOf(
-            ChunithmLeaderboardItem(
+            ChunithmDiffLeaderboardItem(
                 id = 1,
                 uid = 12,
                 username = "chafenqi1",
@@ -693,7 +680,7 @@ fun SongLeaderboardPagePreview() {
                 highscore = 1000000,
                 rankIndex = 13
             ),
-            ChunithmLeaderboardItem(
+            ChunithmDiffLeaderboardItem(
                 id = 2,
                 uid = 12,
                 username = "chafenqi2",
@@ -701,7 +688,7 @@ fun SongLeaderboardPagePreview() {
                 highscore = 1000000,
                 rankIndex = 13
             ),
-            ChunithmLeaderboardItem(
+            ChunithmDiffLeaderboardItem(
                 id = 3,
                 uid = 12,
                 username = "chafenqi3",
@@ -709,7 +696,7 @@ fun SongLeaderboardPagePreview() {
                 highscore = 1000000,
                 rankIndex = 13
             ),
-            ChunithmLeaderboardItem(
+            ChunithmDiffLeaderboardItem(
                 id = 4,
                 uid = 12,
                 username = "chafenqi4",
@@ -717,7 +704,7 @@ fun SongLeaderboardPagePreview() {
                 highscore = 1000000,
                 rankIndex = 13
             ),
-            ChunithmLeaderboardItem(
+            ChunithmDiffLeaderboardItem(
                 id = 5,
                 uid = 12,
                 username = "chafenqi5",
@@ -725,7 +712,7 @@ fun SongLeaderboardPagePreview() {
                 highscore = 1000000,
                 rankIndex = 13
             ),
-            ChunithmLeaderboardItem(
+            ChunithmDiffLeaderboardItem(
                 id = 6,
                 uid = 12,
                 username = "chafenqi6",

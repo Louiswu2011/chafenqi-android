@@ -10,16 +10,13 @@ import androidx.compose.material.icons.outlined.PieChart
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nltv.chafenqi.data.ChunithmLeaderboard
+import com.nltv.chafenqi.data.leaderboard.ChunithmDiffLeaderboard
 import com.nltv.chafenqi.data.ChunithmMusicStat
-import com.nltv.chafenqi.data.MaimaiLeaderboard
+import com.nltv.chafenqi.data.leaderboard.MaimaiDiffLeaderboard
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
-import com.nltv.chafenqi.storage.songlist.maimai.MaimaiChartEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
-import com.nltv.chafenqi.view.songlist.ChunithmDifficultyInfo
-import com.nltv.chafenqi.view.songlist.MaimaiDifficultyInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -30,10 +27,10 @@ data class SongStatsUiState(
     val doneLoadingLeaderboard: Boolean = false,
     val doneLoadingStats: Boolean = false,
     val chunithmMusicEntry: ChunithmMusicEntry = ChunithmMusicEntry(),
-    val chunithmLeaderboard: ChunithmLeaderboard = listOf(),
+    val chunithmDiffLeaderboard: ChunithmDiffLeaderboard = listOf(),
     val chunithmMusicStat: ChunithmMusicStat = ChunithmMusicStat(),
     val maimaiMusicEntry: MaimaiMusicEntry = MaimaiMusicEntry(),
-    val maimaiLeaderboard: MaimaiLeaderboard = listOf()
+    val maimaiDiffLeaderboard: MaimaiDiffLeaderboard = listOf()
 )
 
 data class SongStatsTabItem(
@@ -95,7 +92,7 @@ class SongStatsPageViewModel: ViewModel() {
                     _uiState.update { currentValue ->
                         currentValue.copy(
                             doneLoadingLeaderboard = true,
-                            chunithmLeaderboard = result
+                            chunithmDiffLeaderboard = result
                         )
                     }
                 }
@@ -106,7 +103,7 @@ class SongStatsPageViewModel: ViewModel() {
                     _uiState.update { currentValue ->
                         currentValue.copy(
                             doneLoadingLeaderboard = true,
-                            maimaiLeaderboard = result
+                            maimaiDiffLeaderboard = result
                         )
                     }
                 }

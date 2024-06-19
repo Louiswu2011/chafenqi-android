@@ -31,10 +31,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.nltv.chafenqi.data.ChunithmLeaderboard
-import com.nltv.chafenqi.data.ChunithmLeaderboardItem
-import com.nltv.chafenqi.data.MaimaiLeaderboard
-import com.nltv.chafenqi.data.MaimaiLeaderboardItem
+import com.nltv.chafenqi.data.leaderboard.ChunithmDiffLeaderboard
+import com.nltv.chafenqi.data.leaderboard.ChunithmDiffLeaderboardItem
+import com.nltv.chafenqi.data.leaderboard.MaimaiDiffLeaderboard
+import com.nltv.chafenqi.data.leaderboard.MaimaiDiffLeaderboardItem
 import com.nltv.chafenqi.extension.RATE_STRINGS_CHUNITHM
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.view.module.RatingBadge
@@ -52,9 +52,9 @@ fun ChunithmLeaderboardPage(index: Int, difficulty: Int) {
     AnimatedContent(targetState = state.doneLoadingLeaderboard, label = "Load Animation") {
         when (it) {
             true -> {
-                if (state.chunithmLeaderboard.isNotEmpty()) {
+                if (state.chunithmDiffLeaderboard.isNotEmpty()) {
                     ChunithmLeaderboardColumn(
-                        leaderboard = state.chunithmLeaderboard
+                        leaderboard = state.chunithmDiffLeaderboard
                     )
                 } else {
                     Column(
@@ -81,7 +81,7 @@ fun ChunithmLeaderboardPage(index: Int, difficulty: Int) {
 }
 
 @Composable
-fun ChunithmLeaderboardColumn(leaderboard: ChunithmLeaderboard) {
+fun ChunithmLeaderboardColumn(leaderboard: ChunithmDiffLeaderboard) {
     val listState = rememberLazyListState()
     val userEntry = leaderboard.find { it.username == CFQUser.username }
 
@@ -135,7 +135,7 @@ fun ChunithmLeaderboardColumn(leaderboard: ChunithmLeaderboard) {
 @Composable
 fun ChunithmLeaderboardRow(
     index: Int,
-    item: ChunithmLeaderboardItem,
+    item: ChunithmDiffLeaderboardItem,
     disableHighlight: Boolean = false
 ) {
     Card(
@@ -192,9 +192,9 @@ fun MaimaiLeaderboardPage(index: Int, difficulty: Int, type: String) {
     AnimatedContent(targetState = state.doneLoadingLeaderboard, label = "Load Animation") {
         when (it) {
             true -> {
-                if (state.maimaiLeaderboard.isNotEmpty()) {
+                if (state.maimaiDiffLeaderboard.isNotEmpty()) {
                     MaimaiLeaderboardColumn(
-                        leaderboard = state.maimaiLeaderboard
+                        leaderboard = state.maimaiDiffLeaderboard
                     )
                 } else {
                     Column(
@@ -221,7 +221,7 @@ fun MaimaiLeaderboardPage(index: Int, difficulty: Int, type: String) {
 }
 
 @Composable
-fun MaimaiLeaderboardColumn(leaderboard: MaimaiLeaderboard) {
+fun MaimaiLeaderboardColumn(leaderboard: MaimaiDiffLeaderboard) {
     val listState = rememberLazyListState()
     val userEntry = leaderboard.find { it.username == CFQUser.username }
 
@@ -275,7 +275,7 @@ fun MaimaiLeaderboardColumn(leaderboard: MaimaiLeaderboard) {
 @Composable
 fun MaimaiLeaderboardRow(
     index: Int,
-    item: MaimaiLeaderboardItem,
+    item: MaimaiDiffLeaderboardItem,
     disableHighlight: Boolean = false
 ) {
     Card(

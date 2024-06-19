@@ -1,9 +1,9 @@
 package com.nltv.chafenqi.networking
 
 import android.util.Log
-import com.nltv.chafenqi.data.ChunithmLeaderboard
+import com.nltv.chafenqi.data.leaderboard.ChunithmDiffLeaderboard
 import com.nltv.chafenqi.data.ChunithmMusicStat
-import com.nltv.chafenqi.data.MaimaiLeaderboard
+import com.nltv.chafenqi.data.leaderboard.MaimaiDiffLeaderboard
 import com.nltv.chafenqi.data.VersionData
 import com.nltv.chafenqi.util.AppAnnouncement
 import io.ktor.client.HttpClient
@@ -391,7 +391,7 @@ class CFQServer {
             }
         }
 
-        suspend fun apiMaimaiLeaderboard(musicId: Int, type: String, difficulty: Int): MaimaiLeaderboard {
+        suspend fun apiMaimaiLeaderboard(musicId: Int, type: String, difficulty: Int): MaimaiDiffLeaderboard {
             Log.i("CFQServer", "Fetching maimai leaderboard for music $musicId, difficulty $difficulty")
             return try {
                 val response = fetchFromServer(
@@ -404,14 +404,14 @@ class CFQServer {
                     ),
                     shouldHandleErrorCode = false
                 )
-                Json.decodeFromString<MaimaiLeaderboard>(response.bodyAsText())
+                Json.decodeFromString<MaimaiDiffLeaderboard>(response.bodyAsText())
             } catch (e: Exception) {
                 Log.e("CFQServer", "Failed to fetch maimai leaderboard for music ${musicId}, type ${type}, difficulty ${difficulty}.\n${e}")
                 emptyList()
             }
         }
 
-        suspend fun apiChunithmLeaderboard(musicId: Int, difficulty: Int): ChunithmLeaderboard {
+        suspend fun apiChunithmLeaderboard(musicId: Int, difficulty: Int): ChunithmDiffLeaderboard {
             Log.i("CFQServer", "Fetching chunithm leaderboard for music $musicId, difficulty $difficulty")
             return try {
                 val response = fetchFromServer(
@@ -423,7 +423,7 @@ class CFQServer {
                     ),
                     shouldHandleErrorCode = false
                 )
-                Json.decodeFromString<ChunithmLeaderboard>(response.bodyAsText())
+                Json.decodeFromString<ChunithmDiffLeaderboard>(response.bodyAsText())
             } catch (e: Exception) {
                 Log.e("CFQServer", "Failed to fetch chunithm leaderboard for music ${musicId}, difficulty ${difficulty}.\n${e}")
                 emptyList()

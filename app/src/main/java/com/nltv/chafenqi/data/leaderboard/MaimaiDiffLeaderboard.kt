@@ -1,20 +1,19 @@
-package com.nltv.chafenqi.data
+package com.nltv.chafenqi.data.leaderboard
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ChunithmLeaderboardItem(
+data class MaimaiDiffLeaderboardItem(
     val id: Int = 0,
     val uid: Int = 0,
     val username: String = "",
     val nickname: String = "",
-    val highscore: Int = 0,
-    val rankIndex: Int = 0,
-    val clear: String = "",
+    val achievements: Double = 0.0,
+    val rate: String = "",
     val fullCombo: String = "",
-    val fullChain: String = "",
+    val fullSync: String = "",
     val createdAt: String = "",
     val updatedAt: String = ""
 )
 
-typealias ChunithmLeaderboard = List<ChunithmLeaderboardItem>
+typealias MaimaiDiffLeaderboard = List<MaimaiDiffLeaderboardItem>
