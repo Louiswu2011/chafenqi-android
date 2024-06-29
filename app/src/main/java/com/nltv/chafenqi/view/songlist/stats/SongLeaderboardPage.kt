@@ -315,5 +315,4 @@ fun MaimaiLeaderboardRow(
             }
         }
     }
-
 }

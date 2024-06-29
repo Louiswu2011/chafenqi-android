@@ -168,6 +168,7 @@ fun HomePage(navController: NavController) {
                                 HomePageRatingIndicators()
                                 HomePageRatingSelection(navController)
                             }
+                            HomePageLeaderboardSection(navController)
                             // TODO: Implement Logs
                             // if (model.user.isPremium)
                             // HomePageLogBar(navController)

@@ -5,6 +5,14 @@ import com.nltv.chafenqi.data.leaderboard.ChunithmDiffLeaderboard
 import com.nltv.chafenqi.data.ChunithmMusicStat
 import com.nltv.chafenqi.data.leaderboard.MaimaiDiffLeaderboard
 import com.nltv.chafenqi.data.VersionData
+import com.nltv.chafenqi.data.leaderboard.ChunithmRatingLeaderboard
+import com.nltv.chafenqi.data.leaderboard.ChunithmRatingLeaderboardItem
+import com.nltv.chafenqi.data.leaderboard.ChunithmTotalPlayedLeaderboardItem
+import com.nltv.chafenqi.data.leaderboard.ChunithmTotalScoreLeaderboardItem
+import com.nltv.chafenqi.data.leaderboard.MaimaiRatingLeaderboard
+import com.nltv.chafenqi.data.leaderboard.MaimaiRatingLeaderboardItem
+import com.nltv.chafenqi.data.leaderboard.MaimaiTotalPlayedLeaderboardItem
+import com.nltv.chafenqi.data.leaderboard.MaimaiTotalScoreLeaderboardItem
 import com.nltv.chafenqi.util.AppAnnouncement
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
@@ -36,7 +44,7 @@ class CFQServer {
             }
         }
 
-        private suspend fun fetchFromServer(
+        suspend fun fetchFromServer(
             method: String,
             path: String,
             payload: HashMap<Any, Any>? = null,
@@ -426,6 +434,36 @@ class CFQServer {
                 Json.decodeFromString<ChunithmDiffLeaderboard>(response.bodyAsText())
             } catch (e: Exception) {
                 Log.e("CFQServer", "Failed to fetch chunithm leaderboard for music ${musicId}, difficulty ${difficulty}.\n${e}")
+                emptyList()
+            }
+        }
+
+        suspend inline fun <reified T> apiTotalLeaderboard(gameType: Int): List<T> {
+            val gameName = if (gameType == 0) "chunithm" else "maimai"
+            val typeString = when (T::class) {
+                ChunithmRatingLeaderboardItem::class, MaimaiRatingLeaderboardItem::class -> {
+                    "rating"
+                }
+                ChunithmTotalScoreLeaderboardItem::class, MaimaiTotalScoreLeaderboardItem::class -> {
+                    "totalScore"
+                }
+                ChunithmTotalPlayedLeaderboardItem::class, MaimaiTotalPlayedLeaderboardItem::class -> {
+                    "totalCount"
+                }
+
+                else -> { "" }
+            }
+            if (typeString.isEmpty()) { return emptyList() }
+
+            return try {
+                val response = fetchFromServer(
+                    "GET",
+                    "api/${gameName}/leaderboard/${typeString}",
+                    shouldHandleErrorCode = false
+                )
+                Json.decodeFromString<List<T>>(response.bodyAsText())
+            } catch (e: Exception) {
+                Log.e("CFQServer", "Failed to fetch ${typeString} leaderboard for ${gameName}\n$e")
                 emptyList()
             }
         }

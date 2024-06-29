@@ -3,6 +3,18 @@ package com.nltv.chafenqi.storage.user
 import android.content.Context
 import android.text.format.DateFormat
 import android.util.Log
+import com.nltv.chafenqi.data.leaderboard.ChunithmRatingLeaderboard
+import com.nltv.chafenqi.data.leaderboard.ChunithmRatingLeaderboardItem
+import com.nltv.chafenqi.data.leaderboard.ChunithmTotalPlayedLeaderboard
+import com.nltv.chafenqi.data.leaderboard.ChunithmTotalPlayedLeaderboardItem
+import com.nltv.chafenqi.data.leaderboard.ChunithmTotalScoreLeaderboard
+import com.nltv.chafenqi.data.leaderboard.ChunithmTotalScoreLeaderboardItem
+import com.nltv.chafenqi.data.leaderboard.MaimaiRatingLeaderboard
+import com.nltv.chafenqi.data.leaderboard.MaimaiRatingLeaderboardItem
+import com.nltv.chafenqi.data.leaderboard.MaimaiTotalPlayedLeaderboard
+import com.nltv.chafenqi.data.leaderboard.MaimaiTotalPlayedLeaderboardItem
+import com.nltv.chafenqi.data.leaderboard.MaimaiTotalScoreLeaderboard
+import com.nltv.chafenqi.data.leaderboard.MaimaiTotalScoreLeaderboardItem
 import com.nltv.chafenqi.extension.CHUNITHM_LEVEL_STRINGS
 import com.nltv.chafenqi.extension.MAIMAI_LEVEL_STRINGS
 import com.nltv.chafenqi.extension.RATE_STRINGS_CHUNITHM
@@ -26,7 +38,11 @@ import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiUserInfo
 import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
+import com.nltv.chafenqi.storage.user.CFQUser.Maimai.Aux
 import com.onesignal.OneSignal
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -77,6 +93,12 @@ object CFQUser {
             val recommendList = mutableListOf<MaimaiRecentLineup>()
             val levelInfo = mutableListOf<MaimaiLevelInfo>()
 
+            val ratingLeaderboard: MaimaiRatingLeaderboard = mutableListOf()
+            val totalScoreLeaderboard: MaimaiTotalScoreLeaderboard = mutableListOf()
+            val totalPlayedLeaderboard: MaimaiTotalPlayedLeaderboard = mutableListOf()
+
+            var doneLoadingLeaderboard = false
+
             fun reset() {
                 pastBest = listOf()
                 newBest = listOf()
@@ -85,6 +107,10 @@ object CFQUser {
                 updateTime = ""
                 recommendList.clear()
                 levelInfo.clear()
+                ratingLeaderboard.clear()
+                totalScoreLeaderboard.clear()
+                totalPlayedLeaderboard.clear()
+                doneLoadingLeaderboard = false
             }
         }
 
@@ -169,6 +195,13 @@ object CFQUser {
                     )
                 }
 
+                CoroutineScope(Dispatchers.IO).launch {
+                    Aux.ratingLeaderboard.addAll(CFQServer.apiTotalLeaderboard<MaimaiRatingLeaderboardItem>(gameType = 1))
+                    Aux.totalScoreLeaderboard.addAll(CFQServer.apiTotalLeaderboard<MaimaiTotalScoreLeaderboardItem>(gameType = 1))
+                    Aux.totalPlayedLeaderboard.addAll(CFQServer.apiTotalLeaderboard<MaimaiTotalPlayedLeaderboardItem>(gameType = 1))
+                    Aux.doneLoadingLeaderboard = true
+                }
+
                 Log.i(tag, "Loaded maimai auxiliary data.")
             }
         }
@@ -208,6 +241,12 @@ object CFQUser {
             val recommendList = mutableListOf<ChunithmRecentLineup>()
             val levelInfo = mutableListOf<ChunithmLevelInfo>()
 
+            val ratingLeaderboard: ChunithmRatingLeaderboard = mutableListOf()
+            val totalScoreLeaderboard: ChunithmTotalScoreLeaderboard = mutableListOf()
+            val totalPlayedLeaderboard: ChunithmTotalPlayedLeaderboard = mutableListOf()
+
+            var doneLoadingLeaderboard = false
+
             fun reset() {
                 bestList = listOf()
                 recentList = listOf()
@@ -216,6 +255,10 @@ object CFQUser {
                 updateTime = ""
                 recommendList.clear()
                 levelInfo.clear()
+                ratingLeaderboard.clear()
+                totalScoreLeaderboard.clear()
+                totalPlayedLeaderboard.clear()
+                doneLoadingLeaderboard = false
             }
         }
 
@@ -307,7 +350,14 @@ object CFQUser {
                     )
                 }
 
-                Log.i(tag, "Loaded maimai auxiliary data.")
+                CoroutineScope(Dispatchers.IO).launch {
+                    Aux.ratingLeaderboard.addAll(CFQServer.apiTotalLeaderboard<ChunithmRatingLeaderboardItem>(gameType = 0))
+                    Aux.totalScoreLeaderboard.addAll(CFQServer.apiTotalLeaderboard<ChunithmTotalScoreLeaderboardItem>(gameType = 0))
+                    Aux.totalPlayedLeaderboard.addAll(CFQServer.apiTotalLeaderboard<ChunithmTotalPlayedLeaderboardItem>(gameType = 0))
+                    Aux.doneLoadingLeaderboard = true
+                }
+
+                Log.i(tag, "Loaded chunithm auxiliary data.")
             }
         }
 

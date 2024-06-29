@@ -6,9 +6,11 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlinx-serialization")
+    id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.devtools.ksp")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
+    id("com.google.firebase.firebase-perf")
 }
 
 kotlin {
@@ -139,7 +141,7 @@ task("bumpServerBuildVersion") {
 
 }
 
-val ktorVersion = "2.3.6"
+val ktorVersion = "2.3.12"
 val composePreferences = "0.4.7"
 
 dependencies {
@@ -160,33 +162,34 @@ dependencies {
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx")
     implementation("androidx.activity:activity-compose")
-    implementation("com.google.firebase:firebase-analytics:22.0.1")
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
-    implementation("io.ktor:ktor-client-core:2.3.7")
+    implementation("io.ktor:ktor-client-core:2.3.12")
     implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
 
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("io.ktor:ktor-client-logging:$ktorVersion")
-    implementation("org.slf4j:slf4j-simple:2.0.9")
-    implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation("org.slf4j:slf4j-simple:2.0.13")
+    implementation("io.coil-kt:coil-compose:2.6.0")
     implementation("androidx.lifecycle:lifecycle-runtime-compose")
     implementation("androidx.datastore:datastore-preferences:1.1.1")
-    implementation("com.onesignal:OneSignal:5.1.1")
+    implementation("com.onesignal:OneSignal:5.1.15")
 
-    implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
-    implementation("com.google.firebase:firebase-crashlytics")
+    implementation(platform("com.google.firebase:firebase-bom:33.1.1"))
+    implementation("com.google.firebase:firebase-crashlytics-ktx")
+    implementation("com.google.firebase:firebase-perf-ktx")
+    implementation("com.google.firebase:firebase-analytics-ktx")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0")
     implementation("androidx.compose.material:material:1.6.8")
-    implementation("io.github.alexzhirkevich:qrose:1.0.0-beta02")
+    implementation("io.github.alexzhirkevich:qrose:1.0.1")
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
-    implementation("com.google.accompanist:accompanist-permissions:0.33.2-alpha")
-    implementation("com.patrykandpatrick.vico:compose-m3:1.13.0")
+    implementation("com.google.accompanist:accompanist-permissions:0.34.0")
+    implementation("com.patrykandpatrick.vico:compose-m3:1.14.0")
 
     implementation("com.github.MFlisar.ComposePreferences:core:$composePreferences")
     implementation("com.github.MFlisar.ComposePreferences:screen-bool:$composePreferences")
@@ -197,4 +200,6 @@ dependencies {
     implementation("com.github.MFlisar.ComposePreferences:screen-time:$composePreferences")
     implementation("com.github.MFlisar.ComposePreferences:screen-list:$composePreferences")
     implementation("com.github.MFlisar.ComposePreferences:screen-number:$composePreferences")
+
+    implementation("sh.calvin.reorderable:reorderable:2.1.1")
 }

@@ -32,10 +32,15 @@ import coil.Coil
 import coil.ImageLoader
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.analytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.nltv.chafenqi.ui.theme.ChafenqiTheme
 import com.nltv.chafenqi.view.home.HomeNavItem
 import com.nltv.chafenqi.view.home.HomePage
 import com.nltv.chafenqi.view.home.announcement.HomeAnnouncementPage
+import com.nltv.chafenqi.view.home.leaderboard.HomeLeaderboardPage
 import com.nltv.chafenqi.view.home.rating.HomeRatingPage
 import com.nltv.chafenqi.view.home.recent.HomeRecentPage
 import com.nltv.chafenqi.view.home.recent.RecentDetailPage
@@ -79,10 +84,12 @@ val SCREEN_PADDING = 10.dp
 
 class MainActivity : ComponentActivity() {
     private val userState by viewModels<CFQUserStateViewModel>()
+    private lateinit var analytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        analytics = Firebase.analytics
 
         setContent {
             CompositionLocalProvider(LocalUserState provides userState) {
@@ -202,6 +209,7 @@ fun LogonPage(navController: NavHostController) {
                 )
             }
             composable(HomeNavItem.Home.route + "/rating") { HomeRatingPage(navController) }
+            composable(HomeNavItem.Home.route + "/leaderboard") { HomeLeaderboardPage(navController) }
 
             composable(HomeNavItem.Home.route + "/settings") { SettingsPage(navController) }
             composable(HomeNavItem.Home.route + "/settings/user") { SettingsUserPage(navController) }

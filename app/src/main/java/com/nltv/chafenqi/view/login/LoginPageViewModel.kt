@@ -9,6 +9,7 @@ import androidx.compose.runtime.setValue
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.perf.metrics.AddTrace
 import com.nltv.chafenqi.CFQUserStateViewModel
 import com.nltv.chafenqi.UIState
 import com.nltv.chafenqi.cacheStore
@@ -37,6 +38,7 @@ class LoginPageViewModel: ViewModel() {
 
     var loginUiState = loginState.asStateFlow()
 
+    @AddTrace(name = "login_cached")
     fun login(
         token: String,
         username: String,
@@ -70,6 +72,7 @@ class LoginPageViewModel: ViewModel() {
 
     }
 
+    @AddTrace(name = "login_fresh")
     fun login(
         username: String,
         passwordHash: String,
