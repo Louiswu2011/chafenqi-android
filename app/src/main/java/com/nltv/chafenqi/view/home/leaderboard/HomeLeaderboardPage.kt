@@ -51,8 +51,8 @@ import java.util.Locale
 @Composable
 fun HomeLeaderboardPage(navController: NavController) {
     val model = viewModel<HomeLeaderboardPageViewModel>()
-    val statsTabs = if (CFQUser.mode == 0) model.chunithmStatsTabs else model.maimaiStatsTabs
-    val pageSize = if (CFQUser.mode == 0) model.chunithmStatsTabs.size else model.maimaiStatsTabs.size
+    val statsTabs = model.statsTabs
+    val pageSize = model.statsTabs.size
 
     var selectedTabIndex by rememberSaveable {
         mutableIntStateOf(0)
@@ -120,32 +120,12 @@ fun HomeLeaderboardPage(navController: NavController) {
                 when (model.mode) {
                     0 -> {
                         when (index) {
-                            0 -> {
-                                HomeLeaderboardColumn(size = model.chuRatingData.size, rows = model.chuRatingData)
-                            }
 
-                            1 -> {
-                                HomeLeaderboardColumn(size = model.chuScoreData.size, rows = model.chuScoreData)
-                            }
-
-                            2 -> {
-                                HomeLeaderboardColumn(size = model.chuPlayedData.size, rows = model.chuPlayedData)
-                            }
                         }
                     }
                     1 -> {
                         when (index) {
-                            0 -> {
-                                HomeLeaderboardColumn(size = model.maiRatingData.size, rows = model.maiRatingData)
-                            }
 
-                            1 -> {
-                                HomeLeaderboardColumn(size = model.maiScoreData.size, rows = model.maiScoreData)
-                            }
-
-                            2 -> {
-                                HomeLeaderboardColumn(size = model.maiPlayedData.size, rows = model.maiPlayedData)
-                            }
                         }
                     }
                 }

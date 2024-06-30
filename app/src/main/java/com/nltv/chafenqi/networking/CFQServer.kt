@@ -5,10 +5,12 @@ import com.nltv.chafenqi.data.leaderboard.ChunithmDiffLeaderboard
 import com.nltv.chafenqi.data.ChunithmMusicStat
 import com.nltv.chafenqi.data.leaderboard.MaimaiDiffLeaderboard
 import com.nltv.chafenqi.data.VersionData
+import com.nltv.chafenqi.data.leaderboard.ChunithmFirstLeaderboardItem
 import com.nltv.chafenqi.data.leaderboard.ChunithmRatingLeaderboard
 import com.nltv.chafenqi.data.leaderboard.ChunithmRatingLeaderboardItem
 import com.nltv.chafenqi.data.leaderboard.ChunithmTotalPlayedLeaderboardItem
 import com.nltv.chafenqi.data.leaderboard.ChunithmTotalScoreLeaderboardItem
+import com.nltv.chafenqi.data.leaderboard.MaimaiFirstLeaderboardItem
 import com.nltv.chafenqi.data.leaderboard.MaimaiRatingLeaderboard
 import com.nltv.chafenqi.data.leaderboard.MaimaiRatingLeaderboardItem
 import com.nltv.chafenqi.data.leaderboard.MaimaiTotalPlayedLeaderboardItem
@@ -47,7 +49,7 @@ class CFQServer {
         suspend fun fetchFromServer(
             method: String,
             path: String,
-            payload: HashMap<Any, Any>? = null,
+            payload: HashMap<String, Any>? = null,
             queries: Map<String, String>? = null,
             token: String? = null,
             shouldHandleErrorCode: Boolean = true
@@ -207,6 +209,47 @@ class CFQServer {
                 response.bodyAsText()
             } catch (e: Exception) {
                 ""
+            }
+        }
+
+        suspend inline fun <reified T> apiFetchUserLeaderboardRank(authToken: String): T? {
+            try {
+                val className = T::class.simpleName ?: ""
+                val gameType = when {
+                    className.startsWith("Maimai") -> 0
+                    className.startsWith("Chunithm") -> 1
+                    else -> {
+                        -1
+                    }
+                }
+                if (gameType < 0) {
+                    return null
+                }
+
+                val leaderboardTypeString = when {
+                    className.contains("Rating") -> "rating"
+                    className.contains("Played") -> "totalPlayed"
+                    className.contains("Score") -> "totalScore"
+                    className.contains("First") -> "first"
+                    else -> ""
+                }
+                if (leaderboardTypeString.isEmpty()) {
+                    return null
+                }
+
+                val response = client.post("http://43.139.107.206:8083/api/user/leaderboard") {
+                    accept(ContentType.Any)
+                    this.contentType(ContentType.Application.Json)
+                    this.setBody("{\"game\": $gameType, \"type\": \"${leaderboardTypeString}\"}")
+                    this.headers.append("Authorization", "Bearer $authToken")
+                }
+                if (response.status.value != 200) {
+                    return null
+                }
+                return Json.decodeFromString<T>(response.bodyAsText())
+            } catch (e: Exception) {
+                Log.e("CFQServer", "Failed to fetch ${T::class.simpleName ?: "error"} leaderboard rank.\n${e}")
+                return null
             }
         }
 
@@ -438,7 +481,7 @@ class CFQServer {
             }
         }
 
-        suspend inline fun <reified T> apiTotalLeaderboard(gameType: Int): List<T> {
+        suspend inline fun <reified T> apiTotalLeaderboard(authToken: String, gameType: Int): List<T> {
             val gameName = if (gameType == 0) "chunithm" else "maimai"
             val typeString = when (T::class) {
                 ChunithmRatingLeaderboardItem::class, MaimaiRatingLeaderboardItem::class -> {
@@ -450,20 +493,23 @@ class CFQServer {
                 ChunithmTotalPlayedLeaderboardItem::class, MaimaiTotalPlayedLeaderboardItem::class -> {
                     "totalCount"
                 }
-
+                ChunithmFirstLeaderboardItem::class, MaimaiFirstLeaderboardItem::class -> {
+                    "first"
+                }
                 else -> { "" }
             }
             if (typeString.isEmpty()) { return emptyList() }
 
             return try {
                 val response = fetchFromServer(
-                    "GET",
+                    "POST",
                     "api/${gameName}/leaderboard/${typeString}",
+                    token = authToken,
                     shouldHandleErrorCode = false
                 )
                 Json.decodeFromString<List<T>>(response.bodyAsText())
             } catch (e: Exception) {
-                Log.e("CFQServer", "Failed to fetch ${typeString} leaderboard for ${gameName}\n$e")
+                Log.e("CFQServer", "Failed to fetch $typeString leaderboard for ${gameName}\n$e")
                 emptyList()
             }
         }

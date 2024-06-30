@@ -93,12 +93,6 @@ object CFQUser {
             val recommendList = mutableListOf<MaimaiRecentLineup>()
             val levelInfo = mutableListOf<MaimaiLevelInfo>()
 
-            val ratingLeaderboard: MaimaiRatingLeaderboard = mutableListOf()
-            val totalScoreLeaderboard: MaimaiTotalScoreLeaderboard = mutableListOf()
-            val totalPlayedLeaderboard: MaimaiTotalPlayedLeaderboard = mutableListOf()
-
-            var doneLoadingLeaderboard = false
-
             fun reset() {
                 pastBest = listOf()
                 newBest = listOf()
@@ -107,10 +101,6 @@ object CFQUser {
                 updateTime = ""
                 recommendList.clear()
                 levelInfo.clear()
-                ratingLeaderboard.clear()
-                totalScoreLeaderboard.clear()
-                totalPlayedLeaderboard.clear()
-                doneLoadingLeaderboard = false
             }
         }
 
@@ -195,13 +185,6 @@ object CFQUser {
                     )
                 }
 
-                CoroutineScope(Dispatchers.IO).launch {
-                    Aux.ratingLeaderboard.addAll(CFQServer.apiTotalLeaderboard<MaimaiRatingLeaderboardItem>(gameType = 1))
-                    Aux.totalScoreLeaderboard.addAll(CFQServer.apiTotalLeaderboard<MaimaiTotalScoreLeaderboardItem>(gameType = 1))
-                    Aux.totalPlayedLeaderboard.addAll(CFQServer.apiTotalLeaderboard<MaimaiTotalPlayedLeaderboardItem>(gameType = 1))
-                    Aux.doneLoadingLeaderboard = true
-                }
-
                 Log.i(tag, "Loaded maimai auxiliary data.")
             }
         }
@@ -241,12 +224,6 @@ object CFQUser {
             val recommendList = mutableListOf<ChunithmRecentLineup>()
             val levelInfo = mutableListOf<ChunithmLevelInfo>()
 
-            val ratingLeaderboard: ChunithmRatingLeaderboard = mutableListOf()
-            val totalScoreLeaderboard: ChunithmTotalScoreLeaderboard = mutableListOf()
-            val totalPlayedLeaderboard: ChunithmTotalPlayedLeaderboard = mutableListOf()
-
-            var doneLoadingLeaderboard = false
-
             fun reset() {
                 bestList = listOf()
                 recentList = listOf()
@@ -255,10 +232,6 @@ object CFQUser {
                 updateTime = ""
                 recommendList.clear()
                 levelInfo.clear()
-                ratingLeaderboard.clear()
-                totalScoreLeaderboard.clear()
-                totalPlayedLeaderboard.clear()
-                doneLoadingLeaderboard = false
             }
         }
 
@@ -348,13 +321,6 @@ object CFQUser {
                             entryPerRate = entryPerRate
                         )
                     )
-                }
-
-                CoroutineScope(Dispatchers.IO).launch {
-                    Aux.ratingLeaderboard.addAll(CFQServer.apiTotalLeaderboard<ChunithmRatingLeaderboardItem>(gameType = 0))
-                    Aux.totalScoreLeaderboard.addAll(CFQServer.apiTotalLeaderboard<ChunithmTotalScoreLeaderboardItem>(gameType = 0))
-                    Aux.totalPlayedLeaderboard.addAll(CFQServer.apiTotalLeaderboard<ChunithmTotalPlayedLeaderboardItem>(gameType = 0))
-                    Aux.doneLoadingLeaderboard = true
                 }
 
                 Log.i(tag, "Loaded chunithm auxiliary data.")

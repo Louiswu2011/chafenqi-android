@@ -34,6 +34,36 @@ data class MaimaiTotalPlayedLeaderboardItem(
     val totalPlayed: Int = 0
 )
 
+@Serializable
+data class ChunithmFirstLeaderboardItem(
+    val uid: Int = 0,
+    val username: String = "",
+    val nickname: String = "",
+    val firstCount: Int = 0,
+    val firstMusics: List<ChunithmFirstLeaderboardMusicEntry> = emptyList()
+)
+@Serializable
+data class ChunithmFirstLeaderboardMusicEntry(
+    val musicId: Int = 0,
+    val diffIndex: Int = 0,
+    val score: Int = 0
+)
+
+@Serializable
+data class MaimaiFirstLeaderboardItem(
+    val uid: Int = 0,
+    val username: String = "",
+    val nickname: String = "",
+    val firstCount: Int = 0,
+    val firstMusics: List<MaimaiFirstLeaderboardMusicEntry> = emptyList()
+)
+@Serializable
+data class MaimaiFirstLeaderboardMusicEntry(
+    val musicId: Int = 0,
+    val diffIndex: Int = 0,
+    val achievements: Double = 0.0
+)
+
 typealias ChunithmTotalScoreLeaderboard = MutableList<ChunithmTotalScoreLeaderboardItem>
 typealias ChunithmTotalPlayedLeaderboard = MutableList<ChunithmTotalPlayedLeaderboardItem>
 typealias MaimaiTotalScoreLeaderboard = MutableList<MaimaiTotalScoreLeaderboardItem>

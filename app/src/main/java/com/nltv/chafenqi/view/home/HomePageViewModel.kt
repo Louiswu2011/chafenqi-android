@@ -17,6 +17,15 @@ import androidx.navigation.NavController
 import com.nltv.chafenqi.BuildConfig
 import com.nltv.chafenqi.CFQUserStateViewModel
 import com.nltv.chafenqi.cacheStore
+import com.nltv.chafenqi.data.rank.ChunithmFirstRank
+import com.nltv.chafenqi.data.rank.ChunithmRatingRank
+import com.nltv.chafenqi.data.rank.ChunithmTotalPlayedRank
+import com.nltv.chafenqi.data.rank.ChunithmTotalScoreRank
+import com.nltv.chafenqi.data.rank.LeaderboardRank
+import com.nltv.chafenqi.data.rank.MaimaiFirstRank
+import com.nltv.chafenqi.data.rank.MaimaiRatingRank
+import com.nltv.chafenqi.data.rank.MaimaiTotalPlayedRank
+import com.nltv.chafenqi.data.rank.MaimaiTotalScoreRank
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRatingEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiBestScoreEntry
@@ -68,6 +77,10 @@ data class HomePageUiState(
 
     val currentSelectedIndicatorIndex: Int = -1,
     val indicatorHeights: MutableList<Dp> = mutableListOf(),
+
+    val isLoadingLeaderboardBar: Boolean = true,
+    val maiLeaderboardRank: MutableList<LeaderboardRank?> = mutableListOf(null, null, null, null),
+    val chuLeaderboardRank: MutableList<LeaderboardRank?> = mutableListOf(null, null, null, null)
 )
 
 class HomePageViewModel: ViewModel() {
@@ -314,5 +327,62 @@ class HomePageViewModel: ViewModel() {
         if (chuMusicEntryIndex < 0) return
 
         navController.navigate(HomeNavItem.SongList.route + "/chunithm/$chuMusicEntryIndex")
+    }
+
+    fun fetchLeaderboardRanks() {
+        when (user.mode) {
+            0 -> {
+                if (!_uiState.value.chuLeaderboardRank.all { it != null }) {
+                    // Load
+                    _uiState.update { currentValue ->
+                        currentValue.copy(isLoadingLeaderboardBar = true)
+                    }
+                    viewModelScope.launch {
+                        val ratingRank = CFQServer.apiFetchUserLeaderboardRank<ChunithmRatingRank>(user.token)
+                        val totalScoreRank = CFQServer.apiFetchUserLeaderboardRank<ChunithmTotalScoreRank>(user.token)
+                        val totalPlayedRank = CFQServer.apiFetchUserLeaderboardRank<ChunithmTotalPlayedRank>(user.token)
+                        val firstRank = CFQServer.apiFetchUserLeaderboardRank<ChunithmFirstRank>(user.token)
+
+                        _uiState.update { currentValue ->
+                            currentValue.copy(
+                                isLoadingLeaderboardBar = false,
+                                chuLeaderboardRank = mutableListOf(
+                                    ratingRank,
+                                    totalScoreRank,
+                                    totalPlayedRank,
+                                    firstRank
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+            1 -> {
+                if (!_uiState.value.maiLeaderboardRank.all { it != null }) {
+                    // Load
+                    _uiState.update { currentValue ->
+                        currentValue.copy(isLoadingLeaderboardBar = true)
+                    }
+                    viewModelScope.launch {
+                        val ratingRank = CFQServer.apiFetchUserLeaderboardRank<MaimaiRatingRank>(user.token)
+                        val totalScoreRank = CFQServer.apiFetchUserLeaderboardRank<MaimaiTotalScoreRank>(user.token)
+                        val totalPlayedRank = CFQServer.apiFetchUserLeaderboardRank<MaimaiTotalPlayedRank>(user.token)
+                        val firstRank = CFQServer.apiFetchUserLeaderboardRank<MaimaiFirstRank>(user.token)
+
+                        _uiState.update { currentValue ->
+                            currentValue.copy(
+                                isLoadingLeaderboardBar = false,
+                                maiLeaderboardRank = mutableListOf(
+                                    ratingRank,
+                                    totalScoreRank,
+                                    totalPlayedRank,
+                                    firstRank
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 }
