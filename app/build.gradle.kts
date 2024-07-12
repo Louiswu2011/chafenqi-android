@@ -189,6 +189,7 @@ dependencies {
     implementation("io.github.alexzhirkevich:qrose:1.0.1")
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
     implementation("com.google.accompanist:accompanist-permissions:0.34.0")
+    implementation("com.google.accompanist:accompanist-drawablepainter:0.35.1-alpha")
     implementation("com.patrykandpatrick.vico:compose-m3:1.14.0")
 
     implementation("com.github.MFlisar.ComposePreferences:core:$composePreferences")
@@ -202,4 +203,6 @@ dependencies {
     implementation("com.github.MFlisar.ComposePreferences:screen-number:$composePreferences")
 
     implementation("sh.calvin.reorderable:reorderable:2.1.1")
+
+    implementation("io.coil-kt:coil:2.6.0")
 }

@@ -64,7 +64,9 @@ data class MaimaiFirstLeaderboardMusicEntry(
     val achievements: Double = 0.0
 )
 
-typealias ChunithmTotalScoreLeaderboard = MutableList<ChunithmTotalScoreLeaderboardItem>
-typealias ChunithmTotalPlayedLeaderboard = MutableList<ChunithmTotalPlayedLeaderboardItem>
-typealias MaimaiTotalScoreLeaderboard = MutableList<MaimaiTotalScoreLeaderboardItem>
-typealias MaimaiTotalPlayedLeaderboard = MutableList<MaimaiTotalPlayedLeaderboardItem>
+typealias ChunithmTotalScoreLeaderboard = List<ChunithmTotalScoreLeaderboardItem>
+typealias ChunithmTotalPlayedLeaderboard = List<ChunithmTotalPlayedLeaderboardItem>
+typealias MaimaiTotalScoreLeaderboard = List<MaimaiTotalScoreLeaderboardItem>
+typealias MaimaiTotalPlayedLeaderboard = List<MaimaiTotalPlayedLeaderboardItem>
+typealias MaimaiFirstLeaderboard = List<MaimaiFirstLeaderboardItem>
+typealias ChunithmFirstLeaderboard = List<ChunithmFirstLeaderboardItem>

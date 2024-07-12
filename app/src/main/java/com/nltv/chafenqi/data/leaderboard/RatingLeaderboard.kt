@@ -18,5 +18,5 @@ data class MaimaiRatingLeaderboardItem(
     val rating: Int = 0
 )
 
-typealias ChunithmRatingLeaderboard = MutableList<ChunithmRatingLeaderboardItem>
-typealias MaimaiRatingLeaderboard = MutableList<MaimaiRatingLeaderboardItem>
+typealias ChunithmRatingLeaderboard = List<ChunithmRatingLeaderboardItem>
+typealias MaimaiRatingLeaderboard = List<MaimaiRatingLeaderboardItem>

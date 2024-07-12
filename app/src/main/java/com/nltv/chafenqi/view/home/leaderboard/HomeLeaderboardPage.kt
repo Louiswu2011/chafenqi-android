@@ -1,7 +1,10 @@
 package com.nltv.chafenqi.view.home.leaderboard
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,25 +36,31 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.nltv.chafenqi.data.leaderboard.ChunithmFirstLeaderboardMusicEntry
 import com.nltv.chafenqi.data.leaderboard.MaimaiDiffLeaderboardItem
+import com.nltv.chafenqi.data.leaderboard.MaimaiFirstLeaderboardMusicEntry
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.view.module.RatingBadge
 import com.nltv.chafenqi.view.songlist.stats.MaimaiLeaderboardRow
 import com.nltv.chafenqi.view.songlist.stats.toRateString
 import java.util.Locale
+import kotlin.math.exp
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun HomeLeaderboardPage(navController: NavController) {
     val model = viewModel<HomeLeaderboardPageViewModel>()
+    val leaderboardData by model.uiState.collectAsStateWithLifecycle()
     val statsTabs = model.statsTabs
     val pageSize = model.statsTabs.size
 
@@ -59,6 +69,10 @@ fun HomeLeaderboardPage(navController: NavController) {
     }
     val pagerState = rememberPagerState {
         pageSize
+    }
+
+    LaunchedEffect(model.mode) {
+        model.update()
     }
 
     LaunchedEffect(selectedTabIndex) {
@@ -117,17 +131,21 @@ fun HomeLeaderboardPage(navController: NavController) {
                     .weight(1f)
                     .fillMaxWidth()
             ) { index ->
-                when (model.mode) {
-                    0 -> {
-                        when (index) {
-
-                        }
+                val data = listOf(leaderboardData.ratingLeaderboard, leaderboardData.totalScoreLeaderboard, leaderboardData.totalPlayedLeaderboard, leaderboardData.firstLeaderboard)
+                if (data[index].isNotEmpty()) {
+                    HomeLeaderboardColumn(
+                        size = data[index].size,
+                        rows = data[index]
+                    )
+                } else {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        CircularProgressIndicator()
                     }
-                    1 -> {
-                        when (index) {
 
-                        }
-                    }
                 }
             }
         }
@@ -137,7 +155,7 @@ fun HomeLeaderboardPage(navController: NavController) {
 @Composable
 fun HomeLeaderboardColumn(
     size: Int,
-    rows: List<HomeLeaderboardRowData>
+    rows: List<HomeLeaderboardRow>
 ) {
     val listState = rememberLazyListState()
 
@@ -158,50 +176,71 @@ fun HomeLeaderboardColumn(
 
 @Composable
 fun HomeLeaderboardRow(
-    rowData: HomeLeaderboardRowData,
+    rowData: HomeLeaderboardRow,
     disableHighlight: Boolean = false
 ) {
+    var expanded by rememberSaveable {
+        mutableStateOf(false)
+    }
+
     Card(
-        modifier = Modifier.padding(vertical = 5.dp),
+        modifier = Modifier
+            .padding(vertical = 5.dp)
+            .clickable(enabled = rowData.extraInfo != null) {
+                expanded = !expanded
+            },
         shape = RoundedCornerShape(5.dp),
         border = if (rowData.username == CFQUser.username && !disableHighlight) BorderStroke(
             2.dp,
             MaterialTheme.colorScheme.primary
         ) else null
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 10.dp, horizontal = 5.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
+        Column {
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 10.dp, horizontal = 5.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = "#${rowData.index + 1}",
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.padding(horizontal = 5.dp))
-                Text(text = rowData.nickname)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "#${rowData.index + 1}",
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.padding(horizontal = 5.dp))
+                    Text(text = rowData.nickname)
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = rowData.info,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = rowData.info,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+
+//            AnimatedVisibility(visible = expanded) {
+//                val firstMusics = rowData.extraInfo as? List<*>
+//                val chuMusics = firstMusics?.filterIsInstance<ChunithmFirstLeaderboardMusicEntry>()
+//                val maiMusics = firstMusics?.filterIsInstance<MaimaiFirstLeaderboardMusicEntry>()
+//                Row (
+//                    modifier = Modifier.fillMaxWidth(),
+//                    horizontalArrangement = Arrangement.SpaceBetween,
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//                    if (chuMusics != null) {
+//
+//                    } else if (maiMusics != null) {
+//
+//                    } else {
+//                        expanded = false
+//                    }
+//                }
+//            }
         }
     }
 }
-
-data class HomeLeaderboardRowData(
-    val index: Int = 0,
-    val uid: Int = 0,
-    val username: String = "",
-    val nickname: String = "",
-    val info: String = ""
-)

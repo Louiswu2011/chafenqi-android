@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -22,6 +23,7 @@ class SettingsStore(private val context: Context) {
 
         private val homeDefaultGameKey = intPreferencesKey("homeDefaultGame")
         private val homeShowRefreshButtonKey = booleanPreferencesKey("homeShowRefreshButton")
+        private val homeArrangementKey = stringPreferencesKey("homeArrangement")
 
         private val infoLevelsChunithmDefaultLevelKey =
             intPreferencesKey("infoLevelsChunithmDefaultLevel")
@@ -33,6 +35,14 @@ class SettingsStore(private val context: Context) {
         private val qsCopyTargetGameKey = intPreferencesKey("qsCopyTargetGame")
         private val qsShouldForwardKey = booleanPreferencesKey("qsShouldForward")
         private val qsShouldAutoJumpKey = booleanPreferencesKey("qsShouldAutoJump")
+    }
+
+    var homeArrangement: Flow<String> =
+        context.settingsStore.data.map { it[homeArrangementKey] ?: "最近动态|Rating分析|排行榜" }
+        private set
+
+    suspend fun setHomeArrangement(value: String) {
+        context.settingsStore.edit { it[homeArrangementKey] = value }
     }
 
     var loginBiometricEnabled: Flow<Boolean> =

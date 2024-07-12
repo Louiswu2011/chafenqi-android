@@ -1,5 +1,6 @@
 package com.nltv.chafenqi.view.songlist
 
+import android.graphics.drawable.Drawable
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,6 +13,7 @@ import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import com.nltv.chafenqi.storage.user.CFQUser
+import com.nltv.chafenqi.util.ChartImageGrabber
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -38,6 +40,13 @@ val chunithmDifficultyColors = listOf(
     Color.White
 )
 
+data class SongDetailUiState(
+    var chartUrls: List<String> = emptyList(),
+    var expertAvailable: Boolean = false,
+    var chartImages: MutableList<Drawable?> = mutableListOf(null, null, null),
+    var chartExpanded: Boolean = false
+)
+
 class SongDetailViewModel : ViewModel() {
     private val tag = this::class.java.canonicalName
 
@@ -59,6 +68,11 @@ class SongDetailViewModel : ViewModel() {
 
     val maiDiffInfos: MutableList<MaimaiDifficultyInfo> = mutableListOf()
     val chuDiffInfos: MutableList<ChunithmDifficultyInfo> = mutableListOf()
+
+    private val _uiState = MutableStateFlow(SongDetailUiState())
+    val uiState = _uiState.asStateFlow()
+
+    val images = mutableListOf<Drawable?>(null, null, null)
 
     fun update(mode: Int, index: Int) {
         this.index = index
@@ -113,6 +127,40 @@ class SongDetailViewModel : ViewModel() {
             }
 
             difficultyColors = maimaiDifficultyColors
+        }
+    }
+
+    fun updateChartUrls(diffIndex: Int) {
+        viewModelScope.launch {
+            val urls = ChartImageGrabber.getChartImageUrls(
+                ChartImageGrabber.MusicInfo(
+                    title = chuMusic?.title ?: "",
+                    diffIndex = diffIndex
+                )
+            )
+            _uiState.update {
+                it.copy(
+                    chartUrls = urls
+                )
+            }
+        }
+    }
+
+    fun updateChartImage(index: Int, drawable: Drawable) {
+        _uiState.update {
+            it.copy(
+                chartImages = it.chartImages.apply {
+                    set(index, drawable)
+                }
+            )
+        }
+    }
+
+    fun toggleExpand() {
+        _uiState.update {
+            it.copy(
+                chartExpanded = !it.chartExpanded
+            )
         }
     }
 }
