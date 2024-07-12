@@ -36,7 +36,6 @@ import java.util.Locale
 @Composable
 fun HomePageLeaderboardSection(navController: NavController) {
     val model: HomePageViewModel = viewModel()
-    val uiState by model.uiState.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -206,6 +205,8 @@ fun HomePageMaimaiLeaderboardInfo() {
 
 @Composable
 fun HomePageLeaderboardBar(navController: NavController) {
+    val model: HomePageViewModel = viewModel()
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -221,7 +222,11 @@ fun HomePageLeaderboardBar(navController: NavController) {
             text = "显示全部",
             fontSize = TextUnit(14f, TextUnitType.Sp),
             modifier = Modifier.clickable {
-                navController.navigate(HomeNavItem.Home.route + "/leaderboard")
+                if (model.user.isPremium) {
+                    navController.navigate(HomeNavItem.Home.route + "/leaderboard")
+                } else {
+                    navController.navigate(HomeNavItem.Home.route + "/settings/user/redeem")
+                }
             },
             color = MaterialTheme.colorScheme.primary
         )
