@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ShowChart
 import androidx.compose.material.icons.filled.DashboardCustomize
 import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Leaderboard
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PersonSearch
@@ -36,6 +37,11 @@ data class PremiumPerkData(
 )
 
 val PREMIUM_PERKS = listOf(
+    PremiumPerkData(
+        title = "国服排行榜",
+        text = "查看Rating、总分、总游玩曲目、榜一获得数的总榜及详细信息",
+        icon = Icons.Default.Leaderboard
+    ),
     PremiumPerkData(
         title = "详细个人信息",
         text = "全面查看各难度歌曲完成情况、已获得的收藏品和人物立绘",
