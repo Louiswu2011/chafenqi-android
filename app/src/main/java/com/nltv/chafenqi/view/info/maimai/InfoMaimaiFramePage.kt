@@ -65,7 +65,7 @@ fun InfoMaimaiFramePage(navController: NavController) {
                 stickyHeader { MaimaiFrameStickyHeader(area = it.key, size = it.value.size) }
                 items(
                     count = it.value.size,
-                    key = { index -> it.value[index].name }
+                    key = { index -> it.key + it.value[index].name }
                 ) { index ->
                     MaimaiFrameListEntry(entry = it.value[index])
                 }

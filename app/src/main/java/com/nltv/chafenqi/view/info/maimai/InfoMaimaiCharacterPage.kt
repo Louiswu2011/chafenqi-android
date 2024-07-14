@@ -64,7 +64,7 @@ fun InfoMaimaiCharacterPage(navController: NavController) {
                 stickyHeader { MaimaiCharacterStickyHeader(area = it.key, size = it.value.size) }
                 items(
                     count = it.value.size,
-                    key = { index -> it.value[index].name }
+                    key = { index -> it.key + it.value[index].name }
                 ) { index ->
                     MaimaiCharacterListEntry(entry = it.value[index])
                 }

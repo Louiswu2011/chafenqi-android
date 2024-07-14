@@ -64,7 +64,7 @@ fun InfoMaimaiTrophyPage(navController: NavController) {
                 stickyHeader { MaimaiTrophyStickyHeader(type = it.key, size = it.value.size) }
                 items(
                     count = it.value.size,
-                    key = { index -> it.value[index].name }
+                    key = { index -> it.key + it.value[index].name }
                 ) { index ->
                     MaimaiTrophyListEntry(entry = it.value[index])
                 }

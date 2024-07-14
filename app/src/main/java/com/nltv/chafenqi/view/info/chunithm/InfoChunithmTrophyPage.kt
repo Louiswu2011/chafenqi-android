@@ -64,7 +64,7 @@ fun InfoChunithmTrophyPage(navController: NavController) {
                 stickyHeader { ChunithmTrophyStickyHeader(type = it.key, size = it.value.size) }
                 items(
                     count = it.value.size,
-                    key = { index -> it.value[index].name }
+                    key = { index -> it.key + it.value[index].name }
                 ) { index ->
                     ChunithmTrophyListEntry(entry = it.value[index])
                 }
