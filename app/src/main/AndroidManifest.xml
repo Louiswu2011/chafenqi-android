@@ -26,7 +26,8 @@
             android:name=".updater.ChafenqiProxy"
             android:enabled="true"
             android:exported="true"
-            android:permission="android.permission.BIND_VPN_SERVICE">
+            android:permission="android.permission.BIND_VPN_SERVICE"
+            android:icon="@drawable/app_icon">
             <intent-filter>
                 <action android:name="android.net.VpnService"/>
             </intent-filter>

@@ -12,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 val Context.cacheStore: DataStore<Preferences> by preferencesDataStore(name = "cacheStore")
-const val ONE_SIGNAL_APP_ID = "61d8cb1c-6de2-4b50-af87-f419b2d24ece"
+// const val ONE_SIGNAL_APP_ID = "61d8cb1c-6de2-4b50-af87-f419b2d24ece"
 
 class ChafenqiApplication : Application() {
 
@@ -32,10 +32,10 @@ class ChafenqiApplication : Application() {
         super.onCreate()
 
         // OneSignal setup
-        OneSignal.Debug.logLevel = LogLevel.INFO
-        OneSignal.initWithContext(this, ONE_SIGNAL_APP_ID)
+        // OneSignal.Debug.logLevel = LogLevel.INFO
+        // OneSignal.initWithContext(this, ONE_SIGNAL_APP_ID)
         CoroutineScope(Dispatchers.IO).launch {
-            OneSignal.Notifications.requestPermission(true)
+            // OneSignal.Notifications.requestPermission(true)
         }
     }
 }

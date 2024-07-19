@@ -63,6 +63,7 @@ class ChafenqiProxy : VpnService() {
         val intent = Intent(context, ChafenqiProxy::class.java)
         intent.action = ACTION_STOP
         context.startForegroundService(intent)
+        stopSelf()
     }
 
     private external fun jni_init()
