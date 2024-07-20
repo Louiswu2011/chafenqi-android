@@ -10,13 +10,13 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="com.nltv.chafenqi" />
-                  <option name="mobileSdkAppId" value="1:614557947796:android:ef00f8a4de022e346d6181" />
-                  <option name="projectId" value="louiswu-2011" />
-                  <option name="projectNumber" value="614557947796" />
+                  <option name="mobileSdkAppId" value="1:111132677417:android:6976eaf21f93ce9fd15338" />
+                  <option name="projectId" value="chafenqi-ios" />
+                  <option name="projectNumber" value="111132677417" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
-              <option name="timeIntervalDays" value="SEVEN_DAYS" />
+              <option name="timeIntervalDays" value="THIRTY_DAYS" />
               <option name="visibilityType" value="ALL" />
             </InsightsFilterSettings>
           </value>

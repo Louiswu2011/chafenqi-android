@@ -34,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -49,6 +50,10 @@ import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.extension.toRateString
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRatingEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiBestScoreEntry
+import com.nltv.chafenqi.view.home.rating.screenshot.HomeRatingScreenshotButton
+import com.nltv.chafenqi.view.home.rating.screenshot.HomeRatingScreenshotChunithmData
+import com.nltv.chafenqi.view.home.rating.screenshot.HomeRatingScreenshotMaimaiData
+import com.nltv.chafenqi.view.home.rating.screenshot.getActivityOrNull
 import com.nltv.chafenqi.view.module.RatingBadge
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
 import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
@@ -56,6 +61,7 @@ import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeRatingPage(navController: NavController) {
+    val activity = LocalContext.current.getActivityOrNull()
     val model = viewModel<HomeRatingPageViewModel>().also { it.update() }
 
     Scaffold(
@@ -74,7 +80,30 @@ fun HomeRatingPage(navController: NavController) {
                             contentDescription = "返回上一级"
                         )
                     }
-                }
+                },
+//                actions = {
+//                    if (activity == null) return@TopAppBar
+//                    HomeRatingScreenshotButton(
+//                        activity = activity,
+//                        mode = model.mode,
+//                        maiData = HomeRatingScreenshotMaimaiData(
+//                            pastList = model.maiPastList,
+//                            newList = model.maiNewList,
+//                            rating = model.maiRating,
+//                            pastRating = model.maiPastRating,
+//                            newRating = model.maiNewRating,
+//                            navController = navController
+//                        ),
+//                        chuData = HomeRatingScreenshotChunithmData(
+//                            bestList = model.chuBestList,
+//                            recentList = model.chuRecentList,
+//                            rating = model.chuRating,
+//                            bestRating = model.chuBestRating,
+//                            recentRating = model.chuRecentRating,
+//                            navController = navController
+//                        )
+//                    )
+//                }
             )
         },
         containerColor = MaterialTheme.colorScheme.surface
