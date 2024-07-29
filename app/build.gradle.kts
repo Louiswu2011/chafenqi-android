@@ -113,9 +113,6 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
-    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -134,6 +131,9 @@ android {
             include("armeabi-v7a", "arm64-v8a")
             isUniversalApk = false
         }
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
 }
 
@@ -207,4 +207,6 @@ dependencies {
     implementation("io.coil-kt:coil:2.6.0")
 
     implementation("dev.shreyaspatil:capturable:2.1.0")
+
+    implementation("androidx.glance:glance-material3:1.1.0")
 }
