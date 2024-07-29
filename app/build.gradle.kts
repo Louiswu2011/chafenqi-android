@@ -145,6 +145,7 @@ val ktorVersion = "2.3.12"
 val composePreferences = "0.4.7"
 
 dependencies {
+    implementation("androidx.glance:glance-appwidget:1.1.0")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
     implementation(platform("androidx.compose:compose-bom:2024.06.00"))

@@ -3,6 +3,9 @@ package com.nltv.chafenqi.storage.user
 import android.content.Context
 import android.text.format.DateFormat
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
 import com.nltv.chafenqi.data.leaderboard.ChunithmRatingLeaderboard
 import com.nltv.chafenqi.data.leaderboard.ChunithmRatingLeaderboardItem
 import com.nltv.chafenqi.data.leaderboard.ChunithmTotalPlayedLeaderboard
@@ -61,7 +64,7 @@ object CFQUser {
     var username = ""
     var isPremium = false
 
-    var mode = 1
+    var mode by mutableIntStateOf(0)
 
     var maimai = Maimai
     var chunithm = Chunithm
