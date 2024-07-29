@@ -20,7 +20,7 @@ class PremiumRedeemPageViewModel : ViewModel() {
 
     fun openPremiumPurchaseWebpage(handler: UriHandler) {
         handler.openUri(
-            Uri.parse("https://afdian.net/a/chafenqi")
+            Uri.parse("https://afdian.com/a/chafenqi")
                 .toString()
         )
     }
