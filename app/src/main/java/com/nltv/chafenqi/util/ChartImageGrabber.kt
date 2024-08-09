@@ -13,9 +13,9 @@ object ChartImageGrabber {
     fun getChartImageUrls(musicInfo: MusicInfo): List<String> {
         val title = musicInfo.title
         val diff = difficultyTag[musicInfo.diffIndex]
-        val barUrl = "http://43.139.107.206:8083/api/chunithm/chart?title=${title}&type=bar"
-        val bgUrl = "http://43.139.107.206:8083/api/chunithm/chart?title=${title}&type=bg"
-        val chartUrl = "http://43.139.107.206:8083/api/chunithm/chart?title=${title}&type=${diff}"
+        val barUrl = "https://chafenqi.nltv.top/api/chunithm/chart?title=${title}&type=bar"
+        val bgUrl = "https://chafenqi.nltv.top/api/chunithm/chart?title=${title}&type=bg"
+        val chartUrl = "https://chafenqi.nltv.top/api/chunithm/chart?title=${title}&type=${diff}"
 
         return listOf(bgUrl, barUrl, chartUrl)
     }

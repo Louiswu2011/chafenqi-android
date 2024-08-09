@@ -59,7 +59,7 @@ class RecentDetailPageViewModel : ViewModel() {
                 CFQPersistentData.Chunithm.musicList.firstOrNull { it.musicID.toString() == chuEntry?.idx }
             // Log.i(tag, "Loaded chunithm music ${chuMusic?.title} from ${chuEntry?.title}")
 
-            coverUrl = "http://43.139.107.206:8083/api/chunithm/cover?musicId=${chuMusic?.musicID}"
+            coverUrl = "https://chafenqi.nltv.top/api/chunithm/cover?musicId=${chuMusic?.musicID}"
             title = chuMusic?.title ?: ""
             artist = chuMusic?.artist ?: ""
             playDateString = chuEntry?.timestamp?.toDateString(context) ?: ""

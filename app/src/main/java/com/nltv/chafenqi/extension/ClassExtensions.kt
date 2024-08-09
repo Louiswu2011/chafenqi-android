@@ -125,7 +125,7 @@ fun Long.toYMDString(): String {
 }
 
 fun Int.toChunithmCoverPath(): String =
-    "http://43.139.107.206:8083/api/chunithm/cover?musicId=${this}"
+    "https://chafenqi.nltv.top/api/chunithm/cover?musicId=${this}"
 
 fun Int.toMaimaiLevelString(): String {
     if (this <= 6) return this.toString()

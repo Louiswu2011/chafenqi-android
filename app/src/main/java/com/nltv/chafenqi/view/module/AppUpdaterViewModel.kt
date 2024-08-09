@@ -59,7 +59,7 @@ class AppUpdaterViewModel : ViewModel() {
             Files.deleteIfExists(apkFile.toPath())
             try {
                 val request = CFQServer.client.prepareGet {
-                    url("http://43.139.107.206:8083/download/android/latest")
+                    url("https://chafenqi.nltv.top/download/android/latest")
                 }
                 request.execute { response ->
                     var offset = 0f

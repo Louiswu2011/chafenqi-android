@@ -80,7 +80,7 @@ class SongDetailViewModel : ViewModel() {
             chuMusic = CFQPersistentData.Chunithm.musicList.getOrNull(index)
             if (chuMusic == null) return
 
-            coverUrl = "http://43.139.107.206:8083/api/chunithm/cover?musicId=${chuMusic?.musicID}"
+            coverUrl = "https://chafenqi.nltv.top/api/chunithm/cover?musicId=${chuMusic?.musicID}"
             title = chuMusic?.title ?: ""
             artist = chuMusic?.artist ?: ""
             constants = chuMusic?.charts?.constants?.map { String.format("%.1f", it) }
