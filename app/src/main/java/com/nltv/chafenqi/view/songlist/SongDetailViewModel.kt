@@ -132,12 +132,10 @@ class SongDetailViewModel : ViewModel() {
 
     fun updateChartUrls(diffIndex: Int) {
         viewModelScope.launch {
-            val urls = ChartImageGrabber.getChartImageUrls(
-                ChartImageGrabber.MusicInfo(
-                    title = chuMusic?.title ?: "",
-                    diffIndex = diffIndex
-                )
-            )
+            val urls = ChartImageGrabber.getChartPreviewImageUrls(chartInfo = ChartImageGrabber.ChartInfo(
+                musicId = chuMusic?.musicID?.toString() ?: "-1",
+                diffIndex = diffIndex
+            ))
             _uiState.update {
                 it.copy(
                     chartUrls = urls
