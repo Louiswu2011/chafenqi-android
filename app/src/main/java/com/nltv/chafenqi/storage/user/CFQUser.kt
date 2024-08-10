@@ -35,6 +35,7 @@ import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiDeltaEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiExtraInfo
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiUserInfo
+import com.nltv.chafenqi.storage.log.MaimaiLogData
 import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
@@ -77,6 +78,7 @@ object CFQUser {
         var recent = listOf<MaimaiRecentScoreEntry>()
         var delta = listOf<MaimaiDeltaEntry>()
         var extra = MaimaiExtraInfo()
+        var log: MaimaiLogData? = null
 
         var isBasicEmpty = true
         var isExtraEmpty = true
@@ -184,6 +186,8 @@ object CFQUser {
                         )
                     )
                 }
+
+                log = MaimaiLogData(recentEntries = recent, deltaEntries = delta)
 
                 Log.i(tag, "Loaded maimai auxiliary data.")
             }

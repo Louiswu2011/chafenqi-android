@@ -53,11 +53,13 @@ import com.nltv.chafenqi.view.home.HomeNavItem
 import com.nltv.chafenqi.view.module.RatingBadge
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
 import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
-import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
-import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
-import com.patrykandpatrick.vico.compose.chart.Chart
-import com.patrykandpatrick.vico.compose.chart.line.lineChart
-import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
+import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottomAxis
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStartAxis
+import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
+import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
+import com.patrykandpatrick.vico.core.cartesian.data.AxisValueOverrider
+import java.util.Locale
 
 @Composable
 fun MusicRecordPage(navController: NavController, mode: Int, index: Int, levelIndex: Int) {
@@ -109,37 +111,37 @@ fun MusicRecordScoreChart() {
     val model: MusicRecordPageViewModel = viewModel()
     val uiState by model.uiState.collectAsStateWithLifecycle()
 
-    Chart(
-        chart = lineChart(
-            // TODO: Add custom min and max value
-            axisValuesOverrider = AxisValuesOverrider.fixed(
-                minY = 0f,
-                maxY = if (model.mode == 0) 1010000f else 101f
+    CartesianChartHost(
+        chart = rememberCartesianChart(
+            rememberLineCartesianLayer(
+                axisValueOverrider = AxisValueOverrider.fixed(
+                    minY = 0.0,
+                    maxY = if (model.mode == 0) 1010000.0 else 101.0
+                )
+            ),
+            startAxis = rememberStartAxis(
+                valueFormatter = { value, _, _ ->
+                    if (model.mode == 0) {
+                        String.format(Locale.getDefault(), "%.0f", value)
+                    } else {
+                        String.format(Locale.getDefault(), "%.4f", value) + "%"
+                    }
+                }
+            ),
+            bottomAxis = rememberBottomAxis(
+                valueFormatter = { value, _, _ ->
+                    if (model.mode == 0) {
+                        uiState.chuHistoryDateStringMap[value.toInt()] ?: ""
+                    } else {
+                        uiState.maiHistoryDateStringMap[value.toInt()] ?: ""
+                    }
+                }
             )
         ),
-        chartModelProducer = if (model.mode == 0) model.chuEntryProvider else model.maiEntryProvider,
+        modelProducer = if (model.mode == 0) model.chuEntryProvider else model.maiEntryProvider,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(SCREEN_PADDING),
-        startAxis = rememberStartAxis(
-            valueFormatter = { value, _ ->
-                if (model.mode == 0) {
-                    String.format("%.0f", value)
-                } else {
-                    String.format("%.4f", value) + "%"
-                }
-            }
-        ),
-        bottomAxis = rememberBottomAxis(
-            valueFormatter = { value, _ ->
-                if (model.mode == 0) {
-                    uiState.chuHistoryDateStringMap[value.toInt()] ?: ""
-                } else {
-                    uiState.maiHistoryDateStringMap[value.toInt()] ?: ""
-                }
-            }
-        )
-    )
+            .padding(SCREEN_PADDING))
 }
 
 @Composable

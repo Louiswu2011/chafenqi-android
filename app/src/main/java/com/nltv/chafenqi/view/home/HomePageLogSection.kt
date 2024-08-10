@@ -2,6 +2,7 @@ package com.nltv.chafenqi.view.home
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,6 +19,14 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+
+@Composable
+fun HomePageLogSection(navController: NavController) {
+    Column {
+        HomePageLogBar(navController = navController)
+        HomePageLogInfo()
+    }
+}
 
 @Composable
 fun HomePageLogBar(navController: NavController) {
@@ -40,7 +49,7 @@ fun HomePageLogBar(navController: NavController) {
             text = "显示全部",
             fontSize = TextUnit(14f, TextUnitType.Sp),
             modifier = Modifier.clickable(enabled = uiState.canNavigateToRatingList) {
-                navController.navigate(HomeNavItem.Home.route + "/rating")
+                navController.navigate(HomeNavItem.Home.route + "/log")
             },
             color = MaterialTheme.colorScheme.primary
         )
@@ -49,4 +58,5 @@ fun HomePageLogBar(navController: NavController) {
 
 @Composable
 fun HomePageLogInfo() {
+
 }

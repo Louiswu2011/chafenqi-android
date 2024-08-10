@@ -185,12 +185,13 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics-ktx")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
     implementation("androidx.compose.material:material:1.6.8")
     implementation("io.github.alexzhirkevich:qrose:1.0.1")
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
     implementation("com.google.accompanist:accompanist-permissions:0.34.0")
     implementation("com.google.accompanist:accompanist-drawablepainter:0.35.1-alpha")
-    implementation("com.patrykandpatrick.vico:compose-m3:1.14.0")
+    implementation("com.patrykandpatrick.vico:compose-m3:2.0.0-alpha.27")
 
     implementation("com.github.MFlisar.ComposePreferences:core:$composePreferences")
     implementation("com.github.MFlisar.ComposePreferences:screen-bool:$composePreferences")

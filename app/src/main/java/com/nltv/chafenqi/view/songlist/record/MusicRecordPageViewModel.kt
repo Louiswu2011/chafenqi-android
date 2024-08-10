@@ -9,8 +9,9 @@ import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import com.nltv.chafenqi.storage.user.CFQUser
-import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
-import com.patrykandpatrick.vico.core.entry.entryOf
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
+import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
+import com.patrykandpatrick.vico.core.cartesian.layer.ColumnCartesianLayer.ColumnProvider.Companion.series
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -39,8 +40,8 @@ class MusicRecordPageViewModel : ViewModel() {
 
     val mode = CFQUser.mode
 
-    val chuEntryProvider = ChartEntryModelProducer()
-    val maiEntryProvider = ChartEntryModelProducer()
+    val chuEntryProvider = CartesianChartModelProducer()
+    val maiEntryProvider = CartesianChartModelProducer()
 
     fun update(mode: Int, index: Int, levelIndex: Int) {
         when {
@@ -60,10 +61,11 @@ class MusicRecordPageViewModel : ViewModel() {
                     )
                 }
                 viewModelScope.launch {
-                    val result = chuEntryProvider.setEntriesSuspending(
-                        entries.reversed().mapIndexed { index, entry ->
-                            entryOf(index, entry.score)
-                        })
+                    chuEntryProvider.runTransaction {
+                        lineSeries {
+                            series(entries.reversed().map { it.score })
+                        }
+                    }
                 }
             }
 
@@ -83,10 +85,11 @@ class MusicRecordPageViewModel : ViewModel() {
                     )
                 }
                 viewModelScope.launch {
-                    val result = maiEntryProvider.setEntriesSuspending(
-                        entries.reversed().mapIndexed { index, entry ->
-                            entryOf(index, entry.achievements)
-                        })
+                    maiEntryProvider.runTransaction {
+                        lineSeries {
+                            series(entries.reversed().map { it.achievements })
+                        }
+                    }
                 }
             }
         }

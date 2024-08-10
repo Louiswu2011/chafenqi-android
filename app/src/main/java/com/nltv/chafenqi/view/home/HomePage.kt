@@ -171,8 +171,7 @@ fun HomePage(navController: NavController) {
                             HomePageLeaderboardSection(navController)
                             // TODO: Implement Logs
                             // if (model.user.isPremium)
-                            // HomePageLogBar(navController)
-                            // HomePageLogInfo()
+                            HomePageLogSection(navController)
                         }
                     }
                 }

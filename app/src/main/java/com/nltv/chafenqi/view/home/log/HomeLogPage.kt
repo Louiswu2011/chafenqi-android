@@ -1,0 +1,270 @@
+package com.nltv.chafenqi.view.home.log
+
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.ChangeCircle
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.nltv.chafenqi.storage.user.CFQUser
+import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStartAxis
+import com.patrykandpatrick.vico.compose.cartesian.fullWidth
+import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
+import com.patrykandpatrick.vico.compose.cartesian.marker.rememberDefaultCartesianMarker
+import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
+import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
+import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
+import com.patrykandpatrick.vico.compose.cartesian.segmented
+import com.patrykandpatrick.vico.core.cartesian.HorizontalLayout
+import com.patrykandpatrick.vico.core.cartesian.marker.CartesianMarker
+import com.patrykandpatrick.vico.core.cartesian.marker.DefaultCartesianMarker
+import com.patrykandpatrick.vico.core.common.component.TextComponent
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format
+import kotlinx.datetime.format.FormatStringsInDatetimeFormats
+import kotlinx.datetime.format.byUnicodePattern
+import kotlinx.datetime.toLocalDateTime
+import java.util.Locale
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeLogPage(navController: NavController) {
+    val model: HomeLogPageViewModel = viewModel()
+    val uiState by model.uiState.collectAsStateWithLifecycle()
+
+    Scaffold (
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = { Text(text = "出勤记录") },
+                scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
+                ),
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "返回上一级"
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { model.toggleChartAnchor() }) {
+                        Icon(
+                            imageVector = if (uiState.chartAnchorToggle) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                            contentDescription = "切换图表标志"
+                        )
+                    }
+                }
+            )
+        }
+    ) { paddingValues ->
+        Column (
+            modifier = Modifier
+                .padding(paddingValues)
+                .padding(10.dp)
+        ) {
+            HomeLogPageDataColumn()
+        }
+    }
+}
+
+@OptIn(FormatStringsInDatetimeFormats::class)
+@Composable
+fun HomeLogPageDataColumn() {
+    val model: HomeLogPageViewModel = viewModel()
+    val uiState by model.uiState.collectAsStateWithLifecycle()
+    val lazyListState = rememberLazyListState()
+
+    LaunchedEffect(CFQUser.mode) {
+        model.updateInfo(CFQUser.mode)
+    }
+
+    LazyColumn (
+        modifier = Modifier.fillMaxWidth(),
+        state = lazyListState
+    ) {
+        item {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row {
+                    HomeLogLargeInfo(
+                        title = "出勤天数",
+                        source = uiState.totalDays.toString(),
+                        modifier = Modifier.padding(end = 10.dp)
+                    )
+                    HomeLogLargeInfo(
+                        title = "游玩次数",
+                        source = uiState.totalPlayCount.toString()
+                    )
+                }
+
+                HomeLogLargeInfo(title = "预估消费", source = "￥${uiState.estimatedCost}")
+            }
+        }
+
+        item {
+            Row(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                HomeLogNormalInfo(
+                    title = "平均游玩次数",
+                    source = String.format(Locale.getDefault(), "%.2f", uiState.averagePlayPerDay),
+                    modifier = Modifier.padding(end = 10.dp)
+                )
+                HomeLogNormalInfo(title = "近7次Rating平均增长", source = uiState.averageRatingGain)
+            }
+        }
+
+        // TODO: Check fix on github
+        item { HomeLogPageDataChart() }
+
+        item { Text(text = "出勤记录", fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 20.dp)) }
+        items (
+            count = uiState.logSize,
+            key = { index -> uiState.maiLogs[index].date.epochSeconds }
+        ) {
+            TextButton(
+                onClick = { /*TODO*/ },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row (
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column {
+                        Text(text = uiState.maiLogs[it].date.toLocalDateTime(TimeZone.currentSystemDefault()).format(LocalDateTime.Format {
+                            byUnicodePattern("yyyy/MM/dd")
+                        }))
+                        Text(text = "${uiState.maiLogs[it].recentEntries.size}条记录")
+                    }
+                    Icon(imageVector = Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "In")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun HomeLogPageDataChart() {
+    val model: HomeLogPageViewModel = viewModel()
+    val uiState by model.uiState.collectAsStateWithLifecycle()
+    val chartZoomState = rememberVicoZoomState()
+    val chartScrollState = rememberVicoScrollState()
+
+    var chartMode by rememberSaveable {
+        mutableIntStateOf(0)
+    }
+
+    LaunchedEffect(chartMode) {
+        model.updateChart(gameMode = CFQUser.mode, chartMode = chartMode)
+    }
+
+    Column (
+        modifier = Modifier.padding(top = 30.dp)
+    ) {
+        Row (
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 10.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                AnimatedContent(targetState = chartMode, label = "animated chart title") {
+                    when (it) {
+                        0 -> Text(text = "游玩次数", fontWeight = FontWeight.Bold)
+                        1 -> Text(text = "Rating", fontWeight = FontWeight.Bold)
+                    }
+                }
+                Text(text = "历史数据")
+            }
+            Button(onClick = { chartMode = 1 - chartMode }) {
+                Icon(
+                    imageVector = Icons.Default.ChangeCircle,
+                    contentDescription = "切换图标",
+                    modifier = Modifier.size(ButtonDefaults.IconSize)
+                )
+                Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+                AnimatedContent(targetState = chartMode, label = "animated chart title") {
+                    when (it) {
+                        0 -> Text(text = "切换到Rating")
+                        1 -> Text(text = "切换到游玩次数")
+                    }
+                }
+            }
+        }
+        CartesianChartHost(
+            chart = rememberCartesianChart(
+                rememberLineCartesianLayer(),
+                startAxis = rememberStartAxis(),
+                horizontalLayout = HorizontalLayout.segmented(),
+                marker = rememberDefaultCartesianMarker(label = TextComponent())
+            ),
+            modelProducer = model.chartModelProducer,
+            // zoomState = chartZoomState,
+            // scrollState = chartScrollState
+        )
+    }
+}
+
+@Composable
+fun HomeLogLargeInfo(title: String, source: String, modifier: Modifier = Modifier) {
+    Column (
+        modifier = Modifier.then(modifier)
+    ) {
+        Text(text = title, style = MaterialTheme.typography.bodyLarge)
+        Text(text = source, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyLarge)
+    }
+}
+
+@Composable
+fun HomeLogNormalInfo(title: String, source: String, modifier: Modifier = Modifier) {
+    Column (
+        modifier = Modifier.then(modifier)
+    ) {
+        Text(text = title, style = MaterialTheme.typography.bodyMedium)
+        Text(text = source, style = MaterialTheme.typography.bodyMedium)
+    }
+}
