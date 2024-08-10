@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -62,6 +63,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.nltv.chafenqi.SCREEN_PADDING
+import com.nltv.chafenqi.view.home.HomeNavItem
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -100,8 +102,6 @@ fun PremiumRedeemPage(navController: NavController) {
                 .fillMaxWidth()
                 .fillMaxHeight()
         ) {
-            PremiumPerksPage(Modifier.weight(0.7f))
-            HorizontalDivider()
             Column(
                 Modifier
                     .fillMaxWidth()
@@ -110,60 +110,81 @@ fun PremiumRedeemPage(navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 PremiumRedeemInputField(navController, snackbarHostState)
-                PremiumRedeemInfo()
+                PremiumRedeemInfo(navController)
             }
         }
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PremiumPerksPage(modifier: Modifier) {
+fun PremiumPerksPage(navController: NavController) {
     val pageState = rememberPagerState(
         pageCount = { PREMIUM_PERKS.size }
     )
 
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .then(modifier)
-    ) {
-        HorizontalPager(
-            state = pageState,
-            modifier = Modifier.fillMaxHeight()
-        ) { page ->
-            val item = PREMIUM_PERKS[page]
-            Column(
-                modifier = Modifier
-                    .padding(SCREEN_PADDING * 5)
-                    .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Icon(imageVector = item.icon, contentDescription = item.text)
-                Text(text = item.title, style = MaterialTheme.typography.titleLarge)
-                Text(text = item.text, style = MaterialTheme.typography.bodyLarge)
-            }
-        }
-
-        Row(
-            Modifier
-                .wrapContentHeight()
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .padding(bottom = SCREEN_PADDING),
-            horizontalArrangement = Arrangement.Center
+    Scaffold (
+        topBar = {
+            TopAppBar(
+                title = { Text(text = "订阅功能") },
+                scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
+                ),
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "返回上一级"
+                        )
+                    }
+                }
+            )
+        },
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
         ) {
-            repeat(pageState.pageCount) { iteration ->
-                val color =
-                    if (pageState.currentPage == iteration) Color.DarkGray else Color.LightGray
-                Box(
+            HorizontalPager(
+                state = pageState,
+                modifier = Modifier.fillMaxHeight()
+            ) { page ->
+                val item = PREMIUM_PERKS[page]
+                Column(
                     modifier = Modifier
-                        .padding(2.dp)
-                        .clip(CircleShape)
-                        .background(color)
-                        .size(8.dp)
-                )
+                        .padding(SCREEN_PADDING * 5)
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(imageVector = item.icon, contentDescription = item.text)
+                    Text(text = item.title, style = MaterialTheme.typography.titleLarge)
+                    Text(text = item.text, style = MaterialTheme.typography.bodyLarge)
+                }
+            }
+
+            Row(
+                Modifier
+                    .wrapContentHeight()
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = SCREEN_PADDING),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                repeat(pageState.pageCount) { iteration ->
+                    val color =
+                        if (pageState.currentPage == iteration) Color.DarkGray else Color.LightGray
+                    Box(
+                        modifier = Modifier
+                            .padding(2.dp)
+                            .clip(CircleShape)
+                            .background(color)
+                            .size(8.dp)
+                    )
+                }
             }
         }
     }
@@ -261,7 +282,7 @@ fun PremiumRedeemInputField(navController: NavController, snackbarHostState: Sna
 }
 
 @Composable
-fun PremiumRedeemInfo() {
+fun PremiumRedeemInfo(navController: NavController) {
     val model: PremiumRedeemPageViewModel = viewModel()
     val uriHandler = LocalUriHandler.current
 
@@ -281,7 +302,7 @@ fun PremiumRedeemInfo() {
             Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
             Text(text = "获取兑换码")
         }
-        TextButton(onClick = { /*TODO*/ }) {
+        TextButton(onClick = { navController.navigate(HomeNavItem.Home.route + "/settings/user/perks") }) {
             Icon(
                 imageVector = Icons.Default.CardGiftcard,
                 contentDescription = "了解订阅功能",

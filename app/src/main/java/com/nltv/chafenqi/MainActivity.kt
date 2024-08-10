@@ -58,6 +58,7 @@ import com.nltv.chafenqi.view.info.maimai.InfoMaimaiNameplatePage
 import com.nltv.chafenqi.view.info.maimai.InfoMaimaiTrophyPage
 import com.nltv.chafenqi.view.info.maimai.level.InfoMaimaiLevelsPage
 import com.nltv.chafenqi.view.login.LoginPage
+import com.nltv.chafenqi.view.premium.PremiumPerksPage
 import com.nltv.chafenqi.view.premium.PremiumRedeemPage
 import com.nltv.chafenqi.view.settings.SettingsPage
 import com.nltv.chafenqi.view.settings.about.SettingsAboutPage
@@ -235,6 +236,9 @@ fun LogonPage(navController: NavHostController) {
                     navController
                 )
             }
+            composable(HomeNavItem.Home.route + "/settings/user/perks") { PremiumPerksPage(
+                navController = navController
+            ) }
             composable(HomeNavItem.Home.route + "/settings/user/bind/fish") {
                 SettingsBindFishPage(
                     navController
