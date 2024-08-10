@@ -57,11 +57,11 @@ val PREMIUM_PERKS = listOf(
         text = "精确到每日的出勤详细记录、数据变化和趋势分析",
         icon = Icons.Default.History
     ),
-    PremiumPerkData(
-        title = "小组件自定义",
-        text = "使用已获得的角色、称号、底板等装饰桌面小组件",
-        icon = Icons.Default.DashboardCustomize
-    ),
+//    PremiumPerkData(
+//        title = "小组件自定义",
+//        text = "使用已获得的角色、称号、底板等装饰桌面小组件",
+//        icon = Icons.Default.DashboardCustomize
+//    ),
     PremiumPerkData(
         title = "更多功能",
         text = "不定期加入的订阅会员限定功能",
