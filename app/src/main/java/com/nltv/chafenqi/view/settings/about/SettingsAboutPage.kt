@@ -95,7 +95,7 @@ fun PreferenceRootScope.SettingsAboutGroup(
         onClick = {
             scope.launch {
                 try {
-                    val key = "Eov_F10167LaSygnlljvkT2pNQahaIB4"
+                    val key = "8dHBqzp08fLPsbl9Wxdxi6W0vCMnzX8b"
                     uriHandler.openUri("mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26jump_from%3Dwebapi%26k%3D$key")
                 } catch (e: Exception) {
                     Log.e("Settings", "Failed to open url, error: $e")
