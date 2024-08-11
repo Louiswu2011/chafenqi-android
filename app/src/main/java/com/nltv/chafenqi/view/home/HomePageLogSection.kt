@@ -25,12 +25,13 @@ import com.nltv.chafenqi.storage.user.CFQUser
 
 @Composable
 fun HomePageLogSection(navController: NavController) {
-    if (CFQUser.isPremium) {
-        Column {
-            HomePageLogBar(navController = navController)
+    Column {
+        HomePageLogBar(navController = navController)
+        if (CFQUser.isPremium) {
             HomePageLogInfo()
         }
     }
+
 }
 
 @Composable
@@ -54,8 +55,12 @@ fun HomePageLogBar(navController: NavController) {
         Text(
             text = "显示全部",
             fontSize = TextUnit(14f, TextUnitType.Sp),
-            modifier = Modifier.clickable(enabled = uiState.canNavigateToRatingList) {
-                navController.navigate(HomeNavItem.Home.route + "/log")
+            modifier = Modifier.clickable {
+                if (CFQUser.isPremium) {
+                    navController.navigate(HomeNavItem.Home.route + "/log")
+                } else {
+                    navController.navigate(HomeNavItem.Home.route + "/premium")
+                }
             },
             color = MaterialTheme.colorScheme.primary
         )

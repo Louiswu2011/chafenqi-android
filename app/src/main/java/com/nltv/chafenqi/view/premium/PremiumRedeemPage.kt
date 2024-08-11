@@ -1,6 +1,8 @@
 package com.nltv.chafenqi.view.premium
 
 import android.util.Log
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -41,6 +44,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -61,15 +65,18 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.nltv.chafenqi.SCREEN_PADDING
 import com.nltv.chafenqi.view.home.HomeNavItem
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PremiumRedeemPage(navController: NavController) {
-    val scrollState = rememberScrollState()
     val snackbarHostState = remember {
         SnackbarHostState()
     }
+    val pageState = rememberPagerState(
+        pageCount = { PREMIUM_PERKS.size }
+    )
 
     Scaffold(
         topBar = {
@@ -99,89 +106,59 @@ fun PremiumRedeemPage(navController: NavController) {
                 .fillMaxWidth()
                 .fillMaxHeight()
         ) {
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .weight(0.3f),
-                verticalArrangement = Arrangement.Bottom,
-                horizontalAlignment = Alignment.CenterHorizontally
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight(0.6f)
+                    .padding(paddingValues)
             ) {
-                PremiumRedeemInputField(navController, snackbarHostState)
-                PremiumRedeemInfo(navController)
-            }
-        }
-    }
-}
+                HorizontalPager(
+                    state = pageState,
+                    modifier = Modifier.fillMaxHeight()
+                ) { page ->
+                    val item = PREMIUM_PERKS[page]
+                    Column(
+                        modifier = Modifier
+                            .padding(SCREEN_PADDING * 5)
+                            .fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(imageVector = item.icon, contentDescription = item.text)
+                        Text(text = item.title, style = MaterialTheme.typography.titleLarge)
+                        Text(text = item.text, style = MaterialTheme.typography.bodyLarge)
+                    }
+                }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun PremiumPerksPage(navController: NavController) {
-    val pageState = rememberPagerState(
-        pageCount = { PREMIUM_PERKS.size }
-    )
-
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(text = "订阅功能") },
-                scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
-                ),
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "返回上一级"
+                Row(
+                    Modifier
+                        .wrapContentHeight()
+                        .fillMaxWidth()
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = SCREEN_PADDING),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    repeat(pageState.pageCount) { iteration ->
+                        val color =
+                            if (pageState.currentPage == iteration) Color.DarkGray else Color.LightGray
+                        Box(
+                            modifier = Modifier
+                                .padding(2.dp)
+                                .clip(CircleShape)
+                                .background(color)
+                                .size(8.dp)
                         )
                     }
                 }
-            )
-        },
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            HorizontalPager(
-                state = pageState,
-                modifier = Modifier.fillMaxHeight()
-            ) { page ->
-                val item = PREMIUM_PERKS[page]
-                Column(
-                    modifier = Modifier
-                        .padding(SCREEN_PADDING * 5)
-                        .fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(imageVector = item.icon, contentDescription = item.text)
-                    Text(text = item.title, style = MaterialTheme.typography.titleLarge)
-                    Text(text = item.text, style = MaterialTheme.typography.bodyLarge)
-                }
             }
 
-            Row(
+            Column(
                 Modifier
-                    .wrapContentHeight()
                     .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = SCREEN_PADDING),
-                horizontalArrangement = Arrangement.Center
+                    .weight(0.4f),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                repeat(pageState.pageCount) { iteration ->
-                    val color =
-                        if (pageState.currentPage == iteration) Color.DarkGray else Color.LightGray
-                    Box(
-                        modifier = Modifier
-                            .padding(2.dp)
-                            .clip(CircleShape)
-                            .background(color)
-                            .size(8.dp)
-                    )
-                }
+                PremiumRedeemInputField(navController, snackbarHostState)
             }
         }
     }
@@ -193,6 +170,7 @@ fun PremiumRedeemInputField(navController: NavController, snackbarHostState: Sna
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val keyboardController = LocalSoftwareKeyboardController.current
+    val uriHandler = LocalUriHandler.current
 
     var redeemCode by remember {
         mutableStateOf("")
@@ -247,66 +225,46 @@ fun PremiumRedeemInputField(navController: NavController, snackbarHostState: Sna
             ),
             maxLines = 1
         )
-        Button(
-            onClick = {
-                scope.launch {
-                    if (redeemCode.isEmpty()) {
-                        snackbarHostState.showSnackbar("请输入兑换码")
-                        return@launch
-                    }
-                    redeemCode = redeemCode.filter { !it.isWhitespace() }
-                    try {
-                        if (model.redeemMembership(redeemCode)) {
-                            redeemCode = ""
-                            showRedeemSuccessAlert = true
-                            navController.navigateUp()
-                        }
-                    } catch (e: Exception) {
-                        Log.e(
-                            "PremiumRedeem",
-                            "Failed to validate redeem code $redeemCode, error: ${e.localizedMessage}"
-                        )
-                        snackbarHostState.showSnackbar("兑换失败，请检查兑换码是否有效")
-                    }
-                }
-            },
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(5.dp)
+        Row (
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "兑换")
-        }
-    }
-}
-
-@Composable
-fun PremiumRedeemInfo(navController: NavController) {
-    val model: PremiumRedeemPageViewModel = viewModel()
-    val uriHandler = LocalUriHandler.current
-
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(SCREEN_PADDING),
-        horizontalArrangement = Arrangement.SpaceAround
-    ) {
-        TextButton(onClick = { model.openPremiumPurchaseWebpage(uriHandler) }) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.OpenInNew,
-                contentDescription = "获取兑换码",
-                Modifier.size(ButtonDefaults.IconSize)
-            )
-            Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-            Text(text = "获取兑换码")
-        }
-        TextButton(onClick = { navController.navigate(HomeNavItem.Home.route + "/settings/user/perks") }) {
-            Icon(
-                imageVector = Icons.Default.CardGiftcard,
-                contentDescription = "了解订阅功能",
-                Modifier.size(ButtonDefaults.IconSize)
-            )
-            Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-            Text(text = "了解订阅功能")
+            Button(
+                onClick = {
+                    scope.launch {
+                        if (redeemCode.isEmpty()) {
+                            snackbarHostState.showSnackbar("请输入兑换码")
+                            return@launch
+                        }
+                        redeemCode = redeemCode.filter { !it.isWhitespace() }
+                        try {
+                            if (model.redeemMembership(redeemCode)) {
+                                redeemCode = ""
+                                showRedeemSuccessAlert = true
+                                navController.navigateUp()
+                            }
+                        } catch (e: Exception) {
+                            Log.e(
+                                "PremiumRedeem",
+                                "Failed to validate redeem code $redeemCode, error: ${e.localizedMessage}"
+                            )
+                            snackbarHostState.showSnackbar("兑换失败，请检查兑换码是否有效")
+                        }
+                    }
+                },
+                shape = RoundedCornerShape(5.dp),
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(text = "兑换")
+            }
+            Spacer(Modifier.width(10.dp))
+            Button(
+                onClick = { model.openPremiumPurchaseWebpage(uriHandler) },
+                shape = RoundedCornerShape(5.dp),
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(text = "获取兑换码")
+            }
         }
     }
 }
