@@ -149,7 +149,7 @@ fun HomePage(navController: NavController) {
                         Modifier
                             .padding(paddingValues)
                             .verticalScroll(scrollState),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        verticalArrangement = Arrangement.spacedBy(25.dp)
                     ) {
                         if ((model.user.mode == 1 && model.user.maimai.isBasicEmpty) || (model.user.mode == 0 && model.user.chunithm.isBasicEmpty)) {
                             EmptyDataPage()

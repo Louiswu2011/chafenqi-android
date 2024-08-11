@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -17,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 
@@ -39,6 +41,7 @@ fun HomePageLogBar(navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 10.dp)
+            .padding(bottom = 10.dp)
     ) {
         Text(
             text = "出勤记录",
@@ -58,5 +61,52 @@ fun HomePageLogBar(navController: NavController) {
 
 @Composable
 fun HomePageLogInfo() {
+    val model: HomePageViewModel = viewModel()
+    val uiState by model.uiState.collectAsState()
 
+    LaunchedEffect(model.user.mode) {
+        model.updateLog()
+    }
+
+    Row (
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 10.dp)
+    ) {
+        Row (
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Column (
+                horizontalAlignment = Alignment.Start
+            ) {
+                Text(text = uiState.logLastPlayedTime)
+                Text(text = "上次出勤时间", fontSize = 12.sp)
+            }
+            Column (
+                horizontalAlignment = Alignment.Start
+            ) {
+                Text(text = uiState.logLastPlayedCount)
+                Text(text = "游玩曲目数", fontSize = 12.sp)
+            }
+        }
+
+        Row (
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Column (
+                horizontalAlignment = Alignment.End
+            ) {
+                Text(text = uiState.logLastPlayedTime)
+                Text(text = "出勤时长", fontSize = 12.sp)
+            }
+            Column (
+                horizontalAlignment = Alignment.End
+            ) {
+                Text(text = uiState.logLastPlayedAverageScore)
+                Text(text = "平均成绩", fontSize = 12.sp)
+            }
+        }
+    }
 }

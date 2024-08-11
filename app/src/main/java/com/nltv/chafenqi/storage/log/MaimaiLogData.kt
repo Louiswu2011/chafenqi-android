@@ -25,7 +25,10 @@ class MaimaiLogData(
         var latestDeltaEntry: MaimaiDeltaEntry = MaimaiDeltaEntry(),
         var recentEntries: List<MaimaiRecentScoreEntry> = listOf(),
 
-        var hasDelta: Boolean = false
+        var hasDelta: Boolean = false,
+
+        var averageScore: Double = 0.0,
+        var duration: Instant = Instant.fromEpochSeconds(0)
     )
 
     var dayPlayed = -1
@@ -78,6 +81,11 @@ class MaimaiLogData(
                         latestDelta.achievement - previousDelta.achievement
                     record.dxScoreGain = latestDelta.dxScore - previousDelta.dxScore
                     record.syncPointGain = latestDelta.syncPoint - previousDelta.syncPoint
+                }
+
+                if (record.recentEntries.isNotEmpty()) {
+                    record.averageScore = record.recentEntries.sumOf { it.achievements.toDouble() } / record.recentEntries.size
+                    record.duration = Instant.fromEpochSeconds((record.recentEntries.last().timestamp - record.recentEntries.first().timestamp).toLong())
                 }
 
                 records = records + record

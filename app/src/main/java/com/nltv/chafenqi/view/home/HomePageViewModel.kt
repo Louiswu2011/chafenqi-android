@@ -39,6 +39,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format
+import kotlinx.datetime.format.byUnicodePattern
+import kotlinx.datetime.format.char
+import kotlinx.datetime.toLocalDateTime
+import java.util.Locale
 import kotlin.math.ceil
 
 data class HomePageUiState(
@@ -80,7 +87,12 @@ data class HomePageUiState(
 
     val isLoadingLeaderboardBar: Boolean = true,
     val maiLeaderboardRank: MutableList<LeaderboardRank?> = mutableListOf(null, null, null, null),
-    val chuLeaderboardRank: MutableList<LeaderboardRank?> = mutableListOf(null, null, null, null)
+    val chuLeaderboardRank: MutableList<LeaderboardRank?> = mutableListOf(null, null, null, null),
+
+    val logLastPlayedTime: String = "",
+    val logLastPlayedCount: String = "",
+    val logLastPlayedDuration: String = "",
+    val logLastPlayedAverageScore: String = ""
 )
 
 class HomePageViewModel : ViewModel() {
@@ -389,6 +401,75 @@ class HomePageViewModel : ViewModel() {
                                 )
                             )
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    fun updateLog() {
+        when (user.mode) {
+            0 -> {
+                if (user.chunithm.log == null) return
+                viewModelScope.launch {
+                    _uiState.update {
+                        it.copy(
+                            logLastPlayedTime = user.chunithm.log?.records?.first()?.date?.toLocalDateTime(
+                                TimeZone.currentSystemDefault()
+                            )?.format(LocalDateTime.Format {
+                                year()
+                                char('-')
+                                monthNumber()
+                                char('-')
+                                dayOfMonth()
+                            }) ?: "",
+                            logLastPlayedCount = user.chunithm.log?.records?.first()?.recentEntries?.size?.toString()
+                                ?: "",
+                            logLastPlayedDuration = user.chunithm.log?.records?.first()?.duration?.toLocalDateTime(
+                                TimeZone.currentSystemDefault()
+                            )?.format(LocalDateTime.Format {
+                                hour()
+                                char('h')
+                                char(' ')
+                                minute()
+                                char('m')
+                            }) ?: "",
+                            logLastPlayedAverageScore = String.format(Locale.getDefault(), "%.0f", user.chunithm.log?.records?.first()?.averageScore ?: 0)
+                        )
+                    }
+                }
+            }
+            1 -> {
+                if (user.maimai.log == null) return
+                viewModelScope.launch {
+                    _uiState.update {
+                        it.copy(
+                            logLastPlayedTime = user.maimai.log?.records?.first()?.date?.toLocalDateTime(
+                                TimeZone.currentSystemDefault()
+                            )?.format(LocalDateTime.Format {
+                                year()
+                                char('-')
+                                monthNumber()
+                                char('-')
+                                dayOfMonth()
+                            }) ?: "",
+                            logLastPlayedCount = user.maimai.log?.records?.first()?.recentEntries?.size?.toString()
+                                ?: "",
+                            logLastPlayedDuration = user.maimai.log?.records?.first()?.duration?.toLocalDateTime(
+                                TimeZone.currentSystemDefault()
+                            )?.format(LocalDateTime.Format {
+                                hour()
+                                char('h')
+                                char(' ')
+                                minute()
+                                char('m')
+                            }) ?: "",
+                            logLastPlayedAverageScore = String.format(
+                                Locale.getDefault(),
+                                "%.4f",
+                                user.maimai.log?.records?.first()?.averageScore ?: 0
+                            ) + "%"
+                        )
                     }
                 }
             }

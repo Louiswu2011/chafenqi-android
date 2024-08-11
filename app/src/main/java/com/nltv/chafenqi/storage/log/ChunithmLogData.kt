@@ -23,7 +23,9 @@ class ChunithmLogData(
         var latestDeltaEntry: ChunithmDeltaEntry = ChunithmDeltaEntry(),
         var recentEntries: List<ChunithmRecentScoreEntry> = listOf(),
 
-        var hasDelta: Boolean = false
+        var hasDelta: Boolean = false,
+        var averageScore: Double = 0.0,
+        var duration: Instant = Instant.fromEpochSeconds(0)
     )
 
     var dayPlayed = -1
@@ -73,6 +75,11 @@ class ChunithmLogData(
                     record.ratingGain = latestDelta.rating - previousDelta.rating
                     record.playCountGain = latestDelta.playCount - previousDelta.playCount
                     record.overpowerGain = latestDelta.rawOverpower - previousDelta.rawOverpower
+                }
+
+                if (record.recentEntries.isNotEmpty()) {
+                    record.averageScore = record.recentEntries.sumOf { it.score } / record.recentEntries.size.toDouble()
+                    record.duration = Instant.fromEpochSeconds((record.recentEntries.last().timestamp - record.recentEntries.first().timestamp).toLong())
                 }
 
                 records = records + record
