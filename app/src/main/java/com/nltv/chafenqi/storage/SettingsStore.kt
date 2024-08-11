@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -35,6 +36,8 @@ class SettingsStore(private val context: Context) {
         private val qsCopyTargetGameKey = intPreferencesKey("qsCopyTargetGame")
         private val qsShouldForwardKey = booleanPreferencesKey("qsShouldForward")
         private val qsShouldAutoJumpKey = booleanPreferencesKey("qsShouldAutoJump")
+
+        private val logDefaultPricePerRoundKey = floatPreferencesKey("logDefaultPricePerRound")
     }
 
     var homeArrangement: Flow<String> =
@@ -146,5 +149,13 @@ class SettingsStore(private val context: Context) {
 
     suspend fun setQsShouldAutoJumpKey(value: Boolean) {
         context.settingsStore.edit { it[qsShouldAutoJumpKey] = value }
+    }
+
+    var logDefaultPricePerRound: Flow<Float> =
+        context.settingsStore.data.map { it[logDefaultPricePerRoundKey] ?: 3f }
+        private set
+
+    suspend fun setLogDefaultPricePerRound(value: Float) {
+        context.settingsStore.edit { it[logDefaultPricePerRoundKey] = value }
     }
 }

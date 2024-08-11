@@ -17,6 +17,7 @@ import com.michaelflisar.composepreferences.core.PreferenceScreen
 import com.michaelflisar.composepreferences.core.classes.PreferenceSettingsDefaults
 import com.michaelflisar.composepreferences.core.hierarchy.PreferenceRootScope
 import com.michaelflisar.composepreferences.screen.bool.PreferenceBool
+import com.michaelflisar.composepreferences.screen.input.PreferenceInputNumber
 import com.michaelflisar.composepreferences.screen.list.PreferenceList
 import com.nltv.chafenqi.storage.SettingsStore
 import com.nltv.chafenqi.view.settings.GAME_LIST
@@ -47,6 +48,7 @@ fun PreferenceRootScope.SettingsHomeGroup() {
     val homeShowRefreshButton by store.homeShowRefreshButton.collectAsStateWithLifecycle(
         initialValue = false
     )
+    val logDefaultPricePerRound by store.logDefaultPricePerRound.collectAsStateWithLifecycle(initialValue = 3f)
 
     PreferenceList(
         value = homeDefaultGame,
@@ -73,5 +75,12 @@ fun PreferenceRootScope.SettingsHomeGroup() {
         title = { Text(text = "显示刷新按钮") },
         subtitle = { Text(text = "无法下拉刷新时可以使用") }
     )
-
+    PreferenceInputNumber(
+        value = logDefaultPricePerRound,
+        onValueChange = {
+            scope.launch { store.setLogDefaultPricePerRound(it) }
+        },
+        title = { Text(text = "默认单局价格") },
+        subtitle = { Text(text = "设置出勤记录中估算的单局价格") }
+    )
 }

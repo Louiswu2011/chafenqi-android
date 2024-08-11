@@ -19,7 +19,6 @@ class HomeLogPageViewModel : ViewModel() {
         val chartAnchorToggle: Boolean = true,
         val totalDays: Int = 0,
         val totalPlayCount: Int = 0,
-        val estimatedCost: Float = 0f,
         val averagePlayPerDay: Float = 0f,
         val averageRatingGain: String = "",
         val logSize: Int = 0,
@@ -70,7 +69,6 @@ class HomeLogPageViewModel : ViewModel() {
                 it.copy(
                     totalDays = maimaiLogData.dayPlayed,
                     totalPlayCount = totalPlayed,
-                    estimatedCost = totalPlayed * 3f, // TODO: Add customizable per pc cost
                     averagePlayPerDay = totalPlayed / maimaiLogData.dayPlayed.toFloat(),
                     averageRatingGain = String.format(Locale.getDefault(), "%.3f", (latestRating - oldRating).toFloat() / recentSevenEntries.size),
                     logSize = maimaiLogData.records.size,
@@ -120,7 +118,6 @@ class HomeLogPageViewModel : ViewModel() {
                 it.copy(
                     totalDays = chunithmLogData.dayPlayed,
                     totalPlayCount = totalPlayed,
-                    estimatedCost = totalPlayed * 3f, // TODO: Add customizable per pc cost
                     averagePlayPerDay = totalPlayed / chunithmLogData.dayPlayed.toFloat(),
                     averageRatingGain = String.format(Locale.getDefault(), "%.3f", (latestRating - oldRating) / recentSevenEntries.size),
                     logSize = chunithmLogData.records.size,

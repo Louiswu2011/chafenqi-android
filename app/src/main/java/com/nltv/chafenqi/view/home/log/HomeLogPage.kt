@@ -32,16 +32,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.nltv.chafenqi.storage.SettingsStore
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.view.home.HomeNavItem
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
@@ -115,6 +118,9 @@ fun HomeLogPageDataColumn(navController: NavController) {
     val model: HomeLogPageViewModel = viewModel()
     val uiState by model.uiState.collectAsStateWithLifecycle()
     val lazyListState = rememberLazyListState()
+    val context = LocalContext.current
+    val store = SettingsStore(context)
+    val logDefaultPricePerRound by store.logDefaultPricePerRound.collectAsStateWithLifecycle(initialValue = 3f)
 
     LaunchedEffect(Unit) {
         model.updateInfo(CFQUser.mode)
@@ -141,7 +147,7 @@ fun HomeLogPageDataColumn(navController: NavController) {
                     )
                 }
 
-                HomeLogLargeInfo(title = "预估消费", source = "￥${uiState.estimatedCost}")
+                HomeLogLargeInfo(title = "预估消费", source = "￥${uiState.totalPlayCount * logDefaultPricePerRound}")
             }
         }
 

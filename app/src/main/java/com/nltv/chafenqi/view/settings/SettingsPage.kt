@@ -78,7 +78,7 @@ fun PreferenceRootScope.SettingsEntry(
     PreferenceButton(
         onClick = { navController.navigate(HomeNavItem.Home.route + "/settings/home") },
         title = { Text(text = "主页") },
-        subtitle = { Text(text = "默认显示游戏、刷新按钮") },
+        subtitle = { Text(text = "默认显示游戏、刷新按钮、单局币价") },
         icon = { Icon(imageVector = Icons.Default.Home, contentDescription = "主页") }
     )
     // TODO: Fix default level index not working
