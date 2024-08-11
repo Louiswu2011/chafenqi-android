@@ -26,7 +26,8 @@ android {
     val versionProperties = Properties()
     if (!versionFile.exists()) {
         versionProperties["VERSION_PATCH"] = 0
-        versionProperties["VERSION_NUMBER"] = 0
+        versionProperties["VERSION_MAJOR"] = 0
+        versionProperties["VERSION_MINOR"] = 0
         versionProperties["VERSION_BUILD"] = 0
         versionProperties.store(versionFile.writer(), null)
     }
@@ -39,23 +40,26 @@ android {
     val mVersionName: String
 
     val appName = "chafenqi"
-    val majorVersion = "1"
-    val minorVersion = "0"
 
     if (versionFile.canRead()) {
         versionProperties.load(FileInputStream(versionFile))
-        versionProperties["VERSION_PATCH"] = (versionProperties.getProperty("VERSION_PATCH").toInt() + value).toString()
-        versionProperties["VERSION_NUMBER"] = (versionProperties.getProperty("VERSION_NUMBER").toInt() + value).toString()
+        versionProperties["VERSION_MAJOR"] = (versionProperties.getProperty("VERSION_MAJOR").toInt()).toString()
+        versionProperties["VERSION_MINOR"] = (versionProperties.getProperty("VERSION_MINOR").toInt()).toString()
+        versionProperties["VERSION_PATCH"] = (versionProperties.getProperty("VERSION_PATCH").toInt()).toString()
         versionProperties["VERSION_BUILD"] = (versionProperties.getProperty("VERSION_BUILD").toInt() + 1).toString()
 
+        val majorVersion = (versionProperties.getProperty("VERSION_MAJOR").toInt()).toString()
+        val minorVersion = (versionProperties.getProperty("VERSION_MINOR").toInt()).toString()
+        val patchVersion = (versionProperties.getProperty("VERSION_PATCH").toInt()).toString()
+
         versionProperties.store(versionFile.writer(), null)
-        mVersionName = "$majorVersion.$minorVersion.${versionProperties.getProperty("VERSION_PATCH")}"
+        mVersionName = "$majorVersion.$minorVersion.$patchVersion"
 
         defaultConfig {
             applicationId = "com.nltv.chafenqi"
             minSdk = 28
             targetSdk = 33
-            versionCode = versionProperties.getProperty("VERSION_NUMBER").toInt()
+            versionCode = versionProperties.getProperty("VERSION_MAJOR").toInt()
             versionName = "$mVersionName (${versionProperties.getProperty("VERSION_BUILD")})"
 
             testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
