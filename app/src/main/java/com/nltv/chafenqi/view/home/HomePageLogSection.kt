@@ -59,7 +59,7 @@ fun HomePageLogBar(navController: NavController) {
                 if (CFQUser.isPremium) {
                     navController.navigate(HomeNavItem.Home.route + "/log")
                 } else {
-                    navController.navigate(HomeNavItem.Home.route + "/premium")
+                    navController.navigate(HomeNavItem.Home.route + "/settings/user/redeem")
                 }
             },
             color = MaterialTheme.colorScheme.primary
