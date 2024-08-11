@@ -6,7 +6,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -57,8 +56,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.nltv.chafenqi.data.leaderboard.ChunithmDiffLeaderboardItem
 import com.nltv.chafenqi.data.ChunithmMusicStat
+import com.nltv.chafenqi.data.leaderboard.ChunithmDiffLeaderboardItem
 import com.nltv.chafenqi.extension.MAIMAI_MISS_JUDGE_TYPE
 import com.nltv.chafenqi.extension.MAIMAI_NOTE_TYPE
 import com.nltv.chafenqi.extension.RATE_COLORS_CHUNITHM
@@ -538,7 +537,8 @@ fun MaimaiStatPage(index: Int, difficulty: Int, type: String, info: MaimaiDiffic
     }
 
     Column(
-        modifier = Modifier.padding(10.dp)
+        modifier = Modifier
+            .padding(10.dp)
             .fillMaxWidth()
             .fillMaxHeight()
     ) {
@@ -559,7 +559,7 @@ fun MaimaiStatPage(index: Int, difficulty: Int, type: String, info: MaimaiDiffic
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Column (
+                Column(
                     horizontalAlignment = Alignment.Start
                 ) {
                     Text(text = "")
@@ -572,11 +572,11 @@ fun MaimaiStatPage(index: Int, difficulty: Int, type: String, info: MaimaiDiffic
                     }
                 }
 
-                Row (
+                Row(
                     horizontalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
                     MAIMAI_MISS_JUDGE_TYPE.forEachIndexed { judgeIndex, judgeType ->
-                        Column (
+                        Column(
                             horizontalAlignment = Alignment.End
                         ) {
                             Text(text = judgeType, fontWeight = FontWeight.Bold)
@@ -593,12 +593,13 @@ fun MaimaiStatPage(index: Int, difficulty: Int, type: String, info: MaimaiDiffic
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(bottom = 10.dp)
             ) {
                 Text(text = "Break", fontWeight = FontWeight.Bold)
 
-                Row (
+                Row(
                     horizontalArrangement = Arrangement.spacedBy(20.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -612,12 +613,12 @@ fun MaimaiStatPage(index: Int, difficulty: Int, type: String, info: MaimaiDiffic
                 }
             }
 
-            Row (
+            Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
             ) {
-                Column (
+                Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(text = "50/100落", fontWeight = FontWeight.Bold)
@@ -625,7 +626,7 @@ fun MaimaiStatPage(index: Int, difficulty: Int, type: String, info: MaimaiDiffic
                     Text(text = chartEntry.possibleBreakLoss[1])
                 }
 
-                Column (
+                Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(text = "SSS/SSS+容错", fontWeight = FontWeight.Bold)
@@ -646,7 +647,7 @@ fun MaimaiStatPage(index: Int, difficulty: Int, type: String, info: MaimaiDiffic
                     )
                 }
 
-                Column (
+                Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(text = "50落/Great比", fontWeight = FontWeight.Bold)

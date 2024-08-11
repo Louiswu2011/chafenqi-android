@@ -1,7 +1,5 @@
 package com.nltv.chafenqi.view.home.leaderboard
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -46,15 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.nltv.chafenqi.data.leaderboard.ChunithmFirstLeaderboardMusicEntry
-import com.nltv.chafenqi.data.leaderboard.MaimaiDiffLeaderboardItem
-import com.nltv.chafenqi.data.leaderboard.MaimaiFirstLeaderboardMusicEntry
 import com.nltv.chafenqi.storage.user.CFQUser
-import com.nltv.chafenqi.view.module.RatingBadge
-import com.nltv.chafenqi.view.songlist.stats.MaimaiLeaderboardRow
-import com.nltv.chafenqi.view.songlist.stats.toRateString
-import java.util.Locale
-import kotlin.math.exp
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -106,7 +96,7 @@ fun HomeLeaderboardPage(navController: NavController) {
         },
         containerColor = MaterialTheme.colorScheme.surface,
     ) { paddingValues ->
-        Column (
+        Column(
             modifier = Modifier.padding(paddingValues)
         ) {
             TabRow(selectedTabIndex = selectedTabIndex) {
@@ -131,7 +121,12 @@ fun HomeLeaderboardPage(navController: NavController) {
                     .weight(1f)
                     .fillMaxWidth()
             ) { index ->
-                val data = listOf(leaderboardData.ratingLeaderboard, leaderboardData.totalScoreLeaderboard, leaderboardData.totalPlayedLeaderboard, leaderboardData.firstLeaderboard)
+                val data = listOf(
+                    leaderboardData.ratingLeaderboard,
+                    leaderboardData.totalScoreLeaderboard,
+                    leaderboardData.totalPlayedLeaderboard,
+                    leaderboardData.firstLeaderboard
+                )
                 if (data[index].isNotEmpty()) {
                     HomeLeaderboardColumn(
                         size = data[index].size,

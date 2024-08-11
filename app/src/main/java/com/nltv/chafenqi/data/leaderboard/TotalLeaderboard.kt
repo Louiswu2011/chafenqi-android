@@ -42,6 +42,7 @@ data class ChunithmFirstLeaderboardItem(
     val firstCount: Int = 0,
     val firstMusics: List<ChunithmFirstLeaderboardMusicEntry> = emptyList()
 )
+
 @Serializable
 data class ChunithmFirstLeaderboardMusicEntry(
     val musicId: Int = 0,
@@ -57,6 +58,7 @@ data class MaimaiFirstLeaderboardItem(
     val firstCount: Int = 0,
     val firstMusics: List<MaimaiFirstLeaderboardMusicEntry> = emptyList()
 )
+
 @Serializable
 data class MaimaiFirstLeaderboardMusicEntry(
     val musicId: Int = 0,

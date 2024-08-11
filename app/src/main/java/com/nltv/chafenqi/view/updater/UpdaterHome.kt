@@ -78,6 +78,7 @@ fun UpdaterHomePage(navController: NavController) {
                 SnackbarResult.ActionPerformed -> {
                     navController.navigate(HomeNavItem.Home.route + "/settings/user/bind/fish")
                 }
+
                 else -> {}
             }
         }
@@ -102,7 +103,10 @@ fun UpdaterHomePage(navController: NavController) {
                 ),
                 actions = {
                     IconButton(onClick = { navController.navigate(HomeNavItem.Uploader.route + "/help") }) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.Help, contentDescription = "传分帮助")
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.Help,
+                            contentDescription = "传分帮助"
+                        )
                     }
                 }
             )
@@ -235,7 +239,12 @@ fun PreferenceRootScope.UpdaterWechatActions(snackbarHostState: SnackbarHostStat
     PreferenceButton(
         onClick = { model.openWeChat(context, uriHandler, snackbarHostState) },
         title = { Text(text = "跳转到微信") },
-        icon = { Icon(imageVector = Icons.AutoMirrored.Filled.OpenInNew, contentDescription = "跳转到微信") }
+        icon = {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.OpenInNew,
+                contentDescription = "跳转到微信"
+            )
+        }
     )
 }
 

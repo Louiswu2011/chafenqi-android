@@ -10,8 +10,8 @@ import androidx.compose.material.icons.outlined.PieChart
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nltv.chafenqi.data.leaderboard.ChunithmDiffLeaderboard
 import com.nltv.chafenqi.data.ChunithmMusicStat
+import com.nltv.chafenqi.data.leaderboard.ChunithmDiffLeaderboard
 import com.nltv.chafenqi.data.leaderboard.MaimaiDiffLeaderboard
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.persistent.CFQPersistentData
@@ -39,7 +39,7 @@ data class SongStatsTabItem(
     val selectedIcon: ImageVector
 )
 
-class SongStatsPageViewModel: ViewModel() {
+class SongStatsPageViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(SongStatsUiState())
     val statsState = _uiState.asStateFlow()
 
@@ -99,7 +99,8 @@ class SongStatsPageViewModel: ViewModel() {
             } else if (mode == 1 && CFQPersistentData.Maimai.musicList.isNotEmpty()) {
                 val maiMusic = CFQPersistentData.Maimai.musicList.getOrNull(index)
                 if (maiMusic != null) {
-                    val result = CFQServer.apiMaimaiLeaderboard(maiMusic.musicID.toInt(), type, difficulty)
+                    val result =
+                        CFQServer.apiMaimaiLeaderboard(maiMusic.musicID.toInt(), type, difficulty)
                     _uiState.update { currentValue ->
                         currentValue.copy(
                             doneLoadingLeaderboard = true,

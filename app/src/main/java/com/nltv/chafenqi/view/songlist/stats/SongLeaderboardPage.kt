@@ -309,7 +309,7 @@ fun MaimaiLeaderboardRow(
                 RatingBadge(rate = item.rate.toRateString())
                 Spacer(modifier = Modifier.padding(horizontal = 5.dp))
                 Text(
-                    text = String.format(Locale.ENGLISH ,"%.4f", item.achievements) + "%",
+                    text = String.format(Locale.ENGLISH, "%.4f", item.achievements) + "%",
                     fontWeight = FontWeight.Bold
                 )
             }

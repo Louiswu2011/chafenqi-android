@@ -3,17 +3,14 @@ package com.nltv.chafenqi.view.home.rating.screenshot
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.net.Uri
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
-import java.io.OutputStream
 
-class HomeRatingScreenshotViewModel: ViewModel() {
+class HomeRatingScreenshotViewModel : ViewModel() {
     fun shareScreenshot(bitmap: Bitmap?, context: Context): Boolean {
         if (bitmap == null) return false
 
@@ -25,7 +22,8 @@ class HomeRatingScreenshotViewModel: ViewModel() {
 
                 FileOutputStream(tempFile).use {
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
-                    val uri = FileProvider.getUriForFile(context, "com.nltv.chafenqi.provider", tempFile)
+                    val uri =
+                        FileProvider.getUriForFile(context, "com.nltv.chafenqi.provider", tempFile)
                     val shareIntent: Intent = Intent().apply {
                         action = Intent.ACTION_SEND
                         putExtra(Intent.EXTRA_STREAM, uri)

@@ -69,10 +69,13 @@ fun HomePageChunithmLeaderboardInfo() {
     val model: HomePageViewModel = viewModel()
     val uiState by model.uiState.collectAsStateWithLifecycle()
 
-    AnimatedContent(targetState = uiState.isLoadingLeaderboardBar, label = "ChunithmLeaderboardRankInfo") {
+    AnimatedContent(
+        targetState = uiState.isLoadingLeaderboardBar,
+        label = "ChunithmLeaderboardRankInfo"
+    ) {
         when (it) {
             true -> {
-                Row (
+                Row(
                     modifier = Modifier
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center,
@@ -81,10 +84,12 @@ fun HomePageChunithmLeaderboardInfo() {
                     CircularProgressIndicator()
                 }
             }
+
             false -> {
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .padding(top = 5.dp)
                 ) {
                     Column(
@@ -92,14 +97,20 @@ fun HomePageChunithmLeaderboardInfo() {
                     ) {
                         if (uiState.chuLeaderboardRank[0] is ChunithmRatingRank && uiState.chuLeaderboardRank[0] != null) {
                             val rank = uiState.chuLeaderboardRank[0] as ChunithmRatingRank
-                            Text(text = String.format(locale = Locale.ENGLISH, format = "%.2f", rank.rating))
+                            Text(
+                                text = String.format(
+                                    locale = Locale.ENGLISH,
+                                    format = "%.2f",
+                                    rank.rating
+                                )
+                            )
                             Text(text = "#${rank.rank}", fontSize = 14.sp)
                             Text(text = "Rating", fontSize = 12.sp)
                         }
                     }
                     Column(
                         horizontalAlignment = Alignment.Start
-                    )  {
+                    ) {
                         if (uiState.chuLeaderboardRank[1] is ChunithmTotalScoreRank && uiState.chuLeaderboardRank[1] != null) {
                             val rank = uiState.chuLeaderboardRank[1] as ChunithmTotalScoreRank
                             Text(text = "${rank.totalScore}")
@@ -119,7 +130,7 @@ fun HomePageChunithmLeaderboardInfo() {
                     }
                     Column(
                         horizontalAlignment = Alignment.End
-                    )  {
+                    ) {
                         if (uiState.chuLeaderboardRank[3] is ChunithmFirstRank && uiState.chuLeaderboardRank[3] != null) {
                             val rank = uiState.chuLeaderboardRank[3] as ChunithmFirstRank
                             Text(text = "${rank.firstCount}")
@@ -138,10 +149,13 @@ fun HomePageMaimaiLeaderboardInfo() {
     val model: HomePageViewModel = viewModel()
     val uiState by model.uiState.collectAsStateWithLifecycle()
 
-    AnimatedContent(targetState = uiState.isLoadingLeaderboardBar, label = "MaimaiLeaderboardRankInfo") {
+    AnimatedContent(
+        targetState = uiState.isLoadingLeaderboardBar,
+        label = "MaimaiLeaderboardRankInfo"
+    ) {
         when (it) {
             true -> {
-                Row (
+                Row(
                     modifier = Modifier
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center,
@@ -150,11 +164,13 @@ fun HomePageMaimaiLeaderboardInfo() {
                     CircularProgressIndicator()
                 }
             }
+
             false -> {
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .padding(top = 5.dp)
                 ) {
                     Column(
@@ -172,7 +188,15 @@ fun HomePageMaimaiLeaderboardInfo() {
                     ) {
                         if (uiState.maiLeaderboardRank[1] is MaimaiTotalScoreRank && uiState.maiLeaderboardRank[1] != null) {
                             val rank = uiState.maiLeaderboardRank[1] as MaimaiTotalScoreRank
-                            Text(text = "${String.format(Locale.ENGLISH, "%.4f", rank.totalAchievements)}%")
+                            Text(
+                                text = "${
+                                    String.format(
+                                        Locale.ENGLISH,
+                                        "%.4f",
+                                        rank.totalAchievements
+                                    )
+                                }%"
+                            )
                             Text(text = "#${rank.rank}", fontSize = 14.sp)
                             Text(text = "总分", fontSize = 12.sp)
                         }
@@ -189,7 +213,7 @@ fun HomePageMaimaiLeaderboardInfo() {
                     }
                     Column(
                         horizontalAlignment = Alignment.End
-                    )  {
+                    ) {
                         if (uiState.maiLeaderboardRank[3] is MaimaiFirstRank && uiState.maiLeaderboardRank[3] != null) {
                             val rank = uiState.maiLeaderboardRank[3] as MaimaiFirstRank
                             Text(text = "${rank.firstCount}")

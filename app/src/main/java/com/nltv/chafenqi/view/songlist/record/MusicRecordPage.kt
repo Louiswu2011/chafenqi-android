@@ -16,18 +16,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.OpenInNew
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -85,7 +77,10 @@ fun MusicRecordPage(navController: NavController, mode: Int, index: Int, levelIn
             Text(text = "订阅会员以查询游玩记录")
             TextButton(onClick = { navController.navigate(HomeNavItem.Home.route + "/settings/user/redeem") }) {
                 Row {
-                    Icon(imageVector = Icons.AutoMirrored.Outlined.OpenInNew, contentDescription = "订阅会员")
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Outlined.OpenInNew,
+                        contentDescription = "订阅会员"
+                    )
                     Spacer(modifier = Modifier.padding(ButtonDefaults.IconSpacing))
                     Text(text = "了解详情")
                 }

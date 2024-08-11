@@ -83,7 +83,7 @@ data class HomePageUiState(
     val chuLeaderboardRank: MutableList<LeaderboardRank?> = mutableListOf(null, null, null, null)
 )
 
-class HomePageViewModel: ViewModel() {
+class HomePageViewModel : ViewModel() {
     private val tag = "HomePageViewModel"
     val user = CFQUser
 
@@ -338,10 +338,14 @@ class HomePageViewModel: ViewModel() {
                         currentValue.copy(isLoadingLeaderboardBar = true)
                     }
                     viewModelScope.launch {
-                        val ratingRank = CFQServer.apiFetchUserLeaderboardRank<ChunithmRatingRank>(user.token)
-                        val totalScoreRank = CFQServer.apiFetchUserLeaderboardRank<ChunithmTotalScoreRank>(user.token)
-                        val totalPlayedRank = CFQServer.apiFetchUserLeaderboardRank<ChunithmTotalPlayedRank>(user.token)
-                        val firstRank = CFQServer.apiFetchUserLeaderboardRank<ChunithmFirstRank>(user.token)
+                        val ratingRank =
+                            CFQServer.apiFetchUserLeaderboardRank<ChunithmRatingRank>(user.token)
+                        val totalScoreRank =
+                            CFQServer.apiFetchUserLeaderboardRank<ChunithmTotalScoreRank>(user.token)
+                        val totalPlayedRank =
+                            CFQServer.apiFetchUserLeaderboardRank<ChunithmTotalPlayedRank>(user.token)
+                        val firstRank =
+                            CFQServer.apiFetchUserLeaderboardRank<ChunithmFirstRank>(user.token)
 
                         _uiState.update { currentValue ->
                             currentValue.copy(
@@ -357,6 +361,7 @@ class HomePageViewModel: ViewModel() {
                     }
                 }
             }
+
             1 -> {
                 if (!_uiState.value.maiLeaderboardRank.all { it != null }) {
                     // Load
@@ -364,10 +369,14 @@ class HomePageViewModel: ViewModel() {
                         currentValue.copy(isLoadingLeaderboardBar = true)
                     }
                     viewModelScope.launch {
-                        val ratingRank = CFQServer.apiFetchUserLeaderboardRank<MaimaiRatingRank>(user.token)
-                        val totalScoreRank = CFQServer.apiFetchUserLeaderboardRank<MaimaiTotalScoreRank>(user.token)
-                        val totalPlayedRank = CFQServer.apiFetchUserLeaderboardRank<MaimaiTotalPlayedRank>(user.token)
-                        val firstRank = CFQServer.apiFetchUserLeaderboardRank<MaimaiFirstRank>(user.token)
+                        val ratingRank =
+                            CFQServer.apiFetchUserLeaderboardRank<MaimaiRatingRank>(user.token)
+                        val totalScoreRank =
+                            CFQServer.apiFetchUserLeaderboardRank<MaimaiTotalScoreRank>(user.token)
+                        val totalPlayedRank =
+                            CFQServer.apiFetchUserLeaderboardRank<MaimaiTotalPlayedRank>(user.token)
+                        val firstRank =
+                            CFQServer.apiFetchUserLeaderboardRank<MaimaiFirstRank>(user.token)
 
                         _uiState.update { currentValue ->
                             currentValue.copy(

@@ -119,7 +119,12 @@ fun PreferenceRootScope.SettingsAdvancedGroup(snackbarHostState: SnackbarHostSta
     PreferenceButton(
         onClick = { model.showReloadListAlert = true },
         title = { Text(text = "刷新歌曲列表") },
-        icon = { Icon(imageVector = Icons.AutoMirrored.Filled.List, contentDescription = "刷新歌曲列表") }
+        icon = {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.List,
+                contentDescription = "刷新歌曲列表"
+            )
+        }
     )
     PreferenceButton(
         onClick = {

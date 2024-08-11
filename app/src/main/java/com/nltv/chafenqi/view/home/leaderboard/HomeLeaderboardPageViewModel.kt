@@ -3,18 +3,14 @@ package com.nltv.chafenqi.view.home.leaderboard
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.automirrored.outlined.List
-import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Leaderboard
 import androidx.compose.material.icons.filled.PieChart
 import androidx.compose.material.icons.filled.WorkspacePremium
-import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Leaderboard
-import androidx.compose.material.icons.outlined.List
 import androidx.compose.material.icons.outlined.PieChart
 import androidx.compose.material.icons.outlined.WorkspacePremium
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.nltv.chafenqi.data.leaderboard.ChunithmFirstLeaderboard
 import com.nltv.chafenqi.data.leaderboard.ChunithmFirstLeaderboardItem
 import com.nltv.chafenqi.data.leaderboard.ChunithmRatingLeaderboard
@@ -76,7 +72,7 @@ data class HomeLeaderboardRow(
     val extraInfo: Any? = null
 )
 
-class HomeLeaderboardPageViewModel: ViewModel() {
+class HomeLeaderboardPageViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(HomeLeaderboardPageUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -111,6 +107,7 @@ class HomeLeaderboardPageViewModel: ViewModel() {
             0 -> {
                 updateChunithm()
             }
+
             1 -> {
                 updateMaimai()
             }
@@ -227,14 +224,14 @@ class HomeLeaderboardPageViewModel: ViewModel() {
 
     private fun updateMaimai() {
         viewModelScope.launch {
-            if(!_uiState.value.doneLoadingMaimaiRatingLeaderboard) {
+            if (!_uiState.value.doneLoadingMaimaiRatingLeaderboard) {
                 _uiState.update {
                     it.copy(
                         doneLoadingMaimaiRatingLeaderboard = true,
                         maimaiRatingLeaderboardRawData = CFQServer.apiTotalLeaderboard<MaimaiRatingLeaderboardItem>(
                             authToken = token,
                             gameType = 1
-                            )
+                        )
                     )
                 }
             }
@@ -253,7 +250,7 @@ class HomeLeaderboardPageViewModel: ViewModel() {
             }
         }
         viewModelScope.launch {
-            if(!_uiState.value.doneLoadingMaimaiTotalScoreLeaderboard) {
+            if (!_uiState.value.doneLoadingMaimaiTotalScoreLeaderboard) {
                 _uiState.update {
                     it.copy(
                         doneLoadingMaimaiTotalScoreLeaderboard = true,
@@ -272,14 +269,18 @@ class HomeLeaderboardPageViewModel: ViewModel() {
                             uid = item.uid.toString(),
                             username = item.username,
                             nickname = item.nickname,
-                            info = String.format(Locale.ENGLISH, "%.4f", item.totalAchievements) + "%"
+                            info = String.format(
+                                Locale.ENGLISH,
+                                "%.4f",
+                                item.totalAchievements
+                            ) + "%"
                         )
                     }
                 )
             }
         }
         viewModelScope.launch {
-            if(!_uiState.value.doneLoadingMaimaiTotalPlayedLeaderboard) {
+            if (!_uiState.value.doneLoadingMaimaiTotalPlayedLeaderboard) {
                 _uiState.update {
                     it.copy(
                         doneLoadingMaimaiTotalPlayedLeaderboard = true,

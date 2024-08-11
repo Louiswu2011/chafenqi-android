@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import com.nltv.chafenqi.data.leaderboard.ChunithmRatingLeaderboard
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.SettingsStore.Companion.settingsStore
 import com.nltv.chafenqi.storage.songlist.MusicEntry

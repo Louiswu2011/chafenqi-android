@@ -1,17 +1,15 @@
 package com.nltv.chafenqi.networking
 
 import android.util.Log
-import com.nltv.chafenqi.data.leaderboard.ChunithmDiffLeaderboard
 import com.nltv.chafenqi.data.ChunithmMusicStat
-import com.nltv.chafenqi.data.leaderboard.MaimaiDiffLeaderboard
 import com.nltv.chafenqi.data.VersionData
+import com.nltv.chafenqi.data.leaderboard.ChunithmDiffLeaderboard
 import com.nltv.chafenqi.data.leaderboard.ChunithmFirstLeaderboardItem
-import com.nltv.chafenqi.data.leaderboard.ChunithmRatingLeaderboard
 import com.nltv.chafenqi.data.leaderboard.ChunithmRatingLeaderboardItem
 import com.nltv.chafenqi.data.leaderboard.ChunithmTotalPlayedLeaderboardItem
 import com.nltv.chafenqi.data.leaderboard.ChunithmTotalScoreLeaderboardItem
+import com.nltv.chafenqi.data.leaderboard.MaimaiDiffLeaderboard
 import com.nltv.chafenqi.data.leaderboard.MaimaiFirstLeaderboardItem
-import com.nltv.chafenqi.data.leaderboard.MaimaiRatingLeaderboard
 import com.nltv.chafenqi.data.leaderboard.MaimaiRatingLeaderboardItem
 import com.nltv.chafenqi.data.leaderboard.MaimaiTotalPlayedLeaderboardItem
 import com.nltv.chafenqi.data.leaderboard.MaimaiTotalScoreLeaderboardItem
@@ -248,7 +246,10 @@ class CFQServer {
                 }
                 return Json.decodeFromString<T>(response.bodyAsText())
             } catch (e: Exception) {
-                Log.e("CFQServer", "Failed to fetch ${T::class.simpleName ?: "error"} leaderboard rank.\n${e}")
+                Log.e(
+                    "CFQServer",
+                    "Failed to fetch ${T::class.simpleName ?: "error"} leaderboard rank.\n${e}"
+                )
                 return null
             }
         }
@@ -281,7 +282,9 @@ class CFQServer {
                         "device" to "Android"
                     )
                 )
-                if (response.status.value != 200) { return emptyList() }
+                if (response.status.value != 200) {
+                    return emptyList()
+                }
 
                 val json = response.bodyAsText()
                 return Json.decodeFromString<List<AppAnnouncement>>(json)
@@ -424,7 +427,10 @@ class CFQServer {
         }
 
         suspend fun apiChunithmMusicStat(musicId: Int, difficulty: Int): ChunithmMusicStat {
-            Log.i("CFQServer", "Fetching chunithm music stat for music $musicId, difficulty $difficulty")
+            Log.i(
+                "CFQServer",
+                "Fetching chunithm music stat for music $musicId, difficulty $difficulty"
+            )
             return try {
                 val response = fetchFromServer(
                     "GET",
@@ -437,13 +443,23 @@ class CFQServer {
                 )
                 Json.decodeFromString<ChunithmMusicStat>(response.bodyAsText())
             } catch (e: Exception) {
-                Log.e("CFQServer", "Failed to fetch chunithm music stat for music ${musicId}, difficulty ${difficulty}.\n${e}")
+                Log.e(
+                    "CFQServer",
+                    "Failed to fetch chunithm music stat for music ${musicId}, difficulty ${difficulty}.\n${e}"
+                )
                 ChunithmMusicStat()
             }
         }
 
-        suspend fun apiMaimaiLeaderboard(musicId: Int, type: String, difficulty: Int): MaimaiDiffLeaderboard {
-            Log.i("CFQServer", "Fetching maimai leaderboard for music $musicId, difficulty $difficulty")
+        suspend fun apiMaimaiLeaderboard(
+            musicId: Int,
+            type: String,
+            difficulty: Int
+        ): MaimaiDiffLeaderboard {
+            Log.i(
+                "CFQServer",
+                "Fetching maimai leaderboard for music $musicId, difficulty $difficulty"
+            )
             return try {
                 val response = fetchFromServer(
                     "GET",
@@ -457,13 +473,19 @@ class CFQServer {
                 )
                 Json.decodeFromString<MaimaiDiffLeaderboard>(response.bodyAsText())
             } catch (e: Exception) {
-                Log.e("CFQServer", "Failed to fetch maimai leaderboard for music ${musicId}, type ${type}, difficulty ${difficulty}.\n${e}")
+                Log.e(
+                    "CFQServer",
+                    "Failed to fetch maimai leaderboard for music ${musicId}, type ${type}, difficulty ${difficulty}.\n${e}"
+                )
                 emptyList()
             }
         }
 
         suspend fun apiChunithmLeaderboard(musicId: Int, difficulty: Int): ChunithmDiffLeaderboard {
-            Log.i("CFQServer", "Fetching chunithm leaderboard for music $musicId, difficulty $difficulty")
+            Log.i(
+                "CFQServer",
+                "Fetching chunithm leaderboard for music $musicId, difficulty $difficulty"
+            )
             return try {
                 val response = fetchFromServer(
                     "GET",
@@ -476,29 +498,43 @@ class CFQServer {
                 )
                 Json.decodeFromString<ChunithmDiffLeaderboard>(response.bodyAsText())
             } catch (e: Exception) {
-                Log.e("CFQServer", "Failed to fetch chunithm leaderboard for music ${musicId}, difficulty ${difficulty}.\n${e}")
+                Log.e(
+                    "CFQServer",
+                    "Failed to fetch chunithm leaderboard for music ${musicId}, difficulty ${difficulty}.\n${e}"
+                )
                 emptyList()
             }
         }
 
-        suspend inline fun <reified T> apiTotalLeaderboard(authToken: String, gameType: Int): List<T> {
+        suspend inline fun <reified T> apiTotalLeaderboard(
+            authToken: String,
+            gameType: Int
+        ): List<T> {
             val gameName = if (gameType == 0) "chunithm" else "maimai"
             val typeString = when (T::class) {
                 ChunithmRatingLeaderboardItem::class, MaimaiRatingLeaderboardItem::class -> {
                     "rating"
                 }
+
                 ChunithmTotalScoreLeaderboardItem::class, MaimaiTotalScoreLeaderboardItem::class -> {
                     "totalScore"
                 }
+
                 ChunithmTotalPlayedLeaderboardItem::class, MaimaiTotalPlayedLeaderboardItem::class -> {
                     "totalCount"
                 }
+
                 ChunithmFirstLeaderboardItem::class, MaimaiFirstLeaderboardItem::class -> {
                     "first"
                 }
-                else -> { "" }
+
+                else -> {
+                    ""
+                }
             }
-            if (typeString.isEmpty()) { return emptyList() }
+            if (typeString.isEmpty()) {
+                return emptyList()
+            }
 
             return try {
                 val response = fetchFromServer(

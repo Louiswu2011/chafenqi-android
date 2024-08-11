@@ -14,7 +14,6 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.ChangeCircle
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -32,13 +31,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -49,7 +46,6 @@ import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.view.home.HomeNavItem
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStartAxis
-import com.patrykandpatrick.vico.compose.cartesian.fullWidth
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.marker.rememberDefaultCartesianMarker
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
@@ -57,8 +53,6 @@ import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
 import com.patrykandpatrick.vico.compose.cartesian.segmented
 import com.patrykandpatrick.vico.core.cartesian.HorizontalLayout
-import com.patrykandpatrick.vico.core.cartesian.marker.CartesianMarker
-import com.patrykandpatrick.vico.core.cartesian.marker.DefaultCartesianMarker
 import com.patrykandpatrick.vico.core.common.component.TextComponent
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -74,7 +68,7 @@ fun HomeLogPage(navController: NavController) {
     val model: HomeLogPageViewModel = viewModel()
     val uiState by model.uiState.collectAsStateWithLifecycle()
 
-    Scaffold (
+    Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text(text = "出勤记录") },
@@ -102,7 +96,7 @@ fun HomeLogPage(navController: NavController) {
             )
         }
     ) { paddingValues ->
-        Column (
+        Column(
             modifier = Modifier
                 .padding(paddingValues)
                 .padding(horizontal = 10.dp)
@@ -120,13 +114,15 @@ fun HomeLogPageDataColumn(navController: NavController) {
     val lazyListState = rememberLazyListState()
     val context = LocalContext.current
     val store = SettingsStore(context)
-    val logDefaultPricePerRound by store.logDefaultPricePerRound.collectAsStateWithLifecycle(initialValue = 3f)
+    val logDefaultPricePerRound by store.logDefaultPricePerRound.collectAsStateWithLifecycle(
+        initialValue = 3f
+    )
 
     LaunchedEffect(Unit) {
         model.updateInfo(CFQUser.mode)
     }
 
-    LazyColumn (
+    LazyColumn(
         modifier = Modifier.fillMaxWidth(),
         state = lazyListState
     ) {
@@ -147,7 +143,10 @@ fun HomeLogPageDataColumn(navController: NavController) {
                     )
                 }
 
-                HomeLogLargeInfo(title = "预估消费", source = "￥${uiState.totalPlayCount * logDefaultPricePerRound}")
+                HomeLogLargeInfo(
+                    title = "预估消费",
+                    source = "￥${uiState.totalPlayCount * logDefaultPricePerRound}"
+                )
             }
         }
 
@@ -167,8 +166,14 @@ fun HomeLogPageDataColumn(navController: NavController) {
         // TODO: Check fix on github
         item { HomeLogPageDataChart() }
 
-        item { Text(text = "出勤记录", fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 20.dp)) }
-        items (
+        item {
+            Text(
+                text = "出勤记录",
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 20.dp)
+            )
+        }
+        items(
             count = uiState.logSize,
             key = { index ->
                 if (CFQUser.mode == 0) uiState.chuLogs[index].date.epochSeconds else uiState.maiLogs[index].date.epochSeconds
@@ -184,7 +189,7 @@ fun HomeLogPageDataColumn(navController: NavController) {
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Row (
+                Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -207,7 +212,10 @@ fun HomeLogPageDataColumn(navController: NavController) {
                             Text(text = "${uiState.maiLogs[it].recentEntries.size}条记录")
                         }
                     }
-                    Icon(imageVector = Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "In")
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                        contentDescription = "In"
+                    )
                 }
             }
         }
@@ -229,10 +237,10 @@ fun HomeLogPageDataChart() {
         model.updateChart(gameMode = CFQUser.mode, chartMode = chartMode)
     }
 
-    Column (
+    Column(
         modifier = Modifier.padding(top = 30.dp)
     ) {
-        Row (
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 10.dp),
@@ -279,17 +287,21 @@ fun HomeLogPageDataChart() {
 
 @Composable
 fun HomeLogLargeInfo(title: String, source: String, modifier: Modifier = Modifier) {
-    Column (
+    Column(
         modifier = Modifier.then(modifier)
     ) {
         Text(text = title, style = MaterialTheme.typography.bodyLarge)
-        Text(text = source, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyLarge)
+        Text(
+            text = source,
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.bodyLarge
+        )
     }
 }
 
 @Composable
 fun HomeLogNormalInfo(title: String, source: String, modifier: Modifier = Modifier) {
-    Column (
+    Column(
         modifier = Modifier.then(modifier)
     ) {
         Text(text = title, style = MaterialTheme.typography.bodyMedium)

@@ -9,7 +9,8 @@ data class MaimaiRatingRank(
     var nickname: String = "",
     var rating: Int = 0,
     var rank: Int = 0
-): LeaderboardRank
+) : LeaderboardRank
+
 @Serializable
 data class MaimaiTotalScoreRank(
     var uid: Int = 0,
@@ -17,7 +18,8 @@ data class MaimaiTotalScoreRank(
     var nickname: String = "",
     var totalAchievements: Double = 0.0,
     var rank: Int = 0
-): LeaderboardRank
+) : LeaderboardRank
+
 @Serializable
 data class MaimaiTotalPlayedRank(
     var uid: Int = 0,
@@ -25,9 +27,10 @@ data class MaimaiTotalPlayedRank(
     var nickname: String = "",
     var totalPlayed: Int = 0,
     var rank: Int = 0
-): LeaderboardRank
+) : LeaderboardRank
+
 @Serializable
 data class MaimaiFirstRank(
     var rank: Int = 0,
     var firstCount: Int = 0
-): LeaderboardRank
+) : LeaderboardRank

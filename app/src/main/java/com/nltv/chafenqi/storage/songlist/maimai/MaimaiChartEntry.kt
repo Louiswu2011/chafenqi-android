@@ -20,8 +20,16 @@ data class MaimaiChartEntry(
     private val breakUnitScore = 1.0 / notes.last()
 
     val possibleNormalLoss = listOf(
-        listOf(appendNotation(basicUnitScore * 0.2), appendNotation(basicUnitScore * 0.5), appendNotation(basicUnitScore)),
-        listOf(appendNotation(basicUnitScore * 0.4), appendNotation(basicUnitScore), appendNotation(basicUnitScore * 2)),
+        listOf(
+            appendNotation(basicUnitScore * 0.2),
+            appendNotation(basicUnitScore * 0.5),
+            appendNotation(basicUnitScore)
+        ),
+        listOf(
+            appendNotation(basicUnitScore * 0.4),
+            appendNotation(basicUnitScore),
+            appendNotation(basicUnitScore * 2)
+        ),
         listOf(
             appendNotation(basicUnitScore * 0.6),
             appendNotation(basicUnitScore * 1.5),

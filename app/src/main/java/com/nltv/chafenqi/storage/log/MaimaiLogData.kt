@@ -74,7 +74,8 @@ class MaimaiLogData(
                     record.hasDelta = true
                     record.ratingGain = latestDelta.rating - previousDelta.rating
                     record.playCountGain = latestDelta.playCount - previousDelta.playCount
-                    record.totalAchievementGain = latestDelta.achievement - previousDelta.achievement
+                    record.totalAchievementGain =
+                        latestDelta.achievement - previousDelta.achievement
                     record.dxScoreGain = latestDelta.dxScore - previousDelta.dxScore
                     record.syncPointGain = latestDelta.syncPoint - previousDelta.syncPoint
                 }

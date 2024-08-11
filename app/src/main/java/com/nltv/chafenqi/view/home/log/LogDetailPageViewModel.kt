@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 class LogDetailPageViewModel : ViewModel() {
     data class LogDetailPageUiState(
@@ -44,7 +43,8 @@ class LogDetailPageViewModel : ViewModel() {
             ratingGain = (entry.latestDeltaEntry.rating - previousEntry.latestDeltaEntry.rating)
         }
         val playCountGain = entry.recentEntries.size
-        val totalPlayCount = log.records.filter { it.date.epochSeconds <= entry.date.epochSeconds }.sumOf { it.recentEntries.size }
+        val totalPlayCount = log.records.filter { it.date.epochSeconds <= entry.date.epochSeconds }
+            .sumOf { it.recentEntries.size }
 
         viewModelScope.launch {
             _uiState.update {
@@ -67,7 +67,8 @@ class LogDetailPageViewModel : ViewModel() {
 
         var ratingGain = 0.0
         val playCountGain = entry.recentEntries.size
-        val totalPlayCount = log.records.filter { it.date.epochSeconds <= entry.date.epochSeconds }.sumOf { it.recentEntries.size }
+        val totalPlayCount = log.records.filter { it.date.epochSeconds <= entry.date.epochSeconds }
+            .sumOf { it.recentEntries.size }
 
         val previousEntry = log.records.getOrNull(index + 1)
         if (previousEntry != null) {

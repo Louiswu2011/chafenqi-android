@@ -1,7 +1,6 @@
 package com.nltv.chafenqi
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -21,7 +20,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.view.WindowCompat
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -33,7 +31,6 @@ import coil.ImageLoader
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.analytics.analytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.nltv.chafenqi.ui.theme.ChafenqiTheme
@@ -74,8 +71,8 @@ import com.nltv.chafenqi.view.settings.user.SettingsBindQQPage
 import com.nltv.chafenqi.view.settings.user.SettingsUserPage
 import com.nltv.chafenqi.view.songlist.SongDetailPage
 import com.nltv.chafenqi.view.songlist.SongListPage
-import com.nltv.chafenqi.view.songlist.stats.SongStatsPage
 import com.nltv.chafenqi.view.songlist.record.MusicRecordPage
+import com.nltv.chafenqi.view.songlist.stats.SongStatsPage
 import com.nltv.chafenqi.view.updater.UpdaterHelpPage
 import com.nltv.chafenqi.view.updater.UpdaterHomePage
 
@@ -192,16 +189,26 @@ fun LogonPage(navController: NavHostController) {
         ) {
             composable(HomeNavItem.Home.route) { HomePage(navController = navController) }
 
-            composable(HomeNavItem.Home.route + "/announcement") { HomeAnnouncementPage(
-                navController = navController
-            ) }
+            composable(HomeNavItem.Home.route + "/announcement") {
+                HomeAnnouncementPage(
+                    navController = navController
+                )
+            }
 
             composable(HomeNavItem.Home.route + "/log") { HomeLogPage(navController) }
             composable(HomeNavItem.Home.route + "/log/maimai/{index}") {
-                LogDetailPage(navController = navController, mode = 1, index = it.arguments?.getString("index")?.toInt() ?: 0)
+                LogDetailPage(
+                    navController = navController,
+                    mode = 1,
+                    index = it.arguments?.getString("index")?.toInt() ?: 0
+                )
             }
             composable(HomeNavItem.Home.route + "/log/chunithm/{index}") {
-                LogDetailPage(navController = navController, mode = 0, index = it.arguments?.getString("index")?.toInt() ?: 0)
+                LogDetailPage(
+                    navController = navController,
+                    mode = 0,
+                    index = it.arguments?.getString("index")?.toInt() ?: 0
+                )
             }
 
             composable(HomeNavItem.Home.route + "/recent") { HomeRecentPage(navController = navController) }
@@ -246,9 +253,11 @@ fun LogonPage(navController: NavHostController) {
                     navController
                 )
             }
-            composable(HomeNavItem.Home.route + "/settings/user/perks") { PremiumPerksPage(
-                navController = navController
-            ) }
+            composable(HomeNavItem.Home.route + "/settings/user/perks") {
+                PremiumPerksPage(
+                    navController = navController
+                )
+            }
             composable(HomeNavItem.Home.route + "/settings/user/bind/fish") {
                 SettingsBindFishPage(
                     navController

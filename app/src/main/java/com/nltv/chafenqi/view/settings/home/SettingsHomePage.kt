@@ -48,7 +48,9 @@ fun PreferenceRootScope.SettingsHomeGroup() {
     val homeShowRefreshButton by store.homeShowRefreshButton.collectAsStateWithLifecycle(
         initialValue = false
     )
-    val logDefaultPricePerRound by store.logDefaultPricePerRound.collectAsStateWithLifecycle(initialValue = 3f)
+    val logDefaultPricePerRound by store.logDefaultPricePerRound.collectAsStateWithLifecycle(
+        initialValue = 3f
+    )
 
     PreferenceList(
         value = homeDefaultGame,

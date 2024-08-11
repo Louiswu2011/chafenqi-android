@@ -6,7 +6,6 @@ import com.nltv.chafenqi.storage.log.ChunithmLogData
 import com.nltv.chafenqi.storage.log.MaimaiLogData
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
-import com.patrykandpatrick.vico.core.cartesian.data.columnSeries
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -70,7 +69,11 @@ class HomeLogPageViewModel : ViewModel() {
                     totalDays = maimaiLogData.dayPlayed,
                     totalPlayCount = totalPlayed,
                     averagePlayPerDay = totalPlayed / maimaiLogData.dayPlayed.toFloat(),
-                    averageRatingGain = String.format(Locale.getDefault(), "%.3f", (latestRating - oldRating).toFloat() / recentSevenEntries.size),
+                    averageRatingGain = String.format(
+                        Locale.getDefault(),
+                        "%.3f",
+                        (latestRating - oldRating).toFloat() / recentSevenEntries.size
+                    ),
                     logSize = maimaiLogData.records.size,
                     maiLogs = maimaiLogData.records
                 )
@@ -119,7 +122,11 @@ class HomeLogPageViewModel : ViewModel() {
                     totalDays = chunithmLogData.dayPlayed,
                     totalPlayCount = totalPlayed,
                     averagePlayPerDay = totalPlayed / chunithmLogData.dayPlayed.toFloat(),
-                    averageRatingGain = String.format(Locale.getDefault(), "%.3f", (latestRating - oldRating) / recentSevenEntries.size),
+                    averageRatingGain = String.format(
+                        Locale.getDefault(),
+                        "%.3f",
+                        (latestRating - oldRating) / recentSevenEntries.size
+                    ),
                     logSize = chunithmLogData.records.size,
                     chuLogs = chunithmLogData.records
                 )

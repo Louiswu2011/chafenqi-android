@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.net.ConnectException
 
-class LoginPageViewModel: ViewModel() {
+class LoginPageViewModel : ViewModel() {
     data class LoginUiState(
         val loginState: UIState = UIState.Pending,
         val loginPromptText: String = ""

@@ -4,9 +4,7 @@ import android.graphics.drawable.Drawable
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nltv.chafenqi.data.ChunithmMusicStat
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
-import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmBestScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiBestScoreEntry
 import com.nltv.chafenqi.storage.persistent.CFQPersistentData
@@ -15,7 +13,6 @@ import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.util.ChartImageGrabber
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -132,10 +129,12 @@ class SongDetailViewModel : ViewModel() {
 
     fun updateChartUrls(diffIndex: Int) {
         viewModelScope.launch {
-            val urls = ChartImageGrabber.getChartPreviewImageUrls(chartInfo = ChartImageGrabber.ChartInfo(
-                musicId = chuMusic?.musicID?.toString() ?: "-1",
-                diffIndex = diffIndex
-            ))
+            val urls = ChartImageGrabber.getChartPreviewImageUrls(
+                chartInfo = ChartImageGrabber.ChartInfo(
+                    musicId = chuMusic?.musicID?.toString() ?: "-1",
+                    diffIndex = diffIndex
+                )
+            )
             _uiState.update {
                 it.copy(
                     chartUrls = urls

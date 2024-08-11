@@ -2,10 +2,8 @@ package com.nltv.chafenqi.view.home.log
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -40,7 +38,7 @@ fun LogDetailPage(navController: NavController, mode: Int, index: Int) {
         model.update(mode, index)
     }
 
-    Scaffold (
+    Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text(text = "记录详情") },
@@ -60,7 +58,7 @@ fun LogDetailPage(navController: NavController, mode: Int, index: Int) {
             )
         }
     ) { paddingValues ->
-        LazyColumn (
+        LazyColumn(
             modifier = Modifier
                 .padding(paddingValues)
                 .padding(horizontal = 10.dp)
@@ -78,10 +76,14 @@ fun LogDetailPage(navController: NavController, mode: Int, index: Int) {
                     count = uiState.chunithmEntries.size,
                     key = { index -> uiState.chunithmEntries[index].timestamp }
                 ) {
-                    Column (
+                    Column(
                         modifier = Modifier.padding(vertical = 5.dp)
                     ) {
-                        HomeRecentPageEntry(entry = uiState.chunithmEntries[it], index = CFQUser.chunithm.recent.indexOf(uiState.chunithmEntries[it]), navController = navController)
+                        HomeRecentPageEntry(
+                            entry = uiState.chunithmEntries[it],
+                            index = CFQUser.chunithm.recent.indexOf(uiState.chunithmEntries[it]),
+                            navController = navController
+                        )
                     }
                 }
             } else if (mode == 1) {
@@ -89,10 +91,14 @@ fun LogDetailPage(navController: NavController, mode: Int, index: Int) {
                     count = uiState.maimaiEntries.size,
                     key = { index -> uiState.maimaiEntries[index].timestamp }
                 ) {
-                    Column (
+                    Column(
                         modifier = Modifier.padding(vertical = 5.dp)
                     ) {
-                        HomeRecentPageEntry(entry = uiState.maimaiEntries[it], index = CFQUser.maimai.recent.indexOf(uiState.maimaiEntries[it]), navController = navController)
+                        HomeRecentPageEntry(
+                            entry = uiState.maimaiEntries[it],
+                            index = CFQUser.maimai.recent.indexOf(uiState.maimaiEntries[it]),
+                            navController = navController
+                        )
                     }
                 }
             }
@@ -104,36 +110,42 @@ fun LogDetailPage(navController: NavController, mode: Int, index: Int) {
 fun LogDetailInfoColumn() {
     val model: LogDetailPageViewModel = viewModel()
     val uiState by model.uiState.collectAsStateWithLifecycle()
-    
-    Row (
+
+    Row(
         modifier = Modifier.fillMaxSize(),
         horizontalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        Column (
+        Column(
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             Text(text = "Rating")
-            Row (
+            Row(
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(text = uiState.currentRating, style = MaterialTheme.typography.bodyLarge)
                 if (uiState.currentRating != "无数据") {
-                    Text(text = "${uiState.ratingGainIndicator}${uiState.ratingGain}", style = MaterialTheme.typography.bodySmall)
+                    Text(
+                        text = "${uiState.ratingGainIndicator}${uiState.ratingGain}",
+                        style = MaterialTheme.typography.bodySmall
+                    )
                 }
             }
         }
-        Column (
+        Column(
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             Text(text = "总游玩曲目数")
-            Row (
+            Row(
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(text = uiState.currentPlayCount, style = MaterialTheme.typography.bodyLarge)
                 if (uiState.currentPlayCount != "无数据") {
-                    Text(text = "${uiState.playCountGainIndicator}${uiState.playCountGain}", style = MaterialTheme.typography.bodySmall)
+                    Text(
+                        text = "${uiState.playCountGainIndicator}${uiState.playCountGain}",
+                        style = MaterialTheme.typography.bodySmall
+                    )
                 }
             }
         }

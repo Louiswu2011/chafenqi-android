@@ -3,20 +3,12 @@ package com.nltv.chafenqi.view.home.rating.screenshot
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -30,7 +22,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -41,9 +32,7 @@ import com.nltv.chafenqi.SCREEN_PADDING
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRatingEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiBestScoreEntry
 import com.nltv.chafenqi.view.home.rating.HomeRatingChunithmEntry
-import com.nltv.chafenqi.view.home.rating.HomeRatingChunithmList
 import com.nltv.chafenqi.view.home.rating.HomeRatingMaimaiEntry
-import com.nltv.chafenqi.view.home.rating.HomeRatingMaimaiList
 
 data class HomeRatingScreenshotMaimaiData(
     val pastList: List<MaimaiBestScoreEntry>,

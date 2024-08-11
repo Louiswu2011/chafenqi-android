@@ -1,6 +1,5 @@
 package com.nltv.chafenqi.view.home.announcement
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.nltv.chafenqi.extension.toDateString
 import com.nltv.chafenqi.extension.toYMDString
 import com.nltv.chafenqi.util.AppAnnouncement
 
@@ -65,7 +63,7 @@ fun HomeAnnouncementPage(navController: NavController) {
             )
         }
     ) { paddingValues ->
-        LazyColumn (
+        LazyColumn(
             modifier = Modifier.padding(paddingValues),
             state = listState
         ) {
@@ -98,7 +96,8 @@ fun HomeAnnouncementCard(entry: AppAnnouncement) {
                 .fillMaxWidth()
         ) {
             Row(
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {

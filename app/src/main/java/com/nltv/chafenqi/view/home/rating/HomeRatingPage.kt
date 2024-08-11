@@ -50,9 +50,6 @@ import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.extension.toRateString
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRatingEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiBestScoreEntry
-import com.nltv.chafenqi.view.home.rating.screenshot.HomeRatingScreenshotButton
-import com.nltv.chafenqi.view.home.rating.screenshot.HomeRatingScreenshotChunithmData
-import com.nltv.chafenqi.view.home.rating.screenshot.HomeRatingScreenshotMaimaiData
 import com.nltv.chafenqi.view.home.rating.screenshot.getActivityOrNull
 import com.nltv.chafenqi.view.module.RatingBadge
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
