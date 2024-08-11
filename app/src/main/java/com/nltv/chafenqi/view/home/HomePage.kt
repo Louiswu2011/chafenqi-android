@@ -71,6 +71,7 @@ fun HomePage(navController: NavController) {
         initialValue = false
     )
     val defaultGame by store.homeDefaultGame.collectAsStateWithLifecycle(initialValue = 1)
+    val homeArrangement by store.homeArrangement.collectAsStateWithLifecycle(initialValue = "最近动态|Rating分析|排行榜|出勤记录")
 
     val refreshState = rememberPullRefreshState(
         refreshing = userState.isRefreshing,
@@ -154,18 +155,16 @@ fun HomePage(navController: NavController) {
                         if ((model.user.mode == 1 && model.user.maimai.isBasicEmpty) || (model.user.mode == 0 && model.user.chunithm.isBasicEmpty)) {
                             EmptyDataPage()
                         } else {
-                            HomePageNameplate(navController)
-                            HomePageRecentBar(navController)
-                            HomePageRecentLineup(navController)
-                            HomePageRatingBar(navController)
-                            if (model.user.isPremium && uiState.shouldShowRatingBar) {
-                                HomePageRatingIndicators()
-                                HomePageRatingSelection(navController)
+                            HomePageNameplateSection(navController)
+
+                            homeArrangement.split("|").forEach { item ->
+                                when (item) {
+                                    "最近动态" -> HomePageRecentSection(navController)
+                                    "Rating分析" -> HomePageRatingSection(navController)
+                                    "排行榜" -> HomePageLeaderboardSection(navController)
+                                    "出勤记录" -> HomePageLogSection(navController)
+                                }
                             }
-                            HomePageLeaderboardSection(navController)
-                            // TODO: Implement Logs
-                            // if (model.user.isPremium)
-                            HomePageLogSection(navController)
                         }
                     }
                 }

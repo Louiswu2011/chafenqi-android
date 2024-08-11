@@ -63,6 +63,7 @@ import com.nltv.chafenqi.view.settings.SettingsPage
 import com.nltv.chafenqi.view.settings.about.SettingsAboutPage
 import com.nltv.chafenqi.view.settings.about.SettingsAcknowledgePage
 import com.nltv.chafenqi.view.settings.advanced.SettingsAdvancedPage
+import com.nltv.chafenqi.view.settings.home.SettingsHomeArrangementPage
 import com.nltv.chafenqi.view.settings.home.SettingsHomePage
 import com.nltv.chafenqi.view.settings.playerInfo.SettingsInfoPage
 import com.nltv.chafenqi.view.settings.qs.SettingsQSTilePage
@@ -232,6 +233,9 @@ fun LogonPage(navController: NavHostController) {
             composable(HomeNavItem.Home.route + "/settings") { SettingsPage(navController) }
             composable(HomeNavItem.Home.route + "/settings/user") { SettingsUserPage(navController) }
             composable(HomeNavItem.Home.route + "/settings/home") { SettingsHomePage(navController) }
+            composable(HomeNavItem.Home.route + "/settings/home/arrangement") { SettingsHomeArrangementPage(
+                navController = navController
+            ) }
             composable(HomeNavItem.Home.route + "/settings/playerInfo") {
                 SettingsInfoPage(
                     navController

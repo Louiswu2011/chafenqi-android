@@ -41,7 +41,7 @@ class SettingsStore(private val context: Context) {
     }
 
     var homeArrangement: Flow<String> =
-        context.settingsStore.data.map { it[homeArrangementKey] ?: "最近动态|Rating分析|排行榜" }
+        context.settingsStore.data.map { it[homeArrangementKey] ?: "最近动态|Rating分析|排行榜|出勤记录" }
         private set
 
     suspend fun setHomeArrangement(value: String) {

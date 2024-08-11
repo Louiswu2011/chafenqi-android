@@ -52,6 +52,19 @@ import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
 import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
 
 @Composable
+fun HomePageRatingSection(navController: NavController) {
+    val model: HomePageViewModel = viewModel()
+
+    Column {
+        HomePageRatingBar(navController = navController)
+    }
+    if (model.user.isPremium) {
+        HomePageRatingIndicators()
+        HomePageRatingSelection(navController = navController)
+    }
+}
+
+@Composable
 fun HomePageRatingBar(navController: NavController) {
     val model: HomePageViewModel = viewModel()
     val uiState by model.uiState.collectAsState()

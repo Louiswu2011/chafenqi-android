@@ -21,12 +21,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.nltv.chafenqi.storage.user.CFQUser
 
 @Composable
 fun HomePageLogSection(navController: NavController) {
-    Column {
-        HomePageLogBar(navController = navController)
-        HomePageLogInfo()
+    if (CFQUser.isPremium) {
+        Column {
+            HomePageLogBar(navController = navController)
+            HomePageLogInfo()
+        }
     }
 }
 

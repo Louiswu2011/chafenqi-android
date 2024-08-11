@@ -17,9 +17,11 @@ import com.michaelflisar.composepreferences.core.PreferenceScreen
 import com.michaelflisar.composepreferences.core.classes.PreferenceSettingsDefaults
 import com.michaelflisar.composepreferences.core.hierarchy.PreferenceRootScope
 import com.michaelflisar.composepreferences.screen.bool.PreferenceBool
+import com.michaelflisar.composepreferences.screen.button.PreferenceButton
 import com.michaelflisar.composepreferences.screen.input.PreferenceInputNumber
 import com.michaelflisar.composepreferences.screen.list.PreferenceList
 import com.nltv.chafenqi.storage.SettingsStore
+import com.nltv.chafenqi.view.home.HomeNavItem
 import com.nltv.chafenqi.view.settings.GAME_LIST
 import com.nltv.chafenqi.view.settings.SettingsTopBar
 import kotlinx.coroutines.launch
@@ -34,13 +36,13 @@ fun SettingsHomePage(navController: NavController) {
             settings = PreferenceSettingsDefaults.settings(),
             scrollable = true
         ) {
-            SettingsHomeGroup()
+            SettingsHomeGroup(navController)
         }
     }
 }
 
 @Composable
-fun PreferenceRootScope.SettingsHomeGroup() {
+fun PreferenceRootScope.SettingsHomeGroup(navController: NavController) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val store = SettingsStore(context)
@@ -84,5 +86,10 @@ fun PreferenceRootScope.SettingsHomeGroup() {
         },
         title = { Text(text = "默认单局价格") },
         subtitle = { Text(text = "设置出勤记录中估算的单局价格") }
+    )
+    PreferenceButton(
+        onClick = { navController.navigate(HomeNavItem.Home.route + "/settings/home/arrangement") },
+        title = { Text(text = "主页排序") },
+        subtitle = { Text(text = "设置主页各模块的显示顺序") }
     )
 }

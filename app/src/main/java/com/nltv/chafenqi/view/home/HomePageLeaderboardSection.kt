@@ -236,6 +236,7 @@ fun HomePageLeaderboardBar(navController: NavController) {
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
+            .padding(bottom = 10.dp)
     ) {
         Text(
             text = "排行榜",

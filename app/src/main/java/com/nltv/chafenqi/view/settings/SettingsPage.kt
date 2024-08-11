@@ -1,5 +1,6 @@
 package com.nltv.chafenqi.view.settings
 
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -30,7 +31,7 @@ import com.nltv.chafenqi.view.home.HomeNavItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsTopBar(titleText: String, navController: NavController) {
+fun SettingsTopBar(titleText: String, navController: NavController, action: @Composable () -> Unit = {}) {
     LargeTopAppBar(
         title = { Text(text = titleText) },
         scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
@@ -45,7 +46,8 @@ fun SettingsTopBar(titleText: String, navController: NavController) {
                     contentDescription = "返回上一级"
                 )
             }
-        }
+        },
+        actions = { action() }
     )
 }
 
@@ -78,7 +80,7 @@ fun PreferenceRootScope.SettingsEntry(
     PreferenceButton(
         onClick = { navController.navigate(HomeNavItem.Home.route + "/settings/home") },
         title = { Text(text = "主页") },
-        subtitle = { Text(text = "默认显示游戏、刷新按钮、单局币价") },
+        subtitle = { Text(text = "默认游戏、刷新按钮、单局币价、主页排序") },
         icon = { Icon(imageVector = Icons.Default.Home, contentDescription = "主页") }
     )
     // TODO: Fix default level index not working

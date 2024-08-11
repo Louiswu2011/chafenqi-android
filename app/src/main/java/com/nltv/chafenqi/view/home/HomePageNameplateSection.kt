@@ -48,7 +48,7 @@ val nameplateMaimaiTopColor = Color(red = 167, green = 243, blue = 254)
 val nameplateMaimaiBottomColor = Color(red = 93, green = 166, blue = 247)
 
 @Composable
-fun HomePageNameplate(navController: NavController) {
+fun HomePageNameplateSection(navController: NavController) {
     val model: HomePageViewModel = viewModel()
     val uiState by model.uiState.collectAsState()
 

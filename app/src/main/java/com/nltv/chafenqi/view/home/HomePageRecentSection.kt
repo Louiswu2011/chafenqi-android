@@ -41,6 +41,14 @@ import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
 import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
 
 @Composable
+fun HomePageRecentSection(navController: NavController) {
+    Column {
+        HomePageRecentBar(navController = navController)
+        HomePageRecentLineup(navController = navController)
+    }
+}
+
+@Composable
 fun HomePageRecentBar(navController: NavController) {
     val model: HomePageViewModel = viewModel()
     val uiState by model.uiState.collectAsState()
@@ -51,6 +59,7 @@ fun HomePageRecentBar(navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 10.dp)
+            .padding(bottom = 10.dp)
     ) {
         Text(
             text = "最近动态",
