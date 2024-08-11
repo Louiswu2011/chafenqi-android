@@ -42,6 +42,7 @@ import com.nltv.chafenqi.view.home.HomePage
 import com.nltv.chafenqi.view.home.announcement.HomeAnnouncementPage
 import com.nltv.chafenqi.view.home.leaderboard.HomeLeaderboardPage
 import com.nltv.chafenqi.view.home.log.HomeLogPage
+import com.nltv.chafenqi.view.home.log.LogDetailPage
 import com.nltv.chafenqi.view.home.rating.HomeRatingPage
 import com.nltv.chafenqi.view.home.recent.HomeRecentPage
 import com.nltv.chafenqi.view.home.recent.RecentDetailPage
@@ -196,6 +197,12 @@ fun LogonPage(navController: NavHostController) {
             ) }
 
             composable(HomeNavItem.Home.route + "/log") { HomeLogPage(navController) }
+            composable(HomeNavItem.Home.route + "/log/maimai/{index}") {
+                LogDetailPage(navController = navController, mode = 1, index = it.arguments?.getString("index")?.toInt() ?: 0)
+            }
+            composable(HomeNavItem.Home.route + "/log/chunithm/{index}") {
+                LogDetailPage(navController = navController, mode = 0, index = it.arguments?.getString("index")?.toInt() ?: 0)
+            }
 
             composable(HomeNavItem.Home.route + "/recent") { HomeRecentPage(navController = navController) }
             composable(HomeNavItem.Home.route + "/recent/maimai/{index}") { navBackStackEntry ->

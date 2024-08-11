@@ -35,6 +35,7 @@ import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiDeltaEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiExtraInfo
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiUserInfo
+import com.nltv.chafenqi.storage.log.ChunithmLogData
 import com.nltv.chafenqi.storage.log.MaimaiLogData
 import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
@@ -202,6 +203,7 @@ object CFQUser {
             isBasicEmpty = true
             isExtraEmpty = true
             Aux.reset()
+            log?.reset()
         }
     }
 
@@ -212,6 +214,7 @@ object CFQUser {
         var delta = listOf<ChunithmDeltaEntry>()
         var rating = listOf<ChunithmRatingEntry>()
         var extra = ChunithmExtraEntry()
+        var log: ChunithmLogData? = null
 
         var isBasicEmpty = true
         var isExtraEmpty = true
@@ -327,6 +330,8 @@ object CFQUser {
                     )
                 }
 
+                log = ChunithmLogData(recentEntries = recent, deltaEntries = delta)
+
                 Log.i(tag, "Loaded chunithm auxiliary data.")
             }
         }
@@ -341,6 +346,7 @@ object CFQUser {
             isBasicEmpty = true
             isExtraEmpty = true
             Aux.reset()
+            log?.reset()
         }
     }
 

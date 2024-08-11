@@ -2,6 +2,7 @@ package com.nltv.chafenqi.view.home.log
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nltv.chafenqi.storage.log.ChunithmLogData
 import com.nltv.chafenqi.storage.log.MaimaiLogData
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
@@ -23,10 +24,12 @@ class HomeLogPageViewModel : ViewModel() {
         val averageRatingGain: String = "",
         val logSize: Int = 0,
         val maiLogs: List<MaimaiLogData.MaimaiDayData> = listOf(),
-        // TODO: Add chuLogs
+        val chuLogs: List<ChunithmLogData.ChunithmDayData> = listOf()
     )
 
     private val maimaiLogData = CFQUser.maimai.log
+    private val chunithmLogData = CFQUser.chunithm.log
+
     private var homeLogPageUiState = MutableStateFlow(HomeLogPageUiState())
     var uiState = homeLogPageUiState.asStateFlow()
 
@@ -59,9 +62,9 @@ class HomeLogPageViewModel : ViewModel() {
     private fun updateMaimaiInfo() {
         if (maimaiLogData == null) return
         val totalPlayed = maimaiLogData.records.sumOf { it.recentEntries.size }
-        val recentSevenEntries = maimaiLogData.records.takeLast(7)
-        val latestRating = recentSevenEntries.lastOrNull()?.latestDeltaEntry?.rating ?: 0
-        val oldRating = recentSevenEntries.firstOrNull()?.latestDeltaEntry?.rating ?: 0
+        val recentSevenEntries = maimaiLogData.records.take(7)
+        val latestRating = recentSevenEntries.firstOrNull()?.latestDeltaEntry?.rating ?: 0
+        val oldRating = recentSevenEntries.lastOrNull()?.latestDeltaEntry?.rating ?: 0
         viewModelScope.launch {
             homeLogPageUiState.update {
                 it.copy(
@@ -107,7 +110,24 @@ class HomeLogPageViewModel : ViewModel() {
     }
 
     private fun updateChunithmInfo() {
-
+        if (chunithmLogData == null) return
+        val totalPlayed = chunithmLogData.records.sumOf { it.recentEntries.size }
+        val recentSevenEntries = chunithmLogData.records.takeLast(7)
+        val latestRating = recentSevenEntries.firstOrNull()?.latestDeltaEntry?.rating ?: 0.0
+        val oldRating = recentSevenEntries.lastOrNull()?.latestDeltaEntry?.rating ?: 0.0
+        viewModelScope.launch {
+            homeLogPageUiState.update {
+                it.copy(
+                    totalDays = chunithmLogData.dayPlayed,
+                    totalPlayCount = totalPlayed,
+                    estimatedCost = totalPlayed * 3f, // TODO: Add customizable per pc cost
+                    averagePlayPerDay = totalPlayed / chunithmLogData.dayPlayed.toFloat(),
+                    averageRatingGain = String.format(Locale.getDefault(), "%.3f", (latestRating - oldRating) / recentSevenEntries.size),
+                    logSize = chunithmLogData.records.size,
+                    chuLogs = chunithmLogData.records
+                )
+            }
+        }
     }
 
     private fun updateChunithmChart(chartMode: Int) {
@@ -118,10 +138,24 @@ class HomeLogPageViewModel : ViewModel() {
     }
 
     private fun updateChunithmPlayCountChart() {
-
+        if (chunithmLogData == null) return
+        viewModelScope.launch {
+            chartModelProducer.runTransaction {
+                lineSeries {
+                    series(chunithmLogData.records.map { it.recentEntries.size })
+                }
+            }
+        }
     }
 
     private fun updateChunithmRatingChart() {
-
+        if (chunithmLogData == null) return
+        viewModelScope.launch {
+            chartModelProducer.runTransaction {
+                lineSeries {
+                    series(chunithmLogData.records.map { it.latestDeltaEntry.rating })
+                }
+            }
+        }
     }
 }

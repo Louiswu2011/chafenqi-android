@@ -1,7 +1,7 @@
 package com.nltv.chafenqi.storage.log
 
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiDeltaEntry
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
+import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmDeltaEntry
+import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -10,26 +10,24 @@ import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Duration
 
-class MaimaiLogData(
-    recentEntries: List<MaimaiRecentScoreEntry>,
-    deltaEntries: List<MaimaiDeltaEntry>
+class ChunithmLogData(
+    recentEntries: List<ChunithmRecentScoreEntry>,
+    deltaEntries: List<ChunithmDeltaEntry>
 ) {
-    data class MaimaiDayData(
+    data class ChunithmDayData(
         var date: Instant = Instant.fromEpochSeconds(0),
-        var ratingGain: Int = 0,
+        var ratingGain: Double = 0.0,
         var playCountGain: Int = 0,
-        var dxScoreGain: Int = 0,
-        var totalAchievementGain: Double = 0.0,
-        var syncPointGain: Int = 0,
+        var overpowerGain: Double = 0.0,
 
-        var latestDeltaEntry: MaimaiDeltaEntry = MaimaiDeltaEntry(),
-        var recentEntries: List<MaimaiRecentScoreEntry> = listOf(),
+        var latestDeltaEntry: ChunithmDeltaEntry = ChunithmDeltaEntry(),
+        var recentEntries: List<ChunithmRecentScoreEntry> = listOf(),
 
         var hasDelta: Boolean = false
     )
 
     var dayPlayed = -1
-    var records: List<MaimaiDayData> = listOf()
+    var records: List<ChunithmDayData> = listOf()
 
     init {
         val latestTimestamp = recentEntries.firstOrNull()?.timestamp ?: 0
@@ -57,7 +55,7 @@ class MaimaiLogData(
                 it.timestamp in (pointer - 86400)..pointer
             }
             if (playInDay.isNotEmpty()) {
-                val record = MaimaiDayData(
+                val record = ChunithmDayData(
                     date = Instant.fromEpochSeconds(pointer - 86400),
                     recentEntries = playInDay
                 )
@@ -74,9 +72,7 @@ class MaimaiLogData(
                     record.hasDelta = true
                     record.ratingGain = latestDelta.rating - previousDelta.rating
                     record.playCountGain = latestDelta.playCount - previousDelta.playCount
-                    record.totalAchievementGain = latestDelta.achievement - previousDelta.achievement
-                    record.dxScoreGain = latestDelta.dxScore - previousDelta.dxScore
-                    record.syncPointGain = latestDelta.syncPoint - previousDelta.syncPoint
+                    record.overpowerGain = latestDelta.rawOverpower - previousDelta.rawOverpower
                 }
 
                 records = records + record

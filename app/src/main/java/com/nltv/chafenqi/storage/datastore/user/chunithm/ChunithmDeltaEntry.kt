@@ -5,12 +5,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ChunithmDeltaEntry(
-    val rating: Double,
-    @SerialName("overpower_raw") val rawOverpower: Double,
-    @SerialName("overpower_percent") val overpowerPercentage: Double,
-    val playCount: Int,
-    val totalGold: Int,
-    val currentGold: Int,
-    val updatedAt: String,
-    val createdAt: String,
+    val rating: Double = 0.0,
+    @SerialName("overpower_raw") val rawOverpower: Double = 0.0,
+    @SerialName("overpower_percent") val overpowerPercentage: Double = 0.0,
+    val playCount: Int = 0,
+    val totalGold: Int = 0,
+    val currentGold: Int = 0,
+    val updatedAt: String = "",
+    val createdAt: String = "",
 )

@@ -43,6 +43,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.nltv.chafenqi.storage.user.CFQUser
+import com.nltv.chafenqi.view.home.HomeNavItem
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStartAxis
 import com.patrykandpatrick.vico.compose.cartesian.fullWidth
@@ -101,21 +102,21 @@ fun HomeLogPage(navController: NavController) {
         Column (
             modifier = Modifier
                 .padding(paddingValues)
-                .padding(10.dp)
+                .padding(horizontal = 10.dp)
         ) {
-            HomeLogPageDataColumn()
+            HomeLogPageDataColumn(navController)
         }
     }
 }
 
 @OptIn(FormatStringsInDatetimeFormats::class)
 @Composable
-fun HomeLogPageDataColumn() {
+fun HomeLogPageDataColumn(navController: NavController) {
     val model: HomeLogPageViewModel = viewModel()
     val uiState by model.uiState.collectAsStateWithLifecycle()
     val lazyListState = rememberLazyListState()
 
-    LaunchedEffect(CFQUser.mode) {
+    LaunchedEffect(Unit) {
         model.updateInfo(CFQUser.mode)
     }
 
@@ -135,7 +136,7 @@ fun HomeLogPageDataColumn() {
                         modifier = Modifier.padding(end = 10.dp)
                     )
                     HomeLogLargeInfo(
-                        title = "游玩次数",
+                        title = "游玩曲目数",
                         source = uiState.totalPlayCount.toString()
                     )
                 }
@@ -163,10 +164,18 @@ fun HomeLogPageDataColumn() {
         item { Text(text = "出勤记录", fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 20.dp)) }
         items (
             count = uiState.logSize,
-            key = { index -> uiState.maiLogs[index].date.epochSeconds }
+            key = { index ->
+                if (CFQUser.mode == 0) uiState.chuLogs[index].date.epochSeconds else uiState.maiLogs[index].date.epochSeconds
+            }
         ) {
             TextButton(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    if (CFQUser.mode == 0) {
+                        navController.navigate(HomeNavItem.Home.route + "/log/chunithm/${it}")
+                    } else if (CFQUser.mode == 1) {
+                        navController.navigate(HomeNavItem.Home.route + "/log/maimai/${it}")
+                    }
+                },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Row (
@@ -174,10 +183,23 @@ fun HomeLogPageDataColumn() {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column {
-                        Text(text = uiState.maiLogs[it].date.toLocalDateTime(TimeZone.currentSystemDefault()).format(LocalDateTime.Format {
-                            byUnicodePattern("yyyy/MM/dd")
-                        }))
-                        Text(text = "${uiState.maiLogs[it].recentEntries.size}条记录")
+                        if (CFQUser.mode == 0) {
+                            Text(
+                                text = uiState.chuLogs[it].date.toLocalDateTime(TimeZone.currentSystemDefault())
+                                    .format(LocalDateTime.Format {
+                                        byUnicodePattern("yyyy/MM/dd")
+                                    })
+                            )
+                            Text(text = "${uiState.chuLogs[it].recentEntries.size}条记录")
+                        } else if (CFQUser.mode == 1) {
+                            Text(
+                                text = uiState.maiLogs[it].date.toLocalDateTime(TimeZone.currentSystemDefault())
+                                    .format(LocalDateTime.Format {
+                                        byUnicodePattern("yyyy/MM/dd")
+                                    })
+                            )
+                            Text(text = "${uiState.maiLogs[it].recentEntries.size}条记录")
+                        }
                     }
                     Icon(imageVector = Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "In")
                 }
@@ -214,7 +236,7 @@ fun HomeLogPageDataChart() {
             Column {
                 AnimatedContent(targetState = chartMode, label = "animated chart title") {
                     when (it) {
-                        0 -> Text(text = "游玩次数", fontWeight = FontWeight.Bold)
+                        0 -> Text(text = "游玩曲目数", fontWeight = FontWeight.Bold)
                         1 -> Text(text = "Rating", fontWeight = FontWeight.Bold)
                     }
                 }
