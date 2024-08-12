@@ -7,10 +7,16 @@ import com.nltv.chafenqi.storage.log.MaimaiLogData
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
+import com.patrykandpatrick.vico.core.common.data.ExtraStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format
+import kotlinx.datetime.format.char
+import kotlinx.datetime.toLocalDateTime
 import java.util.Locale
 
 class HomeLogPageViewModel : ViewModel() {
@@ -22,16 +28,31 @@ class HomeLogPageViewModel : ViewModel() {
         val averageRatingGain: String = "",
         val logSize: Int = 0,
         val maiLogs: List<MaimaiLogData.MaimaiDayData> = listOf(),
-        val chuLogs: List<ChunithmLogData.ChunithmDayData> = listOf()
+        val chuLogs: List<ChunithmLogData.ChunithmDayData> = listOf(),
     )
 
     private val maimaiLogData = CFQUser.maimai.log
     private val chunithmLogData = CFQUser.chunithm.log
 
+    private val chartDateTimeFormatter = LocalDateTime.Format {
+        monthNumber()
+        char('-')
+        dayOfMonth()
+    }
+
+    val logEntryDateTimeFormatter = LocalDateTime.Format {
+        year()
+        char('/')
+        monthNumber()
+        char('/')
+        dayOfMonth()
+    }
+
     private var homeLogPageUiState = MutableStateFlow(HomeLogPageUiState())
     var uiState = homeLogPageUiState.asStateFlow()
 
     val chartModelProducer: CartesianChartModelProducer = CartesianChartModelProducer()
+    val labelKeyList = ExtraStore.Key<List<String>>()
 
     fun toggleChartAnchor() {
         viewModelScope.launch {
@@ -95,6 +116,7 @@ class HomeLogPageViewModel : ViewModel() {
                 lineSeries {
                     series(maimaiLogData.records.map { it.recentEntries.size })
                 }
+                extras { it[labelKeyList] = maimaiLogData.records.map { record -> record.date.toLocalDateTime(TimeZone.currentSystemDefault()).format(chartDateTimeFormatter) } }
             }
         }
     }
@@ -106,6 +128,7 @@ class HomeLogPageViewModel : ViewModel() {
                 lineSeries {
                     series(maimaiLogData.records.map { it.latestDeltaEntry.rating })
                 }
+                extras { it[labelKeyList] = maimaiLogData.records.map { record -> record.date.toLocalDateTime(TimeZone.currentSystemDefault()).format(chartDateTimeFormatter) } }
             }
         }
     }
@@ -148,6 +171,7 @@ class HomeLogPageViewModel : ViewModel() {
                 lineSeries {
                     series(chunithmLogData.records.map { it.recentEntries.size })
                 }
+                extras { it[labelKeyList] = chunithmLogData.records.map { record -> record.date.toLocalDateTime(TimeZone.currentSystemDefault()).format(chartDateTimeFormatter) } }
             }
         }
     }
@@ -159,6 +183,7 @@ class HomeLogPageViewModel : ViewModel() {
                 lineSeries {
                     series(chunithmLogData.records.map { it.latestDeltaEntry.rating })
                 }
+                extras { it[labelKeyList] = chunithmLogData.records.map { record -> record.date.toLocalDateTime(TimeZone.currentSystemDefault()).format(chartDateTimeFormatter) } }
             }
         }
     }

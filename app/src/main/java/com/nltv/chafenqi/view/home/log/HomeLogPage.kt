@@ -1,5 +1,6 @@
 package com.nltv.chafenqi.view.home.log
 
+import android.graphics.Color
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -31,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -44,16 +47,31 @@ import androidx.navigation.NavController
 import com.nltv.chafenqi.storage.SettingsStore
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.view.home.HomeNavItem
+import com.nltv.chafenqi.view.home.nameplateChunithmBottomColor
+import com.nltv.chafenqi.view.home.nameplateChunithmTopColor
+import com.nltv.chafenqi.view.home.nameplateMaimaiBottomColor
+import com.nltv.chafenqi.view.home.nameplateMaimaiTopColor
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStartAxis
+import com.patrykandpatrick.vico.compose.cartesian.decoration.rememberHorizontalLine
+import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLine
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.marker.rememberDefaultCartesianMarker
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
 import com.patrykandpatrick.vico.compose.cartesian.segmented
+import com.patrykandpatrick.vico.compose.common.fill
 import com.patrykandpatrick.vico.core.cartesian.HorizontalLayout
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
+import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
+import com.patrykandpatrick.vico.core.cartesian.marker.DefaultCartesianMarker
+import com.patrykandpatrick.vico.core.common.component.LineComponent
+import com.patrykandpatrick.vico.core.common.component.Shadow
+import com.patrykandpatrick.vico.core.common.component.ShapeComponent
 import com.patrykandpatrick.vico.core.common.component.TextComponent
+import com.patrykandpatrick.vico.core.common.shape.Shape
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
@@ -197,17 +215,13 @@ fun HomeLogPageDataColumn(navController: NavController) {
                         if (CFQUser.mode == 0) {
                             Text(
                                 text = uiState.chuLogs[it].date.toLocalDateTime(TimeZone.currentSystemDefault())
-                                    .format(LocalDateTime.Format {
-                                        byUnicodePattern("yyyy/MM/dd")
-                                    })
+                                    .format(model.logEntryDateTimeFormatter)
                             )
                             Text(text = "${uiState.chuLogs[it].recentEntries.size}条记录")
                         } else if (CFQUser.mode == 1) {
                             Text(
                                 text = uiState.maiLogs[it].date.toLocalDateTime(TimeZone.currentSystemDefault())
-                                    .format(LocalDateTime.Format {
-                                        byUnicodePattern("yyyy/MM/dd")
-                                    })
+                                    .format(model.logEntryDateTimeFormatter)
                             )
                             Text(text = "${uiState.maiLogs[it].recentEntries.size}条记录")
                         }
@@ -271,17 +285,46 @@ fun HomeLogPageDataChart() {
                 }
             }
         }
-        CartesianChartHost(
-            chart = rememberCartesianChart(
-                rememberLineCartesianLayer(),
-                startAxis = rememberStartAxis(),
-                horizontalLayout = HorizontalLayout.segmented(),
-                marker = rememberDefaultCartesianMarker(label = TextComponent())
-            ),
-            modelProducer = model.chartModelProducer,
-            // zoomState = chartZoomState,
-            // scrollState = chartScrollState
-        )
+        Column (
+            modifier = Modifier.padding(end = 1.dp)
+        ) {
+            CartesianChartHost(
+                chart = rememberCartesianChart(
+                    rememberLineCartesianLayer(
+                        pointSpacing = 50.dp,
+                        lineProvider = LineCartesianLayer.LineProvider.series(
+                            rememberLine(
+                                remember {
+                                    LineCartesianLayer.LineFill.double(
+                                        topFill = fill(
+                                            if (CFQUser.mode == 0) nameplateChunithmTopColor else nameplateMaimaiTopColor
+                                        ),
+                                        bottomFill = fill(
+                                            if (CFQUser.mode == 0) nameplateChunithmBottomColor else nameplateMaimaiBottomColor
+                                        )
+                                    )
+                                }
+                            )
+                        )
+                    ),
+                    startAxis = rememberStartAxis(),
+                    bottomAxis = rememberBottomAxis(
+                        valueFormatter = { x, chartValues, _ -> chartValues.model.extraStore[model.labelKeyList][x.toInt()] }
+                    ),
+                    horizontalLayout = HorizontalLayout.segmented(),
+                    marker = rememberDefaultCartesianMarker(
+                        label = TextComponent(),
+                        indicator = { _ -> ShapeComponent(
+                            color = Color.GRAY,
+                            shape = Shape.Pill,
+                            shadow = Shadow(radiusDp = 5f)
+                        ) },
+                        labelPosition = DefaultCartesianMarker.LabelPosition.Top
+                    )
+                ),
+                modelProducer = model.chartModelProducer,
+            )
+        }
     }
 }
 
