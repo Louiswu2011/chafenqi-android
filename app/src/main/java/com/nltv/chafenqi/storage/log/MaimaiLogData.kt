@@ -6,6 +6,8 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.format.DateTimeComponents
+import kotlinx.datetime.format.parse
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Duration
@@ -66,7 +68,8 @@ class MaimaiLogData(
                 )
 
                 val latestDelta = deltaEntries.lastOrNull {
-                    LocalDateTime.parse(it.createdAt, LocalDateTime.Formats.ISO)
+                    DateTimeComponents.parse(it.createdAt.replaceFirst(' ', 'T').filterNot { char -> char.isWhitespace() }, DateTimeComponents.Formats.ISO_DATE_TIME_OFFSET)
+                        .toLocalDateTime()
                         .toInstant(TimeZone.currentSystemDefault())
                         .epochSeconds in (pointer - 86400)..pointer
                 }

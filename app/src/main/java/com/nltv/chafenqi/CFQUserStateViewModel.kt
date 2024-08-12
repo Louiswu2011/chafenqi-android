@@ -45,7 +45,6 @@ class CFQUserStateViewModel : ViewModel() {
                 maimai.best = deserializer.decodeFromString(bestString)
                 maimai.recent = deserializer.decodeFromString(recentString)
 
-                maimai.addAuxiliaryData(context)
                 maimai.isBasicEmpty = false
                 Log.i(tag, "Loaded user maimai basic data.")
             } catch (e: Exception) {
@@ -66,6 +65,10 @@ class CFQUserStateViewModel : ViewModel() {
                     e.printStackTrace()
                     Log.e(tag, "Error loading user maimai premium data.")
                 }
+            }
+
+            if (!maimai.isBasicEmpty) {
+                maimai.addAuxiliaryData(context)
             }
         }
     }
@@ -91,7 +94,6 @@ class CFQUserStateViewModel : ViewModel() {
                 chunithm.recent = deserializer.decodeFromString(recentString)
                 chunithm.rating = deserializer.decodeFromString(ratingString)
 
-                chunithm.addAuxiliaryData(context)
                 chunithm.isBasicEmpty = false
                 Log.i(tag, "Loaded user chunithm basic data.")
             } catch (e: Exception) {
@@ -113,6 +115,10 @@ class CFQUserStateViewModel : ViewModel() {
                     e.printStackTrace()
                     Log.e(tag, "Error loading user chunithm premium data.")
                 }
+            }
+
+            if (!chunithm.isBasicEmpty) {
+                chunithm.addAuxiliaryData(context)
             }
         }
     }
