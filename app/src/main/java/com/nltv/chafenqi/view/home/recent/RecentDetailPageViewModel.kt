@@ -73,7 +73,7 @@ class RecentDetailPageViewModel : ViewModel() {
         } else if (mode == 1 && CFQPersistentData.Maimai.musicList.isNotEmpty() && CFQUser.maimai.recent.isNotEmpty()) {
             maiEntry = CFQUser.maimai.recent[index]
             maiMusic =
-                CFQPersistentData.Maimai.musicList.firstOrNull { it.title == maiEntry?.title }
+                CFQPersistentData.Maimai.musicList.firstOrNull { it.title == maiEntry?.title && it.type == maiEntry?.type }
             // Log.i(tag, "Loaded maimai music ${maiMusic?.title} from ${maiEntry?.title}")
 
             coverUrl = maiMusic?.musicID?.toMaimaiCoverPath() ?: ""
