@@ -84,7 +84,6 @@ import java.util.Locale
 @Composable
 fun HomeLogPage(navController: NavController) {
     val model: HomeLogPageViewModel = viewModel()
-    val uiState by model.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -100,14 +99,6 @@ fun HomeLogPage(navController: NavController) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "返回上一级"
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { model.toggleChartAnchor() }) {
-                        Icon(
-                            imageVector = if (uiState.chartAnchorToggle) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                            contentDescription = "切换图表标志"
                         )
                     }
                 }

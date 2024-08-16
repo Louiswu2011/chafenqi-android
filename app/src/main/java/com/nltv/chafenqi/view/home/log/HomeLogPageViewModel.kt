@@ -21,7 +21,6 @@ import java.util.Locale
 
 class HomeLogPageViewModel : ViewModel() {
     data class HomeLogPageUiState(
-        val chartAnchorToggle: Boolean = true,
         val totalDays: Int = 0,
         val totalPlayCount: Int = 0,
         val averagePlayPerDay: Float = 0f,
@@ -53,16 +52,6 @@ class HomeLogPageViewModel : ViewModel() {
 
     val chartModelProducer: CartesianChartModelProducer = CartesianChartModelProducer()
     val labelKeyList = ExtraStore.Key<List<String>>()
-
-    fun toggleChartAnchor() {
-        viewModelScope.launch {
-            homeLogPageUiState.update {
-                it.copy(
-                    chartAnchorToggle = !it.chartAnchorToggle
-                )
-            }
-        }
-    }
 
     fun updateInfo(mode: Int) {
         when (mode) {
