@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
+import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmBestScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiBestScoreEntry
 import com.nltv.chafenqi.storage.persistent.CFQPersistentData
@@ -77,7 +78,7 @@ class SongDetailViewModel : ViewModel() {
             chuMusic = CFQPersistentData.Chunithm.musicList.getOrNull(index)
             if (chuMusic == null) return
 
-            coverUrl = "https://chafenqi.nltv.top/api/chunithm/cover?musicId=${chuMusic?.musicID}"
+            coverUrl = "${CFQServer.defaultPath}/api/chunithm/cover?musicId=${chuMusic?.musicID}"
             title = chuMusic?.title ?: ""
             artist = chuMusic?.artist ?: ""
             constants = chuMusic?.charts?.constants?.map { String.format("%.1f", it) }

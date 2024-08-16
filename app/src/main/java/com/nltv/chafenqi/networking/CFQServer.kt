@@ -34,6 +34,8 @@ import kotlinx.serialization.json.Json
 
 class CFQServer {
     companion object {
+        var defaultPath = "http://43.139.107.206:8083"
+
         val client = HttpClient(OkHttp) {
             install(ContentNegotiation) {
                 json()
@@ -55,7 +57,7 @@ class CFQServer {
             val response: HttpResponse
             when (method) {
                 "GET" -> {
-                    response = client.get("https://chafenqi.nltv.top/$path") {
+                    response = client.get("$defaultPath/$path") {
                         accept(ContentType.Any)
                         queries?.also { q ->
                             url { u ->
@@ -71,7 +73,7 @@ class CFQServer {
                 }
 
                 "POST" -> {
-                    response = client.post("https://chafenqi.nltv.top/$path") {
+                    response = client.post("$defaultPath/$path") {
                         accept(ContentType.Any)
                         payload?.also {
                             this.contentType(ContentType.Application.Json)
@@ -235,7 +237,7 @@ class CFQServer {
                     return null
                 }
 
-                val response = client.post("https://chafenqi.nltv.top/api/user/leaderboard") {
+                val response = client.post("$defaultPath/api/user/leaderboard") {
                     accept(ContentType.Any)
                     this.contentType(ContentType.Application.Json)
                     this.setBody("{\"game\": $gameType, \"type\": \"${leaderboardTypeString}\"}")

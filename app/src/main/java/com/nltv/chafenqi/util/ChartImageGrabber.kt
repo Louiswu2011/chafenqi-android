@@ -1,12 +1,14 @@
 package com.nltv.chafenqi.util
 
+import com.nltv.chafenqi.networking.CFQServer
+
 object ChartImageGrabber {
     data class ChartInfo(
         var musicId: String = "",
         var diffIndex: Int = 3
     )
 
-    private const val REQUEST_URL = "https://chafenqi.nltv.top/api/chunithm/preview"
+    private val REQUEST_URL = "${CFQServer.defaultPath}/api/chunithm/preview"
     private val types = listOf("bar", "bg", "chart")
 
     fun getChartPreviewImageUrls(chartInfo: ChartInfo): List<String> {

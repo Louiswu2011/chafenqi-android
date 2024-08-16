@@ -6,6 +6,7 @@ import androidx.navigation.NavController
 import com.nltv.chafenqi.extension.toDateString
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.extension.toRateString
+import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
 import com.nltv.chafenqi.storage.persistent.CFQPersistentData
@@ -59,7 +60,7 @@ class RecentDetailPageViewModel : ViewModel() {
                 CFQPersistentData.Chunithm.musicList.firstOrNull { it.musicID.toString() == chuEntry?.idx }
             // Log.i(tag, "Loaded chunithm music ${chuMusic?.title} from ${chuEntry?.title}")
 
-            coverUrl = "https://chafenqi.nltv.top/api/chunithm/cover?musicId=${chuMusic?.musicID}"
+            coverUrl = "${CFQServer.defaultPath}/api/chunithm/cover?musicId=${chuMusic?.musicID}"
             title = chuMusic?.title ?: ""
             artist = chuMusic?.artist ?: ""
             playDateString = chuEntry?.timestamp?.toDateString(context) ?: ""

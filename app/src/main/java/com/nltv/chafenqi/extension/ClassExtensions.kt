@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.format.DateFormat
 import android.util.Log
 import androidx.compose.ui.Modifier
+import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmBestScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRatingEntry
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
@@ -125,7 +126,7 @@ fun Long.toYMDString(): String {
 }
 
 fun Int.toChunithmCoverPath(): String =
-    "https://chafenqi.nltv.top/api/chunithm/cover?musicId=${this}"
+    "${CFQServer.defaultPath}/api/chunithm/cover?musicId=${this}"
 
 fun Int.toMaimaiLevelString(): String {
     if (this <= 6) return this.toString()
