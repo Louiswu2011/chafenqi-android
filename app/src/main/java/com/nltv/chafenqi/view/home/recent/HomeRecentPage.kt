@@ -59,7 +59,7 @@ fun HomeRecentPage(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "最近动态") },
+                title = { Text(text = "最近记录") },
                 scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
                 colors = TopAppBarDefaults.topAppBarColors(),
                 navigationIcon = {
