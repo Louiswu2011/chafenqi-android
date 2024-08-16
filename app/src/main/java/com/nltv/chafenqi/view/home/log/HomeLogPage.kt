@@ -285,9 +285,7 @@ fun HomeLogPageDataChart() {
                 }
             }
         }
-        Column (
-            modifier = Modifier.padding(end = 1.dp)
-        ) {
+        Column {
             CartesianChartHost(
                 chart = rememberCartesianChart(
                     rememberLineCartesianLayer(
