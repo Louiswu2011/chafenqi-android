@@ -22,7 +22,7 @@ android {
     compileSdk = 34
 
     val versionFile = file("version.properties")
-    var value = 0
+
     val versionProperties = Properties()
     if (!versionFile.exists()) {
         versionProperties["VERSION_PATCH"] = 0
@@ -30,11 +30,6 @@ android {
         versionProperties["VERSION_MINOR"] = 0
         versionProperties["VERSION_BUILD"] = 0
         versionProperties.store(versionFile.writer(), null)
-    }
-
-    val runningTasks = gradle.startParameter.taskNames
-    if ("assembleRelease" in runningTasks) {
-        value = 1
     }
 
     val mVersionName: String
@@ -139,10 +134,6 @@ android {
             isUniversalApk = false
         }
     }
-}
-
-task("bumpServerBuildVersion") {
-
 }
 
 val ktorVersion = "2.3.12"
