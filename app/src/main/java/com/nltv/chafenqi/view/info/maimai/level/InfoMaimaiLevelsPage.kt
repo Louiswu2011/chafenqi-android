@@ -130,7 +130,7 @@ fun InfoMaimaiLevelsPage(navController: NavController) {
                 )
                 IconButton(
                     onClick = { model.increaseLevel() },
-                    enabled = model.currentPosition < 22
+                    enabled = model.currentPosition < 24
                 ) {
                     Icon(imageVector = Icons.Default.Add, contentDescription = "增加等级")
                 }

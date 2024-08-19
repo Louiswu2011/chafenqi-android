@@ -49,13 +49,13 @@ class InfoMaimaiLevelsViewModel : ViewModel() {
     }
 
     fun assignCurrentPosition(position: Int) {
-        if (position > 22 || position < 0) return
+        if (position > 24 || position < 0) return
         currentPosition = position
         setCurrentLevel(MAIMAI_LEVEL_STRINGS[currentPosition])
     }
 
     fun increaseLevel() {
-        if (currentPosition == 22) return
+        if (currentPosition == 24) return
         currentPosition += 1
         setCurrentLevel(MAIMAI_LEVEL_STRINGS[currentPosition])
     }
