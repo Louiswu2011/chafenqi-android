@@ -115,6 +115,7 @@ fun MusicRecordScoreChart() {
         chart = rememberCartesianChart(
             rememberLineCartesianLayer(
                 axisValueOverrider = if (model.mode == 0) ChunithmAxisValueOverrider() else MaimaiAxisValueOverrider(),
+                pointSpacing = 50.dp
             ),
             startAxis = rememberStartAxis(
                 valueFormatter = { value, _, _ ->
