@@ -48,13 +48,13 @@ class InfoChunithmLevelsViewModel : ViewModel() {
     }
 
     fun assignCurrentPosition(position: Int) {
-        if (position > 22 || position < 0) return
+        if (position > 23 || position < 0) return
         currentPosition = position
         setCurrentLevel(CHUNITHM_LEVEL_STRINGS[currentPosition])
     }
 
     fun increaseLevel() {
-        if (currentPosition == 22) return
+        if (currentPosition == 23) return
         currentPosition += 1
         setCurrentLevel(CHUNITHM_LEVEL_STRINGS[currentPosition])
     }
