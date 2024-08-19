@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,17 +45,24 @@ import com.nltv.chafenqi.util.ChunithmAxisValueOverrider
 import com.nltv.chafenqi.util.MaimaiAxisValueOverrider
 import com.nltv.chafenqi.util.navigateToRecentEntry
 import com.nltv.chafenqi.view.home.HomeNavItem
+import com.nltv.chafenqi.view.home.nameplateChunithmBottomColor
+import com.nltv.chafenqi.view.home.nameplateChunithmTopColor
+import com.nltv.chafenqi.view.home.nameplateMaimaiBottomColor
+import com.nltv.chafenqi.view.home.nameplateMaimaiTopColor
 import com.nltv.chafenqi.view.module.RatingBadge
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
 import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStartAxis
+import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLine
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
+import com.patrykandpatrick.vico.compose.common.fill
 import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.AxisValueOverrider
+import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
 import java.util.Locale
 
 @Composable
@@ -115,7 +123,21 @@ fun MusicRecordScoreChart() {
         chart = rememberCartesianChart(
             rememberLineCartesianLayer(
                 axisValueOverrider = if (model.mode == 0) ChunithmAxisValueOverrider() else MaimaiAxisValueOverrider(),
-                pointSpacing = 50.dp
+                pointSpacing = 50.dp,
+                lineProvider = LineCartesianLayer.LineProvider.series(
+                    rememberLine(
+                        remember {
+                            LineCartesianLayer.LineFill.double(
+                                topFill = fill(
+                                    if (CFQUser.mode == 0) nameplateChunithmTopColor else nameplateMaimaiTopColor
+                                ),
+                                bottomFill = fill(
+                                    if (CFQUser.mode == 0) nameplateChunithmBottomColor else nameplateMaimaiBottomColor
+                                )
+                            )
+                        }
+                    )
+                )
             ),
             startAxis = rememberStartAxis(
                 valueFormatter = { value, _, _ ->
