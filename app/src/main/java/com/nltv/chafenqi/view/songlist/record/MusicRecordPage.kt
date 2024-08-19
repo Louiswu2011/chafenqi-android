@@ -40,6 +40,8 @@ import com.nltv.chafenqi.extension.toRateString
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
 import com.nltv.chafenqi.storage.user.CFQUser
+import com.nltv.chafenqi.util.ChunithmAxisValueOverrider
+import com.nltv.chafenqi.util.MaimaiAxisValueOverrider
 import com.nltv.chafenqi.util.navigateToRecentEntry
 import com.nltv.chafenqi.view.home.HomeNavItem
 import com.nltv.chafenqi.view.module.RatingBadge
@@ -50,6 +52,8 @@ import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStartAxis
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
+import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
+import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.AxisValueOverrider
 import java.util.Locale
 
@@ -105,14 +109,12 @@ fun MusicRecordPage(navController: NavController, mode: Int, index: Int, levelIn
 fun MusicRecordScoreChart() {
     val model: MusicRecordPageViewModel = viewModel()
     val uiState by model.uiState.collectAsStateWithLifecycle()
+    val scrollState = rememberVicoScrollState()
 
     CartesianChartHost(
         chart = rememberCartesianChart(
             rememberLineCartesianLayer(
-                axisValueOverrider = AxisValueOverrider.fixed(
-                    minY = 0.0,
-                    maxY = if (model.mode == 0) 1010000.0 else 101.0
-                )
+                axisValueOverrider = if (model.mode == 0) ChunithmAxisValueOverrider() else MaimaiAxisValueOverrider(),
             ),
             startAxis = rememberStartAxis(
                 valueFormatter = { value, _, _ ->
@@ -121,7 +123,8 @@ fun MusicRecordScoreChart() {
                     } else {
                         String.format(Locale.getDefault(), "%.4f", value) + "%"
                     }
-                }
+                },
+                itemPlacer = VerticalAxis.ItemPlacer.count( { 10 } )
             ),
             bottomAxis = rememberBottomAxis(
                 valueFormatter = { value, _, _ ->
@@ -134,6 +137,7 @@ fun MusicRecordScoreChart() {
             )
         ),
         modelProducer = if (model.mode == 0) model.chuEntryProvider else model.maiEntryProvider,
+        scrollState = scrollState,
         modifier = Modifier
             .fillMaxWidth()
             .padding(SCREEN_PADDING))
