@@ -91,7 +91,6 @@ class UpdaterViewModel : ViewModel() {
     val uiState: StateFlow<UpdaterUiState> = _uiState.asStateFlow()
 
     var shouldShowQRCode by mutableStateOf(false)
-    var fishForward = CFQUser.fishForward
 
     fun updateServerStat() {
         fun makeServerStatText(time: Double): String = when (time) {
@@ -235,8 +234,8 @@ class UpdaterViewModel : ViewModel() {
     }
 
     suspend fun checkFishTokenState(): Boolean {
-        if (CFQUser.fishToken.isEmpty()) return true
-        return FishServer.checkTokenValidity(CFQUser.fishToken)
+        if (CFQUser.remoteOptions.fishToken.isEmpty()) return true
+        return FishServer.checkTokenValidity(CFQUser.remoteOptions.fishToken)
     }
 
     // Returns remote setting

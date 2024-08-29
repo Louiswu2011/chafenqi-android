@@ -29,6 +29,7 @@ import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.VideogameAsset
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -312,6 +313,15 @@ fun SongListFilterChips() {
     ) {
         Spacer(modifier = Modifier.padding(start = 0.dp))
         FilterChip(
+            selected = model.filterFavorite,
+            onClick = { 
+                model.filterFavorite = !model.filterFavorite
+                model.update()
+            },
+            label = { Text(text = "喜爱歌曲") },
+            leadingIcon = { Icon(imageVector = Icons.Default.FavoriteBorder, contentDescription = "Fav") }
+        )
+        FilterChip(
             selected = model.filterPlayed,
             onClick = {
                 model.filterPlayed = !model.filterPlayed
@@ -321,8 +331,7 @@ fun SongListFilterChips() {
                 Text(
                     text = "只显示已游玩"
                 )
-            },
-            leadingIcon = { Icon(imageVector = Icons.Default.Check, contentDescription = "已游玩") }
+            }
         )
         if (model.filterLevel && filterLevelList.any { it }) {
             InputChip(

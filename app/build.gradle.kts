@@ -82,6 +82,8 @@ android {
             resValue("string", "username", "testaccount")
             resValue("string", "password", "testtest")
 
+            resValue("string", "serverAddress", "http://43.139.107.206:8083")
+
             setProperty("archivesBaseName", "$appName-$mVersionName-Build${versionProperties.getProperty("VERSION_BUILD")}")
         }
 
@@ -97,6 +99,7 @@ android {
             resValue("string", "username", "")
             resValue("string", "password", "")
 
+            resValue("string", "serverAddress", "http://43.139.107.206:8083")
 
             setProperty("archivesBaseName", "$appName-$mVersionName-Build${versionProperties.getProperty("VERSION_BUILD")}")
         }

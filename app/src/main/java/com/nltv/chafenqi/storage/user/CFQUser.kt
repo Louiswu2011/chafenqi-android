@@ -39,10 +39,9 @@ data class MaimaiRecentLineup(val entry: MaimaiRecentScoreEntry, val tag: String
 object CFQUser {
     private const val tag = "CFQUser"
 
+    var remoteOptions = CFQUserOptions()
+
     var token = ""
-    var fishToken = ""
-    var bindQQ = ""
-    var fishForward = false
 
     var username = ""
     var isPremium = false
@@ -340,38 +339,17 @@ object CFQUser {
 
         isPremium = CFQServer.apiIsPremium(username)
 
-        fishToken = try {
-            CFQServer.fishFetchToken(authToken)
-        } catch (e: Exception) {
-            Log.i(tag, "User did not bind fish account.")
-            ""
-        }.also { Log.i(tag, "Fetched user fish token: $fishToken") }
-
-        fishForward = try {
-            CFQServer.apiFetchUserOption(token, "forwarding_fish") == "1"
-        } catch (e: Exception) {
-            Log.i(tag, "User fish forward option failed to load, fallback to false")
-            false
-        }.also { Log.i(tag, "Fetched user fish forward option: $fishForward") }
-
-        bindQQ = try {
-            CFQServer.apiFetchUserOption(token, "bindQQ")
-        } catch (e: Exception) {
-            Log.i(tag, "User did not bind qq.")
-            ""
-        }.also { Log.i(tag, "Fetched user bind qq: $bindQQ") }
+        this.remoteOptions.sync(authToken)
 
         Log.i(tag, "User is${if (isPremium) "" else " not"} premium")
-        // registerOneSignal(username)
     }
-
-    suspend fun loadProfileFromCache(targetUsername: String) {}
 
     fun clearProfile() {
         token = ""
         username = ""
         isPremium = false
 
+        remoteOptions = CFQUserOptions()
         Maimai.reset()
         Chunithm.reset()
     }

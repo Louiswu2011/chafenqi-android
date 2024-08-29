@@ -1,6 +1,7 @@
 package com.nltv.chafenqi.view.songlist
 
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -42,7 +43,9 @@ data class SongDetailUiState(
     var chartUrls: List<String> = emptyList(),
     var expertAvailable: Boolean = false,
     var chartImages: MutableList<Drawable?> = mutableListOf(null, null, null),
-    var chartExpanded: Boolean = false
+    var chartExpanded: Boolean = false,
+    var loved: Boolean = false,
+    var syncing: Boolean = false
 )
 
 class SongDetailViewModel : ViewModel() {
@@ -100,6 +103,16 @@ class SongDetailViewModel : ViewModel() {
             }
 
             difficultyColors = chunithmDifficultyColors
+
+            viewModelScope.launch {
+                _uiState.update {
+                    it.copy(
+                        loved = user.remoteOptions.chunithmFavList.contains(
+                            chuMusic?.musicID?.toString() ?: ""
+                        )
+                    )
+                }
+            }
         } else if (mode == 1 && CFQPersistentData.Maimai.musicList.isNotEmpty()) {
             maiMusic = CFQPersistentData.Maimai.musicList.getOrNull(index)
             if (maiMusic == null) return
@@ -125,6 +138,14 @@ class SongDetailViewModel : ViewModel() {
             }
 
             difficultyColors = maimaiDifficultyColors
+
+            viewModelScope.launch {
+                _uiState.update {
+                    it.copy(
+                        loved = user.remoteOptions.maimaiFavList.contains(maiMusic?.musicID ?: "")
+                    )
+                }
+            }
         }
     }
 
@@ -151,6 +172,93 @@ class SongDetailViewModel : ViewModel() {
                     set(index, drawable)
                 }
             )
+        }
+    }
+
+    fun toggleLoved(currentState: Boolean) {
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    syncing = true,
+                    loved = !it.loved
+                )
+            }
+            val currentString = if (currentState) removeLoved() else addLoved()
+            _uiState.update {
+                it.copy(
+                    syncing = false,
+                    loved = if (currentString == null) currentState else !currentState
+                )
+            }
+            if (currentString != null) {
+                if (user.mode == 0) {
+                    user.remoteOptions.chunithmFavList = currentString
+                } else if (user.mode == 1) {
+                    user.remoteOptions.maimaiFavList = currentString
+                }
+            } else {
+                Log.i("SongDetailViewModel", "Failed to toggle loved")
+            }
+        }
+    }
+
+    private suspend fun addLoved(): String? {
+        return when (user.mode) {
+            0 -> {
+                if (chuMusic == null) return null
+                val expectedString =
+                    if (user.remoteOptions.chunithmFavList.isEmpty()) "" else user.remoteOptions.chunithmFavList + ",${chuMusic!!.musicID}"
+                val actualString =
+                    CFQServer.apiAddFavMusic(user.token, 0, chuMusic!!.musicID.toString())
+                        ?: return null
+                if (expectedString == actualString) {
+                    actualString
+                } else {
+                    null
+                }
+            }
+
+            1 -> {
+                if (maiMusic == null) return null
+                val expectedString =
+                    if (user.remoteOptions.maimaiFavList.isEmpty()) maiMusic!!.musicID else user.remoteOptions.maimaiFavList + ",${maiMusic!!.musicID}"
+                val actualString = CFQServer.apiAddFavMusic(user.token, 1, maiMusic!!.musicID)
+                    ?: return null
+                if (expectedString == actualString) {
+                    actualString
+                } else null
+            }
+
+            else -> null
+        }
+    }
+
+    private suspend fun removeLoved(): String? {
+        return when (user.mode) {
+            0 -> {
+                if (chuMusic == null) return null
+                val expectedString = user.remoteOptions.chunithmFavList
+                    .split(',')
+                    .filter { it != chuMusic!!.musicID.toString() }
+                    .joinToString(",")
+                val actualString =
+                    CFQServer.apiRemoveFavMusic(user.token, 0, chuMusic!!.musicID.toString())
+                        ?: return null
+                if (expectedString != actualString) null else actualString
+            }
+
+            1 -> {
+                if (maiMusic == null) return null
+                val expectedString = user.remoteOptions.maimaiFavList
+                    .split(',')
+                    .filter { it != maiMusic!!.musicID }
+                    .joinToString(",")
+                val actualString = CFQServer.apiRemoveFavMusic(user.token, 1, maiMusic!!.musicID)
+                    ?: return null
+                if (expectedString != actualString) null else actualString
+            }
+
+            else -> null
         }
     }
 

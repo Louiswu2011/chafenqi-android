@@ -81,7 +81,7 @@ fun SettingsBindQQPage(navController: NavController) {
 
                     scope.launch {
                         CFQServer.apiUploadUserOption(model.token, "bindQQ", userQQ)
-                        model.user.bindQQ = userQQ
+                        model.user.remoteOptions.bindQQ = userQQ
                         scope.launch { snackbarHostState.showSnackbar("绑定成功！") }
                         userQQ = ""
                         navController.navigateUp()

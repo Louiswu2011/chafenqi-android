@@ -70,7 +70,7 @@ class SettingsPageViewModel : ViewModel() {
     val user = CFQUser
     val username = user.username
     val token = user.token
-    val bindQQ = user.bindQQ
+    val bindQQ = user.remoteOptions.bindQQ
 
     suspend fun isAppVersionLatest(): Boolean {
         val versionData = CFQServer.apiFetchLatestVersion()

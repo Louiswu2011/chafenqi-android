@@ -42,6 +42,7 @@ class SongListPageViewModel : ViewModel() {
     var searchQuery by mutableStateOf("")
     var isSearchBarActive by mutableStateOf(false)
 
+    var filterFavorite by mutableStateOf(false)
     var filterPlayed by mutableStateOf(false)
 
     var filterLevel by mutableStateOf(false)
@@ -108,6 +109,9 @@ class SongListPageViewModel : ViewModel() {
 
     private fun filterMaimaiList(orig: List<MaimaiMusicEntry>): List<MaimaiMusicEntry> {
         var result = orig
+        if (filterFavorite) {
+            result = result.filter { user.remoteOptions.maimaiFavList.split(",").contains(it.musicID) }
+        }
         if (filterPlayed) {
             result = user.maimai.best.map { it.associatedMusicEntry }.distinct()
         }
@@ -166,6 +170,9 @@ class SongListPageViewModel : ViewModel() {
 
     private fun filterChunithmList(orig: List<ChunithmMusicEntry>): List<ChunithmMusicEntry> {
         var result = orig
+        if (filterFavorite) {
+            result = result.filter { user.remoteOptions.chunithmFavList.split(",").contains(it.musicID.toString()) }
+        }
         if (filterPlayed) {
             result = user.chunithm.best.map { it.associatedMusicEntry }.distinct()
         }

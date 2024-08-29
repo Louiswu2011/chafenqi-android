@@ -65,7 +65,7 @@ fun SettingsBindFishPage(navController: NavController) {
         ) {
             PreferenceInfo(
                 title = { Text(text = "当前状态") },
-                subtitle = { Text(text = if (model.user.fishToken.isEmpty()) "未绑定" else "已绑定") },
+                subtitle = { Text(text = if (model.user.remoteOptions.fishToken.isEmpty()) "未绑定" else "已绑定") },
                 icon = { Icon(imageVector = Icons.Default.Info, contentDescription = "当前状态") }
             )
             PreferenceDivider()
@@ -96,7 +96,7 @@ fun SettingsBindFishPage(navController: NavController) {
                             return@launch
                         }
 
-                        model.user.fishToken = token
+                        model.user.remoteOptions.fishToken = token
                         CFQServer.fishUploadToken(model.user.token, token)
                         scope.launch { snackbarHostState.showSnackbar("绑定成功！") }
                         fishUsername = ""

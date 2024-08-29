@@ -16,6 +16,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -33,6 +34,7 @@ import coil.memory.MemoryCache
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
+import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.ui.theme.ChafenqiTheme
 import com.nltv.chafenqi.view.home.HomeNavItem
 import com.nltv.chafenqi.view.home.HomePage
@@ -120,6 +122,10 @@ fun ChafenqiApp() {
         .build()
 
     Coil.setImageLoader(imageLoader)
+
+    LaunchedEffect(Unit) {
+        CFQServer.setDefaultServerPath(context.getString(R.string.serverAddress))
+    }
 
     ChafenqiTheme {
         Surface(

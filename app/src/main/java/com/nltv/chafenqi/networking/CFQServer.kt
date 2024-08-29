@@ -35,6 +35,9 @@ import kotlinx.serialization.json.Json
 class CFQServer {
     companion object {
         var defaultPath = "http://43.139.107.206:8083"
+        fun setDefaultServerPath(path: String) {
+            defaultPath = path
+        }
 
         val client = HttpClient(OkHttp) {
             install(ContentNegotiation) {
@@ -209,6 +212,44 @@ class CFQServer {
                 response.bodyAsText()
             } catch (e: Exception) {
                 ""
+            }
+        }
+
+        suspend fun apiAddFavMusic(token: String, gameType: Int, musicId: String): String? {
+            Log.i("CFQServer", "Adding game $gameType music $musicId to favorites.")
+            return try {
+                val response = fetchFromServer(
+                    method = "POST",
+                    "api/user/favorite/add",
+                    token = token,
+                    payload = hashMapOf(
+                        "game" to gameType.toString(),
+                        "musicId" to musicId
+                    )
+                )
+                response.bodyAsText()
+            } catch (e: Exception) {
+                Log.e("CFQServer", "Failed to add game $gameType music $musicId to favorites: ${e.localizedMessage}")
+                null
+            }
+        }
+
+        suspend fun apiRemoveFavMusic(token: String, gameType: Int, musicId: String): String? {
+            Log.i("CFQServer", "Removing game $gameType music $musicId to favorites.")
+            return try {
+                val response = fetchFromServer(
+                    method = "POST",
+                    "api/user/favorite/remove",
+                    token = token,
+                    payload = hashMapOf(
+                        "game" to gameType.toString(),
+                        "musicId" to musicId
+                    )
+                )
+                response.bodyAsText()
+            } catch (e: Exception) {
+                Log.e("CFQServer", "Failed to remove game $gameType music $musicId to favorites: ${e.localizedMessage}")
+                null
             }
         }
 
