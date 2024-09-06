@@ -1,6 +1,7 @@
 package com.nltv.chafenqi.view.settings.advanced
 
 import android.util.Log
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
@@ -37,6 +38,7 @@ import com.nltv.chafenqi.view.settings.ReloadSongListDialog
 import com.nltv.chafenqi.view.settings.SettingsPageViewModel
 import com.nltv.chafenqi.view.settings.SettingsTopBar
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Instant
 
 @Composable
 fun SettingsAdvancedPage(navController: NavController) {
@@ -45,6 +47,7 @@ fun SettingsAdvancedPage(navController: NavController) {
     val context = LocalContext.current
     LaunchedEffect(Unit) {
         model.getCoilDiskCacheSize(context)
+        model.updateSongListVersion()
     }
 
     if (model.showReloadListAlert) {
@@ -119,6 +122,12 @@ fun PreferenceRootScope.SettingsAdvancedGroup(snackbarHostState: SnackbarHostSta
     PreferenceButton(
         onClick = { model.showReloadListAlert = true },
         title = { Text(text = "刷新歌曲列表") },
+        subtitle = {
+            Column {
+                Text(text = "舞萌DX更新日期：${model.maiSongListVersionString}")
+                Text(text = "中二节奏更新日期：${model.chuSongListVersionString}")
+            }
+        },
         icon = {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.List,

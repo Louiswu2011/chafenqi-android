@@ -36,10 +36,12 @@ object CFQPersistentData {
 
     object Maimai {
         var musicList = listOf<MaimaiMusicEntry>()
+        var version: Int = 0
     }
 
     object Chunithm {
         var musicList = listOf<ChunithmMusicEntry>()
+        var version: Int = 0
     }
 
     suspend fun loadData(shouldValidate: Boolean = true, context: Context) {
@@ -48,6 +50,9 @@ object CFQPersistentData {
                 CFQPersistentLoader.loadPersistentData(context, maiConfig, shouldValidate)
             Chunithm.musicList =
                 CFQPersistentLoader.loadPersistentData(context, chuConfig, shouldValidate)
+
+            Maimai.version = CFQServer.statMusicListVersion(gameType = maiConfig.gameType)
+            Chunithm.version = CFQServer.statMusicListVersion(gameType = chuConfig.gameType)
 
             context.settingsStore.edit {
                 it[maiConfig.cacheKey] = Json.encodeToString(Maimai.musicList)

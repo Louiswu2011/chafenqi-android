@@ -20,6 +20,7 @@ import com.nltv.chafenqi.BuildConfig
 import com.nltv.chafenqi.R
 import com.nltv.chafenqi.cacheStore
 import com.nltv.chafenqi.networking.CFQServer
+import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.tile.UpdaterTileService
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,6 +28,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format
+import kotlinx.datetime.format.FormatStringsInDatetimeFormats
+import kotlinx.datetime.format.byUnicodePattern
+import kotlinx.datetime.toLocalDateTime
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -72,6 +79,9 @@ class SettingsPageViewModel : ViewModel() {
     val token = user.token
     val bindQQ = user.remoteOptions.bindQQ
 
+    var maiSongListVersionString by mutableStateOf("")
+    var chuSongListVersionString by mutableStateOf("")
+
     suspend fun isAppVersionLatest(): Boolean {
         val versionData = CFQServer.apiFetchLatestVersion()
         val fullVersionString = BuildConfig.VERSION_NAME
@@ -81,6 +91,22 @@ class SettingsPageViewModel : ViewModel() {
             .removeSuffix(")")
             .toInt()
         return versionData.isLatest(versionCode, buildNumber)
+    }
+
+    @OptIn(FormatStringsInDatetimeFormats::class)
+    fun updateSongListVersion() {
+        viewModelScope.launch {
+            maiSongListVersionString = kotlinx.datetime.Instant.fromEpochSeconds(CFQPersistentData.Maimai.version.toLong())
+                .toLocalDateTime(TimeZone.currentSystemDefault())
+                .format(LocalDateTime.Format {
+                    byUnicodePattern("yyyy-MM-dd")
+                })
+            chuSongListVersionString = kotlinx.datetime.Instant.fromEpochSeconds(CFQPersistentData.Chunithm.version.toLong())
+                .toLocalDateTime(TimeZone.currentSystemDefault())
+                .format(LocalDateTime.Format {
+                    byUnicodePattern("yyyy-MM-dd")
+                })
+        }
     }
 
     fun updateSponsorList() {
