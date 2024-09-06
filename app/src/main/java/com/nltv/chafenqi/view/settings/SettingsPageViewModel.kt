@@ -28,15 +28,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
 import kotlinx.datetime.format.FormatStringsInDatetimeFormats
 import kotlinx.datetime.format.byUnicodePattern
 import kotlinx.datetime.toLocalDateTime
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 import java.util.concurrent.Executor
 
 data class SettingsUiState(
@@ -119,17 +118,17 @@ class SettingsPageViewModel : ViewModel() {
         }
     }
 
+    @OptIn(FormatStringsInDatetimeFormats::class)
     fun updateUserPremiumTime() {
         viewModelScope.launch {
             val time = CFQServer.apiCheckPremiumTime(username)
-            val nowInstant = Instant.now()
-            val premiumInstant = Instant.ofEpochMilli(time.toLong() * 1000)
+            val nowInstant = Clock.System.now()
+            val premiumInstant = Instant.fromEpochSeconds(time.toLong())
             val dateString = premiumInstant
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime()
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                .toLocalDateTime(TimeZone.currentSystemDefault())
+                .format(LocalDateTime.Format { byUnicodePattern("yyyy-MM-dd") })
 
-            val statusString = if (premiumInstant.isAfter(nowInstant)) {
+            val statusString = if (premiumInstant > nowInstant) {
                 "有效期至$dateString"
             } else {
                 "已于${dateString}过期"
