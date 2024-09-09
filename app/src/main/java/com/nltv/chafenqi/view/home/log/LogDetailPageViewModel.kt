@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class LogDetailPageViewModel : ViewModel() {
     data class LogDetailPageUiState(
@@ -80,7 +81,7 @@ class LogDetailPageViewModel : ViewModel() {
                 it.copy(
                     currentRating = if (previousEntry == null || previousEntry.latestDeltaEntry.rating == 0.0) "无数据" else entry.latestDeltaEntry.rating.toString(),
                     currentPlayCount = totalPlayCount.toString(),
-                    ratingGain = ratingGain.toString(),
+                    ratingGain = String.format(Locale.getDefault(), "%.2f", ratingGain),
                     playCountGain = playCountGain.toString(),
                     ratingGainIndicator = if (ratingGain > 0) "+" else if (ratingGain < 0) "-" else "\u00b1",
                     playCountGainIndicator = if (playCountGain > 0) "+" else "\u00b1",
