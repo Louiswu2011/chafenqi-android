@@ -73,6 +73,7 @@ import com.nltv.chafenqi.view.settings.user.SettingsBindQQPage
 import com.nltv.chafenqi.view.settings.user.SettingsUserPage
 import com.nltv.chafenqi.view.songlist.SongDetailPage
 import com.nltv.chafenqi.view.songlist.SongListPage
+import com.nltv.chafenqi.view.songlist.comment.CommentPage
 import com.nltv.chafenqi.view.songlist.record.MusicRecordPage
 import com.nltv.chafenqi.view.songlist.stats.SongStatsPage
 import com.nltv.chafenqi.view.updater.UpdaterHelpPage
@@ -368,6 +369,13 @@ fun LogonPage(navController: NavHostController) {
                     navController = navController
                 )
             }
+            composable(HomeNavItem.SongList.route + "/maimai/{index}/comment") { navBackStackEntry ->
+                CommentPage(
+                    mode = 1,
+                    index = navBackStackEntry.arguments?.getString("index")?.toInt() ?: 0,
+                    navController = navController
+                )
+            }
             composable(HomeNavItem.SongList.route + "/chunithm/{index}") { navBackStackEntry ->
                 SongDetailPage(
                     mode = 0,
@@ -388,6 +396,13 @@ fun LogonPage(navController: NavHostController) {
                     mode = 0,
                     index = navBackStackEntry.arguments?.getString("index")?.toInt() ?: 0,
                     difficulty = navBackStackEntry.arguments?.getString("levelIndex")?.toInt() ?: 0,
+                    navController = navController
+                )
+            }
+            composable(HomeNavItem.SongList.route + "/chunithm/{index}/comment") { navBackStackEntry ->
+                CommentPage(
+                    mode = 0,
+                    index = navBackStackEntry.arguments?.getString("index")?.toInt() ?: 0,
                     navController = navController
                 )
             }

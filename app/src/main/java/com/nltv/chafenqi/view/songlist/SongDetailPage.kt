@@ -1,6 +1,7 @@
 package com.nltv.chafenqi.view.songlist
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -15,6 +16,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -65,8 +69,11 @@ import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.nltv.chafenqi.SCREEN_PADDING
+import com.nltv.chafenqi.data.Comment
 import com.nltv.chafenqi.view.home.HomeNavItem
+import com.nltv.chafenqi.view.songlist.comment.CommentCard
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,7 +85,6 @@ fun SongDetailPage(
     val model: SongDetailViewModel = viewModel()
     val uriHandler = LocalUriHandler.current
     val state by model.uiState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
     val snackbarHostState = remember {
@@ -121,7 +127,7 @@ fun SongDetailPage(
                 .padding(SCREEN_PADDING)
                 .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Row(
                 Modifier.fillMaxWidth(),
@@ -244,6 +250,36 @@ fun SongDetailPage(
                 model.chuDiffInfos.onEach {
                     ChunithmDifficultyCard(info = it, navController)
                 }
+            }
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "评论",
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                TextButton(
+                    onClick = {
+                        val game = if (mode == 0) "chunithm" else "maimai"
+                        navController.navigate(HomeNavItem.SongList.route + "/${game}/${index}/comment")
+                    }
+                ) {
+                    Text(text = "更多")
+                }
+            }
+            LazyRow (
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                items (
+                    count = minOf(3, state.comments.size),
+                    key = { index -> state.comments[index].id },
+                    itemContent = { index ->
+                        CommentCard(comment = state.comments[index])
+                    }
+                )
             }
         }
     }

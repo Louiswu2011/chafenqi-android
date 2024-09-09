@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nltv.chafenqi.data.Comment
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmBestScoreEntry
@@ -45,7 +46,8 @@ data class SongDetailUiState(
     var chartImages: MutableList<Drawable?> = mutableListOf(null, null, null),
     var chartExpanded: Boolean = false,
     var loved: Boolean = false,
-    var syncing: Boolean = false
+    var syncing: Boolean = false,
+    var comments: List<Comment> = listOf()
 )
 
 class SongDetailViewModel : ViewModel() {
@@ -109,7 +111,8 @@ class SongDetailViewModel : ViewModel() {
                     it.copy(
                         loved = user.remoteOptions.chunithmFavList.contains(
                             chuMusic?.musicID?.toString() ?: ""
-                        )
+                        ),
+                        comments = CFQServer.apiFetchComment(gameType = 0, musicId = chuMusic!!.musicID).sortedByDescending { comment -> comment.timestamp }
                     )
                 }
             }
@@ -142,7 +145,8 @@ class SongDetailViewModel : ViewModel() {
             viewModelScope.launch {
                 _uiState.update {
                     it.copy(
-                        loved = user.remoteOptions.maimaiFavList.contains(maiMusic?.musicID ?: "")
+                        loved = user.remoteOptions.maimaiFavList.contains(maiMusic?.musicID ?: ""),
+                        comments = CFQServer.apiFetchComment(gameType = 1, musicId = maiMusic!!.musicID.toInt()).sortedByDescending { comment -> comment.timestamp }
                     )
                 }
             }
