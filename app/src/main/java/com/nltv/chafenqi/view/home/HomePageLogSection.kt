@@ -106,7 +106,7 @@ fun HomePageLogInfo() {
             Column (
                 horizontalAlignment = Alignment.End
             ) {
-                Text(text = uiState.logLastPlayedTime)
+                Text(text = uiState.logLastPlayedDuration)
                 Text(text = "出勤时长", fontSize = 12.sp)
             }
             Column (
