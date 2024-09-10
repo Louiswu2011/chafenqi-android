@@ -1,5 +1,6 @@
 package com.nltv.chafenqi.storage.log
 
+import androidx.compose.ui.util.fastFirst
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiDeltaEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
 import kotlinx.datetime.Instant
@@ -10,7 +11,10 @@ import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.datetime.format.parse
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
+import kotlin.math.abs
 import kotlin.time.Duration
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 class MaimaiLogData(
     recentEntries: List<MaimaiRecentScoreEntry>,
@@ -30,15 +34,17 @@ class MaimaiLogData(
         var hasDelta: Boolean = false,
 
         var averageScore: Double = 0.0,
-        var duration: Instant = Instant.fromEpochSeconds(0)
+        var duration: Duration = Duration.ZERO,
+
+        var durationString: String = ""
     )
 
     var dayPlayed = -1
     var records: List<MaimaiDayData> = listOf()
 
     init {
-        val latestTimestamp = recentEntries.firstOrNull()?.timestamp ?: 0
-        val oldestTimestamp = recentEntries.lastOrNull()?.timestamp ?: 0
+        val latestTimestamp = recentEntries.maxByOrNull { it.timestamp }?.timestamp ?: 0
+        val oldestTimestamp = recentEntries.minByOrNull { it.timestamp }?.timestamp ?: 0
 
         val truncatedOldestTimestamp = Instant
             .fromEpochSeconds(oldestTimestamp.toLong())
@@ -88,7 +94,14 @@ class MaimaiLogData(
 
                 if (record.recentEntries.isNotEmpty()) {
                     record.averageScore = record.recentEntries.sumOf { it.achievements.toDouble() } / record.recentEntries.size
-                    record.duration = Instant.fromEpochSeconds((record.recentEntries.last().timestamp - record.recentEntries.first().timestamp).toLong())
+                    record.duration = (record.recentEntries.maxBy { it.timestamp }.timestamp - record.recentEntries.minBy { it.timestamp }.timestamp).toDuration(DurationUnit.SECONDS)
+                    record.durationString = record.duration.toComponents { hours, minutes, _, _ ->
+                        if (hours > 0) {
+                            "${hours}h ${minutes}m"
+                        } else {
+                            "${minutes}m"
+                        }
+                    }
                 }
 
                 records = records + record

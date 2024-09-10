@@ -11,7 +11,10 @@ import kotlinx.datetime.format.parse
 import kotlinx.datetime.serializers.LocalDateTimeIso8601Serializer
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
+import kotlin.math.abs
 import kotlin.time.Duration
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 class ChunithmLogData(
     recentEntries: List<ChunithmRecentScoreEntry>,
@@ -28,7 +31,8 @@ class ChunithmLogData(
 
         var hasDelta: Boolean = false,
         var averageScore: Double = 0.0,
-        var duration: Instant = Instant.fromEpochSeconds(0)
+        var duration: Duration = Duration.ZERO,
+        var durationString: String = ""
     )
 
     var dayPlayed = -1
@@ -83,7 +87,15 @@ class ChunithmLogData(
 
                 if (record.recentEntries.isNotEmpty()) {
                     record.averageScore = record.recentEntries.sumOf { it.score } / record.recentEntries.size.toDouble()
-                    record.duration = Instant.fromEpochSeconds((record.recentEntries.last().timestamp - record.recentEntries.first().timestamp).toLong())
+                    record.duration = (record.recentEntries.maxBy { it.timestamp }.timestamp - record.recentEntries.minBy { it.timestamp }.timestamp).toDuration(
+                        DurationUnit.SECONDS)
+                    record.durationString = record.duration.toComponents { hours, minutes, _, _ ->
+                        if (hours > 0) {
+                            "${hours}h ${minutes}m"
+                        } else {
+                            "${minutes}m"
+                        }
+                    }
                 }
 
                 records = records + record

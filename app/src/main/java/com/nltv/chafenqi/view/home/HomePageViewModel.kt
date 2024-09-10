@@ -1,5 +1,6 @@
 package com.nltv.chafenqi.view.home
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -42,6 +43,7 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
+import kotlinx.datetime.format.Padding
 import kotlinx.datetime.format.byUnicodePattern
 import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
@@ -407,6 +409,7 @@ class HomePageViewModel : ViewModel() {
         }
     }
 
+    @SuppressLint("DefaultLocale")
     fun updateLog() {
         when (user.mode) {
             0 -> {
@@ -425,15 +428,7 @@ class HomePageViewModel : ViewModel() {
                             }) ?: "",
                             logLastPlayedCount = user.chunithm.log?.records?.first()?.recentEntries?.size?.toString()
                                 ?: "",
-                            logLastPlayedDuration = user.chunithm.log?.records?.first()?.duration?.toLocalDateTime(
-                                TimeZone.currentSystemDefault()
-                            )?.format(LocalDateTime.Format {
-                                hour()
-                                char('h')
-                                char(' ')
-                                minute()
-                                char('m')
-                            }) ?: "",
+                            logLastPlayedDuration = user.chunithm.log?.records?.first()?.durationString ?: "",
                             logLastPlayedAverageScore = String.format(Locale.getDefault(), "%.0f", user.chunithm.log?.records?.first()?.averageScore ?: 0)
                         )
                     }
@@ -455,15 +450,7 @@ class HomePageViewModel : ViewModel() {
                             }) ?: "",
                             logLastPlayedCount = user.maimai.log?.records?.first()?.recentEntries?.size?.toString()
                                 ?: "",
-                            logLastPlayedDuration = user.maimai.log?.records?.first()?.duration?.toLocalDateTime(
-                                TimeZone.currentSystemDefault()
-                            )?.format(LocalDateTime.Format {
-                                hour()
-                                char('h')
-                                char(' ')
-                                minute()
-                                char('m')
-                            }) ?: "",
+                            logLastPlayedDuration = user.maimai.log?.records?.first()?.durationString ?: "",
                             logLastPlayedAverageScore = String.format(
                                 Locale.getDefault(),
                                 "%.4f",
