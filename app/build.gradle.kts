@@ -143,10 +143,10 @@ val ktorVersion = "2.3.12"
 val composePreferences = "0.4.7"
 
 dependencies {
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.2")
 
-    implementation(platform("androidx.compose:compose-bom:2024.06.00"))
-    androidTestImplementation(platform("androidx.compose:compose-bom:2024.06.00"))
+    implementation(platform("androidx.compose:compose-bom:2024.09.01"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2024.09.01"))
 
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
@@ -169,7 +169,7 @@ dependencies {
     implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
 
-    implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation("androidx.navigation:navigation-compose:2.8.0")
     implementation("io.ktor:ktor-client-logging:$ktorVersion")
     implementation("org.slf4j:slf4j-simple:2.0.13")
     implementation("io.coil-kt:coil-compose:2.6.0")
@@ -177,14 +177,14 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation("com.onesignal:OneSignal:5.1.15")
 
-    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
+    implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
     implementation("com.google.firebase:firebase-crashlytics-ktx")
     implementation("com.google.firebase:firebase-perf-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
-    implementation("androidx.compose.material:material:1.6.8")
+    implementation("androidx.compose.material:material:1.7.1")
     implementation("io.github.alexzhirkevich:qrose:1.0.1")
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
     implementation("com.google.accompanist:accompanist-permissions:0.34.0")
