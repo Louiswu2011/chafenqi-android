@@ -91,6 +91,7 @@ data class HomePageUiState(
     val maiLeaderboardRank: MutableList<LeaderboardRank?> = mutableListOf(null, null, null, null),
     val chuLeaderboardRank: MutableList<LeaderboardRank?> = mutableListOf(null, null, null, null),
 
+    val isLogEmpty: Boolean = true,
     val logLastPlayedTime: String = "",
     val logLastPlayedCount: String = "",
     val logLastPlayedDuration: String = "",
@@ -411,9 +412,17 @@ class HomePageViewModel : ViewModel() {
 
     @SuppressLint("DefaultLocale")
     fun updateLog() {
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    isLogEmpty = true
+                )
+            }
+        }
         when (user.mode) {
             0 -> {
                 if (user.chunithm.log == null) return
+                if (user.chunithm.log!!.records.isEmpty()) return
                 viewModelScope.launch {
                     _uiState.update {
                         it.copy(
@@ -429,13 +438,15 @@ class HomePageViewModel : ViewModel() {
                             logLastPlayedCount = user.chunithm.log?.records?.first()?.recentEntries?.size?.toString()
                                 ?: "",
                             logLastPlayedDuration = user.chunithm.log?.records?.first()?.durationString ?: "",
-                            logLastPlayedAverageScore = String.format(Locale.getDefault(), "%.0f", user.chunithm.log?.records?.first()?.averageScore ?: 0)
+                            logLastPlayedAverageScore = String.format(Locale.getDefault(), "%.0f", user.chunithm.log?.records?.first()?.averageScore ?: 0),
+                            isLogEmpty = false
                         )
                     }
                 }
             }
             1 -> {
                 if (user.maimai.log == null) return
+                if (user.maimai.log!!.records.isEmpty()) return
                 viewModelScope.launch {
                     _uiState.update {
                         it.copy(
@@ -455,7 +466,8 @@ class HomePageViewModel : ViewModel() {
                                 Locale.getDefault(),
                                 "%.4f",
                                 user.maimai.log?.records?.first()?.averageScore ?: 0
-                            ) + "%"
+                            ) + "%",
+                            isLogEmpty = false
                         )
                     }
                 }

@@ -37,7 +37,6 @@ fun HomePageLogSection(navController: NavController) {
 @Composable
 fun HomePageLogBar(navController: NavController) {
     val model: HomePageViewModel = viewModel()
-    val uiState by model.uiState.collectAsState()
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -83,37 +82,41 @@ fun HomePageLogInfo() {
             .fillMaxWidth()
             .padding(horizontal = 10.dp)
     ) {
-        Row (
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            Column (
-                horizontalAlignment = Alignment.Start
+        if (uiState.isLogEmpty) {
+            Text(text = "暂无出勤记录，请先上传数据后刷新页面")
+        } else {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                Text(text = uiState.logLastPlayedTime)
-                Text(text = "上次出勤时间", fontSize = 12.sp)
+                Column(
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Text(text = uiState.logLastPlayedTime)
+                    Text(text = "上次出勤时间", fontSize = 12.sp)
+                }
+                Column(
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Text(text = uiState.logLastPlayedCount)
+                    Text(text = "游玩曲目数", fontSize = 12.sp)
+                }
             }
-            Column (
-                horizontalAlignment = Alignment.Start
-            ) {
-                Text(text = uiState.logLastPlayedCount)
-                Text(text = "游玩曲目数", fontSize = 12.sp)
-            }
-        }
 
-        Row (
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            Column (
-                horizontalAlignment = Alignment.End
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                Text(text = uiState.logLastPlayedDuration)
-                Text(text = "出勤时长", fontSize = 12.sp)
-            }
-            Column (
-                horizontalAlignment = Alignment.End
-            ) {
-                Text(text = uiState.logLastPlayedAverageScore)
-                Text(text = "平均成绩", fontSize = 12.sp)
+                Column(
+                    horizontalAlignment = Alignment.End
+                ) {
+                    Text(text = uiState.logLastPlayedDuration)
+                    Text(text = "出勤时长", fontSize = 12.sp)
+                }
+                Column(
+                    horizontalAlignment = Alignment.End
+                ) {
+                    Text(text = uiState.logLastPlayedAverageScore)
+                    Text(text = "平均成绩", fontSize = 12.sp)
+                }
             }
         }
     }
