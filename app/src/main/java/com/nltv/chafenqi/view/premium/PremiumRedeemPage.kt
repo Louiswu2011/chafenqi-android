@@ -3,6 +3,7 @@ package com.nltv.chafenqi.view.premium
 import android.util.Log
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -27,6 +29,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.CardGiftcard
+import androidx.compose.material.icons.filled.ChevronLeft
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -35,6 +39,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -57,10 +62,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.nltv.chafenqi.SCREEN_PADDING
@@ -77,11 +84,27 @@ fun PremiumRedeemPage(navController: NavController) {
     val pageState = rememberPagerState(
         pageCount = { PREMIUM_PERKS.size }
     )
+    val scope = rememberCoroutineScope()
+    var showSheet by remember {
+        mutableStateOf(false)
+    }
+
+    if (showSheet) {
+        ModalBottomSheet(onDismissRequest = { showSheet = false }) {
+            Column(
+                Modifier
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                PremiumRedeemInputField(navController, snackbarHostState)
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "会员兑换") },
+                title = { Text(text = "会员功能") },
                 scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface,
@@ -94,6 +117,11 @@ fun PremiumRedeemPage(navController: NavController) {
                             contentDescription = "返回上一级"
                         )
                     }
+                },
+                actions = {
+                    TextButton(onClick = { showSheet = true }) {
+                        Text(text = "获取会员")
+                    }
                 }
             )
         },
@@ -103,62 +131,84 @@ fun PremiumRedeemPage(navController: NavController) {
         Column(
             Modifier
                 .padding(paddingValues)
-                .fillMaxWidth()
-                .fillMaxHeight()
+                .padding(horizontal = 8.dp)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight(0.6f)
-                    .padding(paddingValues)
-            ) {
-                HorizontalPager(
-                    state = pageState,
-                    modifier = Modifier.fillMaxHeight()
-                ) { page ->
-                    val item = PREMIUM_PERKS[page]
+            HorizontalPager(
+                state = pageState
+            ) { page ->
+                val item = PREMIUM_PERKS[page]
+                Row (
+                    modifier = Modifier.fillMaxSize(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (page > 0) {
+                        IconButton(
+                            onClick = {
+                                scope.launch {
+                                    pageState.animateScrollToPage(page - 1)
+                                }
+                            },
+                            modifier = Modifier.weight(0.1f)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ChevronLeft,
+                                contentDescription = "Previous Page"
+                            )
+                        }
+                    } else {
+                        Spacer(modifier = Modifier.weight(0.1f))
+                    }
                     Column(
                         modifier = Modifier
-                            .padding(SCREEN_PADDING * 5)
-                            .fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                            .fillMaxSize()
+                            .padding(vertical = 8.dp)
+                            .weight(0.8f),
+                        verticalArrangement = Arrangement.SpaceBetween,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Icon(imageVector = item.icon, contentDescription = item.text)
-                        Text(text = item.title, style = MaterialTheme.typography.titleLarge)
-                        Text(text = item.text, style = MaterialTheme.typography.bodyLarge)
+                        if (item.resId > 0) {
+                            Image(
+                                painter = painterResource(id = item.resId),
+                                contentDescription = "${item.title} preview image",
+                                modifier = Modifier.heightIn(max = 500.dp)
+                            )
+                        } else {
+                            Icon(imageVector = item.icon, contentDescription = item.text)
+                        }
+                        Column (
+                            modifier = Modifier.padding(horizontal = 10.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(text = item.title, style = MaterialTheme.typography.titleLarge)
+                            Text(
+                                text = item.text,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+                        Text(text = "${page + 1}/${PREMIUM_PERKS.size}")
+                    }
+                    if (page < PREMIUM_PERKS.size - 1) {
+                        IconButton(
+                            onClick = {
+                                scope.launch {
+                                    pageState.animateScrollToPage(page + 1)
+                                }
+                            },
+                            modifier = Modifier.weight(0.1f)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ChevronRight,
+                                contentDescription = "Next Page"
+                            )
+                        }
+                    } else {
+                        Spacer(modifier = Modifier.weight(0.1f))
                     }
                 }
-
-                Row(
-                    Modifier
-                        .wrapContentHeight()
-                        .fillMaxWidth()
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = SCREEN_PADDING),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    repeat(pageState.pageCount) { iteration ->
-                        val color =
-                            if (pageState.currentPage == iteration) Color.DarkGray else Color.LightGray
-                        Box(
-                            modifier = Modifier
-                                .padding(2.dp)
-                                .clip(CircleShape)
-                                .background(color)
-                                .size(8.dp)
-                        )
-                    }
-                }
-            }
-
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .weight(0.4f),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                PremiumRedeemInputField(navController, snackbarHostState)
             }
         }
     }
@@ -202,6 +252,7 @@ fun PremiumRedeemInputField(navController: NavController, snackbarHostState: Sna
     Column(
         Modifier
             .padding(SCREEN_PADDING)
+            .padding(10.dp)
             .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -209,7 +260,7 @@ fun PremiumRedeemInputField(navController: NavController, snackbarHostState: Sna
         OutlinedTextField(
             value = redeemCode,
             onValueChange = { redeemCode = it },
-            label = { Text(text = "兑换码") },
+            placeholder = { Text(text = "请输入兑换码...") },
             modifier = Modifier.fillMaxWidth(),
             isError = isRedeemFailed,
             keyboardOptions = KeyboardOptions(
@@ -229,6 +280,14 @@ fun PremiumRedeemInputField(navController: NavController, snackbarHostState: Sna
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Button(
+                onClick = { model.openPremiumPurchaseWebpage(uriHandler) },
+                shape = RoundedCornerShape(5.dp),
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(text = "获取兑换码")
+            }
+            Spacer(Modifier.width(10.dp))
             Button(
                 onClick = {
                     scope.launch {
@@ -256,14 +315,6 @@ fun PremiumRedeemInputField(navController: NavController, snackbarHostState: Sna
                 modifier = Modifier.weight(1f)
             ) {
                 Text(text = "兑换")
-            }
-            Spacer(Modifier.width(10.dp))
-            Button(
-                onClick = { model.openPremiumPurchaseWebpage(uriHandler) },
-                shape = RoundedCornerShape(5.dp),
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(text = "获取兑换码")
             }
         }
     }
