@@ -67,6 +67,9 @@ val nameplateThemedMaiColors = listOf(
     Color(red = 242, green = 225, blue = 68)
 )
 
+val nameplateThemedChunithmAvatarResource = R.drawable.nameplate_penguin
+val nameplateThemedMaimaiAvatarResource = R.drawable.nameplate_otohime
+
 @Composable
 fun HomePageNameplateSection(navController: NavController) {
     val model: HomePageViewModel = viewModel()
@@ -125,7 +128,7 @@ fun HomePageMaimaiNameplate(navController: NavController) {
                     .fillMaxWidth()
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.nameplate_salt),
+                    painter = painterResource(id = if (homeUseThemedColor) nameplateThemedMaimaiAvatarResource else R.drawable.nameplate_salt),
                     contentDescription = "名牌纱露朵形象",
                     Modifier.size(128.dp)
                 )
@@ -229,7 +232,7 @@ fun HomePageChunithmNameplate(navController: NavController) {
                     .fillMaxWidth()
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.nameplate_penguin),
+                    painter = painterResource(id = if (homeUseThemedColor) nameplateThemedChunithmAvatarResource else R.drawable.nameplate_penguin),
                     contentDescription = "名牌中二企鹅形象",
                     Modifier.size(128.dp)
                 )
