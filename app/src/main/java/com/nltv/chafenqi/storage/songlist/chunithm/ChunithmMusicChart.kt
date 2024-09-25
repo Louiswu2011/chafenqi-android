@@ -5,4 +5,5 @@ interface ChunithmMusicChart {
     val constant: Double
     val level: String
     val charter: String?
+    val objectInfo: ChunithmMusicChartObjectInfo?
 }

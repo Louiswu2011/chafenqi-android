@@ -12,5 +12,6 @@ data class ChunithmMusicWEChart(
     override val level: String = "",
     override val charter: String? = null,
     @SerialName("wetype") val chartType: String? = null,
-    @SerialName("wediff") val starDifficulty: Int = 0
+    @SerialName("wediff") val starDifficulty: Int = 0,
+    @SerialName("object_count") override val objectInfo: ChunithmMusicChartObjectInfo = ChunithmMusicChartObjectInfo()
 ) : ChunithmMusicChart
