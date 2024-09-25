@@ -119,6 +119,10 @@ class CFQUserStateViewModel : ViewModel() {
 
             if (!chunithm.isBasicEmpty) {
                 chunithm.addAuxiliaryData(context)
+
+                chunithm.best.filterNot { it.associatedMusicEntry.isWE }
+                chunithm.recent.filterNot { it.associatedMusicEntry.isWE }
+                chunithm.rating.filterNot { it.associatedMusicEntry.isWE }
             }
         }
     }

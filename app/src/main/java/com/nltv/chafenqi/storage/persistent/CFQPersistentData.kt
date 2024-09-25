@@ -60,6 +60,8 @@ object CFQPersistentData {
             }
 
             loadFilterResources()
+
+            Chunithm.musicList.filterNot { it.isWE }
         }
     }
 

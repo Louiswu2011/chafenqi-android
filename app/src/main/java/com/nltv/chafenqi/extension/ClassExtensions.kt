@@ -254,6 +254,7 @@ fun ChunithmBestScoreEntry.associatedMusicEntry(): ChunithmMusicEntry {
             ChunithmMusicEntry()
         }
     } catch (e: Exception) {
+        Log.e("我有意见", "找不到这首歌：${this.title}")
         ChunithmMusicEntry()
     }
 }
