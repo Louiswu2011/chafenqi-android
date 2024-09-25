@@ -27,14 +27,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Category
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.VideogameAsset
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.InputChip
@@ -116,7 +120,9 @@ fun SongListPage(navController: NavController) {
                     coroutineScope.launch {
                         listState.animateScrollToItem(0)
                     }
-                }) {
+                }, elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(
+                    defaultElevation = 5.dp
+                )) {
                     Icon(imageVector = Icons.Default.ArrowUpward, contentDescription = "回到顶部")
                 }
             }
@@ -480,52 +486,61 @@ fun SongListSearchEmptyState(
 fun MaimaiMusicListEntry(music: MaimaiMusicEntry, index: Int, navController: NavController) {
     val model: SongListPageViewModel = viewModel()
 
-    Row(
+    ElevatedCard (
         modifier = Modifier
-            .fillMaxWidth()
-            .height(96.dp)
-            .padding(vertical = 8.dp)
-            .clickable {
-                if (index == -1 || model.filterEnabled) {
-                    Log.i("SongList", "filter enabled: ${model.filterEnabled}")
-                    val listIndex = model.origMaiMusicList.indexOf(music)
-                    navController.navigate(HomeNavItem.SongList.route + "/maimai/$listIndex")
-                    return@clickable
-                }
-                navController.navigate(HomeNavItem.SongList.route + "/maimai/$index")
-            },
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
-    ) {
-        AsyncImage(
-            model = music.musicID.toMaimaiCoverPath(),
-            contentDescription = "${music.title}的封面",
-            modifier = Modifier
-                .padding(end = 8.dp)
-                .aspectRatio(1f)
-                .clip(RoundedCornerShape(size = 10.dp)),
-            contentScale = ContentScale.FillBounds
-        )
-        Column(
-            modifier = Modifier.fillMaxHeight(),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            Column {
-                Text(
-                    text = music.title,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Text(
-                    text = music.basicInfo.artist,
-                    fontSize = 12.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+            .padding(vertical = 6.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp,
+            pressedElevation = 2.dp
+        ),
+        onClick = {
+            if (index == -1 || model.filterEnabled) {
+                Log.i("SongList", "filter enabled: ${model.filterEnabled}")
+                val listIndex = model.origMaiMusicList.indexOf(music)
+                navController.navigate(HomeNavItem.SongList.route + "/maimai/$listIndex")
+                return@ElevatedCard
             }
-            MaimaiLevelBadgeRow(musicEntry = music)
+            navController.navigate(HomeNavItem.SongList.route + "/maimai/$index")
+        }
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(96.dp)
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
+        ) {
+            AsyncImage(
+                model = music.musicID.toMaimaiCoverPath(),
+                contentDescription = "${music.title}的封面",
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .aspectRatio(1f)
+                    .clip(RoundedCornerShape(size = 10.dp)),
+                contentScale = ContentScale.FillBounds
+            )
+            Column(
+                modifier = Modifier.fillMaxHeight(),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column {
+                    Text(
+                        text = music.title,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Text(
+                        text = music.basicInfo.artist,
+                        fontSize = 12.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                MaimaiLevelBadgeRow(musicEntry = music)
+            }
         }
     }
 }
@@ -534,51 +549,60 @@ fun MaimaiMusicListEntry(music: MaimaiMusicEntry, index: Int, navController: Nav
 fun ChunithmMusicListEntry(music: ChunithmMusicEntry, index: Int, navController: NavController) {
     val model: SongListPageViewModel = viewModel()
 
-    Row(
+    ElevatedCard(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(96.dp)
-            .padding(vertical = 8.dp)
-            .clickable {
-                if (index == -1 || model.filterEnabled) {
-                    val listIndex = model.origChuMusicList.indexOf(music)
-                    navController.navigate(HomeNavItem.SongList.route + "/chunithm/$listIndex")
-                    return@clickable
-                }
-                navController.navigate(HomeNavItem.SongList.route + "/chunithm/$index")
-            },
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
-    ) {
-        AsyncImage(
-            model = music.musicID.toChunithmCoverPath(),
-            contentDescription = "${music.title}的封面",
-            modifier = Modifier
-                .padding(end = 8.dp)
-                .aspectRatio(1f)
-                .clip(RoundedCornerShape(size = 10.dp)),
-            contentScale = ContentScale.FillBounds
-        )
-        Column(
-            modifier = Modifier.fillMaxHeight(),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            Column {
-                Text(
-                    text = music.title,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Text(
-                    text = music.artist,
-                    fontSize = 12.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+            .padding(vertical = 6.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp,
+            pressedElevation = 2.dp
+        ),
+        onClick = {
+            if (index == -1 || model.filterEnabled) {
+                val listIndex = model.origChuMusicList.indexOf(music)
+                navController.navigate(HomeNavItem.SongList.route + "/chunithm/$listIndex")
+                return@ElevatedCard
             }
-            ChunithmLevelBadgeRow(musicEntry = music)
+            navController.navigate(HomeNavItem.SongList.route + "/chunithm/$index")
+        }
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(96.dp)
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
+        ) {
+            AsyncImage(
+                model = music.musicID.toChunithmCoverPath(),
+                contentDescription = "${music.title}的封面",
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .aspectRatio(1f)
+                    .clip(RoundedCornerShape(size = 10.dp)),
+                contentScale = ContentScale.FillBounds
+            )
+            Column(
+                modifier = Modifier.fillMaxHeight(),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column {
+                    Text(
+                        text = music.title,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Text(
+                        text = music.artist,
+                        fontSize = 12.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                ChunithmLevelBadgeRow(musicEntry = music)
+            }
         }
     }
 }
