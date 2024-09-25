@@ -51,6 +51,7 @@ data class DeveloperInfo(
 val DEVELOPERS = listOf(
     DeveloperInfo("louiswu2011", "主程序"),
     DeveloperInfo("0Shu", "美术支持"),
+    DeveloperInfo("C.C.Duck", "配色方案"),
     DeveloperInfo("SoreHait", "技术支持"),
     DeveloperInfo("Diving-Fish", "舞萌DX数据支持"),
     DeveloperInfo("bakapiano", "国服代理传分方案"),
