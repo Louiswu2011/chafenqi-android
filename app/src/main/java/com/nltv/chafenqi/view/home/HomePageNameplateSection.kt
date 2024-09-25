@@ -30,22 +30,42 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.nltv.chafenqi.R
+import com.nltv.chafenqi.storage.SettingsStore
 
 val nameplateChunithmTopColor = Color(red = 254, green = 241, blue = 65)
 val nameplateChunithmBottomColor = Color(red = 243, green = 200, blue = 48)
 
 val nameplateMaimaiTopColor = Color(red = 167, green = 243, blue = 254)
 val nameplateMaimaiBottomColor = Color(red = 93, green = 166, blue = 247)
+
+val nameplateThemedChuniColors = listOf(
+    Color(red = 192, green = 230, blue = 249),
+    Color(red = 219, green = 226, blue = 250),
+    Color(red = 240, green = 223, blue = 246),
+    Color(red = 248, green = 211, blue = 238),
+    Color(red = 245, green = 178, blue = 225)
+)
+
+val nameplateThemedMaiColors = listOf(
+    Color(red = 235, green = 182, blue = 85),
+    Color(red = 235, green = 187, blue = 87),
+    Color(red = 236, green = 196, blue = 90),
+    Color(red = 235, green = 200, blue = 89),
+    Color(red = 242, green = 225, blue = 68)
+)
 
 @Composable
 fun HomePageNameplateSection(navController: NavController) {
@@ -69,13 +89,16 @@ fun HomePageNameplateSection(navController: NavController) {
 
 @Composable
 fun HomePageMaimaiNameplate(navController: NavController) {
+    val store = SettingsStore(LocalContext.current)
     val model: HomePageViewModel = viewModel()
     val uiState by model.uiState.collectAsState()
     var showEmptyDataAlert by remember {
         mutableStateOf(false)
     }
+    val homeUseThemedColor by store.homeUseThemedColor.collectAsStateWithLifecycle(initialValue = true)
 
     val brush = Brush.verticalGradient(listOf(nameplateMaimaiTopColor, nameplateMaimaiBottomColor))
+    val themedBrush = Brush.linearGradient(colors = nameplateThemedMaiColors, start = Offset.Zero, end = Offset.Infinite)
 
     if (showEmptyDataAlert) {
         EmptyDataAlert(onDismissRequest = { showEmptyDataAlert = false }) {
@@ -88,10 +111,12 @@ fun HomePageMaimaiNameplate(navController: NavController) {
             .fillMaxWidth()
             .padding(10.dp),
         shape = ShapeDefaults.Medium,
-        elevation = CardDefaults.cardElevation()
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 6.dp
+        )
     ) {
         Box(
-            modifier = Modifier.background(brush)
+            modifier = Modifier.background(if (homeUseThemedColor) themedBrush else brush)
         ) {
             Column(
                 horizontalAlignment = Alignment.End,
@@ -167,14 +192,17 @@ fun HomePageMaimaiNameplate(navController: NavController) {
 
 @Composable
 fun HomePageChunithmNameplate(navController: NavController) {
+    val store = SettingsStore(LocalContext.current)
     val model: HomePageViewModel = viewModel()
     val uiState by model.uiState.collectAsState()
     var showEmptyDataAlert by remember {
         mutableStateOf(false)
     }
+    val homeUseThemedColor by store.homeUseThemedColor.collectAsStateWithLifecycle(initialValue = true)
 
     val brush =
         Brush.verticalGradient(listOf(nameplateChunithmTopColor, nameplateChunithmBottomColor))
+    val themedBrush = Brush.linearGradient(colors = nameplateThemedChuniColors, start = Offset.Zero, end = Offset.Infinite)
 
     if (showEmptyDataAlert) {
         EmptyDataAlert(onDismissRequest = { showEmptyDataAlert = false }) {
@@ -187,10 +215,12 @@ fun HomePageChunithmNameplate(navController: NavController) {
             .fillMaxWidth()
             .padding(10.dp),
         shape = ShapeDefaults.Medium,
-        elevation = CardDefaults.cardElevation()
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 6.dp
+        )
     ) {
         Box(
-            modifier = Modifier.background(brush)
+            modifier = Modifier.background(if (homeUseThemedColor) themedBrush else brush)
         ) {
             Column(
                 horizontalAlignment = Alignment.End,

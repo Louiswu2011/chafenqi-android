@@ -25,6 +25,7 @@ class SettingsStore(private val context: Context) {
         private val homeDefaultGameKey = intPreferencesKey("homeDefaultGame")
         private val homeShowRefreshButtonKey = booleanPreferencesKey("homeShowRefreshButton")
         private val homeArrangementKey = stringPreferencesKey("homeArrangement")
+        private val homeUseThemedColorKey = booleanPreferencesKey("homeUseThemedColor")
 
         private val infoLevelsChunithmDefaultLevelKey =
             intPreferencesKey("infoLevelsChunithmDefaultLevel")
@@ -93,6 +94,14 @@ class SettingsStore(private val context: Context) {
 
     suspend fun setHomeShowRefreshButton(value: Boolean) {
         context.settingsStore.edit { it[homeShowRefreshButtonKey] = value }
+    }
+
+    var homeUseThemedColor: Flow<Boolean> =
+        context.settingsStore.data.map { it[homeUseThemedColorKey] ?: true }
+        private set
+
+    suspend fun setHomeUseThemedColor(value: Boolean) {
+        context.settingsStore.edit { it[homeUseThemedColorKey] = value }
     }
 
     var infoLevelsChunithmDefaultLevel: Flow<Int> =

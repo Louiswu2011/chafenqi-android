@@ -53,6 +53,9 @@ fun PreferenceRootScope.SettingsHomeGroup(navController: NavController) {
     val logDefaultPricePerRound by store.logDefaultPricePerRound.collectAsStateWithLifecycle(
         initialValue = 3f
     )
+    val homeUseThemedColor by store.homeUseThemedColor.collectAsStateWithLifecycle(
+        initialValue = true
+    )
 
     PreferenceList(
         value = homeDefaultGame,
@@ -78,6 +81,14 @@ fun PreferenceRootScope.SettingsHomeGroup(navController: NavController) {
         },
         title = { Text(text = "显示刷新按钮") },
         subtitle = { Text(text = "无法下拉刷新时可以使用") }
+    )
+    PreferenceBool(
+        value = homeUseThemedColor,
+        onValueChange = { newValue ->
+            scope.launch { store.setHomeUseThemedColor(newValue) }
+        },
+        title = { Text(text = "使用主题色") },
+        subtitle = { Text(text = "使用当前游戏版本的主题色作为用户信息卡片的背景") }
     )
     PreferenceInputNumber(
         value = logDefaultPricePerRound,
