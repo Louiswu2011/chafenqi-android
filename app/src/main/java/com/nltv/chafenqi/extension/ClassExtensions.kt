@@ -205,6 +205,7 @@ fun MaimaiBestScoreEntry.associatedMusicEntry(): MaimaiMusicEntry {
                 }
             }
         } else {
+            Log.e("我有意见", "无法匹配歌曲：${this.title}")
             MaimaiMusicEntry()
         }
     } catch (e: Exception) {
@@ -227,6 +228,7 @@ fun MaimaiRecentScoreEntry.associatedMusicEntry(): MaimaiMusicEntry {
                 }.associatedMusicEntry
             }
         } else {
+            Log.e("我有意见", "无法匹配歌曲：${this.title}")
             MaimaiMusicEntry()
         }
     } catch (e: Exception) {
@@ -248,9 +250,11 @@ fun ChunithmBestScoreEntry.associatedMusicEntry(): ChunithmMusicEntry {
     return try {
         if (CFQPersistentData.Chunithm.musicList.isNotEmpty()) {
             CFQPersistentData.Chunithm.musicList.first {
-                it.musicID.toString() == this.idx
+                // it.musicID.toString() == this.idx
+                it.title == this.title
             }
         } else {
+            Log.e("我有意见", "无法匹配歌曲：${this.title}")
             ChunithmMusicEntry()
         }
     } catch (e: Exception) {
@@ -263,9 +267,11 @@ fun ChunithmRecentScoreEntry.associatedMusicEntry(): ChunithmMusicEntry {
     return try {
         if (CFQUser.Chunithm.best.isNotEmpty()) {
             CFQUser.Chunithm.best.first {
-                it.idx == this.idx
+                // it.idx == this.idx
+                it.title == this.title
             }.associatedMusicEntry
         } else {
+            Log.e("我有意见", "无法匹配歌曲：${this.title}")
             ChunithmMusicEntry()
         }
     } catch (e: Exception) {
@@ -277,9 +283,11 @@ fun ChunithmRatingEntry.associatedMusicEntry(): ChunithmMusicEntry {
     return try {
         if (CFQUser.Chunithm.best.isNotEmpty()) {
             CFQUser.Chunithm.best.first {
-                it.idx == this.idx
+                // it.idx == this.idx
+                it.title == this.title
             }.associatedMusicEntry
         } else {
+            Log.e("我有意见", "无法匹配歌曲：${this.title}")
             ChunithmMusicEntry()
         }
     } catch (e: Exception) {
