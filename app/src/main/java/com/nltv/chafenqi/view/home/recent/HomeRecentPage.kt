@@ -19,11 +19,16 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material3.Button
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -70,6 +75,7 @@ import kotlinx.coroutines.launch
 fun HomeRecentPage(navController: NavController) {
     val model: HomeRecentViewModel = viewModel()
 
+    val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = model.getRecentList().firstOrNull()?.timestamp?.times(1000L),
@@ -127,6 +133,17 @@ fun HomeRecentPage(navController: NavController) {
                 }
             )
         },
+        floatingActionButton = {
+            FloatingActionButton(onClick = {
+                coroutineScope.launch {
+                    listState.animateScrollToItem(0)
+                }
+            }, elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(
+                defaultElevation = 5.dp
+            )) {
+                Icon(imageVector = Icons.Default.ArrowUpward, contentDescription = "回到顶部")
+            }
+        },
         containerColor = MaterialTheme.colorScheme.surface
     ) { paddingValues ->
         LazyColumn(
@@ -157,52 +174,59 @@ fun HomeRecentPage(navController: NavController) {
 fun HomeRecentPageEntry(entry: MaimaiRecentScoreEntry, index: Int, navController: NavController) {
     val context = LocalContext.current
 
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .height(72.dp)
-            .clickable {
-                Log.i("HomeRecentPageEntry", "Jump from index $index")
-                navController.navigate(HomeNavItem.Home.route + "/recent/maimai/${index}")
-            },
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        AsyncImage(
-            model = entry.associatedMusicEntry.musicID.toMaimaiCoverPath(),
-            contentDescription = "歌曲封面",
-            modifier = Modifier
-                .padding(end = 8.dp)
-                .size(72.dp)
-                .border(
-                    border = BorderStroke(
-                        width = 2.dp, color = maimaiDifficultyColors[entry.levelIndex]
-                    ), shape = RoundedCornerShape(10.dp)
-                )
-                .padding(2.dp)
-                .clip(RoundedCornerShape(size = 10.dp))
+    ElevatedCard (
+        onClick = {
+            Log.i("HomeRecentPageEntry", "Jump from index $index")
+            navController.navigate(HomeNavItem.Home.route + "/recent/maimai/${index}")
+        },
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp,
+            pressedElevation = 2.dp
         )
-        Column(
-            Modifier.fillMaxHeight(),
-            verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .height(88.dp)
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(entry.timestamp.toDateString(context), fontSize = 14.sp)
-            Row(
-                Modifier.fillMaxWidth(),
-                Arrangement.SpaceBetween,
-                Alignment.CenterVertically
+            AsyncImage(
+                model = entry.associatedMusicEntry.musicID.toMaimaiCoverPath(),
+                contentDescription = "歌曲封面",
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .size(72.dp)
+                    .border(
+                        border = BorderStroke(
+                            width = 2.dp, color = maimaiDifficultyColors[entry.levelIndex]
+                        ), shape = RoundedCornerShape(10.dp)
+                    )
+                    .clip(RoundedCornerShape(size = 10.dp))
+            )
+            Column(
+                Modifier.fillMaxHeight(),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    entry.title,
-                    fontSize = 16.sp,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1,
-                    modifier = Modifier.fillMaxWidth(0.6f)
-                )
-                Text(
-                    text = "%.4f".format(entry.achievements).plus("%"),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
-                )
+                Text(entry.timestamp.toDateString(context), fontSize = 14.sp)
+                Row(
+                    Modifier.fillMaxWidth(),
+                    Arrangement.SpaceBetween,
+                    Alignment.CenterVertically
+                ) {
+                    Text(
+                        entry.title,
+                        fontSize = 16.sp,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        modifier = Modifier.fillMaxWidth(0.6f)
+                    )
+                    Text(
+                        text = "%.4f".format(entry.achievements).plus("%"),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp
+                    )
+                }
             }
         }
     }
@@ -212,45 +236,59 @@ fun HomeRecentPageEntry(entry: MaimaiRecentScoreEntry, index: Int, navController
 fun HomeRecentPageEntry(entry: ChunithmRecentScoreEntry, index: Int, navController: NavController) {
     val context = LocalContext.current
 
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .height(72.dp)
-            .clickable {
-                Log.i("HomeRecentPageEntry", "Jump from index $index")
-                navController.navigate(HomeNavItem.Home.route + "/recent/chunithm/${index}")
-            },
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        AsyncImage(
-            model = entry.associatedMusicEntry.musicID.toChunithmCoverPath(),
-            contentDescription = "歌曲封面",
-            modifier = Modifier
-                .padding(end = 8.dp)
-                .size(72.dp)
-                .border(
-                    border = BorderStroke(
-                        width = 2.dp, color = chunithmDifficultyColors[entry.levelIndex]
-                    ), shape = RoundedCornerShape(10.dp)
-                )
-                .padding(2.dp)
-                .clip(RoundedCornerShape(size = 10.dp))
+    ElevatedCard (
+        onClick = {
+            Log.i("HomeRecentPageEntry", "Jump from index $index")
+            navController.navigate(HomeNavItem.Home.route + "/recent/chunithm/${index}")
+        },
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp,
+            pressedElevation = 2.dp
         )
-        Column(
-            Modifier.fillMaxHeight(),
-            verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .height(88.dp)
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(entry.timestamp.toDateString(context), fontSize = 14.sp)
-            Row(
-                Modifier.fillMaxWidth(),
-                Arrangement.SpaceBetween,
-                Alignment.CenterVertically
+            AsyncImage(
+                model = entry.associatedMusicEntry.musicID.toChunithmCoverPath(),
+                contentDescription = "歌曲封面",
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .size(72.dp)
+                    .border(
+                        border = BorderStroke(
+                            width = 2.dp, color = chunithmDifficultyColors[entry.levelIndex]
+                        ), shape = RoundedCornerShape(10.dp)
+                    )
+                    .clip(RoundedCornerShape(size = 10.dp))
+            )
+            Column(
+                Modifier.fillMaxHeight(),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    entry.title, fontSize = 16.sp, overflow = TextOverflow.Ellipsis, maxLines = 1,
-                    modifier = Modifier.fillMaxWidth(0.6f)
-                )
-                Text(text = entry.score.toString(), fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text(entry.timestamp.toDateString(context), fontSize = 14.sp)
+                Row(
+                    Modifier.fillMaxWidth(),
+                    Arrangement.SpaceBetween,
+                    Alignment.CenterVertically
+                ) {
+                    Text(
+                        entry.title,
+                        fontSize = 16.sp,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        modifier = Modifier.fillMaxWidth(0.6f)
+                    )
+                    Text(
+                        text = entry.score.toString(),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp
+                    )
+                }
             }
         }
     }
