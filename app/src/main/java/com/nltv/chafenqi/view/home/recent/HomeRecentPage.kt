@@ -20,6 +20,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.filled.ChevronLeft
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
@@ -42,6 +44,7 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,6 +58,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -77,36 +81,16 @@ fun HomeRecentPage(navController: NavController) {
 
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
-    val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = model.getRecentList().firstOrNull()?.timestamp?.times(1000L),
-        selectableDates = model.getRecentSelectableDates()
-    )
-    var showDatePickerDialog by remember { mutableStateOf(false) }
-    var datePicked by remember {
-        mutableLongStateOf(0L)
+    var currentPageIndex by remember { mutableIntStateOf(0) }
+    val uiState by model.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        currentPageIndex = 0
     }
 
-    LaunchedEffect(datePicked) {
-        val index = model.getRecentList().indexOfFirst { it.timestamp.times(1000L) <= datePicked }
-        if (index < 0) return@LaunchedEffect
-        listState.animateScrollToItem(index)
-        println("Jumped to index $index")
-    }
-
-    if (showDatePickerDialog) {
-        DatePickerDialog(
-            onDismissRequest = { showDatePickerDialog = false },
-            confirmButton = {
-                TextButton(onClick = {
-                    showDatePickerDialog = false
-                    datePicked = datePickerState.selectedDateMillis ?: 0L
-                }) {
-                    Text(text = "跳转")
-                }
-            }
-        ) {
-            DatePicker(state = datePickerState)
-        }
+    LaunchedEffect(currentPageIndex) {
+        Log.i("HomeRecentPage", "Current Page: ${currentPageIndex + 1}")
+        model.updatePage(currentPageIndex)
     }
 
     Scaffold(
@@ -124,11 +108,16 @@ fun HomeRecentPage(navController: NavController) {
                     }
                 },
                 actions = {
-                    IconButton(onClick = { showDatePickerDialog = true }) {
-                        Icon(
-                            imageVector = Icons.Default.History,
-                            contentDescription = "跳转到具体日期"
-                        )
+                    Row (
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(onClick = { currentPageIndex -= 1 }, enabled = currentPageIndex > 0) {
+                            Icon(imageVector = Icons.Default.ChevronLeft, contentDescription = "Previous Page")
+                        }
+                        Text(text = "${currentPageIndex + 1}")
+                        IconButton(onClick = { currentPageIndex += 1 }, enabled = if (model.user.mode == 0) currentPageIndex + 1 < model.chuAvailablePage else currentPageIndex + 1 < model.maiAvailablePage) {
+                            Icon(imageVector = Icons.Default.ChevronRight, contentDescription = "Next Page")
+                        }
                     }
                 }
             )
@@ -154,18 +143,31 @@ fun HomeRecentPage(navController: NavController) {
             verticalArrangement = Arrangement.spacedBy(8.dp),
             state = listState
         ) {
-            items(
-                count = model.getRecentList().size,
-                key = { index -> model.getRecentList()[index].timestamp },
-                itemContent = { index ->
-                    val entry = model.getRecentList()[index]
-                    if (entry is MaimaiRecentScoreEntry) {
-                        HomeRecentPageEntry(entry, index, navController)
-                    } else if (entry is ChunithmRecentScoreEntry) {
-                        HomeRecentPageEntry(entry, index, navController)
+            if (model.user.mode == 0) {
+                items(
+                    count = uiState.chuRecentList.size,
+                    key = { index -> uiState.chuRecentList[index].timestamp },
+                    itemContent = { index ->
+                        HomeRecentPageEntry(
+                            entry = uiState.chuRecentList[index],
+                            index = index,
+                            navController = navController
+                        )
                     }
-                }
-            )
+                )
+            } else {
+                items(
+                    count = uiState.maiRecentList.size,
+                    key = { index -> uiState.maiRecentList[index].timestamp },
+                    itemContent = { index ->
+                        HomeRecentPageEntry(
+                            entry = uiState.maiRecentList[index],
+                            index = index,
+                            navController = navController
+                        )
+                    }
+                )
+            }
         }
     }
 }
