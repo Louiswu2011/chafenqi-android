@@ -29,8 +29,8 @@ class HomeRecentViewModel : ViewModel() {
     val chuAvailablePage = ceil(user.chunithm.recent.size / entriesPerPage)
     val maiAvailablePage = ceil(user.maimai.recent.size / entriesPerPage)
 
-    private val maiRecentList = user.maimai.recent
-    private val chuRecentList = user.chunithm.recent
+    val maiRecentList = user.maimai.recent
+    val chuRecentList = user.chunithm.recent
 
     private val _uiState = MutableStateFlow(HomeRecentViewUiState())
     val uiState: StateFlow<HomeRecentViewUiState> = _uiState.asStateFlow()

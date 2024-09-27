@@ -147,7 +147,7 @@ fun HomeRecentPage(navController: NavController) {
                     itemContent = { index ->
                         HomeRecentPageEntry(
                             entry = uiState.chuRecentList[index],
-                            index = index,
+                            index = model.chuRecentList.indexOf(uiState.chuRecentList[index]),
                             navController = navController
                         )
                     }
@@ -159,7 +159,7 @@ fun HomeRecentPage(navController: NavController) {
                     itemContent = { index ->
                         HomeRecentPageEntry(
                             entry = uiState.maiRecentList[index],
-                            index = index,
+                            index = model.maiRecentList.indexOf(uiState.maiRecentList[index]),
                             navController = navController
                         )
                     }
