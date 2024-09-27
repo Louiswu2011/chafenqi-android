@@ -45,7 +45,7 @@ class HomeRecentViewModel : ViewModel() {
                             currentPageIndex = index,
                             chuRecentList = chuRecentList.subList(
                                 (index * entriesPerPage).toInt(),
-                                min(((index + 1) * entriesPerPage).toInt(), chuRecentList.lastIndex)
+                                min(((index + 1) * entriesPerPage).toInt(), chuRecentList.size)
                             )
                         )
                     }
@@ -59,7 +59,7 @@ class HomeRecentViewModel : ViewModel() {
                             currentPageIndex = index,
                             maiRecentList = maiRecentList.subList(
                                 (index * entriesPerPage).toInt(),
-                                min(((index + 1) * entriesPerPage).toInt(), maiRecentList.lastIndex)
+                                min(((index + 1) * entriesPerPage).toInt(), maiRecentList.size)
                             )
                         )
                     }
