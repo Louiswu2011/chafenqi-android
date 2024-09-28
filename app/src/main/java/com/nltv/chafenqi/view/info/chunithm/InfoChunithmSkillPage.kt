@@ -63,7 +63,7 @@ fun InfoChunithmSkillPage(navController: NavController) {
         ) {
             items(
                 count = model.skills.size,
-                key = { index -> model.skills[index].icon }
+                key = { index -> model.skills[index].icon + model.skills[index].name }
             ) { index ->
                 ChunithmSkillListEntry(entry = model.skills[index])
             }
