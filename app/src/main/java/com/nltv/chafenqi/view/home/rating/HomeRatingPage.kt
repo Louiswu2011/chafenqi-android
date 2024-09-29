@@ -1,5 +1,7 @@
 package com.nltv.chafenqi.view.home.rating
 
+import android.content.ClipData
+import android.content.Intent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -18,6 +20,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -27,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -50,7 +56,7 @@ import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.extension.toRateString
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRatingEntry
 import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiBestScoreEntry
-import com.nltv.chafenqi.view.home.rating.screenshot.getActivityOrNull
+import com.nltv.chafenqi.view.home.rating.share.HomeRatingShareDialog
 import com.nltv.chafenqi.view.module.RatingBadge
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
 import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
@@ -58,8 +64,11 @@ import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeRatingPage(navController: NavController) {
-    val activity = LocalContext.current.getActivityOrNull()
     val model = viewModel<HomeRatingPageViewModel>().also { it.update() }
+
+    if (model.showShareDialog) {
+        HomeRatingShareDialog { model.showShareDialog = false }
+    }
 
     Scaffold(
         topBar = {
@@ -78,29 +87,14 @@ fun HomeRatingPage(navController: NavController) {
                         )
                     }
                 },
-//                actions = {
-//                    if (activity == null) return@TopAppBar
-//                    HomeRatingScreenshotButton(
-//                        activity = activity,
-//                        mode = model.mode,
-//                        maiData = HomeRatingScreenshotMaimaiData(
-//                            pastList = model.maiPastList,
-//                            newList = model.maiNewList,
-//                            rating = model.maiRating,
-//                            pastRating = model.maiPastRating,
-//                            newRating = model.maiNewRating,
-//                            navController = navController
-//                        ),
-//                        chuData = HomeRatingScreenshotChunithmData(
-//                            bestList = model.chuBestList,
-//                            recentList = model.chuRecentList,
-//                            rating = model.chuRating,
-//                            bestRating = model.chuBestRating,
-//                            recentRating = model.chuRecentRating,
-//                            navController = navController
-//                        )
-//                    )
-//                }
+                actions = {
+                    IconButton(onClick = { model.showShareDialog = true }) {
+                        Icon(
+                            imageVector = Icons.Filled.Share,
+                            contentDescription = "分享"
+                        )
+                    }
+                }
             )
         },
         containerColor = MaterialTheme.colorScheme.surface

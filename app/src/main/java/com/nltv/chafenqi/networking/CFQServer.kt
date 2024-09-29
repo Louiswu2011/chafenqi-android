@@ -1,6 +1,9 @@
 package com.nltv.chafenqi.networking
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
+import androidx.compose.ui.graphics.ImageBitmap
 import com.nltv.chafenqi.data.ChunithmMusicStat
 import com.nltv.chafenqi.data.Comment
 import com.nltv.chafenqi.data.VersionData
@@ -16,6 +19,7 @@ import com.nltv.chafenqi.data.leaderboard.MaimaiTotalPlayedLeaderboardItem
 import com.nltv.chafenqi.data.leaderboard.MaimaiTotalScoreLeaderboardItem
 import com.nltv.chafenqi.util.AppAnnouncement
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.ANDROID
@@ -636,6 +640,24 @@ class CFQServer {
                 token = authToken
             )
             return response.status.value == 200
+        }
+
+        suspend fun apiFetchUserImage(authToken: String, gameType: String, imageType: String): ByteArray? {
+            try {
+                val response = fetchFromServer(
+                    method = "GET",
+                    path = "api/image",
+                    queries = hashMapOf(
+                        "game" to gameType,
+                        "type" to imageType
+                    ),
+                    token = authToken
+                )
+                return response.body()
+            } catch (e: Exception) {
+                Log.e("CFQServer", "Failed to fetch user image: ${e.localizedMessage}")
+                return null
+            }
         }
 
 
