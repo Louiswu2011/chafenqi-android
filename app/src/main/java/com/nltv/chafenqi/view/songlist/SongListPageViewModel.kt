@@ -192,7 +192,9 @@ class SongListPageViewModel : ViewModel() {
         if (filterLevel && filterChunithmLevelList.isNotEmpty()) {
             result = result.filter {
                 for (level in it.charts.levels) {
-                    if (level != "0" && filterChunithmLevelList[level.toLevelIndex(0)]) {
+                    val levelIndex = level.toLevelIndex(0)
+                    if (levelIndex < 0) return@filter false
+                    if (level != "0" && filterChunithmLevelList[levelIndex]) {
                         return@filter true
                     }
                 }
