@@ -85,10 +85,15 @@ fun UpdaterHomePage(navController: NavController) {
 
         while (true) {
             // Log.i("Updater", "Fetching stats...")
-            model.updateServerStat()
-            model.updateUploadStat()
-            model.updateQuickUploadStat()
-            delay(5000)
+            try {
+                model.updateServerStat()
+                model.updateUploadStat()
+                model.updateQuickUploadStat()
+                delay(5000)
+            } catch (e: Exception) {
+                Log.e("Updater", "Failed to fetch stats, error: $e, skipping...")
+                continue
+            }
         }
     }
 

@@ -36,6 +36,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import java.util.concurrent.TimeUnit
 
 class CFQServer {
     companion object {
@@ -44,7 +45,7 @@ class CFQServer {
             defaultPath = path
         }
 
-        val decoder = Json { ignoreUnknownKeys = true }
+        private val decoder = Json { ignoreUnknownKeys = true }
 
         val client = HttpClient(OkHttp) {
             install(ContentNegotiation) {
@@ -53,6 +54,13 @@ class CFQServer {
             install(Logging) {
                 logger = Logger.ANDROID
                 level = LogLevel.NONE
+            }
+            engine {
+                config {
+                    connectTimeout(10, TimeUnit.SECONDS)
+                    readTimeout(10, TimeUnit.SECONDS)
+                    writeTimeout(10, TimeUnit.SECONDS)
+                }
             }
         }
 
@@ -372,14 +380,19 @@ class CFQServer {
         }
 
         suspend fun apiHasTokenCache(gameType: Int, authToken: String): Boolean {
-            val response = fetchFromServer(
-                "GET",
-                "api/user/hasCache",
-                queries = mapOf("dest" to gameType.toString()),
-                token = authToken,
-                shouldHandleErrorCode = false
-            )
-            return response.status.value == 200
+            try {
+                val response = fetchFromServer(
+                    "GET",
+                    "api/user/hasCache",
+                    queries = mapOf("dest" to gameType.toString()),
+                    token = authToken,
+                    shouldHandleErrorCode = false
+                )
+                return response.status.value == 200
+            } catch (e: Exception) {
+                Log.e("CFQServer", "Failed to check token cache: ${e.localizedMessage}")
+                return false
+            }
         }
 
         suspend fun apiTriggerQuickUpload(
