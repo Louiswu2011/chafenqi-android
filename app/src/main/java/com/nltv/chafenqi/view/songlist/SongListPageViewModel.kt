@@ -138,12 +138,16 @@ class SongListPageViewModel : ViewModel() {
         }
         if (filterGenre && filterMaimaiGenreList.any { it }) {
             result = result.filter {
-                filterMaimaiGenreList[MAIMAI_GENRE_STRINGS.indexOf(it.basicInfo.genre)]
+                val genreIndex = MAIMAI_GENRE_STRINGS.indexOf(it.basicInfo.genre)
+                if (genreIndex < 0) return@filter false
+                filterMaimaiGenreList[genreIndex]
             }
         }
         if (filterVersion && filterMaimaiVersionList.any { it }) {
             result = result.filter {
-                filterMaimaiVersionList[MAIMAI_VERSION_STRINGS.indexOf(it.basicInfo.from)]
+                val versionIndex = MAIMAI_VERSION_STRINGS.indexOf(it.basicInfo.from)
+                if (versionIndex < 0) return@filter false
+                filterMaimaiVersionList[versionIndex]
             }
         }
         return result
@@ -203,12 +207,16 @@ class SongListPageViewModel : ViewModel() {
         }
         if (filterGenre && filterChunithmGenreList.any { it }) {
             result = result.filter {
-                filterChunithmGenreList[CHUNITHM_GENRE_STRINGS.indexOf(it.genre)]
+                val genreIndex = CHUNITHM_GENRE_STRINGS.indexOf(it.genre)
+                if (genreIndex < 0) return@filter false
+                filterChunithmGenreList[genreIndex]
             }
         }
         if (filterVersion && filterChunithmVersionList.any { it }) {
             result = result.filter {
-                filterChunithmVersionList[CHUNITHM_VERSION_STRINGS.indexOf(it.from)]
+                val versionIndex = CHUNITHM_VERSION_STRINGS.indexOf(it.from)
+                if (versionIndex < 0) return@filter false
+                filterChunithmVersionList[versionIndex]
             }
         }
         return result
