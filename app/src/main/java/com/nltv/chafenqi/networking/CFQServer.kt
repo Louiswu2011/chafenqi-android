@@ -486,6 +486,7 @@ class CFQServer {
                 response.toInt()
             } catch (e: Exception) {
                 Log.e("CFQServer", "Failed to get music list version, defaulting to 0.")
+                0
             }
         }
 
