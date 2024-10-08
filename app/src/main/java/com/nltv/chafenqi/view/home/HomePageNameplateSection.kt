@@ -22,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -140,23 +141,18 @@ fun HomePageMaimaiNameplate(navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End
             ) {
-                Button(
+                TextButton(
                     onClick = {
                         if (!model.user.isPremium) {
                             navController.navigate(HomeNavItem.Home.route + "/settings/user/redeem")
-                            return@Button
+                            return@TextButton
                         }
                         if (uiState.canOpenMaimaiInfo) {
                             navController.navigate(HomeNavItem.Home.route + "/info")
                         } else {
                             showEmptyDataAlert = true
                         }
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.primary
-                    ),
-                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 0.dp)
+                    }
                 ) {
                     Icon(
                         imageVector = Icons.Default.Person,
@@ -244,24 +240,18 @@ fun HomePageChunithmNameplate(navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End
             ) {
-                Button(
+                TextButton(
                     onClick = {
                         if (!model.user.isPremium) {
                             navController.navigate(HomeNavItem.Home.route + "/settings/user/redeem")
-                            return@Button
+                            return@TextButton
                         }
-
                         if (uiState.canOpenChunithmInfo) {
                             navController.navigate(HomeNavItem.Home.route + "/info")
                         } else {
                             showEmptyDataAlert = true
                         }
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.primary
-                    ),
-                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp)
+                    }
                 ) {
                     Icon(
                         imageVector = Icons.Default.Person,
