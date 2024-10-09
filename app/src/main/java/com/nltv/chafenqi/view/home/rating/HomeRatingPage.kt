@@ -28,6 +28,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -88,11 +89,8 @@ fun HomeRatingPage(navController: NavController) {
                     }
                 },
                 actions = {
-                    IconButton(onClick = { model.showShareDialog = true }) {
-                        Icon(
-                            imageVector = Icons.Filled.Share,
-                            contentDescription = "分享"
-                        )
+                    TextButton(onClick = { model.showShareDialog = true }) {
+                        Text("生成分表")
                     }
                 }
             )

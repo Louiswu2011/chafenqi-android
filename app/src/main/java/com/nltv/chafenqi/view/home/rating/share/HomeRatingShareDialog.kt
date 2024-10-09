@@ -19,6 +19,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -55,7 +56,7 @@ fun HomeRatingShareDialog(
         ) {
             Column (
                 modifier = Modifier.fillMaxSize()
-                    .padding(8.dp),
+                    .padding(horizontal = 8.dp),
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -71,7 +72,8 @@ fun HomeRatingShareDialog(
                         } else {
                             AsyncImage(
                                 model = uiState.imageUri,
-                                contentDescription = "分享图片"
+                                contentDescription = "分享图片",
+                                modifier = Modifier.clip(RoundedCornerShape(8.dp))
                             )
                         }
                     }
@@ -85,9 +87,6 @@ fun HomeRatingShareDialog(
                         Text("取消")
                     }
                     Row {
-//                        TextButton( onClick = {}, enabled = uiState.imageUri != null ) {
-//                            Text("保存")
-//                        }
                         TextButton( onClick = {
                             context.startActivity(shareIntent)
                         }, enabled = uiState.imageUri != null ) {

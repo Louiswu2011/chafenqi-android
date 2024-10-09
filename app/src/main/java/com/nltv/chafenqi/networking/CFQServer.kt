@@ -17,6 +17,7 @@ import com.nltv.chafenqi.data.leaderboard.MaimaiFirstLeaderboardItem
 import com.nltv.chafenqi.data.leaderboard.MaimaiRatingLeaderboardItem
 import com.nltv.chafenqi.data.leaderboard.MaimaiTotalPlayedLeaderboardItem
 import com.nltv.chafenqi.data.leaderboard.MaimaiTotalScoreLeaderboardItem
+import com.nltv.chafenqi.storage.user.MaimaiB50Info
 import com.nltv.chafenqi.util.AppAnnouncement
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -35,6 +36,7 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.util.concurrent.TimeUnit
 
@@ -670,6 +672,22 @@ class CFQServer {
                 return response.body()
             } catch (e: Exception) {
                 Log.e("CFQServer", "Failed to fetch user image: ${e.localizedMessage}")
+                return null
+            }
+        }
+
+        suspend fun apiFetchB50Image(data: MaimaiB50Info): ByteArray? {
+            try {
+                val response = client.post("$defaultPath/api/image/b50") {
+                    accept(ContentType.Any)
+                    Json.encodeToString(data).also {
+                        this.contentType(ContentType.Application.Json)
+                        this.setBody(it)
+                    }
+                }
+                return response.body()
+            } catch (e: Exception) {
+                Log.e("CFQServer", "Failed to fetch b50 image: ${e.localizedMessage}")
                 return null
             }
         }

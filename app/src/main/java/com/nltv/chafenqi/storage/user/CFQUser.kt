@@ -367,4 +367,42 @@ object CFQUser {
         OneSignal.logout()
         Log.i(tag, "Logged out from OneSignal.")
     }
+
+    fun makeB50Info(): MaimaiB50Info {
+        return MaimaiB50Info(
+            username,
+            MaimaiB50Detail(
+                rating = Maimai.info.rating,
+                newRating = Maimai.Aux.newRating,
+                pastRating = Maimai.Aux.pastRating,
+                nickname = Maimai.info.nickname,
+                b35 = Maimai.Aux.pastBest.mapIndexed { index, it ->
+                    MaimaiB50Entry(
+                        index = index,
+                        title = it.title,
+                        level = it.level,
+                        achievements = it.achievements.toDouble(),
+                        constant = it.associatedMusicEntry.constants[it.levelIndex],
+                        rating = it.rating(),
+                        fc = it.fc,
+                        diffIndex = it.levelIndex,
+                        musicId = it.associatedMusicEntry.musicID
+                    )
+                },
+                b15 = Maimai.Aux.newBest.mapIndexed { index, it ->
+                    MaimaiB50Entry(
+                        index = index,
+                        title = it.title,
+                        level = it.level,
+                        achievements = it.achievements.toDouble(),
+                        constant = it.associatedMusicEntry.constants[it.levelIndex],
+                        rating = it.rating(),
+                        fc = it.fc,
+                        diffIndex = it.levelIndex,
+                        musicId = it.associatedMusicEntry.musicID
+                    )
+                }
+            )
+        )
+    }
 }

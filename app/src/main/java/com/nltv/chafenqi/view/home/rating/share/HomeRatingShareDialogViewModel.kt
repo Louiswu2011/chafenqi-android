@@ -59,7 +59,37 @@ class HomeRatingShareDialogViewModel: ViewModel() {
                 }
             }
             1 -> {
-                // TODO: Implement Maimai share
+                viewModelScope.launch {
+                    _uiState.update {
+                        it.copy(
+                            isLoadingImage = true,
+                            imageUri = null
+                        )
+                    }
+                    val info = user.makeB50Info()
+                    val byteArray = CFQServer.apiFetchB50Image(info)
+                    if (byteArray != null) {
+                        val file = File(context.cacheDir, "b50.jpg")
+                        file.delete()
+                        file.createNewFile()
+                        file.outputStream().use {
+                            it.write(byteArray)
+                        }
+                        _uiState.update {
+                            it.copy(
+                                isLoadingImage = false,
+                                imageUri = FileProvider.getUriForFile(context, context.applicationContext.packageName + ".provider", file)
+                            )
+                        }
+                    } else {
+                        _uiState.update {
+                            it.copy(
+                                imageUri = null,
+                                isLoadingImage = false
+                            )
+                        }
+                    }
+                }
             }
         }
     }
