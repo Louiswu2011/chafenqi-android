@@ -56,6 +56,7 @@ import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.SettingsStore
 import com.nltv.chafenqi.view.home.HomeNavItem
 import com.nltv.chafenqi.view.settings.GAME_LIST
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -68,6 +69,7 @@ fun UpdaterHomePage(navController: NavController) {
     }
 
     LaunchedEffect(Unit) {
+        model.startRefreshTask()
         if (!model.checkFishTokenState()) {
             when (snackbarHostState.showSnackbar(
                 message = "水鱼网Token已过期，请重新进行登录。",
@@ -80,19 +82,6 @@ fun UpdaterHomePage(navController: NavController) {
                 }
 
                 else -> {}
-            }
-        }
-
-        while (true) {
-            // Log.i("Updater", "Fetching stats...")
-            try {
-                model.updateServerStat()
-                model.updateUploadStat()
-                model.updateQuickUploadStat()
-                delay(5000)
-            } catch (e: Exception) {
-                Log.e("Updater", "Failed to fetch stats, error: $e, skipping...")
-                continue
             }
         }
     }

@@ -18,14 +18,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.UriHandler
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.networking.FishServer
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.updater.ChafenqiProxy
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -160,6 +163,23 @@ class UpdaterViewModel : ViewModel() {
                     canPerformChuQuickUpload = chuStat,
                     canPerformMaiQuickUpload = maiStat
                 )
+            }
+        }
+    }
+
+    fun startRefreshTask() {
+        Log.i("Updater", "Starting refresh task.")
+        viewModelScope.launch {
+            while (true) {
+                try {
+                    updateServerStat()
+                    updateUploadStat()
+                    updateQuickUploadStat()
+                    delay(5000)
+                } catch (e: Exception) {
+                    Log.e("Updater", "Failed to fetch stats, error: $e, skipping...")
+                    continue
+                }
             }
         }
     }
