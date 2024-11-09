@@ -53,13 +53,18 @@ class FishServer {
         }
 
         suspend fun checkTokenValidity(fishToken: String): Boolean {
-            val response =
-                CFQServer.client.get {
-                    url("https://www.diving-fish.com/api/maimaidxprober/player/profile")
-                    cookie("jwt_token", fishToken)
-                    accept(ContentType.Application.Json)
-                }
-            return response.status.value == 200
+            try {
+                val response =
+                    CFQServer.client.get {
+                        url("https://www.diving-fish.com/api/maimaidxprober/player/profile")
+                        cookie("jwt_token", fishToken)
+                        accept(ContentType.Application.Json)
+                    }
+                return response.status.value == 200
+            } catch (e: Exception) {
+                Log.e("FishServer", "Cannot validate token. $e")
+                return false
+            }
         }
     }
 }

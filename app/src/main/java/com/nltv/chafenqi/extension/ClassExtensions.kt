@@ -14,6 +14,7 @@ import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import com.nltv.chafenqi.storage.user.CFQUser
+import java.math.BigDecimal
 import java.math.RoundingMode
 import java.security.MessageDigest
 import java.text.DecimalFormat
@@ -185,10 +186,18 @@ fun maimaiRatingOf(constant: Double, achievements: Float): Int {
         }
     }
     if (factor == 0.0) {
-        factor = floor(achievements / 10.0)
+        factor = achievements / 10.0
     }
 
     return (constant * min(achievements, 100.5f) * factor / 100.0).toInt()
+//    val achievementsCapped = achievements.toBigDecimal().min("100.5".toBigDecimal())
+//    return constant
+//        .toBigDecimal()
+//        .times(achievementsCapped)
+//        .times(factor)
+//        .divide(BigDecimal(100))
+//        .toBigInteger()
+//        .toInt()
 }
 
 fun MaimaiBestScoreEntry.associatedMusicEntry(): MaimaiMusicEntry {
