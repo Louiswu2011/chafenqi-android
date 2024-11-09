@@ -34,6 +34,7 @@ import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.storage.user.ChunithmRecentLineup
 import com.nltv.chafenqi.storage.user.MaimaiRecentLineup
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -123,9 +124,8 @@ class HomePageViewModel : ViewModel() {
     var isLoaded: Boolean = false
 
     suspend fun checkUpdates() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val versionData = CFQServer.apiFetchLatestVersion()
-            val fullVersionString = BuildConfig.VERSION_NAME
             Log.i(
                 tag,
                 "Current version: $currentVersionCode (${currentBuildNumber}), latest version: ${versionData.androidVersionCode} (${versionData.androidBuild})"

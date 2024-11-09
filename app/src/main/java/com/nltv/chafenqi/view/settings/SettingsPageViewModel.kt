@@ -23,6 +23,7 @@ import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.tile.UpdaterTileService
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -95,13 +96,13 @@ class SettingsPageViewModel : ViewModel() {
 
     @OptIn(FormatStringsInDatetimeFormats::class)
     fun updateSongListVersion() {
-        viewModelScope.launch {
-            maiSongListVersionString = kotlinx.datetime.Instant.fromEpochSeconds(CFQPersistentData.Maimai.version.toLong())
+        viewModelScope.launch(Dispatchers.IO) {
+            maiSongListVersionString = Instant.fromEpochSeconds(CFQPersistentData.Maimai.version.toLong())
                 .toLocalDateTime(TimeZone.currentSystemDefault())
                 .format(LocalDateTime.Format {
                     byUnicodePattern("yyyy-MM-dd")
                 })
-            chuSongListVersionString = kotlinx.datetime.Instant.fromEpochSeconds(CFQPersistentData.Chunithm.version.toLong())
+            chuSongListVersionString = Instant.fromEpochSeconds(CFQPersistentData.Chunithm.version.toLong())
                 .toLocalDateTime(TimeZone.currentSystemDefault())
                 .format(LocalDateTime.Format {
                     byUnicodePattern("yyyy-MM-dd")

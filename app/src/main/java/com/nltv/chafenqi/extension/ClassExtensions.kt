@@ -186,7 +186,7 @@ fun maimaiRatingOf(constant: Double, achievements: Float): Int {
         }
     }
     if (factor == 0.0) {
-        factor = achievements / 10.0
+        factor = floor(achievements / 10.0)
     }
 
     return (constant * min(achievements, 100.5f) * factor / 100.0).toInt()

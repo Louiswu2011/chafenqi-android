@@ -104,7 +104,7 @@ class AppUpdaterViewModel : ViewModel() {
         context.startActivity(intent)
     }
 
-    suspend fun checkUpdates(snackbarHostState: SnackbarHostState, silent: Boolean = false) {
+    fun checkUpdates(snackbarHostState: SnackbarHostState, silent: Boolean = false) {
         viewModelScope.launch {
             val versionData = CFQServer.apiFetchLatestVersion()
             Log.i(
