@@ -17,6 +17,7 @@ import com.nltv.chafenqi.data.leaderboard.MaimaiFirstLeaderboardItem
 import com.nltv.chafenqi.data.leaderboard.MaimaiRatingLeaderboardItem
 import com.nltv.chafenqi.data.leaderboard.MaimaiTotalPlayedLeaderboardItem
 import com.nltv.chafenqi.data.leaderboard.MaimaiTotalScoreLeaderboardItem
+import com.nltv.chafenqi.storage.user.CFQUserInfo
 import com.nltv.chafenqi.storage.user.MaimaiB50Info
 import com.nltv.chafenqi.util.AppAnnouncement
 import io.ktor.client.HttpClient
@@ -28,12 +29,14 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.accept
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.encodeToString
@@ -42,7 +45,7 @@ import java.util.concurrent.TimeUnit
 
 class CFQServer {
     companion object {
-        var defaultPath = "http://43.139.107.206:8083"
+        var defaultPath = "http://127.0.0.1:8998"
         fun setDefaultServerPath(path: String) {
             defaultPath = path
         }
@@ -106,6 +109,15 @@ class CFQServer {
                         }
                     }
 
+                    "DELETE" -> {
+                        response = client.delete("$defaultPath/$path") {
+                            accept(ContentType.Any)
+                            token?.also {
+                                this.headers.append("Authorization", "Bearer $it")
+                            }
+                        }
+                    }
+
                     else -> {
                         throw Exception("Method not supported.")
                     }
@@ -135,24 +147,18 @@ class CFQServer {
         }
 
         suspend fun authLogin(username: String, password: String): String {
-            try {
-                val response = fetchFromServer(
-                    "POST",
-                    "api/auth",
-                    payload = hashMapOf(
-                        "username" to username,
-                        "password" to password
-                    )
+            val response = fetchFromServer(
+                "POST",
+                "api/auth/login",
+                payload = hashMapOf(
+                    "username" to username,
+                    "password" to password
                 )
-                val errorCode = response.bodyAsText()
-                val header = response.headers["Authorization"]?.substring(7)
+            )
 
-                Log.i("CFQServer", "auth login: $errorCode")
-
-                return header ?: ""
-            } catch (_: Exception) {
-                return ""
-            }
+            val body = response.bodyAsText()
+            Log.i("CFQServer", "Auth Login response: ${response.status.value}")
+            return body
         }
 
         private suspend fun authCheckUsername(username: String): Boolean {
@@ -160,7 +166,7 @@ class CFQServer {
             try {
                 val usernameCheckResponse = fetchFromServer(
                     "POST",
-                    "api/checkUsername",
+                    "api/check-availability",
                     payload = hashMapOf(
                         "username" to username
                     )
@@ -189,21 +195,19 @@ class CFQServer {
             }
         }
 
-        suspend fun apiIsPremium(username: String): Boolean {
+        suspend fun apiUserInfo(token: String): CFQUserInfo? {
             try {
-                Log.i("CFQServer", "Checking if user is premium...")
+                Log.i("CFQServer", "Fetching user info.")
                 val response = fetchFromServer(
-                    "POST",
-                    "api/isPremium",
-                    payload = hashMapOf(
-                        "username" to username
-                    ),
-                    shouldHandleErrorCode = false
+                    "GET",
+                    "api/user/info",
+                    token = token
                 )
-                return response.status.value == 200
+
+                return decoder.decodeFromString<CFQUserInfo>(response.bodyAsText())
             } catch (e: Exception) {
-                Log.e("CFQServer", "Failed to check if user is premium, error: $e")
-                return false
+                Log.e("CFQServer", "Failed to get user info, error: $e")
+                return null
             }
         }
 

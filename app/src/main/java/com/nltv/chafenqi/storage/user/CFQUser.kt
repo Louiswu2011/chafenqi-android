@@ -29,6 +29,7 @@ import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import com.onesignal.OneSignal
+import kotlinx.datetime.Clock
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -337,7 +338,7 @@ object CFQUser {
         token = authToken
         CFQUser.username = username
 
-        isPremium = CFQServer.apiIsPremium(username)
+        isPremium = (CFQServer.apiUserInfo(authToken)?.premiumUntil ?: 0L) >= Clock.System.now().epochSeconds
 
         this.remoteOptions.sync(authToken)
 
@@ -355,7 +356,7 @@ object CFQUser {
     }
 
     suspend fun refreshPremiumStatus() {
-        isPremium = CFQServer.apiIsPremium(username)
+        isPremium = (CFQServer.apiUserInfo(token)?.premiumUntil ?: 0L) >= Clock.System.now().epochSeconds
     }
 
     fun registerOneSignal(username: String) {

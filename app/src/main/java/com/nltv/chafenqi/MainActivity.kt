@@ -125,7 +125,7 @@ fun ChafenqiApp() {
     Coil.setImageLoader(imageLoader)
 
     LaunchedEffect(Unit) {
-        CFQServer.setDefaultServerPath(context.getString(R.string.serverAddress))
+        // CFQServer.setDefaultServerPath(context.getString(R.string.serverAddress))
     }
 
     ChafenqiTheme {
