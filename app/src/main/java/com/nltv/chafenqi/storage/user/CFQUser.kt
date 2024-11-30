@@ -11,6 +11,16 @@ import com.nltv.chafenqi.extension.associatedMusicEntry
 import com.nltv.chafenqi.extension.cutForRating
 import com.nltv.chafenqi.extension.rating
 import com.nltv.chafenqi.extension.toRateString
+import com.nltv.chafenqi.model.user.chunithm.UserChunithmBestScoreEntry
+import com.nltv.chafenqi.model.user.chunithm.UserChunithmExtraInfo
+import com.nltv.chafenqi.model.user.chunithm.UserChunithmPlayerInfoEntry
+import com.nltv.chafenqi.model.user.chunithm.UserChunithmRatingList
+import com.nltv.chafenqi.model.user.chunithm.UserChunithmRatingListEntry
+import com.nltv.chafenqi.model.user.chunithm.UserChunithmRecentScoreEntry
+import com.nltv.chafenqi.model.user.maimai.UserMaimaiBestScoreEntry
+import com.nltv.chafenqi.model.user.maimai.UserMaimaiExtraInfo
+import com.nltv.chafenqi.model.user.maimai.UserMaimaiPlayerInfoEntry
+import com.nltv.chafenqi.model.user.maimai.UserMaimaiRecentScoreEntry
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmBestScoreEntry
 import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmDeltaEntry
@@ -58,11 +68,10 @@ object CFQUser {
     val nameplateDateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MM-dd HH:mm")
 
     object Maimai {
-        var info = MaimaiUserInfo()
-        var best = listOf<MaimaiBestScoreEntry>()
-        var recent = listOf<MaimaiRecentScoreEntry>()
-        var delta = listOf<MaimaiDeltaEntry>()
-        var extra = MaimaiExtraInfo()
+        var info = listOf<UserMaimaiPlayerInfoEntry>()
+        var best = listOf<UserMaimaiBestScoreEntry>()
+        var recent = listOf<UserMaimaiRecentScoreEntry>()
+        var extra = UserMaimaiExtraInfo()
         var log: MaimaiLogData? = null
 
         var isBasicEmpty = true
@@ -71,8 +80,8 @@ object CFQUser {
         val aux = Aux
 
         object Aux {
-            var pastBest = listOf<MaimaiBestScoreEntry>()
-            var newBest = listOf<MaimaiBestScoreEntry>()
+            var pastBest = listOf<UserMaimaiBestScoreEntry>()
+            var newBest = listOf<UserMaimaiBestScoreEntry>()
             var pastRating: Int = 0
             var newRating: Int = 0
             var updateTime: String = ""
@@ -192,12 +201,11 @@ object CFQUser {
     }
 
     object Chunithm {
-        var info = ChunithmUserInfo()
-        var best = listOf<ChunithmBestScoreEntry>()
-        var recent = listOf<ChunithmRecentScoreEntry>()
-        var delta = listOf<ChunithmDeltaEntry>()
-        var rating = listOf<ChunithmRatingEntry>()
-        var extra = ChunithmExtraEntry()
+        var info = listOf<UserChunithmPlayerInfoEntry>()
+        var best = listOf<UserChunithmBestScoreEntry>()
+        var recent = listOf<UserChunithmRecentScoreEntry>()
+        var rating = UserChunithmRatingList()
+        var extra = UserChunithmExtraInfo()
         var log: ChunithmLogData? = null
 
         var isBasicEmpty = true
@@ -206,8 +214,8 @@ object CFQUser {
         var aux = Aux
 
         object Aux {
-            var bestList = listOf<ChunithmRatingEntry>()
-            var recentList = listOf<ChunithmRatingEntry>()
+            var bestList = listOf<UserChunithmRatingListEntry>()
+            var recentList = listOf<UserChunithmRatingListEntry>()
             var bestRating: Double = 0.0
             var recentRating: Double = 0.0
             var updateTime: String = ""

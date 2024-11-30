@@ -55,10 +55,8 @@ class CFQUserStateViewModel : ViewModel() {
 
             if (user.isPremium && !isEmpty) {
                 try {
-                    val deltaString = CFQServer.apiMaimai("delta", token)
                     val extraString = CFQServer.apiMaimai("extra", token)
 
-                    maimai.delta = deserializer.decodeFromString(deltaString)
                     maimai.extra = deserializer.decodeFromString(extraString)
                     maimai.isExtraEmpty = false
                 } catch (e: Exception) {
@@ -104,10 +102,8 @@ class CFQUserStateViewModel : ViewModel() {
 
             if (user.isPremium && !isEmpty) {
                 try {
-                    val deltaString = CFQServer.apiChunithm("delta", token)
                     val extraString = CFQServer.apiChunithm("extras", token)
 
-                    chunithm.delta = deserializer.decodeFromString(deltaString)
                     chunithm.extra = deserializer.decodeFromString(extraString)
                     chunithm.isExtraEmpty = false
                     Log.i(tag, "Loaded user chunithm premium data.")

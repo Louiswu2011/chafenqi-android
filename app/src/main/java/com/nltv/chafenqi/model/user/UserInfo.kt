@@ -1,9 +1,9 @@
-package com.nltv.chafenqi.storage.user
+package com.nltv.chafenqi.model.user
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CFQUserInfo(
+data class UserInfo(
     val id: Long,
     val username: String,
     val password: String,

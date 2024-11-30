@@ -1,9 +1,6 @@
 package com.nltv.chafenqi.networking
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.util.Log
-import androidx.compose.ui.graphics.ImageBitmap
 import com.nltv.chafenqi.data.ChunithmMusicStat
 import com.nltv.chafenqi.data.Comment
 import com.nltv.chafenqi.data.VersionData
@@ -17,7 +14,7 @@ import com.nltv.chafenqi.data.leaderboard.MaimaiFirstLeaderboardItem
 import com.nltv.chafenqi.data.leaderboard.MaimaiRatingLeaderboardItem
 import com.nltv.chafenqi.data.leaderboard.MaimaiTotalPlayedLeaderboardItem
 import com.nltv.chafenqi.data.leaderboard.MaimaiTotalScoreLeaderboardItem
-import com.nltv.chafenqi.storage.user.CFQUserInfo
+import com.nltv.chafenqi.model.user.UserInfo
 import com.nltv.chafenqi.storage.user.MaimaiB50Info
 import com.nltv.chafenqi.util.AppAnnouncement
 import io.ktor.client.HttpClient
@@ -36,7 +33,6 @@ import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
-import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.encodeToString
@@ -195,7 +191,7 @@ class CFQServer {
             }
         }
 
-        suspend fun apiUserInfo(token: String): CFQUserInfo? {
+        suspend fun apiUserInfo(token: String): UserInfo? {
             try {
                 Log.i("CFQServer", "Fetching user info.")
                 val response = fetchFromServer(
@@ -204,7 +200,7 @@ class CFQServer {
                     token = token
                 )
 
-                return decoder.decodeFromString<CFQUserInfo>(response.bodyAsText())
+                return decoder.decodeFromString<UserInfo>(response.bodyAsText())
             } catch (e: Exception) {
                 Log.e("CFQServer", "Failed to get user info, error: $e")
                 return null
