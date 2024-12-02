@@ -33,8 +33,8 @@ class CommentPageViewModel: ViewModel() {
     fun update(gameType: Int, index: Int) {
         setLoading(true)
         val musicId: Int = when (gameType) {
-            0 -> CFQPersistentData.Chunithm.musicList.getOrNull(index)?.musicID ?: -1
-            1 -> CFQPersistentData.Maimai.musicList.getOrNull(index)?.musicID?.toInt() ?: -1
+            0 -> CFQPersistentData.Chunithm.musicList.getOrNull(index)?.musicId ?: -1
+            1 -> CFQPersistentData.Maimai.musicList.getOrNull(index)?.musicId?.toInt() ?: -1
             else -> -1
         }
         viewModelScope.launch {
@@ -62,8 +62,8 @@ class CommentPageViewModel: ViewModel() {
     fun submitComment(replyId: Int = -1, content: String) {
         try {
             val musicId: Int = when (mode) {
-                0 -> CFQPersistentData.Chunithm.musicList.getOrNull(index)?.musicID ?: -1
-                1 -> CFQPersistentData.Maimai.musicList.getOrNull(index)?.musicID?.toInt() ?: -1
+                0 -> CFQPersistentData.Chunithm.musicList.getOrNull(index)?.musicId ?: -1
+                1 -> CFQPersistentData.Maimai.musicList.getOrNull(index)?.musicId?.toInt() ?: -1
                 else -> -1
             }
             viewModelScope.launch {

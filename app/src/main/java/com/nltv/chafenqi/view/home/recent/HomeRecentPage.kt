@@ -3,7 +3,6 @@ package com.nltv.chafenqi.view.home.recent
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,11 +21,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.History
-import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -35,19 +30,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -67,9 +56,8 @@ import com.nltv.chafenqi.SCREEN_PADDING
 import com.nltv.chafenqi.extension.toChunithmCoverPath
 import com.nltv.chafenqi.extension.toDateString
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
-import com.nltv.chafenqi.util.RecentSelectableDates
+import com.nltv.chafenqi.model.user.chunithm.UserChunithmRecentScoreEntry
+import com.nltv.chafenqi.model.user.maimai.UserMaimaiRecentScoreEntry
 import com.nltv.chafenqi.view.home.HomeNavItem
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
 import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
@@ -170,7 +158,7 @@ fun HomeRecentPage(navController: NavController) {
 }
 
 @Composable
-fun HomeRecentPageEntry(entry: MaimaiRecentScoreEntry, index: Int, navController: NavController) {
+fun HomeRecentPageEntry(entry: UserMaimaiRecentScoreEntry, index: Int, navController: NavController) {
     val context = LocalContext.current
 
     ElevatedCard (
@@ -191,7 +179,7 @@ fun HomeRecentPageEntry(entry: MaimaiRecentScoreEntry, index: Int, navController
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             AsyncImage(
-                model = entry.associatedMusicEntry.musicID.toMaimaiCoverPath(),
+                model = entry.associatedMusicEntry.musicId.toMaimaiCoverPath(),
                 contentDescription = "歌曲封面",
                 modifier = Modifier
                     .padding(end = 8.dp)
@@ -214,7 +202,7 @@ fun HomeRecentPageEntry(entry: MaimaiRecentScoreEntry, index: Int, navController
                     Alignment.CenterVertically
                 ) {
                     Text(
-                        entry.title,
+                        entry.associatedMusicEntry.title,
                         fontSize = 16.sp,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1,
@@ -232,7 +220,7 @@ fun HomeRecentPageEntry(entry: MaimaiRecentScoreEntry, index: Int, navController
 }
 
 @Composable
-fun HomeRecentPageEntry(entry: ChunithmRecentScoreEntry, index: Int, navController: NavController) {
+fun HomeRecentPageEntry(entry: UserChunithmRecentScoreEntry, index: Int, navController: NavController) {
     val context = LocalContext.current
 
     ElevatedCard (
@@ -253,7 +241,7 @@ fun HomeRecentPageEntry(entry: ChunithmRecentScoreEntry, index: Int, navControll
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             AsyncImage(
-                model = entry.associatedMusicEntry.musicID.toChunithmCoverPath(),
+                model = entry.associatedMusicEntry.musicId.toChunithmCoverPath(),
                 contentDescription = "歌曲封面",
                 modifier = Modifier
                     .padding(end = 8.dp)
@@ -276,7 +264,7 @@ fun HomeRecentPageEntry(entry: ChunithmRecentScoreEntry, index: Int, navControll
                     Alignment.CenterVertically
                 ) {
                     Text(
-                        entry.title,
+                        entry.associatedMusicEntry.title,
                         fontSize = 16.sp,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1,

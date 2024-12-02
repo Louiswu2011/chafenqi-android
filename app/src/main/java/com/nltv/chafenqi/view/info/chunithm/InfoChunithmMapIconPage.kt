@@ -24,7 +24,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.nltv.chafenqi.SCREEN_PADDING
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmMapIconEntry
+import com.nltv.chafenqi.model.user.chunithm.UserChunithmMapIconEntry
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,7 +67,7 @@ fun InfoChunithmMapIconPage(navController: NavController) {
 }
 
 @Composable
-fun ChunithmMapIconListEntry(entry: ChunithmMapIconEntry) {
+fun ChunithmMapIconListEntry(entry: UserChunithmMapIconEntry) {
     Row(
         Modifier
             .padding(SCREEN_PADDING)
@@ -81,7 +81,7 @@ fun ChunithmMapIconListEntry(entry: ChunithmMapIconEntry) {
             contentScale = ContentScale.Crop
         )
         Text(text = entry.name)
-        if (entry.current == 1) {
+        if (entry.current) {
             Text(text = "(当前头像)", fontWeight = FontWeight.Bold)
         }
     }

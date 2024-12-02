@@ -30,7 +30,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.nltv.chafenqi.SCREEN_PADDING
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmTicketEntry
+import com.nltv.chafenqi.model.user.chunithm.UserChunithmTicketEntry
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,7 +73,7 @@ fun InfoChunithmTicketPage(navController: NavController) {
 }
 
 @Composable
-fun ChunithmTicketListEntry(entry: ChunithmTicketEntry) {
+fun ChunithmTicketListEntry(entry: UserChunithmTicketEntry) {
     Row(
         Modifier
             .fillMaxWidth()

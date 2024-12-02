@@ -5,7 +5,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,9 +30,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.VideogameAsset
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -246,7 +243,7 @@ fun SongListSearchBar(navController: NavController) {
                             items(
                                 count = chuSearchResult.size,
                                 key = { index ->
-                                    chuSearchResult[index].musicID
+                                    chuSearchResult[index].musicId
                                 }
                             ) { index ->
                                 ChunithmMusicListEntry(
@@ -275,7 +272,7 @@ fun SongListSearchBar(navController: NavController) {
                             items(
                                 count = maiSearchResult.size,
                                 key = { index ->
-                                    maiSearchResult[index].musicID
+                                    maiSearchResult[index].musicId
                                 }
                             ) { index ->
                                 MaimaiMusicListEntry(
@@ -303,7 +300,7 @@ fun SongListFilterChips() {
     val levelStrings = if (model.user.mode == 0) CHUNITHM_LEVEL_STRINGS else MAIMAI_LEVEL_STRINGS
     val genreStrings = if (model.user.mode == 0) CHUNITHM_GENRE_STRINGS else MAIMAI_GENRE_STRINGS
     val versionStrings =
-        if (model.user.mode == 0) CHUNITHM_VERSION_STRINGS else MAIMAI_VERSION_STRINGS
+        if (model.user.mode == 0) CHUNITHM_VERSION_STRINGS else MAIMAI_VERSION_STRINGS.values.toList()
     val filterLevelList =
         if (model.user.mode == 0) model.filterChunithmLevelList else model.filterMaimaiLevelList
     val filterGenreList =
@@ -512,7 +509,7 @@ fun MaimaiMusicListEntry(music: MaimaiMusicEntry, index: Int, navController: Nav
             horizontalArrangement = Arrangement.Start
         ) {
             AsyncImage(
-                model = music.musicID.toMaimaiCoverPath(),
+                model = music.musicId.toMaimaiCoverPath(),
                 contentDescription = "${music.title}的封面",
                 modifier = Modifier
                     .padding(end = 8.dp)
@@ -574,7 +571,7 @@ fun ChunithmMusicListEntry(music: ChunithmMusicEntry, index: Int, navController:
             horizontalArrangement = Arrangement.Start
         ) {
             AsyncImage(
-                model = music.musicID.toChunithmCoverPath(),
+                model = music.musicId.toChunithmCoverPath(),
                 contentDescription = "${music.title}的封面",
                 modifier = Modifier
                     .padding(end = 8.dp)

@@ -251,7 +251,7 @@ fun HomePageMaimaiRatingSelection(navController: NavController) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         AsyncImage(
-            model = uiState.maiCurrentSelectedRatingEntry.associatedMusicEntry.musicID.toMaimaiCoverPath(),
+            model = uiState.maiCurrentSelectedRatingEntry.associatedMusicEntry.musicId.toMaimaiCoverPath(),
             contentDescription = "歌曲封面",
             modifier = Modifier
                 .padding(end = 8.dp)
@@ -300,7 +300,7 @@ fun HomePageMaimaiRatingSelection(navController: NavController) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = uiState.maiCurrentSelectedRatingEntry.title,
+                    text = uiState.maiCurrentSelectedRatingEntry.associatedMusicEntry.title,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
                     modifier = Modifier.fillMaxWidth(0.6f)
@@ -333,7 +333,7 @@ fun HomePageChunithmRatingSelection(navController: NavController) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         AsyncImage(
-            model = uiState.chuCurrentSelectedRatingEntry.associatedMusicEntry.musicID.toChunithmCoverPath(),
+            model = uiState.chuCurrentSelectedRatingEntry.associatedMusicEntry.musicId.toChunithmCoverPath(),
             contentDescription = "歌曲封面",
             modifier = Modifier
                 .padding(end = 8.dp)
@@ -381,7 +381,7 @@ fun HomePageChunithmRatingSelection(navController: NavController) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = uiState.chuCurrentSelectedRatingEntry.title,
+                    text = uiState.chuCurrentSelectedRatingEntry.associatedMusicEntry.title,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
                     modifier = Modifier.fillMaxWidth(0.6f)

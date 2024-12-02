@@ -7,9 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nltv.chafenqi.data.Comment
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
+import com.nltv.chafenqi.model.user.chunithm.UserChunithmBestScoreEntry
+import com.nltv.chafenqi.model.user.maimai.UserMaimaiBestScoreEntry
 import com.nltv.chafenqi.networking.CFQServer
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmBestScoreEntry
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiBestScoreEntry
 import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
@@ -83,7 +83,7 @@ class SongDetailViewModel : ViewModel() {
             chuMusic = CFQPersistentData.Chunithm.musicList.getOrNull(index)
             if (chuMusic == null) return
 
-            coverUrl = "${CFQServer.defaultPath}/api/chunithm/cover?musicId=${chuMusic?.musicID}"
+            coverUrl = "${CFQServer.defaultPath}/api/chunithm/cover?musicId=${chuMusic?.musicId}"
             title = chuMusic?.title ?: ""
             artist = chuMusic?.artist ?: ""
             constants = chuMusic?.charts?.constants?.map { String.format("%.1f", it) }
@@ -110,9 +110,9 @@ class SongDetailViewModel : ViewModel() {
                 _uiState.update {
                     it.copy(
                         loved = user.remoteOptions.chunithmFavList.contains(
-                            chuMusic?.musicID?.toString() ?: ""
+                            chuMusic?.musicId?.toString() ?: ""
                         ),
-                        comments = CFQServer.apiFetchComment(gameType = 0, musicId = chuMusic!!.musicID).sortedByDescending { comment -> comment.timestamp }
+                        comments = CFQServer.apiFetchComment(gameType = 0, musicId = chuMusic!!.musicId).sortedByDescending { comment -> comment.timestamp }
                     )
                 }
             }
@@ -120,7 +120,7 @@ class SongDetailViewModel : ViewModel() {
             maiMusic = CFQPersistentData.Maimai.musicList.getOrNull(index)
             if (maiMusic == null) return
 
-            coverUrl = maiMusic?.musicID?.toMaimaiCoverPath() ?: ""
+            coverUrl = maiMusic?.musicId?.toMaimaiCoverPath() ?: ""
             title = maiMusic?.title ?: ""
             artist = maiMusic?.basicInfo?.artist ?: ""
             constants = maiMusic?.constants?.map { String.format("%.1f", it) } ?: listOf()
@@ -145,8 +145,8 @@ class SongDetailViewModel : ViewModel() {
             viewModelScope.launch {
                 _uiState.update {
                     it.copy(
-                        loved = user.remoteOptions.maimaiFavList.contains(maiMusic?.musicID ?: ""),
-                        comments = CFQServer.apiFetchComment(gameType = 1, musicId = maiMusic!!.musicID.toInt()).sortedByDescending { comment -> comment.timestamp }
+                        loved = user.remoteOptions.maimaiFavList.contains(maiMusic?.musicId.toString()),
+                        comments = CFQServer.apiFetchComment(gameType = 1, musicId = maiMusic!!.musicId.toInt()).sortedByDescending { comment -> comment.timestamp }
                     )
                 }
             }
@@ -157,7 +157,7 @@ class SongDetailViewModel : ViewModel() {
         viewModelScope.launch {
             val urls = ChartImageGrabber.getChartPreviewImageUrls(
                 chartInfo = ChartImageGrabber.ChartInfo(
-                    musicId = chuMusic?.musicID?.toString() ?: "-1",
+                    musicId = chuMusic?.musicId?.toString() ?: "-1",
                     diffIndex = diffIndex
                 )
             )
@@ -211,9 +211,9 @@ class SongDetailViewModel : ViewModel() {
             0 -> {
                 if (chuMusic == null) return null
                 val expectedString =
-                    if (user.remoteOptions.chunithmFavList.isEmpty()) "" else user.remoteOptions.chunithmFavList + ",${chuMusic!!.musicID}"
+                    if (user.remoteOptions.chunithmFavList.isEmpty()) "" else user.remoteOptions.chunithmFavList + ",${chuMusic!!.musicId}"
                 val actualString =
-                    CFQServer.apiAddFavMusic(user.token, 0, chuMusic!!.musicID.toString())
+                    CFQServer.apiAddFavMusic(user.token, 0, chuMusic!!.musicId.toString())
                         ?: return null
                 if (expectedString == actualString) {
                     actualString
@@ -225,8 +225,8 @@ class SongDetailViewModel : ViewModel() {
             1 -> {
                 if (maiMusic == null) return null
                 val expectedString =
-                    if (user.remoteOptions.maimaiFavList.isEmpty()) maiMusic!!.musicID else user.remoteOptions.maimaiFavList + ",${maiMusic!!.musicID}"
-                val actualString = CFQServer.apiAddFavMusic(user.token, 1, maiMusic!!.musicID)
+                    if (user.remoteOptions.maimaiFavList.isEmpty()) maiMusic!!.musicId else user.remoteOptions.maimaiFavList + ",${maiMusic!!.musicId}"
+                val actualString = CFQServer.apiAddFavMusic(user.token, 1, maiMusic!!.musicId.toString())
                     ?: return null
                 if (expectedString == actualString) {
                     actualString
@@ -243,10 +243,10 @@ class SongDetailViewModel : ViewModel() {
                 if (chuMusic == null) return null
                 val expectedString = user.remoteOptions.chunithmFavList
                     .split(',')
-                    .filter { it != chuMusic!!.musicID.toString() }
+                    .filter { it != chuMusic!!.musicId.toString() }
                     .joinToString(",")
                 val actualString =
-                    CFQServer.apiRemoveFavMusic(user.token, 0, chuMusic!!.musicID.toString())
+                    CFQServer.apiRemoveFavMusic(user.token, 0, chuMusic!!.musicId.toString())
                         ?: return null
                 if (expectedString != actualString) null else actualString
             }
@@ -255,9 +255,9 @@ class SongDetailViewModel : ViewModel() {
                 if (maiMusic == null) return null
                 val expectedString = user.remoteOptions.maimaiFavList
                     .split(',')
-                    .filter { it != maiMusic!!.musicID }
+                    .filter { it != maiMusic!!.musicId.toString() }
                     .joinToString(",")
-                val actualString = CFQServer.apiRemoveFavMusic(user.token, 1, maiMusic!!.musicID)
+                val actualString = CFQServer.apiRemoveFavMusic(user.token, 1, maiMusic!!.musicId.toString())
                     ?: return null
                 if (expectedString != actualString) null else actualString
             }
@@ -287,7 +287,7 @@ class MaimaiDifficultyInfo(
     var constant: String = ""
     var charter: String = ""
     var bestScore: String = "暂未游玩"
-    var bestEntry: MaimaiBestScoreEntry? = null
+    var bestEntry: UserMaimaiBestScoreEntry? = null
     var hasRecentEntry: Boolean = false
 
     init {
@@ -317,7 +317,7 @@ class ChunithmDifficultyInfo(
     var constant: String = ""
     var charter: String = ""
     var bestScore: String = "暂未游玩"
-    var bestEntry: ChunithmBestScoreEntry? = null
+    var bestEntry: UserChunithmBestScoreEntry? = null
     var hasRecentEntry: Boolean = false
 
     init {

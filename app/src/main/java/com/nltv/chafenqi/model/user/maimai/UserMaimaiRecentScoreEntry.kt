@@ -1,6 +1,8 @@
 package com.nltv.chafenqi.model.user.maimai
 
+import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Serializable
 data class UserMaimaiRecentScoreEntry(
@@ -21,4 +23,14 @@ data class UserMaimaiRecentScoreEntry(
     val maxCombo: String,
     val maxSync: String,
     val players: List<String>,
-)
+    @Transient var associatedMusicEntry: MaimaiMusicEntry = MaimaiMusicEntry()
+) {
+    val levelIndex = when (difficulty.lowercase()) {
+        "basic" -> 0
+        "advanced" -> 1
+        "expert" -> 2
+        "master" -> 3
+        "remaster" -> 4
+        else -> 5
+    }
+}

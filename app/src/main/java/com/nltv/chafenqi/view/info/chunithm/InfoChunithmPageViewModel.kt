@@ -10,8 +10,8 @@ class InfoChunithmPageViewModel : ViewModel() {
     val info = chunithm.info
     val extra = chunithm.extra
 
-    val currentCollection = extra.collections.last()
-    val currentSkill = extra.skills.find { it.current == 1 }
+    val currentCollection = info.last()
+    val currentSkill = extra.skills.find { it.current }
 
     val characters = extra.characters
     val skills = extra.skills

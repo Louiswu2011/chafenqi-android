@@ -28,7 +28,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.nltv.chafenqi.SCREEN_PADDING
 import com.nltv.chafenqi.extension.toChunithmTrophyType
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmTrophyEntry
+import com.nltv.chafenqi.model.user.chunithm.UserChunithmTrophyEntry
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -91,7 +91,7 @@ fun ChunithmTrophyStickyHeader(type: String, size: Int) {
 }
 
 @Composable
-fun ChunithmTrophyListEntry(entry: ChunithmTrophyEntry) {
+fun ChunithmTrophyListEntry(entry: UserChunithmTrophyEntry) {
     Column(
         Modifier
             .fillMaxWidth()

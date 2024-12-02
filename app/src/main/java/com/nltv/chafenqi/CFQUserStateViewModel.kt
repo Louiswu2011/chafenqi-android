@@ -118,7 +118,9 @@ class CFQUserStateViewModel : ViewModel() {
 
                 chunithm.best.filterNot { it.associatedMusicEntry.isWE }
                 chunithm.recent.filterNot { it.associatedMusicEntry.isWE }
-                chunithm.rating.filterNot { it.associatedMusicEntry.isWE }
+                chunithm.rating.best.filterNot { it.associatedMusicEntry.isWE }
+                chunithm.rating.recent.filterNot { it.associatedMusicEntry.isWE }
+                chunithm.rating.candidate.filterNot { it.associatedMusicEntry.isWE }
             }
         }
     }

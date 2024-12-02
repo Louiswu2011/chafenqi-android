@@ -38,7 +38,6 @@ import com.nltv.chafenqi.view.settings.ReloadSongListDialog
 import com.nltv.chafenqi.view.settings.SettingsPageViewModel
 import com.nltv.chafenqi.view.settings.SettingsTopBar
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Instant
 
 @Composable
 fun SettingsAdvancedPage(navController: NavController) {

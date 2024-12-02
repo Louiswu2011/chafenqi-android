@@ -38,8 +38,8 @@ import com.nltv.chafenqi.extension.toChunithmCoverPath
 import com.nltv.chafenqi.extension.toDateString
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.extension.toRateString
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
+import com.nltv.chafenqi.model.user.chunithm.UserChunithmRecentScoreEntry
+import com.nltv.chafenqi.model.user.maimai.UserMaimaiRecentScoreEntry
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.util.ChunithmAxisValueOverrider
 import com.nltv.chafenqi.util.MaimaiAxisValueOverrider
@@ -61,7 +61,6 @@ import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 import com.patrykandpatrick.vico.compose.common.fill
 import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
-import com.patrykandpatrick.vico.core.cartesian.data.AxisValueOverrider
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
 import java.util.Locale
 
@@ -186,8 +185,8 @@ fun MusicRecordMaimaiEntryList(navController: NavController) {
             MusicRecordEntry(
                 modifier = Modifier.padding(horizontal = SCREEN_PADDING),
                 mode = 1,
-                coverUrl = entry.associatedMusicEntry.musicID.toMaimaiCoverPath(),
-                title = entry.title,
+                coverUrl = entry.associatedMusicEntry.musicId.toMaimaiCoverPath(),
+                title = entry.associatedMusicEntry.title,
                 levelIndex = entry.levelIndex,
                 playDate = entry.timestamp.toDateString(context),
                 badge = entry.achievements.toRateString(),
@@ -219,8 +218,8 @@ fun MusicRecordChunithmEntryList(navController: NavController) {
             MusicRecordEntry(
                 modifier = Modifier.padding(horizontal = SCREEN_PADDING),
                 mode = 0,
-                coverUrl = entry.associatedMusicEntry.musicID.toChunithmCoverPath(),
-                title = entry.title,
+                coverUrl = entry.associatedMusicEntry.musicId.toChunithmCoverPath(),
+                title = entry.associatedMusicEntry.title,
                 levelIndex = entry.levelIndex,
                 playDate = entry.timestamp.toDateString(context),
                 badge = entry.score.toRateString(),
@@ -243,8 +242,8 @@ fun MusicRecordEntry(
     badge: String,
     score: String,
     navController: NavController? = null,
-    maiRecentEntry: MaimaiRecentScoreEntry? = null,
-    chuRecentEntry: ChunithmRecentScoreEntry? = null
+    maiRecentEntry: UserMaimaiRecentScoreEntry? = null,
+    chuRecentEntry: UserChunithmRecentScoreEntry? = null
 ) {
     Row(
         modifier = Modifier

@@ -22,17 +22,6 @@ import com.nltv.chafenqi.model.user.maimai.UserMaimaiExtraInfo
 import com.nltv.chafenqi.model.user.maimai.UserMaimaiPlayerInfoEntry
 import com.nltv.chafenqi.model.user.maimai.UserMaimaiRecentScoreEntry
 import com.nltv.chafenqi.networking.CFQServer
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmBestScoreEntry
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmDeltaEntry
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmExtraEntry
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRatingEntry
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmUserInfo
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiBestScoreEntry
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiDeltaEntry
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiExtraInfo
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiUserInfo
 import com.nltv.chafenqi.storage.log.ChunithmLogData
 import com.nltv.chafenqi.storage.log.MaimaiLogData
 import com.nltv.chafenqi.storage.persistent.CFQPersistentData
@@ -44,8 +33,8 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-data class ChunithmRecentLineup(val entry: ChunithmRecentScoreEntry, val tag: String)
-data class MaimaiRecentLineup(val entry: MaimaiRecentScoreEntry, val tag: String)
+data class ChunithmRecentLineup(val entry: UserChunithmRecentScoreEntry, val tag: String)
+data class MaimaiRecentLineup(val entry: UserMaimaiRecentScoreEntry, val tag: String)
 
 object CFQUser {
     private const val tag = "CFQUser"
@@ -113,7 +102,7 @@ object CFQUser {
 
                 val pastList = CFQPersistentData.Maimai.musicList.filter { !it.basicInfo.isNew }
                 val (pastBest, newBest) = best.partition { bestEntry ->
-                    pastList.map { it.title }.contains(bestEntry.title)
+                    pastList.map { it.musicId }.contains(bestEntry.musicId)
                 }
 
                 Aux.pastBest = pastBest.sortedByDescending { it.rating() }.take(35)
@@ -124,19 +113,19 @@ object CFQUser {
                 Aux.newRating =
                     Aux.newBest.fold(0) { acc, maimaiBestScoreEntry -> acc + maimaiBestScoreEntry.rating() }
 
-                Aux.updateTime = Instant.from(isoTimeParser.parse(info.updatedAt))
+                Aux.updateTime = Instant.ofEpochSecond(info.last().timestamp)
                     .atZone(ZoneId.systemDefault())
                     .toLocalDateTime()
                     .format(if (DateFormat.is24HourFormat(context)) nameplateDateFormatter else nameplateDateTimeFormatterWithIndicator)
 
                 val mostRecent = recent.take(30).toMutableList()
-                mostRecent.firstOrNull { it.fc == "applus" }
+                mostRecent.firstOrNull { it.judgeStatus == "applus" }
                     ?.also { Aux.recommendList.add(MaimaiRecentLineup(it, "AP+")) }
                     ?.also { mostRecent.remove(it) }
-                mostRecent.firstOrNull { it.fc == "ap" }
+                mostRecent.firstOrNull { it.judgeStatus == "ap" }
                     ?.also { Aux.recommendList.add(MaimaiRecentLineup(it, "AP")) }
                     ?.also { mostRecent.remove(it) }
-                mostRecent.firstOrNull { it.fc.startsWith("fc") || it.fc.startsWith("fs") }
+                mostRecent.firstOrNull { it.judgeStatus.startsWith("fc") || it.judgeStatus.startsWith("fs") }
                     ?.also { Aux.recommendList.add(MaimaiRecentLineup(it, "FC")) }
                     ?.also { mostRecent.remove(it) }
                 mostRecent.maxByOrNull { it.achievements }
@@ -146,7 +135,7 @@ object CFQUser {
                     ?.also { Aux.recommendList.add(MaimaiRecentLineup(it, "最近一首")) }
                     ?.also { mostRecent.remove(it) }
                 try {
-                    mostRecent.filter { it.isNewRecord == 1 }
+                    mostRecent.filter { it.newRecord }
                         .maxByOrNull { it.timestamp }
                         ?.also { Aux.recommendList.add(MaimaiRecentLineup(it, "新纪录")) }
                 } catch (_: Exception) {
@@ -181,18 +170,17 @@ object CFQUser {
                     )
                 }
 
-                log = MaimaiLogData(recentEntries = recent, deltaEntries = delta)
+                log = MaimaiLogData(recentEntries = recent, deltaEntries = info)
 
                 Log.i(tag, "Loaded maimai auxiliary data.")
             }
         }
 
         fun reset() {
-            info = MaimaiUserInfo()
-            best = listOf()
-            recent = listOf()
-            delta = listOf()
-            extra = MaimaiExtraInfo()
+            info = emptyList()
+            best = emptyList()
+            recent = emptyList()
+            extra = UserMaimaiExtraInfo()
             isBasicEmpty = true
             isExtraEmpty = true
             Aux.reset()
@@ -242,15 +230,23 @@ object CFQUser {
                 recent.forEach {
                     it.associatedMusicEntry = it.associatedMusicEntry()
                 }
-                rating.forEach {
+                rating.best.forEach {
+                    it.associatedMusicEntry = it.associatedMusicEntry()
+                }
+                rating.recent.forEach {
+                    it.associatedMusicEntry = it.associatedMusicEntry()
+                }
+                rating.candidate.forEach {
                     it.associatedMusicEntry = it.associatedMusicEntry()
                 }
                 best.filterNot { it.associatedMusicEntry == ChunithmMusicEntry() }
                 recent.filterNot { it.associatedMusicEntry == ChunithmMusicEntry() }
-                rating.filterNot { it.associatedMusicEntry == ChunithmMusicEntry() }
+                rating.best.filterNot { it.associatedMusicEntry == ChunithmMusicEntry() }
+                rating.recent.filterNot { it.associatedMusicEntry == ChunithmMusicEntry() }
+                rating.candidate.filterNot { it.associatedMusicEntry == ChunithmMusicEntry() }
 
-                val (bestSlice, otherSlice) = rating.partition { it.type == "best" }
-                val recentSlice = otherSlice.filter { it.type == "recent" }
+                val bestSlice = rating.best
+                val recentSlice = rating.recent
                 Aux.bestList = bestSlice
                 Aux.recentList = recentSlice
                 Aux.bestRating =
@@ -259,7 +255,7 @@ object CFQUser {
                     (recentSlice.fold(0.0) { acc, chunithmRatingEntry -> acc + chunithmRatingEntry.rating() } / 10).cutForRating()
 
 
-                Aux.updateTime = Instant.from(isoTimeParser.parse(info.updatedAt))
+                Aux.updateTime = Instant.ofEpochSecond(info.last().timestamp)
                     .atZone(ZoneId.systemDefault())
                     .toLocalDateTime()
                     .format(if (DateFormat.is24HourFormat(context)) nameplateDateFormatter else nameplateDateTimeFormatterWithIndicator)
@@ -268,11 +264,11 @@ object CFQUser {
                 mostRecent.firstOrNull { it.score == 1010000 }
                     ?.also { Aux.recommendList.add(ChunithmRecentLineup(it, "理论值")) }
                     ?.also { mostRecent.remove(it) }
-                mostRecent.firstOrNull { it.fullCombo == "alljustice" }
+                mostRecent.firstOrNull { it.judgeStatus == "alljustice" }
                     ?.also { Aux.recommendList.add(ChunithmRecentLineup(it, "AJ")) }
                     ?.also { mostRecent.remove(it) }
                 mostRecent.firstOrNull {
-                    it.fullCombo.contains("fullcombo") || it.fullChain.contains(
+                    it.judgeStatus.contains("fullcombo") || it.chainStatus.contains(
                         "fullchain"
                     )
                 }
@@ -285,7 +281,7 @@ object CFQUser {
                     ?.also { Aux.recommendList.add(ChunithmRecentLineup(it, "最近一首")) }
                     ?.also { mostRecent.remove(it) }
                 try {
-                    mostRecent.filter { it.isNewRecord == 1 }
+                    mostRecent.filter { it.newRecord }
                         .maxByOrNull { it.timestamp }
                         ?.also { Aux.recommendList.add(ChunithmRecentLineup(it, "新纪录")) }
                 } catch (_: Exception) {
@@ -322,19 +318,18 @@ object CFQUser {
                     )
                 }
 
-                log = ChunithmLogData(recentEntries = recent, deltaEntries = delta)
+                log = ChunithmLogData(recentEntries = recent, deltaEntries = info)
 
                 Log.i(tag, "Loaded chunithm auxiliary data.")
             }
         }
 
         fun reset() {
-            info = ChunithmUserInfo()
-            best = listOf()
-            recent = listOf()
-            delta = listOf()
-            rating = listOf()
-            extra = ChunithmExtraEntry()
+            info = emptyList()
+            best = emptyList()
+            recent = emptyList()
+            rating = UserChunithmRatingList()
+            extra = UserChunithmExtraInfo()
             isBasicEmpty = true
             isExtraEmpty = true
             Aux.reset()
@@ -381,34 +376,34 @@ object CFQUser {
         return MaimaiB50Info(
             username,
             MaimaiB50Detail(
-                rating = Maimai.info.rating,
+                rating = Maimai.info.lastOrNull()?.rating ?: 0,
                 newRating = Maimai.Aux.newRating,
                 pastRating = Maimai.Aux.pastRating,
-                nickname = Maimai.info.nickname,
+                nickname = Maimai.info.lastOrNull()?.nickname ?: "",
                 b35 = Maimai.Aux.pastBest.mapIndexed { index, it ->
                     MaimaiB50Entry(
                         index = index,
-                        title = it.title,
+                        title = it.associatedMusicEntry.title,
                         level = it.level,
                         achievements = it.achievements.toDouble(),
                         constant = it.associatedMusicEntry.constants[it.levelIndex],
                         rating = it.rating(),
-                        fc = it.fc,
+                        fc = it.judgeStatus,
                         diffIndex = it.levelIndex,
-                        musicId = it.associatedMusicEntry.musicID
+                        musicId = it.associatedMusicEntry.musicId.toString()
                     )
                 },
                 b15 = Maimai.Aux.newBest.mapIndexed { index, it ->
                     MaimaiB50Entry(
                         index = index,
-                        title = it.title,
+                        title = it.associatedMusicEntry.title,
                         level = it.level,
                         achievements = it.achievements.toDouble(),
                         constant = it.associatedMusicEntry.constants[it.levelIndex],
                         rating = it.rating(),
-                        fc = it.fc,
+                        fc = it.judgeStatus,
                         diffIndex = it.levelIndex,
-                        musicId = it.associatedMusicEntry.musicID
+                        musicId = it.associatedMusicEntry.musicId.toString()
                     )
                 }
             )

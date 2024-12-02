@@ -1,6 +1,8 @@
 package com.nltv.chafenqi.model.user.chunithm
 
+import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Serializable
 data class UserChunithmBestScoreEntry(
@@ -12,4 +14,5 @@ data class UserChunithmBestScoreEntry(
     val judgeStatus: String,
     val chainStatus: String,
     val lastModified: Long,
+    @Transient var associatedMusicEntry: ChunithmMusicEntry = ChunithmMusicEntry()
 )

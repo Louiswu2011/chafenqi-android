@@ -144,7 +144,7 @@ fun HomePageRecentMaimaiEntry(item: MaimaiRecentLineup) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         AsyncImage(
-            model = item.entry.associatedMusicEntry.musicID.toMaimaiCoverPath(),
+            model = item.entry.associatedMusicEntry.musicId.toMaimaiCoverPath(),
             contentDescription = "最近动态歌曲封面",
             modifier = Modifier
                 .padding(end = 8.dp)
@@ -176,7 +176,7 @@ fun HomePageRecentMaimaiEntry(item: MaimaiRecentLineup) {
                 Alignment.CenterVertically
             ) {
                 Text(
-                    item.entry.title,
+                    item.entry.associatedMusicEntry.title,
                     fontSize = 16.sp,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
@@ -203,7 +203,7 @@ fun HomePageRecentChunithmEntry(item: ChunithmRecentLineup) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         AsyncImage(
-            model = item.entry.associatedMusicEntry.musicID.toChunithmCoverPath(),
+            model = item.entry.associatedMusicEntry.musicId.toChunithmCoverPath(),
             contentDescription = "最近动态歌曲封面",
             modifier = Modifier
                 .padding(end = 8.dp)
@@ -235,7 +235,7 @@ fun HomePageRecentChunithmEntry(item: ChunithmRecentLineup) {
                 Alignment.CenterVertically
             ) {
                 Text(
-                    item.entry.title,
+                    item.entry.associatedMusicEntry.title,
                     fontSize = 16.sp,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,

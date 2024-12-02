@@ -29,7 +29,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.nltv.chafenqi.SCREEN_PADDING
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiFrameEntry
+import com.nltv.chafenqi.model.user.maimai.UserMaimaiFrameEntry
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -89,7 +89,7 @@ fun MaimaiFrameStickyHeader(area: String, size: Int) {
 }
 
 @Composable
-fun MaimaiFrameListEntry(entry: MaimaiFrameEntry) {
+fun MaimaiFrameListEntry(entry: UserMaimaiFrameEntry) {
     Column(
         Modifier
             .padding(SCREEN_PADDING),
@@ -97,7 +97,7 @@ fun MaimaiFrameListEntry(entry: MaimaiFrameEntry) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AsyncImage(
-            model = entry.image,
+            model = entry.url,
             contentDescription = "${entry.name}姓名框图像",
             modifier = Modifier.fillMaxWidth(),
             contentScale = ContentScale.Crop

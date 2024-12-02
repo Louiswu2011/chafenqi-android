@@ -230,7 +230,7 @@ fun SongListGenreFilterDialog() {
 fun SongListVersionFilterDialog() {
     val model: SongListPageViewModel = viewModel()
     val versionStrings =
-        if (model.user.mode == 0) CHUNITHM_VERSION_STRINGS else MAIMAI_VERSION_STRINGS
+        if (model.user.mode == 0) CHUNITHM_VERSION_STRINGS else MAIMAI_VERSION_STRINGS.values.toList()
     val filterVersionList =
         if (model.user.mode == 0) model.filterChunithmVersionList else model.filterMaimaiVersionList
     val listState = rememberLazyListState()

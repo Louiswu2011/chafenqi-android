@@ -24,7 +24,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.nltv.chafenqi.SCREEN_PADDING
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmNameplateEntry
+import com.nltv.chafenqi.model.user.chunithm.UserChunithmNameplateEntry
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,7 +67,7 @@ fun InfoChunithmNameplatePage(navController: NavController) {
 }
 
 @Composable
-fun ChunithmNameplateListEntry(entry: ChunithmNameplateEntry) {
+fun ChunithmNameplateListEntry(entry: UserChunithmNameplateEntry) {
     Column(
         Modifier
             .fillMaxWidth()

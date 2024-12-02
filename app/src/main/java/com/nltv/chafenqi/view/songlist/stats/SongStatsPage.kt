@@ -145,7 +145,7 @@ fun ChunithmStatView(musicIndex: Int, difficulty: Int, navController: NavControl
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             AsyncImage(
-                model = state.chunithmMusicEntry.musicID.toChunithmCoverPath(),
+                model = state.chunithmMusicEntry.musicId.toChunithmCoverPath(),
                 contentDescription = "歌曲封面",
                 modifier = Modifier
                     .size(128.dp)
@@ -437,7 +437,7 @@ fun MaimaiStatView(musicIndex: Int, difficulty: Int, navController: NavControlle
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             AsyncImage(
-                model = state.maimaiMusicEntry.musicID.toMaimaiCoverPath(),
+                model = state.maimaiMusicEntry.musicId.toMaimaiCoverPath(),
                 contentDescription = "歌曲封面",
                 modifier = Modifier
                     .size(128.dp)

@@ -7,7 +7,6 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.SettingsStore.Companion.settingsStore
-import com.nltv.chafenqi.storage.songlist.MusicEntry
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
@@ -24,7 +23,7 @@ class CFQPersistentLoader {
     companion object {
         val tag = "CFQPersistentLoader"
 
-        suspend inline fun <reified T : MusicEntry> loadPersistentData(
+        suspend inline fun <reified T> loadPersistentData(
             context: Context,
             config: CFQPersistentLoaderConfig,
             shouldValidate: Boolean
@@ -35,7 +34,7 @@ class CFQPersistentLoader {
             return loadPersistentData(cacheStore, config, shouldValidate)
         }
 
-        suspend inline fun <reified T : MusicEntry> loadPersistentData(
+        suspend inline fun <reified T> loadPersistentData(
             store: DataStore<Preferences>,
             config: CFQPersistentLoaderConfig,
             shouldValidate: Boolean

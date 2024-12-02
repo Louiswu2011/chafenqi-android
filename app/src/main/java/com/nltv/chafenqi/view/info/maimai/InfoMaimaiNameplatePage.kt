@@ -24,7 +24,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.nltv.chafenqi.SCREEN_PADDING
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiNameplateEntry
+import com.nltv.chafenqi.model.user.maimai.UserMaimaiNameplateEntry
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,7 +59,7 @@ fun InfoMaimaiNameplatePage(navController: NavController) {
         ) {
             items(
                 count = model.nameplates.size,
-                key = { index -> model.nameplates[index].image }
+                key = { index -> model.nameplates[index].url }
             ) { index ->
                 MaimaiNameplateListEntry(entry = model.nameplates[index])
             }
@@ -68,7 +68,7 @@ fun InfoMaimaiNameplatePage(navController: NavController) {
 }
 
 @Composable
-fun MaimaiNameplateListEntry(entry: MaimaiNameplateEntry) {
+fun MaimaiNameplateListEntry(entry: UserMaimaiNameplateEntry) {
     Column(
         Modifier
             .fillMaxWidth()
@@ -77,7 +77,7 @@ fun MaimaiNameplateListEntry(entry: MaimaiNameplateEntry) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AsyncImage(
-            model = entry.image,
+            model = entry.url,
             contentDescription = "${entry.name}姓名框图像",
             modifier = Modifier.fillMaxWidth(),
             contentScale = ContentScale.Crop

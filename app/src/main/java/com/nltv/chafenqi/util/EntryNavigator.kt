@@ -1,8 +1,8 @@
 package com.nltv.chafenqi.util
 
 import androidx.navigation.NavController
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
+import com.nltv.chafenqi.model.user.chunithm.UserChunithmRecentScoreEntry
+import com.nltv.chafenqi.model.user.maimai.UserMaimaiRecentScoreEntry
 import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
@@ -29,7 +29,7 @@ fun navigateToMusicEntry(associatedMusicEntry: ChunithmMusicEntry, navController
     navController.navigate(HomeNavItem.SongList.route + "/chunithm/$chuMusicEntryIndex")
 }
 
-fun navigateToRecentEntry(recentEntry: MaimaiRecentScoreEntry, navController: NavController) {
+fun navigateToRecentEntry(recentEntry: UserMaimaiRecentScoreEntry, navController: NavController) {
     if (CFQPersistentData.Maimai.musicList.isEmpty()) return
     if (CFQUser.maimai.recent.isEmpty()) return
 
@@ -40,7 +40,7 @@ fun navigateToRecentEntry(recentEntry: MaimaiRecentScoreEntry, navController: Na
     navController.navigate(HomeNavItem.Home.route + "/recent/maimai/$maiRecentEntryIndex")
 }
 
-fun navigateToRecentEntry(recentEntry: ChunithmRecentScoreEntry, navController: NavController) {
+fun navigateToRecentEntry(recentEntry: UserChunithmRecentScoreEntry, navController: NavController) {
     if (CFQPersistentData.Chunithm.musicList.isEmpty()) return
     if (CFQUser.chunithm.recent.isEmpty()) return
 

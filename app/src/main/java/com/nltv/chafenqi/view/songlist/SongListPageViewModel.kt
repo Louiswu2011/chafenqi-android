@@ -110,7 +110,7 @@ class SongListPageViewModel : ViewModel() {
     private fun filterMaimaiList(orig: List<MaimaiMusicEntry>): List<MaimaiMusicEntry> {
         var result = orig
         if (filterFavorite) {
-            result = result.filter { user.remoteOptions.maimaiFavList.split(",").contains(it.musicID) }
+            result = result.filter { user.remoteOptions.maimaiFavList.split(",").contains(it.musicId.toString()) }
         }
         if (filterPlayed) {
             result = user.maimai.best.map { it.associatedMusicEntry }.distinct()
@@ -145,7 +145,7 @@ class SongListPageViewModel : ViewModel() {
         }
         if (filterVersion && filterMaimaiVersionList.any { it }) {
             result = result.filter {
-                val versionIndex = MAIMAI_VERSION_STRINGS.indexOf(it.basicInfo.from)
+                val versionIndex = MAIMAI_VERSION_STRINGS.values.toList().indexOf(it.basicInfo.from)
                 if (versionIndex < 0) return@filter false
                 filterMaimaiVersionList[versionIndex]
             }
@@ -175,7 +175,7 @@ class SongListPageViewModel : ViewModel() {
     private fun filterChunithmList(orig: List<ChunithmMusicEntry>): List<ChunithmMusicEntry> {
         var result = orig
         if (filterFavorite) {
-            result = result.filter { user.remoteOptions.chunithmFavList.split(",").contains(it.musicID.toString()) }
+            result = result.filter { user.remoteOptions.chunithmFavList.split(",").contains(it.musicId.toString()) }
         }
         if (filterPlayed) {
             result = user.chunithm.best.map { it.associatedMusicEntry }.distinct()

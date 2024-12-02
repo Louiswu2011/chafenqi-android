@@ -12,11 +12,11 @@ class InfoMaimaiPageViewModel : ViewModel() {
 
     val isProfileEmpty = maimai.isExtraEmpty
 
-    val currentNameplate = extra.nameplates.first { it.selected == 1 }
-    val currentLeader = extra.characters.first { it.selected == 1 }
+    val currentNameplate = extra.nameplates.first { it.current }
+    val currentLeader = extra.characters.first { it.current }
 
     val currentTeam =
-        if (extra.characters.isNotEmpty()) extra.characters.filter { it.selected == 1 && it.image != info.charUrl } else listOf()
+        if (extra.characters.isNotEmpty()) extra.characters.filter { it.current && it.url != info.lastOrNull()?.charUrl } else listOf()
 
     val trophyGroups = extra.trophies.groupBy { it.type }
     val characterGroups = extra.characters.groupBy { it.area }

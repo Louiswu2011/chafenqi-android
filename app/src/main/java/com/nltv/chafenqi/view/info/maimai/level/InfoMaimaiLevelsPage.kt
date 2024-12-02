@@ -1,5 +1,6 @@
 package com.nltv.chafenqi.view.info.maimai.level
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -56,8 +57,8 @@ import com.nltv.chafenqi.extension.RATE_COLORS_MAIMAI
 import com.nltv.chafenqi.extension.RATE_STRINGS_MAIMAI
 import com.nltv.chafenqi.extension.rating
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
+import com.nltv.chafenqi.model.user.maimai.UserMaimaiBestScoreEntry
 import com.nltv.chafenqi.storage.SettingsStore
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiBestScoreEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import com.nltv.chafenqi.util.navigateToMusicEntry
 import com.nltv.chafenqi.view.module.RatingBadge
@@ -146,6 +147,7 @@ fun InfoMaimaiLevelsPage(navController: NavController) {
     }
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun InfoMaimaiLevelsIndicator() {
     val model: InfoMaimaiLevelsViewModel = viewModel()
@@ -254,7 +256,7 @@ fun InfoMaimaiLevelList(navController: NavController) {
     ) {
         items(
             count = uiState.levelEntries.size,
-            key = { index -> uiState.levelEntries[index].title + index }
+            key = { index -> uiState.levelEntries[index].associatedMusicEntry.title + index }
         ) { index ->
             val entry = uiState.levelEntries[index]
             InfoMaimaiLevelEntry(
@@ -266,7 +268,7 @@ fun InfoMaimaiLevelList(navController: NavController) {
         if (uiState.musicEntries.isNotEmpty()) {
             items(
                 count = uiState.musicEntries.size,
-                key = { index -> uiState.musicEntries[index].musicID }
+                key = { index -> uiState.musicEntries[index].musicId }
             ) { index ->
                 val entry = uiState.musicEntries[index]
                 InfoMaimaiLevelEntry(music = entry, best = null, navController = navController)
@@ -278,7 +280,7 @@ fun InfoMaimaiLevelList(navController: NavController) {
 @Composable
 fun InfoMaimaiLevelEntry(
     music: MaimaiMusicEntry,
-    best: MaimaiBestScoreEntry?,
+    best: UserMaimaiBestScoreEntry?,
     navController: NavController
 ) {
     val model: InfoMaimaiLevelsViewModel = viewModel()
@@ -293,7 +295,7 @@ fun InfoMaimaiLevelEntry(
         horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         AsyncImage(
-            model = music.musicID.toMaimaiCoverPath(),
+            model = music.musicId.toMaimaiCoverPath(),
             contentDescription = "歌曲封面",
             modifier = Modifier
                 .size(64.dp)

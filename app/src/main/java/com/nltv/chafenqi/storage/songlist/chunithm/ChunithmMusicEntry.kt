@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Keep
 @Serializable
 data class ChunithmMusicEntry(
-    val musicID: Int = 0,
+    val musicId: Int = 0,
     val title: String = "",
     val artist: String = "",
     val genre: String = "",

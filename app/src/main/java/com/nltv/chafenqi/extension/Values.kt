@@ -81,7 +81,7 @@ val RATE_COLORS_CHUNITHM = listOf(
 ).reversed()
 val STATUS_STRINGS =
     listOf("Failed", "Clear", "Full Combo", "Full Combo+", "All Perfect", "All Perfect+")
-var MAIMAI_VERSION_STRINGS = listOf<String>()
+var MAIMAI_VERSION_STRINGS = mapOf<Int, String>()
 var MAIMAI_GENRE_STRINGS = listOf<String>()
 var CHUNITHM_VERSION_STRINGS = listOf<String>()
 var CHUNITHM_GENRE_STRINGS = listOf<String>()

@@ -1,24 +1,18 @@
 package com.nltv.chafenqi.storage.log
 
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmDeltaEntry
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
+import com.nltv.chafenqi.model.user.chunithm.UserChunithmPlayerInfoEntry
+import com.nltv.chafenqi.model.user.chunithm.UserChunithmRecentScoreEntry
 import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
-import kotlinx.datetime.format.DateTimeComponents
-import kotlinx.datetime.format.parse
-import kotlinx.datetime.serializers.LocalDateTimeIso8601Serializer
-import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
-import kotlin.math.abs
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
 class ChunithmLogData(
-    recentEntries: List<ChunithmRecentScoreEntry>,
-    deltaEntries: List<ChunithmDeltaEntry>
+    recentEntries: List<UserChunithmRecentScoreEntry>,
+    deltaEntries: List<UserChunithmPlayerInfoEntry>
 ) {
     data class ChunithmDayData(
         var date: Instant = Instant.fromEpochSeconds(0),
@@ -26,8 +20,8 @@ class ChunithmLogData(
         var playCountGain: Int = 0,
         var overpowerGain: Double = 0.0,
 
-        var latestDeltaEntry: ChunithmDeltaEntry = ChunithmDeltaEntry(),
-        var recentEntries: List<ChunithmRecentScoreEntry> = listOf(),
+        var latestDeltaEntry: UserChunithmPlayerInfoEntry = UserChunithmPlayerInfoEntry(),
+        var recentEntries: List<UserChunithmRecentScoreEntry> = listOf(),
 
         var hasDelta: Boolean = false,
         var averageScore: Double = 0.0,
@@ -70,10 +64,7 @@ class ChunithmLogData(
                 )
 
                 val latestDelta = deltaEntries.lastOrNull {
-                    DateTimeComponents.parse(it.createdAt.replaceFirst(' ', 'T').filterNot { char -> char.isWhitespace() }, DateTimeComponents.Formats.ISO_DATE_TIME_OFFSET)
-                        .toLocalDateTime()
-                        .toInstant(TimeZone.currentSystemDefault())
-                        .epochSeconds in (pointer - 86400)..pointer
+                    it.timestamp in (pointer - 86400)..pointer
                 }
                 if (latestDelta != null) record.latestDeltaEntry = latestDelta
 

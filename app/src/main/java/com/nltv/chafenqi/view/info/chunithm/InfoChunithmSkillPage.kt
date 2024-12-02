@@ -29,7 +29,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.nltv.chafenqi.SCREEN_PADDING
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmSkillEntry
+import com.nltv.chafenqi.model.user.chunithm.UserChunithmSkillEntry
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,7 +63,7 @@ fun InfoChunithmSkillPage(navController: NavController) {
         ) {
             items(
                 count = model.skills.size,
-                key = { index -> model.skills[index].icon + model.skills[index].name }
+                key = { index -> model.skills[index].url + model.skills[index].name }
             ) { index ->
                 ChunithmSkillListEntry(entry = model.skills[index])
             }
@@ -72,7 +72,7 @@ fun InfoChunithmSkillPage(navController: NavController) {
 }
 
 @Composable
-fun ChunithmSkillListEntry(entry: ChunithmSkillEntry) {
+fun ChunithmSkillListEntry(entry: UserChunithmSkillEntry) {
     Row(
         Modifier
             .fillMaxWidth()
@@ -86,7 +86,7 @@ fun ChunithmSkillListEntry(entry: ChunithmSkillEntry) {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             AsyncImage(
-                model = entry.icon,
+                model = entry.url,
                 contentDescription = "当前技能图标",
                 modifier = Modifier
                     .fillMaxHeight(),

@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit
 
 class CFQServer {
     companion object {
-        var defaultPath = "http://127.0.0.1:8998"
+        var defaultPath = "http://192.168.1.170:8998"
         fun setDefaultServerPath(path: String) {
             defaultPath = path
         }
@@ -393,7 +393,31 @@ class CFQServer {
             try {
                 val response = fetchFromServer(
                     "GET",
-                    path = "api/maimai/music_data"
+                    path = "api/static/maimai/song-list"
+                )
+                return response.bodyAsText()
+            } catch (e: Exception) {
+                return ""
+            }
+        }
+
+        suspend fun apiMaimaiGenreData(): String {
+            try {
+                val response = fetchFromServer(
+                    "GET",
+                    path = "api/static/maimai/genre-list"
+                )
+                return response.bodyAsText()
+            } catch (e: Exception) {
+                return ""
+            }
+        }
+
+        suspend fun apiMaimaiVersionData(): String {
+            try {
+                val response = fetchFromServer(
+                    "GET",
+                    path = "api/static/maimai/version-list"
                 )
                 return response.bodyAsText()
             } catch (e: Exception) {
