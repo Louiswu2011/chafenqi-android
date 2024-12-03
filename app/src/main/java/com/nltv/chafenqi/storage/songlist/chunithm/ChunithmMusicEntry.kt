@@ -2,12 +2,13 @@ package com.nltv.chafenqi.storage.songlist.chunithm
 
 import androidx.annotation.Keep
 import com.nltv.chafenqi.storage.songlist.MusicEntry
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Keep
 @Serializable
 data class ChunithmMusicEntry(
-    val musicId: Int = 0,
+    @SerialName("musicID") val musicId: Int = 0,
     val title: String = "",
     val artist: String = "",
     val genre: String = "",

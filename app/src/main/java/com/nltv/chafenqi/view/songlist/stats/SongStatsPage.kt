@@ -437,7 +437,7 @@ fun MaimaiStatView(musicIndex: Int, difficulty: Int, navController: NavControlle
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             AsyncImage(
-                model = state.maimaiMusicEntry.musicId.toMaimaiCoverPath(),
+                model = state.maimaiMusicEntry.coverId.toMaimaiCoverPath(),
                 contentDescription = "歌曲封面",
                 modifier = Modifier
                     .size(128.dp)

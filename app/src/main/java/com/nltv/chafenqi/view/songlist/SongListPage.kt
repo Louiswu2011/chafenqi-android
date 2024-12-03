@@ -509,7 +509,7 @@ fun MaimaiMusicListEntry(music: MaimaiMusicEntry, index: Int, navController: Nav
             horizontalArrangement = Arrangement.Start
         ) {
             AsyncImage(
-                model = music.musicId.toMaimaiCoverPath(),
+                model = music.coverId.toMaimaiCoverPath(),
                 contentDescription = "${music.title}的封面",
                 modifier = Modifier
                     .padding(end = 8.dp)

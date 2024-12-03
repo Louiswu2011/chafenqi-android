@@ -78,7 +78,6 @@ class CFQServer {
                 when (method) {
                     "GET" -> {
                         response = client.get("$defaultPath/$path") {
-                            accept(ContentType.Any)
                             queries?.also { q ->
                                 url { u ->
                                     q.forEach {
@@ -118,9 +117,16 @@ class CFQServer {
                         throw Exception("Method not supported.")
                     }
                 }
-                if (response.status.value != 200 && shouldHandleErrorCode) {
-                    handleErrorCode(response.bodyAsText())
-                }
+
+                Log.d("CFQServer", "Response from $path:")
+                Log.d("CFQServer", "Response status: ${response.status}")
+                Log.d("CFQServer", "Response headers: ${response.headers}")
+                Log.d("CFQServer", "Response body: ${response.bodyAsText()}")
+
+//                if (response.status != HttpStatusCode.OK && shouldHandleErrorCode) {
+//                    Log.e("CFQServer", "Server responded with status ${response.status.value}, body: ${response.bodyAsText()}")
+//                    handleErrorCode(response.bodyAsText())
+//                }
                 return response
             } catch (e: Exception) {
                 Log.e("CFQServer", "Failed to fetch from server, error: $e")
@@ -162,7 +168,7 @@ class CFQServer {
             try {
                 val usernameCheckResponse = fetchFromServer(
                     "POST",
-                    "api/check-availability",
+                    "api/auth/register/check-availability",
                     payload = hashMapOf(
                         "username" to username
                     )
@@ -178,7 +184,7 @@ class CFQServer {
                 if (!authCheckUsername(username)) return false
                 val registerResponse = fetchFromServer(
                     "POST",
-                    "api/register",
+                    "api/auth/register",
                     payload = hashMapOf(
                         "username" to username,
                         "password" to password
@@ -207,6 +213,7 @@ class CFQServer {
             }
         }
 
+        // TODO: Get premium time from user info
         suspend fun apiCheckPremiumTime(username: String): Double {
             return try {
                 val response = fetchFromServer(
@@ -223,6 +230,7 @@ class CFQServer {
             }
         }
 
+        // TODO: Add server side implementation
         suspend fun apiRedeem(username: String, redeemCode: String): Boolean {
             Log.i("CFQServer", "Redeeming code $redeemCode")
             return try {
@@ -240,18 +248,59 @@ class CFQServer {
             }
         }
 
-        suspend fun apiFetchUserOption(token: String, param: String): String {
+        suspend inline fun <reified T> apiFetchUserOption(token: String, param: String, type: String): T? {
             Log.i("CFQServer", "Fetching user option: ${param}.")
             return try {
                 val response = fetchFromServer(
                     "GET",
-                    "api/user/option",
+                    "api/user/properties",
                     token = token,
-                    queries = mapOf("param" to param)
+                    queries = mapOf(
+                        "param" to param,
+                        "type" to type
+                    )
+                )
+                val value: T? = response.bodyAsText() as? T
+                return value
+            } catch (e: Exception) {
+                Log.e("CFQServer", "Failed to fetch user option: ${param}, type: $type, error: ${e.localizedMessage}")
+                null
+            }
+        }
+
+        suspend inline fun <reified T> apiUploadUserOption(token: String, param: String, value: T): Boolean {
+            Log.i("CFQServer", "Uploading $param option.")
+            return try {
+                val response = fetchFromServer(
+                    "POST",
+                    "api/user/properties",
+                    payload = hashMapOf(
+                        "param" to param,
+                        "value" to value.toString()
+                    ),
+                    token = token
+                )
+                response.status.value == 200
+            } catch (e: Exception) {
+                false
+            }
+        }
+
+        suspend fun apiFetchFavMusic(token: String, gameType: Int): String? {
+            Log.i("CFQServer", "Fetching game $gameType favorites.")
+            return try {
+                val response = fetchFromServer(
+                    method = "GET",
+                    "api/user/favorite",
+                    token = token,
+                    queries = hashMapOf(
+                        "game" to gameType.toString()
+                    )
                 )
                 response.bodyAsText()
             } catch (e: Exception) {
-                ""
+                Log.e("CFQServer", "Failed to fetch game $gameType favorites: ${e.localizedMessage}")
+                null
             }
         }
 
@@ -260,7 +309,7 @@ class CFQServer {
             return try {
                 val response = fetchFromServer(
                     method = "POST",
-                    "api/user/favorite/add",
+                    "api/user/favorite",
                     token = token,
                     payload = hashMapOf(
                         "game" to gameType.toString(),
@@ -278,10 +327,10 @@ class CFQServer {
             Log.i("CFQServer", "Removing game $gameType music $musicId to favorites.")
             return try {
                 val response = fetchFromServer(
-                    method = "POST",
-                    "api/user/favorite/remove",
+                    method = "DELETE",
+                    "api/user/favorite",
                     token = token,
-                    payload = hashMapOf(
+                    queries = hashMapOf(
                         "game" to gameType.toString(),
                         "musicId" to musicId
                     )
@@ -293,6 +342,51 @@ class CFQServer {
             }
         }
 
+        suspend fun apiFetchUserCurrentQQ(authToken: String): String {
+            return try {
+                val response = fetchFromServer(
+                    method = "GET",
+                    "api/user/bind",
+                    token = authToken
+                )
+                response.bodyAsText()
+            } catch (e: Exception) {
+                Log.e("CFQServer", "Failed to fetch user bind qq: ${e.localizedMessage}")
+                ""
+            }
+        }
+
+        suspend fun apiUserBindQQ(authToken: String, bindQQ: String): Boolean {
+            return try {
+                val response = fetchFromServer(
+                    method = "POST",
+                    "api/user/bind",
+                    payload = hashMapOf(
+                        "qq" to bindQQ
+                    )
+                )
+                response.status.value == 200
+            } catch (e: Exception) {
+                Log.e("CFQServer", "Failed to bind qq: ${e.localizedMessage}")
+                false
+            }
+        }
+
+        // TODO: Add UI implementation for unbinding QQ
+        suspend fun apiUserUnbindQQ(authToken: String): Boolean {
+            return try {
+                val response = fetchFromServer(
+                    method = "DELETE",
+                    "api/user/bind"
+                )
+                response.status.value == 200
+            } catch (e: Exception) {
+                Log.e("CFQServer", "Failed to unbind qq: ${e.localizedMessage}")
+                false
+            }
+        }
+
+        // TODO: Adapt new data models
         suspend inline fun <reified T> apiFetchUserLeaderboardRank(authToken: String): T? {
             try {
                 val className = T::class.simpleName ?: ""
@@ -337,24 +431,7 @@ class CFQServer {
             }
         }
 
-        suspend fun apiUploadUserOption(token: String, param: String, value: String): Boolean {
-            Log.i("CFQServer", "Uploading $param option.")
-            return try {
-                val response = fetchFromServer(
-                    "POST",
-                    "api/user/option",
-                    payload = hashMapOf(
-                        "param" to param,
-                        "value" to value
-                    ),
-                    token = token
-                )
-                response.status.value == 200
-            } catch (e: Exception) {
-                false
-            }
-        }
-
+        // TODO: Maybe deprecate this
         suspend fun apiFetchAnnouncement(): List<AppAnnouncement> {
             Log.i("CFQServer", "Fetching app announcements.")
             return try {
@@ -381,7 +458,7 @@ class CFQServer {
             try {
                 val response = fetchFromServer(
                     "GET",
-                    path = "api/chunithm/music_data"
+                    path = "api/resource/chunithm/song-list"
                 )
                 return response.bodyAsText()
             } catch (e: Exception) {
@@ -393,7 +470,7 @@ class CFQServer {
             try {
                 val response = fetchFromServer(
                     "GET",
-                    path = "api/static/maimai/song-list"
+                    path = "api/resource/maimai/song-list"
                 )
                 return response.bodyAsText()
             } catch (e: Exception) {
@@ -405,7 +482,7 @@ class CFQServer {
             try {
                 val response = fetchFromServer(
                     "GET",
-                    path = "api/static/maimai/genre-list"
+                    path = "api/resource/maimai/genre-list"
                 )
                 return response.bodyAsText()
             } catch (e: Exception) {
@@ -417,7 +494,7 @@ class CFQServer {
             try {
                 val response = fetchFromServer(
                     "GET",
-                    path = "api/static/maimai/version-list"
+                    path = "api/resource/maimai/version-list"
                 )
                 return response.bodyAsText()
             } catch (e: Exception) {
@@ -425,6 +502,7 @@ class CFQServer {
             }
         }
 
+        // TODO: Change to new status API
         suspend fun apiIsUploading(gameType: Int, authToken: String): Boolean {
             try {
                 val response = fetchFromServer(
@@ -440,6 +518,7 @@ class CFQServer {
             }
         }
 
+        // TODO: Add server side implementation
         suspend fun apiHasTokenCache(gameType: Int, authToken: String): Boolean {
             try {
                 val response = fetchFromServer(
@@ -456,6 +535,7 @@ class CFQServer {
             }
         }
 
+        // TODO: Add server side implementation
         suspend fun apiTriggerQuickUpload(
             gameType: Int,
             authToken: String
@@ -478,11 +558,11 @@ class CFQServer {
             try {
                 return fetchFromServer(
                     "GET",
-                    path = "api/maimai/$contentTag",
+                    path = "api/user/maimai/$contentTag",
                     token = authToken
                 ).bodyAsText()
             } catch (e: Exception) {
-                Log.e("CFQServer", "Failed to fetch maimai music data: ${e.localizedMessage}")
+                Log.e("CFQServer", "Failed to fetch maimai $contentTag music data: $e")
                 return ""
             }
         }
@@ -491,15 +571,16 @@ class CFQServer {
             try {
                 return fetchFromServer(
                     "GET",
-                    path = "api/chunithm/$contentTag",
+                    path = "api/user/chunithm/$contentTag",
                     token = authToken
                 ).bodyAsText()
             } catch (e: Exception) {
-                Log.e("CFQServer", "Failed to fetch chunithm music data: ${e.localizedMessage}")
+                Log.e("CFQServer", "Failed to fetch chunithm music $contentTag data: $e")
                 return ""
             }
         }
 
+        // TODO: Change to user option retrieval
         suspend fun fishFetchToken(authToken: String): String {
             try {
                 return fetchFromServer(
@@ -513,7 +594,7 @@ class CFQServer {
             }
         }
 
-
+        // TODO: Change to user option upload
         suspend fun fishUploadToken(authToken: String, fishToken: String): Boolean {
             try {
                 val response = fetchFromServer(
@@ -535,7 +616,7 @@ class CFQServer {
             try {
                 val response = fetchFromServer(
                     "POST",
-                    "api/stats/upload_time",
+                    "api/stats/upload-time",
                     payload = hashMapOf(
                         "type" to mode
                     )
@@ -547,11 +628,12 @@ class CFQServer {
             }
         }
 
+        // TODO: Change to new data model
         suspend fun statCheckUpload(authToken: String): List<Int> {
             try {
                 val response = fetchFromServer(
                     "GET",
-                    "api/stats/upload_status",
+                    "api/user/upload-status",
                     token = authToken
                 )
                 val dict = Json.decodeFromString<Map<String, Int>>(response.bodyAsText())
@@ -562,11 +644,12 @@ class CFQServer {
             }
         }
 
+        // TODO: Add server side implementation
         suspend fun statSponsorList(): List<String> {
             return try {
                 val responseText = fetchFromServer(
                     "GET",
-                    "api/stats/sponsor"
+                    "api/stat/sponsor"
                 ).bodyAsText()
                 Json.decodeFromString<List<String>>(responseText).distinct().reversed()
             } catch (e: Exception) {
@@ -575,22 +658,24 @@ class CFQServer {
             }
         }
 
-        suspend fun statMusicListVersion(gameType: Int): Int {
+        // TODO: Add server side implementation
+        suspend fun statResourceVersion(tag: String): Int {
             return try {
                 val response = fetchFromServer(
                     "GET",
-                    "api/stats/songListVersion",
+                    "api/stat/version/resource",
                     queries = mapOf(
-                        "gameType" to gameType.toString()
+                        "tag" to tag
                     )
                 ).bodyAsText()
                 response.toInt()
             } catch (e: Exception) {
-                Log.e("CFQServer", "Failed to get music list version, defaulting to 0.")
+                Log.e("CFQServer", "Failed to get music list version, $e, defaulting to 0.")
                 0
             }
         }
 
+        // TODO: Add server side implementation
         suspend fun apiChunithmMusicStat(musicId: Int, difficulty: Int): ChunithmMusicStat {
             Log.i(
                 "CFQServer",
@@ -616,6 +701,7 @@ class CFQServer {
             }
         }
 
+        // TODO: Add server side implementation
         suspend fun apiMaimaiLeaderboard(
             musicId: Int,
             type: String,
@@ -646,6 +732,7 @@ class CFQServer {
             }
         }
 
+        // TODO: Add server side implementation
         suspend fun apiChunithmLeaderboard(musicId: Int, difficulty: Int): ChunithmDiffLeaderboard {
             Log.i(
                 "CFQServer",
@@ -671,6 +758,7 @@ class CFQServer {
             }
         }
 
+        // TODO: Add server side api implementation
         suspend inline fun <reified T> apiTotalLeaderboard(
             authToken: String,
             gameType: Int
@@ -715,6 +803,7 @@ class CFQServer {
             }
         }
 
+        // TODO: Add server side implementation
         suspend fun apiFetchComment(gameType: Int, musicId: Int): List<Comment> {
             return try {
                 val response = fetchFromServer(
@@ -767,6 +856,7 @@ class CFQServer {
             }
         }
 
+        // TODO: Add server side implementation
         suspend fun apiFetchUserImage(authToken: String, gameType: String, imageType: String): ByteArray? {
             try {
                 val response = fetchFromServer(

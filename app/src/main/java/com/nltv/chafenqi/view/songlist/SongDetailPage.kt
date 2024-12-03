@@ -1,6 +1,7 @@
 package com.nltv.chafenqi.view.songlist
 
 import android.net.Uri
+import android.os.Debug
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -129,7 +130,7 @@ fun SongDetailPage(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 AsyncImage(
-                    model = model.coverUrl,
+                    model = state.coverUrl,
                     contentDescription = "歌曲封面",
                     modifier = Modifier
                         .size(128.dp)
@@ -158,14 +159,14 @@ fun SongDetailPage(
                         horizontalAlignment = Alignment.Start
                     ) {
                         Text(
-                            text = model.title,
+                            text = state.title,
                             fontWeight = FontWeight.Bold,
                             fontSize = 26.sp,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )
                         Text(
-                            text = model.artist,
+                            text = state.artist,
                             fontSize = 18.sp,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -181,18 +182,18 @@ fun SongDetailPage(
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    model.constants.forEachIndexed { index, string ->
+                    state.constants.forEachIndexed { index, string ->
                         Text(text = string, fontSize = 16.sp, color = model.difficultyColors[index])
                     }
                 }
-                Text(text = "BPM: ${model.bpm}", fontSize = 16.sp)
+                Text(text = "BPM: ${state.bpm}", fontSize = 16.sp)
             }
             Row(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
             ) {
-                Text(text = model.version)
+                Text(text = state.version)
             }
             TextButton(
                 onClick = {
@@ -201,7 +202,7 @@ fun SongDetailPage(
                         uriHandler.openUri(
                             Uri.parse("bilibili://search")
                                 .buildUpon()
-                                .appendQueryParameter("keyword", "${model.title} $gameName")
+                                .appendQueryParameter("keyword", "${state.title} $gameName")
                                 .build()
                                 .toString()
                         )
@@ -237,11 +238,11 @@ fun SongDetailPage(
                 )
             }
             if (mode == 1) {
-                model.maiDiffInfos.onEach {
+                state.maiDiffInfos.onEach {
                     MaimaiDifficultyCard(info = it, navController)
                 }
             } else if (mode == 0) {
-                model.chuDiffInfos.onEach {
+                state.chuDiffInfos.onEach {
                     ChunithmDifficultyCard(info = it, navController)
                 }
             }

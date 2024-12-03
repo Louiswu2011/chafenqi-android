@@ -80,7 +80,10 @@ fun SettingsBindQQPage(navController: NavController) {
                     }
 
                     scope.launch {
-                        CFQServer.apiUploadUserOption(model.token, "bindQQ", userQQ)
+                        if (CFQServer.apiUserBindQQ(model.user.token, userQQ)) {
+                            snackbarHostState.showSnackbar("绑定失败，该QQ已被其他账号绑定。")
+                            return@launch
+                        }
                         model.user.remoteOptions.bindQQ = userQQ
                         scope.launch { snackbarHostState.showSnackbar("绑定成功！") }
                         userQQ = ""

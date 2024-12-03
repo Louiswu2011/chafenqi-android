@@ -67,10 +67,6 @@ fun String.prepended(): String {
     return prepended
 }
 
-fun String.toMaimaiCoverPath(): String {
-    return "https://www.diving-fish.com/covers/${this.toMaimaiCoverString()}.png"
-}
-
 fun Int.toMaimaiCoverPath(): String = "https://assets2.lxns.net/maimai/jacket/$this.png"
 
 fun String.toMaimaiTrophyType(): String {

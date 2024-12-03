@@ -251,7 +251,7 @@ fun HomePageMaimaiRatingSelection(navController: NavController) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         AsyncImage(
-            model = uiState.maiCurrentSelectedRatingEntry.associatedMusicEntry.musicId.toMaimaiCoverPath(),
+            model = uiState.maiCurrentSelectedRatingEntry.associatedMusicEntry.coverId.toMaimaiCoverPath(),
             contentDescription = "歌曲封面",
             modifier = Modifier
                 .padding(end = 8.dp)

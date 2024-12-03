@@ -179,7 +179,7 @@ fun HomeRecentPageEntry(entry: UserMaimaiRecentScoreEntry, index: Int, navContro
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             AsyncImage(
-                model = entry.associatedMusicEntry.musicId.toMaimaiCoverPath(),
+                model = entry.associatedMusicEntry.coverId.toMaimaiCoverPath(),
                 contentDescription = "歌曲封面",
                 modifier = Modifier
                     .padding(end = 8.dp)

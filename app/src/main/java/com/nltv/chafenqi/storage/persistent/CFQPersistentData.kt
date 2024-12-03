@@ -26,21 +26,24 @@ object CFQPersistentData {
         cacheKey = stringPreferencesKey("maimaiMusicList"),
         versionKey = intPreferencesKey("maimaiMusicListVersion"),
         fetcher = { CFQServer.apiMaimaiMusicData() },
-        gameType = 0
+        gameType = 0,
+        resourceTag = "maimai_song_list"
     )
     private val maiGenreConfig = CFQPersistentLoaderConfig(
         name = "MaimaiGenre",
         cacheKey = stringPreferencesKey("maimaiGenreList"),
         versionKey = intPreferencesKey("maimaiGenreListVersion"),
         fetcher = { CFQServer.apiMaimaiGenreData() },
-        gameType = 0
+        gameType = 0,
+        resourceTag = "maimai_genre_list"
     )
     private val maiVersionConfig = CFQPersistentLoaderConfig(
         name = "MaimaiVersion",
         cacheKey = stringPreferencesKey("maimaiVersionList"),
         versionKey = intPreferencesKey("maimaiVersionListVersion"),
         fetcher = { CFQServer.apiMaimaiVersionData() },
-        gameType = 0
+        gameType = 0,
+        resourceTag = "maimai_version_list"
     )
 
     private val chuConfig = CFQPersistentLoaderConfig(
@@ -48,7 +51,8 @@ object CFQPersistentData {
         cacheKey = stringPreferencesKey("chunithmMusicList"),
         versionKey = intPreferencesKey("chunithmMusicListVersion"),
         fetcher = { CFQServer.apiChuithmMusicData() },
-        gameType = 1
+        gameType = 1,
+        resourceTag = "chunithm_song_list"
     )
 
     object Maimai {
@@ -75,8 +79,8 @@ object CFQPersistentData {
             Chunithm.musicList =
                 CFQPersistentLoader.loadPersistentData(context, chuConfig, shouldValidate)
 
-            Maimai.version = CFQServer.statMusicListVersion(gameType = maiMusicConfig.gameType)
-            Chunithm.version = CFQServer.statMusicListVersion(gameType = chuConfig.gameType)
+            Maimai.version = CFQServer.statResourceVersion(tag = maiMusicConfig.resourceTag)
+            Chunithm.version = CFQServer.statResourceVersion(tag = chuConfig.resourceTag)
 
             context.settingsStore.edit {
                 it[maiMusicConfig.cacheKey] = Json.encodeToString(Maimai.musicList)

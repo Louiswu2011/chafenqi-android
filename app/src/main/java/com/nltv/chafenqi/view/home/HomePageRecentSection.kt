@@ -144,7 +144,7 @@ fun HomePageRecentMaimaiEntry(item: MaimaiRecentLineup) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         AsyncImage(
-            model = item.entry.associatedMusicEntry.musicId.toMaimaiCoverPath(),
+            model = item.entry.associatedMusicEntry.coverId.toMaimaiCoverPath(),
             contentDescription = "最近动态歌曲封面",
             modifier = Modifier
                 .padding(end = 8.dp)

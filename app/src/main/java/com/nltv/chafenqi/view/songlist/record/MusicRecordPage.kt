@@ -185,7 +185,7 @@ fun MusicRecordMaimaiEntryList(navController: NavController) {
             MusicRecordEntry(
                 modifier = Modifier.padding(horizontal = SCREEN_PADDING),
                 mode = 1,
-                coverUrl = entry.associatedMusicEntry.musicId.toMaimaiCoverPath(),
+                coverUrl = entry.associatedMusicEntry.coverId.toMaimaiCoverPath(),
                 title = entry.associatedMusicEntry.title,
                 levelIndex = entry.levelIndex,
                 playDate = entry.timestamp.toDateString(context),

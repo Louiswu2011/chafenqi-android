@@ -73,7 +73,7 @@ class RecentDetailPageViewModel : ViewModel() {
             maiMusic =
                 CFQPersistentData.Maimai.musicList.firstOrNull { it.title == maiEntry?.associatedMusicEntry?.title && it.type == maiEntry?.type }
 
-            coverUrl = maiMusic?.musicId?.toMaimaiCoverPath() ?: ""
+            coverUrl = maiMusic?.coverId?.toMaimaiCoverPath() ?: ""
             title = maiMusic?.title ?: ""
             artist = maiMusic?.basicInfo?.artist ?: ""
             playDateString = maiEntry?.timestamp?.toDateString(context) ?: ""

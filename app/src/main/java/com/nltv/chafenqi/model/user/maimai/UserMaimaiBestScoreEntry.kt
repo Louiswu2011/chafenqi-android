@@ -17,6 +17,7 @@ data class UserMaimaiBestScoreEntry(
     val lastModified: Long = 0L,
     @Transient var associatedMusicEntry: MaimaiMusicEntry = MaimaiMusicEntry()
 ) {
-    val level = associatedMusicEntry.level[levelIndex]
+    val level: String
+        get() = associatedMusicEntry.level[levelIndex]
     val rateString = achievements.toRateString()
 }

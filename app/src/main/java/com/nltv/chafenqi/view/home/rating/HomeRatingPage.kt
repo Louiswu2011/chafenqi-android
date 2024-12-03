@@ -203,7 +203,7 @@ fun HomeRatingMaimaiEntry(entry: UserMaimaiBestScoreEntry, index: Int, navContro
         horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         AsyncImage(
-            model = entry.associatedMusicEntry.musicId.toMaimaiCoverPath(),
+            model = entry.associatedMusicEntry.coverId.toMaimaiCoverPath(),
             contentDescription = "歌曲封面",
             modifier = Modifier
                 .size(64.dp)

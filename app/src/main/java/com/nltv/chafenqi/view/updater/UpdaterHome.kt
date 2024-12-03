@@ -310,7 +310,7 @@ fun PreferenceRootScope.UpdaterSettingsGroup(
 
     LaunchedEffect(Unit) {
         isUploading = true
-        shouldForward = CFQServer.apiFetchUserOption(model.token, "forwarding_fish") == "1"
+        shouldForward = CFQServer.apiFetchUserOption<Boolean>(model.token, "forwarding_fish", "boolean") == true
         isUploading = false
     }
 

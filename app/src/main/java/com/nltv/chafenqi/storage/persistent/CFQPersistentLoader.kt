@@ -16,7 +16,8 @@ data class CFQPersistentLoaderConfig(
     val cacheKey: Preferences.Key<String>,
     val versionKey: Preferences.Key<Int>,
     val fetcher: suspend () -> String,
-    val gameType: Int
+    val gameType: Int,
+    val resourceTag: String
 )
 
 class CFQPersistentLoader {
@@ -51,7 +52,7 @@ class CFQPersistentLoader {
             return try {
                 // Compare local and remote music list version.
                 val localVersion = store.data.map { p -> p[config.versionKey] ?: 0 }.first()
-                val remoteVersion = CFQServer.statMusicListVersion(gameType = config.gameType)
+                val remoteVersion = CFQServer.statResourceVersion(tag = config.resourceTag)
 
                 if (localVersion >= remoteVersion) {
                     Log.i(tag, "Local ${config.name} music list is up to date.")

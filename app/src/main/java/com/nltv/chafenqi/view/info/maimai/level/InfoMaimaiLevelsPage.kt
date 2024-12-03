@@ -295,7 +295,7 @@ fun InfoMaimaiLevelEntry(
         horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         AsyncImage(
-            model = music.musicId.toMaimaiCoverPath(),
+            model = music.coverId.toMaimaiCoverPath(),
             contentDescription = "歌曲封面",
             modifier = Modifier
                 .size(64.dp)

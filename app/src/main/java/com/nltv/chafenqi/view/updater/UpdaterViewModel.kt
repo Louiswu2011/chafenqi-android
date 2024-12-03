@@ -260,9 +260,9 @@ class UpdaterViewModel : ViewModel() {
     suspend fun setFishForwardState(state: Boolean): Boolean {
         return try {
             val result =
-                CFQServer.apiUploadUserOption(token, "forwarding_fish", if (state) "1" else "0")
+                CFQServer.apiUploadUserOption<Boolean>(token, "forwarding_fish", state)
             if (result) {
-                CFQServer.apiFetchUserOption(token, "forwarding_fish") == "1"
+                CFQServer.apiFetchUserOption<Boolean>(token, "forwarding_fish", "boolean") == true
             } else {
                 Log.e("Updater", "Server error while setting forward fish.")
                 !state
