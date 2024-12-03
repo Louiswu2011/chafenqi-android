@@ -172,7 +172,7 @@ fun ChunithmLeaderboardRow(
 
                 Spacer(modifier = Modifier.padding(horizontal = 5.dp))
                 Text(
-                    text = item.highscore.toString(),
+                    text = item.score.toString(),
                     fontWeight = FontWeight.Bold
                 )
             }

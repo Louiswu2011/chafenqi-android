@@ -17,6 +17,7 @@ import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
+import com.nltv.chafenqi.storage.user.CFQUser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -42,6 +43,8 @@ data class SongStatsTabItem(
 class SongStatsPageViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(SongStatsUiState())
     val statsState = _uiState.asStateFlow()
+
+    val token = CFQUser.token
 
     val statsTabs = listOf(
         SongStatsTabItem(
@@ -88,7 +91,7 @@ class SongStatsPageViewModel : ViewModel() {
             if (mode == 0 && CFQPersistentData.Chunithm.musicList.isNotEmpty()) {
                 val chuMusic = CFQPersistentData.Chunithm.musicList.getOrNull(index)
                 if (chuMusic != null) {
-                    val result = CFQServer.apiChunithmLeaderboard(chuMusic.musicId, difficulty)
+                    val result = CFQServer.apiChunithmLeaderboard(token, chuMusic.musicId, difficulty)
                     _uiState.update { currentValue ->
                         currentValue.copy(
                             doneLoadingLeaderboard = true,
@@ -97,10 +100,11 @@ class SongStatsPageViewModel : ViewModel() {
                     }
                 }
             } else if (mode == 1 && CFQPersistentData.Maimai.musicList.isNotEmpty()) {
+                val type = if (type == "SD") "standard" else "dx"
                 val maiMusic = CFQPersistentData.Maimai.musicList.getOrNull(index)
                 if (maiMusic != null) {
                     val result =
-                        CFQServer.apiMaimaiLeaderboard(maiMusic.musicId.toInt(), type, difficulty)
+                        CFQServer.apiMaimaiLeaderboard(token, maiMusic.musicId.toInt(), type, difficulty)
                     _uiState.update { currentValue ->
                         currentValue.copy(
                             doneLoadingLeaderboard = true,

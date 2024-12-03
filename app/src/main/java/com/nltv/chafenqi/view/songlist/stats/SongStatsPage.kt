@@ -679,7 +679,7 @@ fun SongLeaderboardPagePreview() {
                 uid = 12,
                 username = "chafenqi1",
                 nickname = "Player1",
-                highscore = 1000000,
+                score = 1000000,
                 rankIndex = 13
             ),
             ChunithmDiffLeaderboardItem(
@@ -687,7 +687,7 @@ fun SongLeaderboardPagePreview() {
                 uid = 12,
                 username = "chafenqi2",
                 nickname = "Player2",
-                highscore = 1000000,
+                score = 1000000,
                 rankIndex = 13
             ),
             ChunithmDiffLeaderboardItem(
@@ -695,7 +695,7 @@ fun SongLeaderboardPagePreview() {
                 uid = 12,
                 username = "chafenqi3",
                 nickname = "Player3",
-                highscore = 1000000,
+                score = 1000000,
                 rankIndex = 13
             ),
             ChunithmDiffLeaderboardItem(
@@ -703,7 +703,7 @@ fun SongLeaderboardPagePreview() {
                 uid = 12,
                 username = "chafenqi4",
                 nickname = "Player4",
-                highscore = 1000000,
+                score = 1000000,
                 rankIndex = 13
             ),
             ChunithmDiffLeaderboardItem(
@@ -711,7 +711,7 @@ fun SongLeaderboardPagePreview() {
                 uid = 12,
                 username = "chafenqi5",
                 nickname = "Player5",
-                highscore = 1000000,
+                score = 1000000,
                 rankIndex = 13
             ),
             ChunithmDiffLeaderboardItem(
@@ -719,7 +719,7 @@ fun SongLeaderboardPagePreview() {
                 uid = 12,
                 username = "chafenqi6",
                 nickname = "Player6",
-                highscore = 1000000,
+                score = 1000000,
                 rankIndex = 13
             )
         )

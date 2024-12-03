@@ -214,7 +214,6 @@ class HomeLeaderboardPageViewModel : ViewModel() {
                             username = item.username,
                             nickname = item.nickname,
                             info = item.firstCount.toString(),
-                            extraInfo = item.firstMusics
                         )
                     }
                 )
@@ -326,7 +325,6 @@ class HomeLeaderboardPageViewModel : ViewModel() {
                             username = item.username,
                             nickname = item.nickname,
                             info = item.firstCount.toString(),
-                            extraInfo = item.firstMusics
                         )
                     }
                 )

@@ -703,6 +703,7 @@ class CFQServer {
 
         // TODO: Add server side implementation
         suspend fun apiMaimaiLeaderboard(
+            authToken: String,
             musicId: Int,
             type: String,
             difficulty: Int
@@ -714,12 +715,13 @@ class CFQServer {
             return try {
                 val response = fetchFromServer(
                     "GET",
-                    "api/maimai/leaderboard",
+                    "api/user/maimai/leaderboard",
                     queries = mapOf(
-                        "index" to musicId.toString(),
+                        "music_id" to musicId.toString(),
                         "type" to type,
-                        "diff" to difficulty.toString()
+                        "level_index" to difficulty.toString()
                     ),
+                    token = authToken,
                     shouldHandleErrorCode = false
                 )
                 Json.decodeFromString<MaimaiDiffLeaderboard>(response.bodyAsText())
@@ -733,7 +735,7 @@ class CFQServer {
         }
 
         // TODO: Add server side implementation
-        suspend fun apiChunithmLeaderboard(musicId: Int, difficulty: Int): ChunithmDiffLeaderboard {
+        suspend fun apiChunithmLeaderboard(authToken: String, musicId: Int, difficulty: Int): ChunithmDiffLeaderboard {
             Log.i(
                 "CFQServer",
                 "Fetching chunithm leaderboard for music $musicId, difficulty $difficulty"
@@ -741,11 +743,12 @@ class CFQServer {
             return try {
                 val response = fetchFromServer(
                     "GET",
-                    "api/chunithm/leaderboard",
+                    "api/user/chunithm/leaderboard",
                     queries = mapOf(
-                        "index" to musicId.toString(),
-                        "diff" to difficulty.toString()
+                        "music_id" to musicId.toString(),
+                        "level_index" to difficulty.toString()
                     ),
+                    token = authToken,
                     shouldHandleErrorCode = false
                 )
                 Json.decodeFromString<ChunithmDiffLeaderboard>(response.bodyAsText())
@@ -770,11 +773,11 @@ class CFQServer {
                 }
 
                 ChunithmTotalScoreLeaderboardItem::class, MaimaiTotalScoreLeaderboardItem::class -> {
-                    "totalScore"
+                    "total-score"
                 }
 
                 ChunithmTotalPlayedLeaderboardItem::class, MaimaiTotalPlayedLeaderboardItem::class -> {
-                    "totalCount"
+                    "total-count"
                 }
 
                 ChunithmFirstLeaderboardItem::class, MaimaiFirstLeaderboardItem::class -> {
@@ -791,8 +794,8 @@ class CFQServer {
 
             return try {
                 val response = fetchFromServer(
-                    "POST",
-                    "api/${gameName}/leaderboard/${typeString}",
+                    "GET",
+                    "api/user/${gameName}/leaderboard/${typeString}",
                     token = authToken,
                     shouldHandleErrorCode = false
                 )

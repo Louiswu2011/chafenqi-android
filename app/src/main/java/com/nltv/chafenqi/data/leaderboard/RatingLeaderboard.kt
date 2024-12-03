@@ -7,7 +7,7 @@ data class ChunithmRatingLeaderboardItem(
     val uid: Int = 0,
     val username: String = "",
     val nickname: String = "",
-    val rating: Float = 0f
+    val rating: Double = 0.0
 )
 
 @Serializable
