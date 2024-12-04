@@ -156,7 +156,7 @@ fun HomePageRecentMaimaiEntry(item: MaimaiRecentLineup) {
                     ),
                     shape = RoundedCornerShape(10.dp)
                 )
-                .padding(2.dp)
+                // .padding(2.dp)
                 .clip(RoundedCornerShape(size = 10.dp))
         )
         Column(

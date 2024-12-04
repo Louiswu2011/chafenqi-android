@@ -1,5 +1,8 @@
 package com.nltv.chafenqi.model.user.chunithm
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class UserChunithmExtraInfo(
     val nameplates: List<UserChunithmNameplateEntry> = listOf(),
     val skills: List<UserChunithmSkillEntry> = listOf(),

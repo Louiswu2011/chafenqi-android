@@ -102,7 +102,7 @@ class CFQUserStateViewModel : ViewModel() {
 
             if (user.isPremium && !isEmpty) {
                 try {
-                    val extraString = CFQServer.apiChunithm("extras", token)
+                    val extraString = CFQServer.apiChunithm("extra", token)
 
                     chunithm.extra = deserializer.decodeFromString(extraString)
                     chunithm.isExtraEmpty = false
