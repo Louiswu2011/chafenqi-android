@@ -118,7 +118,8 @@ class SongDetailViewModel : ViewModel() {
                             chuMusic?.musicId?.toString() ?: ""
                         ),
                         comments = CFQServer.apiFetchComment(
-                            gameType = 0,
+                            authToken = user.token,
+                            gameType = "chunithm",
                             musicId = chuMusic!!.musicId
                         ).sortedByDescending { comment -> comment.timestamp }
                     )
@@ -157,7 +158,8 @@ class SongDetailViewModel : ViewModel() {
                     it.copy(
                         loved = user.remoteOptions.maimaiFavList.contains(maiMusic?.musicId.toString()),
                         comments = CFQServer.apiFetchComment(
-                            gameType = 1,
+                            authToken = user.token,
+                            gameType = "maimai",
                             musicId = maiMusic!!.musicId.toInt()
                         ).sortedByDescending { comment -> comment.timestamp }
                     )

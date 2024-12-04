@@ -37,10 +37,15 @@ class CommentPageViewModel: ViewModel() {
             1 -> CFQPersistentData.Maimai.musicList.getOrNull(index)?.musicId?.toInt() ?: -1
             else -> -1
         }
+        val gameTypeString = when (gameType) {
+            0 -> "chunithm"
+            1 -> "maimai"
+            else -> ""
+        }
         viewModelScope.launch {
             _uiState.update {
                 it.copy(
-                    comments = CFQServer.apiFetchComment(gameType = gameType, musicId = musicId).sortedByDescending { comment -> comment.timestamp }
+                    comments = CFQServer.apiFetchComment(authToken = user.token, gameType = gameTypeString, musicId = musicId).sortedByDescending { comment -> comment.timestamp }
                 )
             }
             setLoading(false)
@@ -66,10 +71,15 @@ class CommentPageViewModel: ViewModel() {
                 1 -> CFQPersistentData.Maimai.musicList.getOrNull(index)?.musicId?.toInt() ?: -1
                 else -> -1
             }
+            val gameTypeString = when (mode) {
+                0 -> "chunithm"
+                1 -> "maimai"
+                else -> ""
+            }
             viewModelScope.launch {
                 CFQServer.apiPostComment(
                     authToken = user.token,
-                    gameType = mode,
+                    gameType = gameTypeString,
                     musicId = musicId,
                     replyId = replyId,
                     content = content
@@ -84,7 +94,12 @@ class CommentPageViewModel: ViewModel() {
     fun deleteComment(commentId: Int) {
         try {
             viewModelScope.launch {
-                CFQServer.apiDeleteComment(user.token, commentId)
+                val gameTypeString = when (mode) {
+                    0 -> "chunithm"
+                    1 -> "maimai"
+                    else -> ""
+                }
+                CFQServer.apiDeleteComment(user.token, gameTypeString, commentId)
                 update(mode, index)
             }
         } catch (e: Exception) {

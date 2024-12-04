@@ -103,8 +103,8 @@ class UpdaterViewModel : ViewModel() {
         }
 
         viewModelScope.launch {
-            val chuServerStat = CFQServer.statUploadTime(0).toDouble()
-            val maiServerStat = CFQServer.statUploadTime(1).toDouble()
+            val chuServerStat = CFQServer.statUploadTime(0).toDoubleOrNull() ?: 0.0
+            val maiServerStat = CFQServer.statUploadTime(1).toDoubleOrNull() ?: 0.0
             _uiState.update { currentValue ->
                 currentValue.copy(
                     chuServerStat = makeServerStatText(chuServerStat),

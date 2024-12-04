@@ -35,6 +35,7 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.datetime.Clock
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.util.concurrent.TimeUnit
@@ -139,7 +140,7 @@ class CFQServer {
                 val deserializer = Json { ignoreUnknownKeys = true }
                 val responseText = fetchFromServer(
                     "GET",
-                    "api/stats/version"
+                    "api/stat/version/app/android"
                 ).bodyAsText()
                 deserializer.decodeFromString(responseText)
             } catch (e: Exception) {
@@ -363,7 +364,8 @@ class CFQServer {
                     "api/user/bind",
                     payload = hashMapOf(
                         "qq" to bindQQ
-                    )
+                    ),
+                    token = authToken
                 )
                 response.status.value == 200
             } catch (e: Exception) {
@@ -377,7 +379,8 @@ class CFQServer {
             return try {
                 val response = fetchFromServer(
                     method = "DELETE",
-                    "api/user/bind"
+                    "api/user/bind",
+                    token = authToken
                 )
                 response.status.value == 200
             } catch (e: Exception) {
@@ -580,32 +583,19 @@ class CFQServer {
             }
         }
 
-        // TODO: Change to user option retrieval
         suspend fun fishFetchToken(authToken: String): String {
+
             try {
-                return fetchFromServer(
-                    "GET",
-                    "fish/fetch_token",
-                    token = authToken
-                ).bodyAsText()
+                return apiFetchUserOption<String>(authToken, "fish_token", "string") ?: ""
             } catch (e: Exception) {
                 Log.e("CFQServer", "Failed to fetch fish token: ${e.localizedMessage}")
                 return ""
             }
         }
 
-        // TODO: Change to user option upload
         suspend fun fishUploadToken(authToken: String, fishToken: String): Boolean {
             try {
-                val response = fetchFromServer(
-                    "POST",
-                    "fish/upload_token",
-                    payload = hashMapOf(
-                        "token" to fishToken
-                    ),
-                    token = authToken
-                )
-                return response.status.value == 200
+                return apiUploadUserOption(authToken, "fish_token", fishToken)
             } catch (e: Exception) {
                 Log.e("CFQServer", "Failed to upload fish token: ${e.localizedMessage}")
                 return false
@@ -615,10 +605,10 @@ class CFQServer {
         suspend fun statUploadTime(mode: Int): String {
             try {
                 val response = fetchFromServer(
-                    "POST",
-                    "api/stats/upload-time",
-                    payload = hashMapOf(
-                        "type" to mode
+                    "GET",
+                    "api/stat/upload-time",
+                    queries = mapOf(
+                        "type" to mode.toString()
                     )
                 )
                 return response.bodyAsText()
@@ -807,15 +797,15 @@ class CFQServer {
         }
 
         // TODO: Add server side implementation
-        suspend fun apiFetchComment(gameType: Int, musicId: Int): List<Comment> {
+        suspend fun apiFetchComment(authToken: String, gameType: String, musicId: Int): List<Comment> {
             return try {
                 val response = fetchFromServer(
-                    "POST",
-                    "api/comment/fetch",
-                    payload = hashMapOf(
-                        "musicId" to musicId,
-                        "musicFrom" to gameType
-                    )
+                    "GET",
+                    "api/comment/$gameType",
+                    queries = mapOf(
+                        "musicId" to musicId.toString()
+                    ),
+                    token = authToken
                 )
                 decoder.decodeFromString<List<Comment>>(response.bodyAsText())
             } catch (e: Exception) {
@@ -823,16 +813,15 @@ class CFQServer {
                 emptyList()
             }
         }
-        suspend fun apiPostComment(authToken: String, gameType: Int, musicId: Int, replyId: Int, content: String): Boolean {
+        suspend fun apiPostComment(authToken: String, gameType: String, musicId: Int, replyId: Int, content: String): Boolean {
             try {
                 val response = fetchFromServer(
                     "POST",
-                    "api/comment/post",
+                    "api/comment/$gameType",
                     payload = hashMapOf(
                         "content" to content,
                         "musicId" to musicId.toString(),
-                        "musicFrom" to gameType.toString(),
-                        "reply" to replyId.toString()
+                        "timestamp" to Clock.System.now().epochSeconds.toString()
                     ),
                     token = authToken
                 )
@@ -842,13 +831,13 @@ class CFQServer {
                 return false
             }
         }
-        suspend fun apiDeleteComment(authToken: String, commentId: Int): Boolean {
+        suspend fun apiDeleteComment(authToken: String, gameType: String, commentId: Int): Boolean {
             try {
                 val response = fetchFromServer(
-                    "POST",
-                    "api/comment/delete",
-                    payload = hashMapOf(
-                        "id" to commentId
+                    "DELETE",
+                    "api/comment/$gameType",
+                    queries = mapOf(
+                        "comment_id" to commentId.toString(),
                     ),
                     token = authToken
                 )
