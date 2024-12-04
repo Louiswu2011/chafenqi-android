@@ -406,8 +406,8 @@ class CFQServer {
 
                 val leaderboardTypeString = when {
                     className.contains("Rating") -> "rating"
-                    className.contains("Played") -> "totalPlayed"
-                    className.contains("Score") -> "totalScore"
+                    className.contains("Played") -> "total-played"
+                    className.contains("Score") -> "total-score"
                     className.contains("First") -> "first"
                     else -> ""
                 }
@@ -415,10 +415,13 @@ class CFQServer {
                     return null
                 }
 
-                val response = client.post("$defaultPath/api/user/leaderboard") {
+                val gameTypeString = when (gameType) {
+                    0 -> "maimai"
+                    1 -> "chunithm"
+                    else -> ""
+                }
+                val response = client.get("$defaultPath/api/user/leaderboard/$gameTypeString/$leaderboardTypeString") {
                     accept(ContentType.Any)
-                    this.contentType(ContentType.Application.Json)
-                    this.setBody("{\"game\": $gameType, \"type\": \"${leaderboardTypeString}\"}")
                     this.headers.append("Authorization", "Bearer $authToken")
                 }
                 if (response.status.value != 200) {
@@ -691,7 +694,6 @@ class CFQServer {
             }
         }
 
-        // TODO: Add server side implementation
         suspend fun apiMaimaiLeaderboard(
             authToken: String,
             musicId: Int,
@@ -724,7 +726,6 @@ class CFQServer {
             }
         }
 
-        // TODO: Add server side implementation
         suspend fun apiChunithmLeaderboard(authToken: String, musicId: Int, difficulty: Int): ChunithmDiffLeaderboard {
             Log.i(
                 "CFQServer",
@@ -751,7 +752,6 @@ class CFQServer {
             }
         }
 
-        // TODO: Add server side api implementation
         suspend inline fun <reified T> apiTotalLeaderboard(
             authToken: String,
             gameType: Int
@@ -767,7 +767,7 @@ class CFQServer {
                 }
 
                 ChunithmTotalPlayedLeaderboardItem::class, MaimaiTotalPlayedLeaderboardItem::class -> {
-                    "total-count"
+                    "total-played"
                 }
 
                 ChunithmFirstLeaderboardItem::class, MaimaiFirstLeaderboardItem::class -> {
