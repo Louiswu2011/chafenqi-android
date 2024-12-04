@@ -108,6 +108,13 @@ class CFQServer {
                     "DELETE" -> {
                         response = client.delete("$defaultPath/$path") {
                             accept(ContentType.Any)
+                            queries?.also { q ->
+                                url { u ->
+                                    q.forEach {
+                                        u.parameters.append(it.key, it.value)
+                                    }
+                                }
+                            }
                             token?.also {
                                 this.headers.append("Authorization", "Bearer $it")
                             }
@@ -331,7 +338,7 @@ class CFQServer {
                     method = "DELETE",
                     "api/user/favorite",
                     token = token,
-                    queries = hashMapOf(
+                    queries = mapOf(
                         "game" to gameType.toString(),
                         "musicId" to musicId
                     )

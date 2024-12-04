@@ -226,13 +226,14 @@ class SongDetailViewModel : ViewModel() {
             0 -> {
                 if (chuMusic == null) return null
                 val expectedString =
-                    if (user.remoteOptions.chunithmFavList.isEmpty()) "" else user.remoteOptions.chunithmFavList + ",${chuMusic!!.musicId}"
+                    if (user.remoteOptions.chunithmFavList.isEmpty()) "${chuMusic!!.musicId}" else user.remoteOptions.chunithmFavList + ",${chuMusic!!.musicId}"
                 val actualString =
                     CFQServer.apiAddFavMusic(user.token, 0, chuMusic!!.musicId.toString())
                         ?: return null
                 if (expectedString == actualString) {
                     actualString
                 } else {
+                    Log.e("SongDetailViewModel", "Failed to add loved, expected: $expectedString, actual: $actualString")
                     null
                 }
             }
@@ -240,12 +241,15 @@ class SongDetailViewModel : ViewModel() {
             1 -> {
                 if (maiMusic == null) return null
                 val expectedString =
-                    if (user.remoteOptions.maimaiFavList.isEmpty()) maiMusic!!.musicId else user.remoteOptions.maimaiFavList + ",${maiMusic!!.musicId}"
+                    if (user.remoteOptions.maimaiFavList.isEmpty()) "${maiMusic!!.musicId}" else user.remoteOptions.maimaiFavList + ",${maiMusic!!.musicId}"
                 val actualString = CFQServer.apiAddFavMusic(user.token, 1, maiMusic!!.musicId.toString())
                     ?: return null
                 if (expectedString == actualString) {
                     actualString
-                } else null
+                } else {
+                    Log.e("SongDetailViewModel", "Failed to add loved, expected: $expectedString, actual: $actualString")
+                    null
+                }
             }
 
             else -> null
