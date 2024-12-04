@@ -796,7 +796,6 @@ class CFQServer {
             }
         }
 
-        // TODO: Add server side implementation
         suspend fun apiFetchComment(authToken: String, gameType: String, musicId: Int): List<Comment> {
             return try {
                 val response = fetchFromServer(
