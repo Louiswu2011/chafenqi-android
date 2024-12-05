@@ -94,7 +94,9 @@ data class HomePageUiState(
     val logLastPlayedTime: String = "",
     val logLastPlayedCount: String = "",
     val logLastPlayedDuration: String = "",
-    val logLastPlayedAverageScore: String = ""
+    val logLastPlayedAverageScore: String = "",
+
+    val currentTeamId: Int = 0,
 )
 
 class HomePageViewModel : ViewModel() {

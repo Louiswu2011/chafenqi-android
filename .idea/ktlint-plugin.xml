@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="com.nbadal.ktlint.KtlintProjectSettings">
+    <ktlintMode>DISABLED</ktlintMode>
+    <externalJarPaths>
+      <list>
+        <option value="$USER_HOME$/Chafenqi/ktlint-compose-0.4.19-all.jar" />
+      </list>
+    </externalJarPaths>
+  </component>
+</project>

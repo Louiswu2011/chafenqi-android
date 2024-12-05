@@ -22,6 +22,7 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -158,6 +159,12 @@ fun HomePage(navController: NavController) {
                             EmptyDataPage()
                         } else {
                             HomePageNameplateSection(navController)
+
+                            Button (
+                                onClick = { navController.navigate(HomeNavItem.Home.route + "/team") },
+                            ) {
+                                Text("Team")
+                            }
 
                             homeArrangement.split("|").forEach { item ->
                                 when (item) {
