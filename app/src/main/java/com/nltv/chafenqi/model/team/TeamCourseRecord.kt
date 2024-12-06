@@ -1,5 +1,6 @@
 package com.nltv.chafenqi.model.team
 
+import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -15,4 +16,18 @@ data class TeamCourseRecord(
         val score: String,
         val damage: Int,
     )
+
+    companion object {
+        val sample = TeamCourseRecord(
+            id = 1,
+            timestamp = Clock.System.now().epochSeconds,
+            userId = 1L,
+            trackRecords = listOf(
+                TrackRecord("1010000", 0),
+                TrackRecord("1010000", 0),
+                TrackRecord("1010000", 0),
+            ),
+            cleared = true,
+        )
+    }
 }

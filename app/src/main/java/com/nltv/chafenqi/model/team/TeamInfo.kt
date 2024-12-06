@@ -10,4 +10,15 @@ data class TeamInfo(
     val activities: List<TeamActivity>,
     val bulletinBoard: List<TeamBulletinBoardEntry>,
     val courseRecords: List<TeamCourseRecord>,
-)
+) {
+    companion object {
+        val sample = TeamInfo(
+            info = TeamBasicInfo.sample,
+            members = listOf(TeamMember.sample),
+            pendingMembers = listOf(TeamPendingMember.sample),
+            activities = listOf(TeamActivity.sample),
+            bulletinBoard = listOf(TeamBulletinBoardEntry.sample),
+            courseRecords = listOf(TeamCourseRecord.sample)
+        )
+    }
+}

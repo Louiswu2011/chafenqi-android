@@ -11,6 +11,23 @@ import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.nltv.chafenqi.model.team.TeamActivity
+import com.nltv.chafenqi.model.team.TeamBasicInfo
+import com.nltv.chafenqi.model.team.TeamBulletinBoardEntry
+import com.nltv.chafenqi.model.team.TeamCourseRecord
+import com.nltv.chafenqi.model.team.TeamInfo
+import com.nltv.chafenqi.model.team.TeamMember
+import com.nltv.chafenqi.model.team.TeamPendingMember
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+
+data class HomeTeamPageUiState(
+    val team: TeamInfo = TeamInfo.sample,
+)
 
 class HomeTeamPageViewModel : ViewModel() {
     data class HomeTeamPageTab(
@@ -18,6 +35,19 @@ class HomeTeamPageViewModel : ViewModel() {
         val icon: ImageVector,
         val iconSelected: ImageVector,
     )
+
+    private val _uiState = MutableStateFlow(HomeTeamPageUiState())
+    val uiState = _uiState.asStateFlow()
+
+    fun refresh() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _uiState.update {
+                it.copy(
+                    team = TeamInfo.sample
+                )
+            }
+        }
+    }
 
     val tabs = listOf(
         HomeTeamPageTab(
