@@ -9,9 +9,12 @@ import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.outlined.Ballot
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.People
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nltv.chafenqi.extension.toChunithmCoverPath
+import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.model.team.TeamActivity
 import com.nltv.chafenqi.model.team.TeamBasicInfo
 import com.nltv.chafenqi.model.team.TeamBulletinBoardEntry
@@ -19,6 +22,12 @@ import com.nltv.chafenqi.model.team.TeamCourseRecord
 import com.nltv.chafenqi.model.team.TeamInfo
 import com.nltv.chafenqi.model.team.TeamMember
 import com.nltv.chafenqi.model.team.TeamPendingMember
+import com.nltv.chafenqi.storage.persistent.CFQPersistentData
+import com.nltv.chafenqi.storage.user.CFQUser
+import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
+import com.nltv.chafenqi.view.songlist.chunithmDifficultyTitles
+import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
+import com.nltv.chafenqi.view.songlist.maimaiDifficultyTitles
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -39,6 +48,8 @@ class HomeTeamPageViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(HomeTeamPageUiState())
     val uiState = _uiState.asStateFlow()
 
+    val mode = CFQUser.mode
+
     fun refresh() {
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.update {
@@ -48,6 +59,47 @@ class HomeTeamPageViewModel : ViewModel() {
             }
         }
     }
+
+    fun getCoverPath(courseTrack: TeamBasicInfo.CourseTrack): String {
+       return when (mode) {
+            0 -> { CFQPersistentData.Chunithm.musicList.firstOrNull { it.musicId == courseTrack.musicId.toInt() }?.musicId?.toChunithmCoverPath() ?: return "" }
+            1 -> { CFQPersistentData.Maimai.musicList.firstOrNull { it.musicId == courseTrack.musicId.toInt() }?.musicId?.toMaimaiCoverPath() ?: return "" }
+            else -> ""
+        }
+    }
+
+    fun getTitle(courseTrack: TeamBasicInfo.CourseTrack): String {
+        return when (mode) {
+            0 -> CFQPersistentData.Chunithm.musicList.firstOrNull { it.musicId == courseTrack.musicId.toInt() }?.title?: ""
+            1 -> CFQPersistentData.Maimai.musicList.firstOrNull { it.musicId == courseTrack.musicId.toInt() }?.title?: ""
+            else -> ""
+        }
+    }
+
+    fun getArtist(courseTrack: TeamBasicInfo.CourseTrack): String {
+        return when (mode) {
+            0 -> CFQPersistentData.Chunithm.musicList.firstOrNull { it.musicId == courseTrack.musicId.toInt() }?.artist?: ""
+            1 -> CFQPersistentData.Maimai.musicList.firstOrNull { it.musicId == courseTrack.musicId.toInt() }?.basicInfo?.artist ?: ""
+            else -> ""
+        }
+    }
+
+    fun getDifficultyString(courseTrack: TeamBasicInfo.CourseTrack): String {
+        return when (mode) {
+            0 -> chunithmDifficultyTitles[courseTrack.levelIndex]
+            1 -> maimaiDifficultyTitles[courseTrack.levelIndex]
+            else -> ""
+        }
+    }
+
+    fun getDifficultyColor(courseTrack: TeamBasicInfo.CourseTrack): Long {
+        return when (mode) {
+            0 -> chunithmDifficultyColors[courseTrack.levelIndex].value.toLong()
+            1 -> maimaiDifficultyColors[courseTrack.levelIndex].value.toLong()
+            else -> Color.Transparent.value.toLong()
+        }
+    }
+
 
     val tabs = listOf(
         HomeTeamPageTab(
