@@ -63,7 +63,7 @@ class HomeTeamPageViewModel : ViewModel() {
     fun getCoverPath(courseTrack: TeamBasicInfo.CourseTrack): String {
        return when (mode) {
             0 -> { CFQPersistentData.Chunithm.musicList.firstOrNull { it.musicId == courseTrack.musicId.toInt() }?.musicId?.toChunithmCoverPath() ?: return "" }
-            1 -> { CFQPersistentData.Maimai.musicList.firstOrNull { it.musicId == courseTrack.musicId.toInt() }?.musicId?.toMaimaiCoverPath() ?: return "" }
+            1 -> { CFQPersistentData.Maimai.musicList.firstOrNull { it.musicId == courseTrack.musicId.toInt() }?.coverId?.toMaimaiCoverPath() ?: return "" }
             else -> ""
         }
     }

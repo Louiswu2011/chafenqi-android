@@ -1,14 +1,18 @@
 package com.nltv.chafenqi.view.home.team
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
@@ -25,13 +29,19 @@ import coil.compose.AsyncImage
 import com.nltv.chafenqi.model.team.TeamBasicInfo
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.nltv.chafenqi.extension.toDateString
+import com.nltv.chafenqi.model.team.TeamCourseRecord
 
 @Composable
 fun HomeTeamPageCourseSection() {
@@ -40,32 +50,162 @@ fun HomeTeamPageCourseSection() {
 
     LazyColumn (
         modifier = Modifier.fillMaxSize()
+            .padding(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         item {
-            Card (
-                modifier = Modifier.fillMaxWidth()
-                    .padding(8.dp),
-                shape = ShapeDefaults.Medium,
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 4.dp,
-                    pressedElevation = 6.dp
-                )
+            Column (
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Column (
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                Row (
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    HomeTeamCourseItem(1, state.team.info.courseTrack1)
-                    HomeTeamCourseItem(2, state.team.info.courseTrack2)
-                    HomeTeamCourseItem(3, state.team.info.courseTrack3)
+                    Text(text = "当前组曲", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
                 }
+
+                HomeTeamCourseItem(1, state.team.info.courseTrack1)
+                HomeTeamCourseItem(2, state.team.info.courseTrack2)
+                HomeTeamCourseItem(3, state.team.info.courseTrack3)
+
+                Row (
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row (
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text("游玩人数：")
+                        Text("${state.team.courseRecords.size}", fontWeight = FontWeight.Bold)
+                    }
+
+                    Row (
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text("通过人数：")
+                        Text("${state.team.courseRecords.filter { it.cleared }.size}", fontWeight = FontWeight.Bold)
+                    }
+
+                }
+
+                HorizontalDivider()
             }
         }
 
-        item {
-            HorizontalDivider()
+        items (
+            count = state.team.courseRecords.size,
+            key = { state.team.courseRecords[it].id },
+        ) { index ->
+            HomeTeamCourseRecordCard(
+                entry = state.team.courseRecords[index],
+                rank = 1,
+            )
+        }
+    }
+
+}
+
+@Composable
+fun HomeTeamCourseRecordCard(
+    entry: TeamCourseRecord,
+    rank: Int,
+) {
+    val context = LocalContext.current
+    val model: HomeTeamPageViewModel = viewModel()
+    val state by model.uiState.collectAsStateWithLifecycle()
+    var member by remember { mutableStateOf(state.team.members.firstOrNull { it.userId == entry.userId }) }
+
+    var showDetail by remember { mutableStateOf(false) }
+
+    @Composable
+    fun DetailScoreColumn(
+        trackNumber: Int,
+        displayScore: String
+    ) {
+        Column (
+            modifier = Modifier.fillMaxHeight(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("TRACK $trackNumber", style = MaterialTheme.typography.bodyMedium)
+            Text(displayScore, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+        }
+    }
+
+    Card (
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(72.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp,
+            pressedElevation = 6.dp
+        ),
+        onClick = { showDetail =!showDetail },
+    ) {
+        Row (
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
+            Column (
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(64.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text("${rank}位", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+                Text(member?.nickname?: "", style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            }
+            AsyncImage(
+                model = member?.avatar ?: "",
+                contentDescription = "成员头像",
+                modifier = Modifier
+                    .size(72.dp)
+                    .clip(RoundedCornerShape(size = 12.dp))
+            )
+
+            AnimatedContent(showDetail, label = "Detailed score") {
+                when (it) {
+                    true -> {
+                        Row (
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(start = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            DetailScoreColumn(1, entry.trackRecords[0].score)
+                            DetailScoreColumn(2, entry.trackRecords[1].score)
+                            DetailScoreColumn(3, entry.trackRecords[2].score)
+                        }
+                    }
+                    false -> {
+                        Column (
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(start = 4.dp),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                entry.timestamp.toDateString(context),
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(
+                                entry.totalScore(model.mode),
+                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -78,15 +218,16 @@ fun HomeTeamCourseItem(
 ) {
     val model: HomeTeamPageViewModel = viewModel()
 
-    var coverPath by rememberSaveable { mutableStateOf(model.getCoverPath(course)) }
-    var diffColor by rememberSaveable { mutableLongStateOf(model.getDifficultyColor(course)) }
-    var title by rememberSaveable { mutableStateOf(model.getTitle(course)) }
-    var artist by rememberSaveable { mutableStateOf(model.getArtist(course)) }
-    var difficultyString by rememberSaveable { mutableStateOf(model.getDifficultyString(course).uppercase()) }
+    var coverPath by remember { mutableStateOf(model.getCoverPath(course)) }
+    var diffColor by remember { mutableLongStateOf(model.getDifficultyColor(course)) }
+    var title by remember { mutableStateOf(model.getTitle(course)) }
+    var artist by remember { mutableStateOf(model.getArtist(course)) }
+    var difficultyString by remember { mutableStateOf(model.getDifficultyString(course).uppercase()) }
 
     Row (
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
+            .height(72.dp)
     ) {
         AsyncImage(
             model = coverPath,
@@ -100,11 +241,13 @@ fun HomeTeamCourseItem(
                     ),
                     shape = RoundedCornerShape(10.dp)
                 )
+                .clip(RoundedCornerShape(size = 10.dp))
         )
 
         Column (
             modifier = Modifier
                 .padding(start = 8.dp)
+                .fillMaxHeight()
                 .weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween

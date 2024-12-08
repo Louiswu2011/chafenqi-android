@@ -189,7 +189,7 @@ fun HomeTeamPageMemberEntry(
             }
 
             MemberInfoRow(description = "加入时间：", value = member.joinAt.toDateString(context))
-            MemberInfoRow(description = "贡献点数：", value = "${member.activityPoints}")
+            MemberInfoRow(description = "贡献点数：", value = "${member.activityPoints}P")
             MemberInfoRow(description = "最后游玩时间：", value = member.lastActivityAt.toDateString(context))
         }
     }

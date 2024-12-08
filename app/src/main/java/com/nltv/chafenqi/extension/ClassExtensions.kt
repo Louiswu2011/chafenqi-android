@@ -203,27 +203,28 @@ fun UserMaimaiBestScoreEntry.associatedMusicEntry(): MaimaiMusicEntry {
         if (musicList.isNotEmpty()) {
             musicList.first { it.musicId == musicId }
         } else {
-            Log.e("我有意见", "无法匹配歌曲：${this.musicId}")
+            Log.e("UserMaimaiBestScoreEntry", "无法匹配歌曲：${this.musicId}")
             MaimaiMusicEntry()
         }
     } catch (e: Exception) {
-        Log.e("我有意见", "找不到这首歌：${this.musicId}")
+        Log.e("UserMaimaiBestScoreEntry", "找不到这首歌：${this.musicId}, $e")
         MaimaiMusicEntry()
     }
 }
 
 fun UserMaimaiRecentScoreEntry.associatedMusicEntry(): MaimaiMusicEntry {
     return try {
-        if (CFQUser.Maimai.best.isNotEmpty() && CFQPersistentData.Maimai.musicList.isNotEmpty()) {
-            CFQUser.Maimai.best.first {
+        val musicList = CFQPersistentData.Maimai.musicList
+        if (CFQUser.Maimai.best.isNotEmpty() && musicList.isNotEmpty()) {
+            CFQUser.Maimai.best.firstOrNull {
                 it.musicId == musicId
-            }.associatedMusicEntry
+            }?.associatedMusicEntry ?: musicList.first { it.musicId == musicId }
         } else {
-            Log.e("我有意见", "无法匹配歌曲：${this.musicId}")
+            Log.e("UserMaimaiRecentScoreEntry", "无法匹配歌曲：${this.musicId}")
             MaimaiMusicEntry()
         }
     } catch (e: Exception) {
-        Log.e("我有意见", "找不到这首歌：${this.musicId}")
+        Log.e("UserMaimaiRecentScoreEntry", "找不到这首歌：${this.musicId}, $e")
         MaimaiMusicEntry()
     }
 }

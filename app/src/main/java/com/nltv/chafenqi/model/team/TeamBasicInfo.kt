@@ -1,8 +1,13 @@
 package com.nltv.chafenqi.model.team
 
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.daysUntil
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import kotlin.math.absoluteValue
 
 @Serializable
 data class TeamBasicInfo(
@@ -35,9 +40,9 @@ data class TeamBasicInfo(
             promotable = true,
             lastMonthActivityPoints = 1000,
             currentActivityPoints = 2000,
-            courseTrack1String = "2339,3",
-            courseTrack2String = "2240,3",
-            courseTrack3String = "618,3",
+            courseTrack1String = "834,4",
+            courseTrack2String = "799,4",
+            courseTrack3String = "11663,4",
             courseHealth = 100,
             courseLastModifiedAt = 1655975168,
             pinnedMessageId = null,
@@ -79,4 +84,10 @@ data class TeamBasicInfo(
     @Transient val courseTrack1 = CourseTrack(courseTrack1String)
     @Transient val courseTrack2 = CourseTrack(courseTrack2String)
     @Transient val courseTrack3 = CourseTrack(courseTrack3String)
+
+    @Transient val activityDays =
+        Instant
+            .fromEpochSeconds(createdAt)
+            .daysUntil(other = Clock.System.now(), timeZone = TimeZone.currentSystemDefault())
+            .absoluteValue
 }
