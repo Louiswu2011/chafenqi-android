@@ -44,6 +44,7 @@ import com.nltv.chafenqi.view.home.log.LogDetailPage
 import com.nltv.chafenqi.view.home.rating.HomeRatingPage
 import com.nltv.chafenqi.view.home.recent.HomeRecentPage
 import com.nltv.chafenqi.view.home.recent.RecentDetailPage
+import com.nltv.chafenqi.view.home.team.HomeTeamIntroductionPage
 import com.nltv.chafenqi.view.home.team.HomeTeamPage
 import com.nltv.chafenqi.view.info.InfoPage
 import com.nltv.chafenqi.view.info.chunithm.InfoChunithmCharacterPage
@@ -203,6 +204,7 @@ fun LogonPage(navController: NavHostController) {
             }
 
             composable(HomeNavItem.Home.route + "/team") { HomeTeamPage(navController) }
+            composable(HomeNavItem.Home.route + "/team/introduction") { HomeTeamIntroductionPage(navController) }
 
             composable(HomeNavItem.Home.route + "/log") { HomeLogPage(navController) }
             composable(HomeNavItem.Home.route + "/log/maimai/{index}") {

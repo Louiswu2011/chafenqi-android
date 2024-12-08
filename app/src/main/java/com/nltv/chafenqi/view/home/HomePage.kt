@@ -165,6 +165,11 @@ fun HomePage(navController: NavController) {
                             ) {
                                 Text("Team")
                             }
+                            Button (
+                                onClick = { navController.navigate(HomeNavItem.Home.route + "/team/introduction") },
+                            ) {
+                                Text("Team Intro")
+                            }
 
                             homeArrangement.split("|").forEach { item ->
                                 when (item) {
