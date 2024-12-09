@@ -4,11 +4,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.automirrored.outlined.Chat
 import androidx.compose.material.icons.filled.Ballot
+import androidx.compose.material.icons.filled.GroupAdd
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Ballot
+import androidx.compose.material.icons.outlined.GroupAdd
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.People
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
@@ -36,6 +40,7 @@ import kotlinx.coroutines.launch
 
 data class HomeTeamPageUiState(
     val team: TeamInfo = TeamInfo.sample,
+    val searchResult: List<TeamBasicInfo>? = null
 )
 
 class HomeTeamPageViewModel : ViewModel() {
@@ -121,6 +126,19 @@ class HomeTeamPageViewModel : ViewModel() {
             title = "留言板",
             icon = Icons.AutoMirrored.Outlined.Chat,
             iconSelected = Icons.AutoMirrored.Filled.Chat
+        )
+    )
+
+    val introTabs = listOf(
+        HomeTeamPageTab(
+            title = "加入团队",
+            icon = Icons.Outlined.Search,
+            iconSelected = Icons.Filled.Search
+        ),
+        HomeTeamPageTab(
+            title = "创建团队",
+            icon = Icons.Outlined.GroupAdd,
+            iconSelected = Icons.Filled.GroupAdd
         )
     )
 }

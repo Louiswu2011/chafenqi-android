@@ -93,6 +93,8 @@ val MAIMAI_MISS_JUDGE_TYPE = listOf(
     "Great", "Good", "Miss"
 )
 
+const val TEAM_CODE_LENGTH = 8
+
 fun randomColor(): Color = Color(
     red = Random.nextInt(0..255),
     blue = Random.nextInt(0..255),
