@@ -335,3 +335,9 @@ fun Modifier.conditional(condition: Boolean, modifier: Modifier.() -> Modifier):
         this
     }
 }
+
+fun Int.toGameTypeString() = when (this) {
+    0 -> "chunithm"
+    1 -> "maimai"
+    else -> throw IllegalArgumentException("Invalid game type: $this")
+}
