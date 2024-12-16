@@ -17,8 +17,10 @@ import io.ktor.client.request.request
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
+import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import java.util.concurrent.TimeUnit
@@ -53,7 +55,8 @@ object CFQTeamServer {
         queries: Map<String, String>? = null,
         token: String? = null,
     ): HttpResponse {
-        val response = client.request("${CFQServer.defaultPath}/api/team/$path") {
+        val url = "${CFQServer.defaultPath}/api/team/$path"
+        val response = client.request(url) {
             this.method = method
             token?.also {
                 this.headers.append("Authorization", "Bearer $it")
@@ -66,11 +69,12 @@ object CFQTeamServer {
                 }
             }
             payload?.also {
+                contentType(ContentType.Application.Json)
                 setBody(it)
             }
         }
 
-        Log.d("CFQTeamServer", "Response from $path:")
+        Log.d("CFQTeamServer", "Response from $url:")
         Log.d("CFQTeamServer", "Response status: ${response.status}")
         Log.d("CFQTeamServer", "Response headers: ${response.headers}")
         Log.d("CFQTeamServer", "Response body: ${response.bodyAsText()}")
@@ -111,16 +115,15 @@ object CFQTeamServer {
 
     suspend fun fetchTeamInfo(authToken: String, game: Int, teamId: Int): TeamInfo? {
         try {
-            val response = fetchFromTeam(
+            val response = fetchFromServer(
                 method = HttpMethod.Get,
-                path = "",
+                path = "${game.toGameTypeString()}/$teamId",
                 token = authToken,
-                teamId = teamId,
-                game = game,
             )
-            return decoder.decodeFromString(response.bodyAsText())
+            val json = response.bodyAsText()
+            return decoder.decodeFromString<TeamInfo>(json)
         } catch (e: Exception) {
-            Log.e("CFQTeamServer", "Failed to fetch team info: ${e.localizedMessage}")
+            Log.e("CFQTeamServer", "Failed to fetch team info: $e")
             return null
         }
     }
@@ -129,7 +132,7 @@ object CFQTeamServer {
         try {
             val response = fetchFromServer(
                 method = HttpMethod.Post,
-                path = "create",
+                path = "${payload.game.toGameTypeString()}/create",
                 payload = payload,
                 token = authToken,
             )
@@ -144,7 +147,7 @@ object CFQTeamServer {
         try {
             val response = fetchFromTeam(
                 method = HttpMethod.Post,
-                path = "apply/$teamId",
+                path = "apply",
                 payload = message,
                 token = authToken,
                 teamId = teamId,

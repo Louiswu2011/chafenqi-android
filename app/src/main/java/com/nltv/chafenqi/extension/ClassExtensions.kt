@@ -341,3 +341,24 @@ fun Int.toGameTypeString() = when (this) {
     1 -> "maimai"
     else -> throw IllegalArgumentException("Invalid game type: $this")
 }
+
+fun String.toHalfWidth(): String {
+    val builder = StringBuilder()
+    for (char in this) {
+        val code = char.code
+        when (code) {
+            in 65281..65374 -> {
+                // Full-width ASCII variants
+                builder.append((code - 65248).toChar())
+            }
+            12288 -> {
+                // Full-width space
+                builder.append(' ')
+            }
+            else -> {
+                builder.append(char)
+            }
+        }
+    }
+    return builder.toString()
+}

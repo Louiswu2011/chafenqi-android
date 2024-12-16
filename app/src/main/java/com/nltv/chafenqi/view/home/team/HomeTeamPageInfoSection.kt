@@ -44,7 +44,9 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import com.nltv.chafenqi.extension.toDateString
+import com.nltv.chafenqi.extension.toHalfWidth
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -54,25 +56,12 @@ fun HomeTeamPageInfoSection(
 ) {
     val model: HomeTeamPageViewModel = viewModel()
     val state by model.uiState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
 
     val scope = rememberCoroutineScope()
     val clipboardManager = LocalClipboardManager.current
 
     val leader by remember {
         mutableStateOf(state.team.info.leaderUserId.let { id -> state.team.members.firstOrNull { it.userId == id } })
-    }
-
-    @Composable
-    fun InfoRow(title: String, value: String) {
-        Row (
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(text = title)
-            Text(text = value, fontWeight = FontWeight.Bold)
-        }
     }
 
     @Composable
@@ -106,7 +95,7 @@ fun HomeTeamPageInfoSection(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Icon(icon, contentDescription = title)
-                    Text(text = value, fontWeight = FontWeight.Bold)
+                    Text(text = value, fontWeight = FontWeight.Bold, overflow = TextOverflow.Ellipsis, maxLines = 1)
                 }
 
                 AnimatedVisibility(expanded) {
@@ -154,7 +143,7 @@ fun HomeTeamPageInfoSection(
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             InfoCard(title = "本月积分", icon = Icons.Default.Leaderboard, value = "${state.team.info.currentActivityPoints}P")
-            InfoCard(title = "队长", icon = Icons.Default.ManageAccounts, value = leader?.nickname ?: "")
+            InfoCard(title = "队长", icon = Icons.Default.ManageAccounts, value = leader?.nickname?.toHalfWidth() ?: "")
             InfoCard(title = "团队人数", icon = Icons.Default.People, value = state.team.members.size.toString() + "人")
         }
 

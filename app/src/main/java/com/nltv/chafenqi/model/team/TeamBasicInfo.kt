@@ -81,9 +81,9 @@ data class TeamBasicInfo(
         )
     }
 
-    @Transient val courseTrack1 = CourseTrack(courseTrack1String)
-    @Transient val courseTrack2 = CourseTrack(courseTrack2String)
-    @Transient val courseTrack3 = CourseTrack(courseTrack3String)
+    @Transient val courseTrack1: CourseTrack? = if (courseTrack1String.isEmpty()) null else CourseTrack(courseTrack1String)
+    @Transient val courseTrack2: CourseTrack? = if (courseTrack2String.isEmpty()) null else CourseTrack(courseTrack2String)
+    @Transient val courseTrack3: CourseTrack? = if (courseTrack3String.isEmpty()) null else CourseTrack(courseTrack3String)
 
     @Transient val activityDays =
         Instant

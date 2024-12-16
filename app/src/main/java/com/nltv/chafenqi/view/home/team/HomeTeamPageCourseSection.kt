@@ -48,63 +48,84 @@ fun HomeTeamPageCourseSection() {
     val model: HomeTeamPageViewModel = viewModel()
     val state by model.uiState.collectAsStateWithLifecycle()
 
-    LazyColumn (
-        modifier = Modifier.fillMaxSize()
-            .padding(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        item {
-            Column (
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Row (
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(text = "当前组曲", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
-                }
-
-                HomeTeamCourseItem(1, state.team.info.courseTrack1)
-                HomeTeamCourseItem(2, state.team.info.courseTrack2)
-                HomeTeamCourseItem(3, state.team.info.courseTrack3)
-
-                Row (
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Row (
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        Text("游玩人数：")
-                        Text("${state.team.courseRecords.size}", fontWeight = FontWeight.Bold)
-                    }
-
-                    Row (
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        Text("通过人数：")
-                        Text("${state.team.courseRecords.filter { it.cleared }.size}", fontWeight = FontWeight.Bold)
-                    }
-
-                }
-
-                HorizontalDivider()
-            }
+    if (
+        state.team.info.courseTrack1 == null &&
+        state.team.info.courseTrack2 == null &&
+        state.team.info.courseTrack3 == null
+        ) {
+        Column (
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = "队长暂未设定组曲", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
         }
+    } else {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize()
+                .padding(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            item {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "当前组曲",
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
 
-        items (
-            count = state.team.courseRecords.size,
-            key = { state.team.courseRecords[it].id },
-        ) { index ->
-            HomeTeamCourseRecordCard(
-                entry = state.team.courseRecords[index],
-                rank = 1,
-            )
+                    HomeTeamCourseItem(1, state.team.info.courseTrack1!!)
+                    HomeTeamCourseItem(2, state.team.info.courseTrack2!!)
+                    HomeTeamCourseItem(3, state.team.info.courseTrack3!!)
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Text("游玩人数：")
+                            Text("${state.team.courseRecords.size}", fontWeight = FontWeight.Bold)
+                        }
+
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Text("通过人数：")
+                            Text(
+                                "${state.team.courseRecords.filter { it.cleared }.size}",
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+
+                    }
+
+                    HorizontalDivider()
+                }
+            }
+
+            items(
+                count = state.team.courseRecords.size,
+                key = { state.team.courseRecords[it].id },
+            ) { index ->
+                HomeTeamCourseRecordCard(
+                    entry = state.team.courseRecords[index],
+                    rank = 1,
+                )
+            }
         }
     }
 

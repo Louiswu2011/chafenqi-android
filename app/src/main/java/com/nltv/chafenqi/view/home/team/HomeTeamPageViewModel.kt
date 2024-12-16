@@ -56,6 +56,7 @@ class HomeTeamPageViewModel : ViewModel() {
     val uiState = _uiState.asStateFlow()
 
     val mode = CFQUser.mode
+    val token = CFQUser.token
 
     fun refresh() {
         viewModelScope.launch(Dispatchers.IO) {

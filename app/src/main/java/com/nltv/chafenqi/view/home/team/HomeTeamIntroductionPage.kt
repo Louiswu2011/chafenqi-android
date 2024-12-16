@@ -39,6 +39,8 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -56,8 +58,10 @@ import androidx.navigation.NavController
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -73,6 +77,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nltv.chafenqi.extension.TEAM_CODE_LENGTH
 import com.nltv.chafenqi.extension.TEAM_NAME_LENGTH
 import com.nltv.chafenqi.extension.TEAM_REMARKS_LENGTH
+import com.nltv.chafenqi.model.team.TeamCreatePayload
+import com.nltv.chafenqi.networking.CFQTeamServer
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,6 +89,7 @@ fun HomeTeamIntroductionPage(navController: NavController) {
 
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val pagerState = rememberPagerState { model.introTabs.size }
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(selectedTabIndex) {
         pagerState.animateScrollToPage(selectedTabIndex)
@@ -108,7 +117,8 @@ fun HomeTeamIntroductionPage(navController: NavController) {
                     }
                 },
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { paddingValues ->
         Column (
             modifier = Modifier
@@ -139,7 +149,7 @@ fun HomeTeamIntroductionPage(navController: NavController) {
             ) { index ->
                 when (index) {
                     0 -> { HomeTeamIntroductionPageSearchSection() }
-                    1 -> { HomeTeamIntroductionPageCreateSection() }
+                    1 -> { HomeTeamIntroductionPageCreateSection(snackbarHostState) }
                 }
             }
         }
@@ -222,8 +232,9 @@ fun HomeTeamIntroductionPageSearchSection() {
 }
 
 @Composable
-fun HomeTeamIntroductionPageCreateSection() {
+fun HomeTeamIntroductionPageCreateSection(snackbarHostState: SnackbarHostState) {
     val model: HomeTeamPageViewModel = viewModel()
+    val scope = rememberCoroutineScope()
 
     var shouldShowForm by remember { mutableStateOf(false) }
     var teamName by remember { mutableStateOf("") }
@@ -416,7 +427,25 @@ fun HomeTeamIntroductionPageCreateSection() {
                 }
 
                 Button(
-                    onClick = {},
+                    onClick = {
+                        scope.launch(Dispatchers.IO) {
+                            val errorText = CFQTeamServer.createTeam(
+                                authToken = model.token,
+                                payload = TeamCreatePayload(
+                                    game = model.mode,
+                                    displayName = teamName,
+                                    remarks = teamRemarks,
+                                    promotable = promotable
+                                )
+                            )
+                            if (errorText.isNotEmpty()) {
+                                snackbarHostState.showSnackbar("创建团队失败: $errorText")
+                                return@launch
+                            }
+
+                            model.refresh()
+                        }
+                    },
                     shape = MaterialTheme.shapes.small,
                     enabled = teamName.isNotBlank() && teamRemarks.isNotBlank() && agreedToTerms,
                     modifier = Modifier.weight(1f)
