@@ -4,6 +4,7 @@ import android.util.Log
 import com.nltv.chafenqi.extension.toGameTypeString
 import com.nltv.chafenqi.model.team.TeamBulletinBoardEntry
 import com.nltv.chafenqi.model.team.TeamCreatePayload
+import com.nltv.chafenqi.model.team.TeamInfo
 import com.nltv.chafenqi.model.team.TeamUpdateCoursePayload
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
@@ -93,17 +94,33 @@ object CFQTeamServer {
         token = token,
     )
 
-    suspend fun fetchCurrentTeam(authToken: String): Int? {
+    suspend fun fetchCurrentTeam(authToken: String, game: Int): Int? {
         try {
             val response = fetchFromServer(
                 method = HttpMethod.Get,
-                path = "current",
+                path = "${game.toGameTypeString()}/current",
                 token = authToken,
             )
 
             return response.bodyAsText().toIntOrNull()
         } catch (e: Exception) {
             Log.e("CFQTeamServer", "Failed to fetch current team: ${e.localizedMessage}")
+            return null
+        }
+    }
+
+    suspend fun fetchTeamInfo(authToken: String, game: Int, teamId: Int): TeamInfo? {
+        try {
+            val response = fetchFromTeam(
+                method = HttpMethod.Get,
+                path = "",
+                token = authToken,
+                teamId = teamId,
+                game = game,
+            )
+            return decoder.decodeFromString(response.bodyAsText())
+        } catch (e: Exception) {
+            Log.e("CFQTeamServer", "Failed to fetch team info: ${e.localizedMessage}")
             return null
         }
     }

@@ -1,6 +1,9 @@
 package com.nltv.chafenqi.extension
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import kotlin.random.Random
 import kotlin.random.nextInt
 
@@ -94,6 +97,8 @@ val MAIMAI_MISS_JUDGE_TYPE = listOf(
 )
 
 const val TEAM_CODE_LENGTH = 8
+const val TEAM_NAME_LENGTH = 24
+const val TEAM_REMARKS_LENGTH = 128
 
 fun randomColor(): Color = Color(
     red = Random.nextInt(0..255),

@@ -1,6 +1,7 @@
 package com.nltv.chafenqi.view.home.team
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
@@ -86,6 +87,27 @@ import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
+
+@Composable
+fun HomeTeamLandingPage(navController: NavController) {
+    val model: HomeTeamPageViewModel = viewModel()
+    val state by model.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        model.refresh()
+    }
+
+    Crossfade(targetState = state.currentTeamId, label = "Team landing page cross fade") {
+        when (it) {
+            null -> {
+                HomeTeamIntroductionPage(navController)
+            }
+            else -> {
+                HomeTeamPage(navController)
+            }
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

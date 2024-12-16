@@ -26,6 +26,7 @@ import com.nltv.chafenqi.model.team.TeamCourseRecord
 import com.nltv.chafenqi.model.team.TeamInfo
 import com.nltv.chafenqi.model.team.TeamMember
 import com.nltv.chafenqi.model.team.TeamPendingMember
+import com.nltv.chafenqi.networking.CFQTeamServer
 import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
@@ -39,6 +40,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class HomeTeamPageUiState(
+    val currentTeamId: Int? = null,
     val team: TeamInfo = TeamInfo.sample,
     val searchResult: List<TeamBasicInfo>? = null
 )
@@ -57,9 +59,30 @@ class HomeTeamPageViewModel : ViewModel() {
 
     fun refresh() {
         viewModelScope.launch(Dispatchers.IO) {
+            val currentTeam = CFQTeamServer.fetchCurrentTeam(CFQUser.token, mode)
+            if (currentTeam == null) {
+                _uiState.update {
+                    it.copy(
+                        currentTeamId = null
+                    )
+                }
+                return@launch
+            }
+
+            val teamInfo = CFQTeamServer.fetchTeamInfo(CFQUser.token, mode, currentTeam)
+            if (teamInfo == null) {
+                _uiState.update {
+                    it.copy(
+                        currentTeamId = null
+                    )
+                }
+                return@launch
+            }
+
             _uiState.update {
                 it.copy(
-                    team = TeamInfo.sample
+                    currentTeamId = currentTeam,
+                    team = teamInfo
                 )
             }
         }
