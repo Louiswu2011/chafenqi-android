@@ -169,6 +169,7 @@ fun HomeTeamIntroductionPageSearchSection() {
                 }
             },
             label = { Text(text = "团队代码") },
+            placeholder = { Text(text = "输入8位团队代码来搜索团队") },
             leadingIcon = {
                 Icon(Icons.Filled.Search, contentDescription = "搜索")
             },
@@ -212,7 +213,7 @@ fun HomeTeamIntroductionPageSearchSection() {
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(text = "输入团队代码来搜索想加入的团队...")
+                        Text(text = "")
                     }
                 }
                 false -> {}
