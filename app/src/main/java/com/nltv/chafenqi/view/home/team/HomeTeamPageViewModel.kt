@@ -40,7 +40,8 @@ data class HomeTeamPageUiState(
     val currentTeamId: Int? = null,
     val team: TeamInfo = TeamInfo.sample,
     val isTeamAdmin: Boolean = false,
-    val searchResult: List<TeamBasicInfo>? = null
+    val searchResult: List<TeamBasicInfo>? = null,
+    val isLoading: Boolean = true,
 )
 
 class HomeTeamPageViewModel : ViewModel() {
@@ -59,11 +60,18 @@ class HomeTeamPageViewModel : ViewModel() {
 
     fun refresh() {
         viewModelScope.launch(Dispatchers.IO) {
+            _uiState.update {
+                it.copy(
+                    isLoading = true
+                )
+            }
+
             val currentTeam = CFQTeamServer.fetchCurrentTeam(CFQUser.token, mode)
             if (currentTeam == null) {
                 _uiState.update {
                     it.copy(
-                        currentTeamId = null
+                        currentTeamId = null,
+                        isLoading = false
                     )
                 }
                 return@launch
@@ -73,7 +81,8 @@ class HomeTeamPageViewModel : ViewModel() {
             if (teamInfo == null) {
                 _uiState.update {
                     it.copy(
-                        currentTeamId = null
+                        currentTeamId = null,
+                        isLoading = false
                     )
                 }
                 return@launch
@@ -83,7 +92,8 @@ class HomeTeamPageViewModel : ViewModel() {
                 it.copy(
                     currentTeamId = currentTeam,
                     team = teamInfo,
-                    isTeamAdmin = teamInfo.info.leaderUserId == userId
+                    isTeamAdmin = teamInfo.info.leaderUserId == userId,
+                    isLoading = false
                 )
             }
         }
@@ -150,11 +160,6 @@ class HomeTeamPageViewModel : ViewModel() {
             title = "留言板",
             icon = Icons.AutoMirrored.Outlined.Chat,
             iconSelected = Icons.AutoMirrored.Filled.Chat
-        ),
-        HomeTeamPageTab(
-            title = "管理",
-            icon = Icons.Outlined.Settings,
-            iconSelected = Icons.Filled.Settings
         )
     )
 

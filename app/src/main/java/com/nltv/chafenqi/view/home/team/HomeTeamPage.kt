@@ -2,6 +2,7 @@ package com.nltv.chafenqi.view.home.team
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -15,6 +16,7 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -41,12 +43,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeTeamLandingPage(navController: NavController) {
     val model: HomeTeamPageViewModel = viewModel()
@@ -56,13 +60,50 @@ fun HomeTeamLandingPage(navController: NavController) {
         model.refresh()
     }
 
-    Crossfade(targetState = state.currentTeamId, label = "Team landing page cross fade") {
+    Crossfade(targetState = state.isLoading, label = "Team loading cross fade") {
         when (it) {
-            null -> {
-                HomeTeamIntroductionPage(navController)
+            true -> {
+                Scaffold (
+                    topBar = {
+                        CenterAlignedTopAppBar(
+                            title = { Text(text = "团队") },
+                            scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
+                            colors = TopAppBarDefaults.topAppBarColors(
+                                containerColor = MaterialTheme.colorScheme.surface,
+                                titleContentColor = MaterialTheme.colorScheme.onSurface
+                            ),
+                            navigationIcon = {
+                                IconButton(onClick = { navController.navigateUp() }) {
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                        contentDescription = "返回上一级"
+                                    )
+                                }
+                            },
+                        )
+                    },
+                ) { paddingValues ->
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+
             }
-            else -> {
-                HomeTeamPage(navController)
+            false -> {
+                when (state.currentTeamId) {
+                    null -> {
+                        HomeTeamIntroductionPage(navController)
+                    }
+                    else -> {
+                        HomeTeamPage(navController)
+                    }
+                }
             }
         }
     }
@@ -80,7 +121,7 @@ fun HomeTeamPage(navController: NavController) {
         mutableIntStateOf(0)
     }
     val pagerState = rememberPagerState {
-        if (state.isTeamAdmin) model.tabs.size else (model.tabs.size - 1)
+        model.tabs.size
     }
     LaunchedEffect(selectedTabIndex) {
         pagerState.animateScrollToPage(selectedTabIndex)
@@ -88,10 +129,6 @@ fun HomeTeamPage(navController: NavController) {
 
     LaunchedEffect(pagerState.targetPage) {
         selectedTabIndex = pagerState.targetPage
-    }
-
-    LaunchedEffect(Unit) {
-        model.refresh()
     }
 
     Scaffold(
