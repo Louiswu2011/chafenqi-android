@@ -14,8 +14,6 @@ import com.nltv.chafenqi.data.leaderboard.MaimaiFirstLeaderboardItem
 import com.nltv.chafenqi.data.leaderboard.MaimaiRatingLeaderboardItem
 import com.nltv.chafenqi.data.leaderboard.MaimaiTotalPlayedLeaderboardItem
 import com.nltv.chafenqi.data.leaderboard.MaimaiTotalScoreLeaderboardItem
-import com.nltv.chafenqi.extension.toGameTypeString
-import com.nltv.chafenqi.model.team.TeamCreatePayload
 import com.nltv.chafenqi.model.user.UserInfo
 import com.nltv.chafenqi.storage.user.MaimaiB50Info
 import com.nltv.chafenqi.util.AppAnnouncement

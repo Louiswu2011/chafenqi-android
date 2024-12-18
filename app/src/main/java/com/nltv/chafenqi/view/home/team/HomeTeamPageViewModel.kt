@@ -19,13 +19,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nltv.chafenqi.extension.toChunithmCoverPath
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
-import com.nltv.chafenqi.model.team.TeamActivity
 import com.nltv.chafenqi.model.team.TeamBasicInfo
-import com.nltv.chafenqi.model.team.TeamBulletinBoardEntry
-import com.nltv.chafenqi.model.team.TeamCourseRecord
 import com.nltv.chafenqi.model.team.TeamInfo
-import com.nltv.chafenqi.model.team.TeamMember
-import com.nltv.chafenqi.model.team.TeamPendingMember
 import com.nltv.chafenqi.networking.CFQTeamServer
 import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.user.CFQUser
@@ -42,6 +37,7 @@ import kotlinx.coroutines.launch
 data class HomeTeamPageUiState(
     val currentTeamId: Int? = null,
     val team: TeamInfo = TeamInfo.sample,
+    val isTeamAdmin: Boolean = false,
     val searchResult: List<TeamBasicInfo>? = null
 )
 
@@ -57,6 +53,7 @@ class HomeTeamPageViewModel : ViewModel() {
 
     val mode = CFQUser.mode
     val token = CFQUser.token
+    val userId = CFQUser.userId
 
     fun refresh() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -83,7 +80,8 @@ class HomeTeamPageViewModel : ViewModel() {
             _uiState.update {
                 it.copy(
                     currentTeamId = currentTeam,
-                    team = teamInfo
+                    team = teamInfo,
+                    isTeamAdmin = teamInfo.info.leaderUserId == userId
                 )
             }
         }

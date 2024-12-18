@@ -1,9 +1,6 @@
 package com.nltv.chafenqi.extension
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import kotlin.random.Random
 import kotlin.random.nextInt
 

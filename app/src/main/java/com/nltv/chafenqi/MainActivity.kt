@@ -44,9 +44,7 @@ import com.nltv.chafenqi.view.home.log.LogDetailPage
 import com.nltv.chafenqi.view.home.rating.HomeRatingPage
 import com.nltv.chafenqi.view.home.recent.HomeRecentPage
 import com.nltv.chafenqi.view.home.recent.RecentDetailPage
-import com.nltv.chafenqi.view.home.team.HomeTeamIntroductionPage
 import com.nltv.chafenqi.view.home.team.HomeTeamLandingPage
-import com.nltv.chafenqi.view.home.team.HomeTeamPage
 import com.nltv.chafenqi.view.info.InfoPage
 import com.nltv.chafenqi.view.info.chunithm.InfoChunithmCharacterPage
 import com.nltv.chafenqi.view.info.chunithm.InfoChunithmMapIconPage

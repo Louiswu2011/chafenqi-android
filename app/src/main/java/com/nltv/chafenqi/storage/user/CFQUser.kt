@@ -42,6 +42,7 @@ object CFQUser {
     var remoteOptions = CFQUserOptions()
 
     var token = ""
+    var userId = -1L
 
     var username = ""
     var isPremium = false
@@ -341,7 +342,10 @@ object CFQUser {
         token = authToken
         CFQUser.username = username
 
-        isPremium = (CFQServer.apiUserInfo(authToken)?.premiumUntil ?: 0L) >= Clock.System.now().epochSeconds
+        val userInfo = CFQServer.apiUserInfo(authToken)
+
+        isPremium = (userInfo?.premiumUntil ?: 0L) >= Clock.System.now().epochSeconds
+        userId = userInfo?.id ?: -1L
 
         this.remoteOptions.sync(authToken)
 
@@ -351,6 +355,7 @@ object CFQUser {
     fun clearProfile() {
         token = ""
         username = ""
+        userId = -1L
         isPremium = false
 
         remoteOptions = CFQUserOptions()
