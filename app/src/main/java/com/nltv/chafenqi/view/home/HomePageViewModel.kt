@@ -27,6 +27,7 @@ import com.nltv.chafenqi.data.rank.MaimaiFirstRank
 import com.nltv.chafenqi.data.rank.MaimaiRatingRank
 import com.nltv.chafenqi.data.rank.MaimaiTotalPlayedRank
 import com.nltv.chafenqi.data.rank.MaimaiTotalScoreRank
+import com.nltv.chafenqi.model.team.TeamInfo
 import com.nltv.chafenqi.model.user.chunithm.UserChunithmRatingListEntry
 import com.nltv.chafenqi.model.user.maimai.UserMaimaiBestScoreEntry
 import com.nltv.chafenqi.networking.CFQServer
@@ -98,6 +99,7 @@ data class HomePageUiState(
     val logLastPlayedAverageScore: String = "",
 
     val currentTeamId: Int? = null,
+    val team: TeamInfo? = null,
 )
 
 class HomePageViewModel : ViewModel() {
@@ -169,7 +171,8 @@ class HomePageViewModel : ViewModel() {
                             currentSelectedIndicatorIndex = 0,
                             canOpenMaimaiInfo = user.isPremium && !user.maimai.isExtraEmpty,
                             shouldShowRatingBar = user.maimai.aux.newBest.isNotEmpty() || user.maimai.aux.pastBest.isNotEmpty(),
-                            currentTeamId = currentTeamId
+                            currentTeamId = currentTeamId,
+                            team = if (currentTeamId != null) CFQTeamServer.fetchTeamInfo(user.token, user.mode, currentTeamId) else null,
                         )
                     }
 
@@ -196,7 +199,8 @@ class HomePageViewModel : ViewModel() {
                             currentSelectedIndicatorIndex = 0,
                             canOpenChunithmInfo = user.isPremium && !user.chunithm.isExtraEmpty,
                             shouldShowRatingBar = user.chunithm.aux.bestList.isNotEmpty(),
-                            currentTeamId = currentTeamId
+                            currentTeamId = currentTeamId,
+                            team = if (currentTeamId != null) CFQTeamServer.fetchTeamInfo(user.token, user.mode, currentTeamId) else null,
                         )
                     }
 

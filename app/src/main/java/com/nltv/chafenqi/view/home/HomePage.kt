@@ -153,18 +153,14 @@ fun HomePage(navController: NavController) {
                         Modifier
                             .padding(paddingValues)
                             .verticalScroll(scrollState),
-                        verticalArrangement = Arrangement.spacedBy(25.dp)
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         if ((model.user.mode == 1 && model.user.maimai.isBasicEmpty) || (model.user.mode == 0 && model.user.chunithm.isBasicEmpty)) {
                             EmptyDataPage()
                         } else {
                             HomePageNameplateSection(navController)
 
-                            Button (
-                                onClick = { navController.navigate(HomeNavItem.Home.route + "/team") },
-                            ) {
-                                Text("Team")
-                            }
+                            HomePageTeamSection(navController)
 
                             homeArrangement.split("|").forEach { item ->
                                 when (item) {
