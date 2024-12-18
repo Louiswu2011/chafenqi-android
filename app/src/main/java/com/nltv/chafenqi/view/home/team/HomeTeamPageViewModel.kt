@@ -8,11 +8,13 @@ import androidx.compose.material.icons.filled.GroupAdd
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Ballot
 import androidx.compose.material.icons.outlined.GroupAdd
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
@@ -148,6 +150,11 @@ class HomeTeamPageViewModel : ViewModel() {
             title = "留言板",
             icon = Icons.AutoMirrored.Outlined.Chat,
             iconSelected = Icons.AutoMirrored.Filled.Chat
+        ),
+        HomeTeamPageTab(
+            title = "管理",
+            icon = Icons.Outlined.Settings,
+            iconSelected = Icons.Filled.Settings
         )
     )
 

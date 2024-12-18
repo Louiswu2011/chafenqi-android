@@ -1,5 +1,6 @@
 package com.nltv.chafenqi.view.home.team
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,12 +12,15 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.AddComment
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -76,7 +80,7 @@ fun HomeTeamPage(navController: NavController) {
         mutableIntStateOf(0)
     }
     val pagerState = rememberPagerState {
-        model.tabs.size
+        if (state.isTeamAdmin) model.tabs.size else (model.tabs.size - 1)
     }
     LaunchedEffect(selectedTabIndex) {
         pagerState.animateScrollToPage(selectedTabIndex)
@@ -114,8 +118,22 @@ fun HomeTeamPage(navController: NavController) {
                             contentDescription = "More",
                         )
                         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                            if (state.isTeamAdmin) {
+                                DropdownMenuItem(
+                                    text = {
+                                        Text("修改团队信息...")
+                                    },
+                                    leadingIcon = { Icon(imageVector = Icons.Default.Settings, contentDescription = "修改团队信息...") },
+                                    onClick = {
+
+                                    }
+                                )
+                                HorizontalDivider()
+                            }
                             DropdownMenuItem(
-                                text = { Text("退出团队...") },
+                                text = { Text(
+                                    if (state.isTeamAdmin) "解散团队..." else "退出团队..."
+                                ) },
                                 colors = MenuDefaults.itemColors(
                                     textColor = MaterialTheme.colorScheme.error,
                                     leadingIconColor = MaterialTheme.colorScheme.error
@@ -130,12 +148,25 @@ fun HomeTeamPage(navController: NavController) {
             )
         },
         floatingActionButton = {
-            if (pagerState.currentPage == 3) {
-                ExtendedFloatingActionButton(
-                    text = { Text("发布留言") },
-                    icon = { Icon(Icons.Default.AddComment, contentDescription = "发布留言") },
-                    onClick = {}
-                )
+            AnimatedContent(pagerState.currentPage, label = "team FAB switching") {
+                when (it) {
+                    2 -> {
+                        if (state.isTeamAdmin) {
+                            ExtendedFloatingActionButton(
+                                text = { Text("配置组曲") },
+                                icon = { Icon(Icons.Default.Settings, contentDescription = "配置组曲") },
+                                onClick = {}
+                            )
+                        }
+                    }
+                    3 -> {
+                        ExtendedFloatingActionButton(
+                            text = { Text("发布留言") },
+                            icon = { Icon(Icons.Default.AddComment, contentDescription = "发布留言") },
+                            onClick = {}
+                        )
+                    }
+                }
             }
         },
         snackbarHost = {
@@ -170,10 +201,21 @@ fun HomeTeamPage(navController: NavController) {
                 modifier = Modifier.fillMaxSize()
             ) { index ->
                 when (index) {
-                    0 -> { HomeTeamPageMemberList() }
-                    1 -> { HomeTeamPageActivitySection() }
-                    2 -> { HomeTeamPageCourseSection() }
-                    3 -> { HomeTeamPageBulletinBoardSection() }
+                    0 -> {
+                        HomeTeamPageMemberList()
+                    }
+
+                    1 -> {
+                        HomeTeamPageActivitySection()
+                    }
+
+                    2 -> {
+                        HomeTeamPageCourseSection()
+                    }
+
+                    3 -> {
+                        HomeTeamPageBulletinBoardSection()
+                    }
                 }
             }
         }
