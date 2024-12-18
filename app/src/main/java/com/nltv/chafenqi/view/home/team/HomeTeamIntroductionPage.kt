@@ -391,7 +391,7 @@ fun HomeTeamIntroductionPageCreateSection(snackbarHostState: SnackbarHostState) 
                         onCheckedChange = { promotable = it }
                     )
 
-                    Text("使团队可被搜索（稍后可变更）")
+                    Text("使团队可被推荐和搜索（稍后可变更）")
                 }
 
                 Row (
