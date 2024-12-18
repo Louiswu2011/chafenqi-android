@@ -171,7 +171,7 @@ fun HomeTeamPage(navController: NavController) {
             ) { index ->
                 when (index) {
                     0 -> { HomeTeamPageMemberList() }
-                    1 -> {}
+                    1 -> { HomeTeamPageActivitySection() }
                     2 -> { HomeTeamPageCourseSection() }
                     3 -> { HomeTeamPageBulletinBoardSection() }
                 }

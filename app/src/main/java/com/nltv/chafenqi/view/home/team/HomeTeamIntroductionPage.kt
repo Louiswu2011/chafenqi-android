@@ -47,7 +47,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -71,6 +74,7 @@ import com.nltv.chafenqi.model.team.TeamCreatePayload
 import com.nltv.chafenqi.networking.CFQTeamServer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.contracts.contract
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,7 +82,7 @@ fun HomeTeamIntroductionPage(navController: NavController) {
     val model: HomeTeamPageViewModel = viewModel()
 
     var selectedTabIndex by remember { mutableIntStateOf(0) }
-    val pagerState = rememberPagerState { model.introTabs.size }
+    val pagerState = rememberPagerState { 2 }
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(selectedTabIndex) {
@@ -151,6 +155,8 @@ fun HomeTeamIntroductionPage(navController: NavController) {
 fun HomeTeamIntroductionPageSearchSection() {
     val model: HomeTeamPageViewModel = viewModel()
     val state by model.uiState.collectAsStateWithLifecycle()
+    val focus = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
 
     var teamCodeInput by remember { mutableStateOf("") }
 
@@ -175,7 +181,10 @@ fun HomeTeamIntroductionPageSearchSection() {
             },
             trailingIcon = {
                 IconButton(
-                    onClick = { teamCodeInput = "" },
+                    onClick = {
+                        teamCodeInput = ""
+                        focusManager.clearFocus()
+                    },
                     colors = IconButtonDefaults.iconButtonColors(
                         contentColor = MaterialTheme.colorScheme.secondary
                     )
@@ -202,7 +211,9 @@ fun HomeTeamIntroductionPageSearchSection() {
                     textAlign = TextAlign.End
                 )
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(focus)
         )
 
         Crossfade(teamCodeInput.isEmpty(), label = "Search result fade") {
@@ -330,7 +341,8 @@ fun HomeTeamIntroductionPageCreateSection(snackbarHostState: SnackbarHostState) 
         }
 
         Column (
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .padding(8.dp),
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.SpaceBetween
@@ -456,7 +468,7 @@ fun HomeTeamIntroductionPageCreateSection(snackbarHostState: SnackbarHostState) 
                         }
                     },
                     shape = MaterialTheme.shapes.small,
-                    enabled = teamName.isNotBlank() && teamRemarks.isNotBlank() && agreedToTerms,
+                    enabled = teamName.isNotBlank() && teamRemarks.isNotBlank() && teamStyle.isNotBlank() && agreedToTerms,
                     modifier = Modifier.weight(1f)
                 ) {
                     Text("创建")
@@ -471,5 +483,4 @@ fun HomeTeamIntroductionPageCreateSection(snackbarHostState: SnackbarHostState) 
             false -> TeamIntroduction()
         }
     }
-
 }
