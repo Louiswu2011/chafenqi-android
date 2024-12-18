@@ -326,6 +326,27 @@ object CFQTeamServer {
         }
     }
 
+    suspend fun adminUpdateTeamStyle(authToken: String, game: Int, teamId: Int, newStyle: String): Boolean {
+        try {
+            val response = fetchFromTeam(
+                method = HttpMethod.Post,
+                path = "admin/update/style",
+                token = authToken,
+                teamId = teamId,
+                game = game,
+                payload = """
+                    {
+                        "style": "$newStyle"
+                    },
+                """.trimIndent(),
+            )
+            return response.status == HttpStatusCode.OK
+        } catch (e: Exception) {
+            Log.e("CFQTeamServer", "Failed to update team style: ${e.localizedMessage}")
+            return false
+        }
+    }
+
     suspend fun adminUpdateTeamRemarks(authToken: String, game: Int, teamId: Int, newRemarks: String): Boolean {
         try {
             val response = fetchFromTeam(

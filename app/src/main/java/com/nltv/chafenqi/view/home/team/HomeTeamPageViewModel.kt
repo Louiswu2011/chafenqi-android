@@ -38,7 +38,7 @@ import kotlinx.coroutines.launch
 
 data class HomeTeamPageUiState(
     val currentTeamId: Int? = null,
-    val team: TeamInfo = TeamInfo.sample,
+    val team: TeamInfo = TeamInfo.empty,
     val isTeamAdmin: Boolean = false,
     val searchResult: List<TeamBasicInfo>? = null,
     val isLoading: Boolean = true,

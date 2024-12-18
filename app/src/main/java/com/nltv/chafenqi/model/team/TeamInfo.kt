@@ -20,5 +20,14 @@ data class TeamInfo(
             bulletinBoard = listOf(TeamBulletinBoardEntry.sample),
             courseRecords = listOf(TeamCourseRecord.sample)
         )
+
+        val empty = TeamInfo(
+            info = TeamBasicInfo.empty,
+            members = emptyList(),
+            pendingMembers = emptyList(),
+            activities = emptyList(),
+            bulletinBoard = emptyList(),
+            courseRecords = emptyList()
+        )
     }
 }
