@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 data class TeamCreatePayload(
     val game: Int,
     val displayName: String,
+    val style: String,
     val remarks: String,
     val promotable: Boolean,
 )

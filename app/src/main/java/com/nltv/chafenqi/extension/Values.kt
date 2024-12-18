@@ -95,6 +95,7 @@ val MAIMAI_MISS_JUDGE_TYPE = listOf(
 
 const val TEAM_CODE_LENGTH = 8
 const val TEAM_NAME_LENGTH = 24
+const val TEAM_STYLE_LENGTH = 16
 const val TEAM_REMARKS_LENGTH = 128
 
 fun randomColor(): Color = Color(

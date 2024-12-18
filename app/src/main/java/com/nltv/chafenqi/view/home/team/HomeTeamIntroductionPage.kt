@@ -66,6 +66,7 @@ import androidx.navigation.NavController
 import com.nltv.chafenqi.extension.TEAM_CODE_LENGTH
 import com.nltv.chafenqi.extension.TEAM_NAME_LENGTH
 import com.nltv.chafenqi.extension.TEAM_REMARKS_LENGTH
+import com.nltv.chafenqi.extension.TEAM_STYLE_LENGTH
 import com.nltv.chafenqi.model.team.TeamCreatePayload
 import com.nltv.chafenqi.networking.CFQTeamServer
 import kotlinx.coroutines.Dispatchers
@@ -227,6 +228,7 @@ fun HomeTeamIntroductionPageCreateSection(snackbarHostState: SnackbarHostState) 
 
     var shouldShowForm by remember { mutableStateOf(false) }
     var teamName by remember { mutableStateOf("") }
+    var teamStyle by remember { mutableStateOf("") }
     var teamRemarks by remember { mutableStateOf("") }
     var agreedToTerms by remember { mutableStateOf(false) }
     var promotable by remember { mutableStateOf(true) }
@@ -353,6 +355,20 @@ fun HomeTeamIntroductionPageCreateSection(snackbarHostState: SnackbarHostState) 
                     modifier = Modifier.fillMaxWidth()
                 )
                 OutlinedTextField(
+                    value = teamStyle,
+                    onValueChange = { if (teamStyle.length <= TEAM_STYLE_LENGTH) teamStyle = it },
+                    label = { Text("团队方针") },
+                    supportingText = {
+                        Text(
+                            text = "${teamStyle.length} / $TEAM_STYLE_LENGTH",
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.End
+                        )
+                    },
+                    placeholder = { Text("例如：自由加入、活跃者优先等") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
                     value = teamRemarks,
                     onValueChange = { if (teamRemarks.length <= TEAM_REMARKS_LENGTH) teamRemarks = it },
                     label = { Text("团队介绍") },
@@ -402,7 +418,9 @@ fun HomeTeamIntroductionPageCreateSection(snackbarHostState: SnackbarHostState) 
                     onClick = {
                         teamName = ""
                         teamRemarks = ""
+                        teamStyle = ""
                         promotable = true
+                        agreedToTerms = false
                         shouldShowForm = false
                     },
                     shape = MaterialTheme.shapes.small,
@@ -423,6 +441,7 @@ fun HomeTeamIntroductionPageCreateSection(snackbarHostState: SnackbarHostState) 
                                 payload = TeamCreatePayload(
                                     game = model.mode,
                                     displayName = teamName,
+                                    style = teamStyle,
                                     remarks = teamRemarks,
                                     promotable = promotable
                                 )
