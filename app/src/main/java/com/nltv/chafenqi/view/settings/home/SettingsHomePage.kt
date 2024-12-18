@@ -7,6 +7,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -56,6 +57,9 @@ fun PreferenceRootScope.SettingsHomeGroup(navController: NavController) {
     val homeUseThemedColor by store.homeUseThemedColor.collectAsStateWithLifecycle(
         initialValue = true
     )
+    val homeShowTeamButton by store.homeShowTeamButton.collectAsStateWithLifecycle(
+        initialValue = true
+    )
 
     PreferenceList(
         value = homeDefaultGame,
@@ -89,6 +93,14 @@ fun PreferenceRootScope.SettingsHomeGroup(navController: NavController) {
         },
         title = { Text(text = "使用主题色") },
         subtitle = { Text(text = "使用当前游戏版本的主题色作为用户信息卡片的背景") }
+    )
+    PreferenceBool(
+        value = homeShowTeamButton,
+        onValueChange = { newValue ->
+            scope.launch { store.setHomeShowTeamButton(newValue) }
+        },
+        title = { Text(text = "显示团队按钮") },
+        subtitle = { Text(text = "在用户信息卡下方显示跳转到团队页面的按钮") }
     )
     PreferenceInputNumber(
         value = logDefaultPricePerRound,

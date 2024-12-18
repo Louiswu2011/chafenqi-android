@@ -73,6 +73,7 @@ fun HomePage(navController: NavController) {
     )
     val defaultGame by store.homeDefaultGame.collectAsStateWithLifecycle(initialValue = 1)
     val homeArrangement by store.homeArrangement.collectAsStateWithLifecycle(initialValue = "最近动态|Rating分析|排行榜|出勤记录")
+    val homeShowTeamButton by store.homeShowTeamButton.collectAsStateWithLifecycle(initialValue = true)
 
     val refreshState = rememberPullRefreshState(
         refreshing = userState.isRefreshing,
@@ -160,7 +161,9 @@ fun HomePage(navController: NavController) {
                         } else {
                             HomePageNameplateSection(navController)
 
-                            HomePageTeamSection(navController)
+                            if (homeShowTeamButton) {
+                                HomePageTeamSection(navController)
+                            }
 
                             homeArrangement.split("|").forEach { item ->
                                 when (item) {
