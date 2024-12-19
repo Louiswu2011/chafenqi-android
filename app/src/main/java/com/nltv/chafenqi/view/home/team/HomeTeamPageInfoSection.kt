@@ -121,12 +121,14 @@ fun HomeTeamPageInfoSection(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            InfoCard(title = "团队代码", icon = Icons.Default.Search, value = state.team.info.teamCode, onLongClick = {
-                scope.launch {
-                    clipboardManager.setText(AnnotatedString(text = state.team.info.teamCode))
-                    snackbarHostState.showSnackbar(
-                        message = "已复制到剪贴板",
-                    )
+            InfoCard(title = "团队代码", icon = Icons.Default.Search, value = if (state.team.info.promotable) state.team.info.teamCode else "已隐藏", onLongClick = {
+                if (state.team.info.promotable) {
+                    scope.launch {
+                        clipboardManager.setText(AnnotatedString(text = state.team.info.teamCode))
+                        snackbarHostState.showSnackbar(
+                            message = "已复制到剪贴板",
+                        )
+                    }
                 }
             })
             InfoCard(title = "活动天数", icon = Icons.Default.Timelapse, value = state.team.info.activityDays.toString() + "天"  )
