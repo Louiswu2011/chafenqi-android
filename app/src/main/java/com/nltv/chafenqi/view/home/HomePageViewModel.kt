@@ -180,18 +180,19 @@ class HomePageViewModel : ViewModel() {
                         currentState.copy(
                             mode = 0,
                             nickname = user.chunithm.info.lastOrNull()?.nickname ?: "",
-                            rating = String.format("%.2f", user.chunithm.info.lastOrNull()?.rating),
+                            rating = String.format(Locale.getDefault(), "%.2f", user.chunithm.info.lastOrNull()?.rating),
                             playCount = user.chunithm.info.lastOrNull()?.playCount.toString(),
                             nameplateUpdateTime = user.chunithm.aux.updateTime,
                             canNavigateToRecentList = user.chunithm.recent.isNotEmpty(),
                             canNavigateToRatingList = !user.chunithm.rating.isEmpty,
                             chuRecentLineup = user.chunithm.aux.recommendList.take(3),
                             chuMaxRating = String.format(
+                                Locale.getDefault(),
                                 "%.2f",
                                 user.chunithm.info.lastOrNull()?.maxRating
                             ),
-                            chuBestRating = String.format("%.2f", user.chunithm.aux.bestRating),
-                            chuRecentRating = String.format("%.2f", user.chunithm.aux.recentRating),
+                            chuBestRating = String.format(Locale.getDefault(), "%.2f", user.chunithm.aux.bestRating),
+                            chuRecentRating = String.format(Locale.getDefault(), "%.2f", user.chunithm.aux.recentRating),
                             chuIndicatorsCount = user.chunithm.aux.bestList.size,
                             chuBestRatingList = user.chunithm.aux.bestList,
                             indicatorHeights = MutableList(chuIndicatorsCount) { 20.dp },
