@@ -19,7 +19,7 @@ kotlin {
 
 android {
     namespace = "com.nltv.chafenqi"
-    compileSdk = 34
+    compileSdk = 35
 
     val versionFile = file("version.properties")
 
@@ -53,7 +53,7 @@ android {
         defaultConfig {
             applicationId = "com.nltv.chafenqi"
             minSdk = 28
-            targetSdk = 33
+            targetSdk = 35
             versionCode = versionProperties.getProperty("VERSION_MAJOR").toInt()
             versionName = "$mVersionName (${versionProperties.getProperty("VERSION_BUILD")})"
 
@@ -139,14 +139,14 @@ android {
     }
 }
 
-val ktorVersion = "2.3.12"
+val ktorVersion = "3.0.1"
 val composePreferences = "0.4.7"
 
 dependencies {
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.2")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.3")
 
-    implementation(platform("androidx.compose:compose-bom:2024.06.00"))
-    androidTestImplementation(platform("androidx.compose:compose-bom:2024.06.00"))
+    implementation(platform("androidx.compose:compose-bom:2024.12.01"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2024.12.01"))
 
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
@@ -157,7 +157,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
 
-    implementation("androidx.core:core-ktx:1.13.1")
+    implementation("androidx.core:core-ktx:1.15.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx")
     implementation("androidx.activity:activity-compose")
     testImplementation("junit:junit:4.13.2")
@@ -169,7 +169,7 @@ dependencies {
     implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
 
-    implementation("androidx.navigation:navigation-compose:2.8.0")
+    implementation("androidx.navigation:navigation-compose:2.8.5")
     implementation("io.ktor:ktor-client-logging:$ktorVersion")
     implementation("org.slf4j:slf4j-simple:2.0.13")
     implementation("io.coil-kt:coil-compose:2.6.0")
@@ -177,19 +177,19 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation("com.onesignal:OneSignal:5.1.15")
 
-    implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-crashlytics-ktx")
     implementation("com.google.firebase:firebase-perf-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
-    implementation("androidx.compose.material:material:1.7.1")
+    implementation("androidx.compose.material:material:1.7.6")
     implementation("io.github.alexzhirkevich:qrose:1.0.1")
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
     implementation("com.google.accompanist:accompanist-permissions:0.34.0")
     implementation("com.google.accompanist:accompanist-drawablepainter:0.35.1-alpha")
-    implementation("com.patrykandpatrick.vico:compose-m3:2.0.0-alpha.28")
+    implementation("com.patrykandpatrick.vico:compose-m3:2.0.0-beta.3")
 
     implementation("com.github.MFlisar.ComposePreferences:core:$composePreferences")
     implementation("com.github.MFlisar.ComposePreferences:screen-bool:$composePreferences")

@@ -19,6 +19,7 @@ import io.ktor.http.contentLength
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.core.isNotEmpty
 import io.ktor.utils.io.core.readBytes
+import io.ktor.utils.io.readRemaining
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,6 +27,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.io.readByteArray
 import java.io.File
 import java.nio.file.Files
 
@@ -67,8 +69,8 @@ class AppUpdaterViewModel : ViewModel() {
                     val contentLength = response.contentLength()?.toInt() ?: 0
                     while (!channel.isClosedForRead) {
                         val packet = channel.readRemaining(DEFAULT_BUFFER_SIZE.toLong())
-                        while (packet.isNotEmpty) {
-                            val bytes = packet.readBytes()
+                        while (!packet.exhausted()) {
+                            val bytes = packet.readByteArray()
                             apkFile.appendBytes(bytes)
                             _progress.update { _ ->
                                 offset / contentLength

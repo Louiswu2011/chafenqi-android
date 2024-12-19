@@ -53,13 +53,14 @@ import com.nltv.chafenqi.view.module.RatingBadge
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
 import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottomAxis
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStartAxis
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLine
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 import com.patrykandpatrick.vico.compose.common.fill
+import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
 import java.util.Locale
@@ -121,10 +122,10 @@ fun MusicRecordScoreChart() {
     CartesianChartHost(
         chart = rememberCartesianChart(
             rememberLineCartesianLayer(
-                axisValueOverrider = if (model.mode == 0) ChunithmAxisValueOverrider() else MaimaiAxisValueOverrider(),
+                rangeProvider = if (model.mode == 0) ChunithmAxisValueOverrider() else MaimaiAxisValueOverrider(),
                 pointSpacing = 50.dp,
                 lineProvider = LineCartesianLayer.LineProvider.series(
-                    rememberLine(
+                    LineCartesianLayer.rememberLine(
                         remember {
                             LineCartesianLayer.LineFill.double(
                                 topFill = fill(
@@ -138,7 +139,7 @@ fun MusicRecordScoreChart() {
                     )
                 )
             ),
-            startAxis = rememberStartAxis(
+            startAxis = VerticalAxis.rememberStart(
                 valueFormatter = { value, _, _ ->
                     if (model.mode == 0) {
                         String.format(Locale.getDefault(), "%.0f", value)
@@ -148,8 +149,8 @@ fun MusicRecordScoreChart() {
                 },
                 itemPlacer = VerticalAxis.ItemPlacer.count( { 10 } )
             ),
-            bottomAxis = rememberBottomAxis(
-                valueFormatter = { value, _, _ ->
+            bottomAxis = HorizontalAxis.rememberBottom(
+                valueFormatter = { _, value, _ ->
                     if (model.mode == 0) {
                         uiState.chuHistoryDateStringMap[value.toInt()] ?: ""
                     } else {
