@@ -74,7 +74,7 @@ object CFQTeamServer {
             }
         }
 
-        Log.d("CFQTeamServer", "Response from $url:")
+        Log.d("CFQTeamServer", "Response from ${method.value} $url:")
         Log.d("CFQTeamServer", "Response status: ${response.status}")
         Log.d("CFQTeamServer", "Response headers: ${response.headers}")
         Log.d("CFQTeamServer", "Response body: ${response.bodyAsText()}")
@@ -200,7 +200,7 @@ object CFQTeamServer {
                 payload = """
                     {
                         "message": "$message"
-                    },
+                    }
                 """.trimIndent(),
                 token = authToken,
                 teamId = teamId,

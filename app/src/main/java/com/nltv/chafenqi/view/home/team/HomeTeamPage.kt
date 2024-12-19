@@ -27,6 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -35,12 +36,14 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -49,6 +52,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.nltv.chafenqi.networking.CFQTeamServer
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -115,6 +120,7 @@ fun HomeTeamPage(navController: NavController) {
     val model: HomeTeamPageViewModel = viewModel()
     val state by model.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     var expanded by rememberSaveable { mutableStateOf(false) }
     var selectedTabIndex by rememberSaveable {
@@ -123,6 +129,10 @@ fun HomeTeamPage(navController: NavController) {
     val pagerState = rememberPagerState {
         model.tabs.size
     }
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
+
     LaunchedEffect(selectedTabIndex) {
         pagerState.animateScrollToPage(selectedTabIndex)
     }
@@ -130,6 +140,8 @@ fun HomeTeamPage(navController: NavController) {
     LaunchedEffect(pagerState.targetPage) {
         selectedTabIndex = pagerState.targetPage
     }
+
+    var showBulletinComposeSheet by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -200,7 +212,9 @@ fun HomeTeamPage(navController: NavController) {
                         ExtendedFloatingActionButton(
                             text = { Text("发布留言") },
                             icon = { Icon(Icons.Default.AddComment, contentDescription = "发布留言") },
-                            onClick = {}
+                            onClick = {
+                                showBulletinComposeSheet = true
+                            }
                         )
                     }
                 }
@@ -254,6 +268,25 @@ fun HomeTeamPage(navController: NavController) {
                         HomeTeamPageBulletinBoardSection()
                     }
                 }
+            }
+        }
+    }
+
+    if (showBulletinComposeSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { showBulletinComposeSheet = false },
+            sheetState = sheetState
+        ) {
+            BulletinComposeSheet (
+                snackbarHostState = snackbarHostState,
+                onDismiss = { showBulletinComposeSheet = false }
+            ) { content ->
+                CFQTeamServer.addTeamBulletinBoardEntry(
+                    authToken = model.token,
+                    game = model.mode,
+                    teamId = state.team.info.id,
+                    message = content
+                )
             }
         }
     }

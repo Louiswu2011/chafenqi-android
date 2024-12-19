@@ -57,6 +57,7 @@ class HomeTeamPageViewModel : ViewModel() {
     val mode = CFQUser.mode
     val token = CFQUser.token
     val userId = CFQUser.userId
+    val username = CFQUser.username
 
     fun refresh() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -94,6 +95,28 @@ class HomeTeamPageViewModel : ViewModel() {
                     team = teamInfo,
                     isTeamAdmin = teamInfo.info.leaderUserId == userId,
                     isLoading = false
+                )
+            }
+        }
+    }
+
+    fun updateBulletinBoard() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val currentTeam = CFQTeamServer.fetchCurrentTeam(CFQUser.token, mode)
+            if (currentTeam == null) return@launch
+
+            val entries = CFQTeamServer.getTeamBulletinBoard(
+                authToken = token,
+                game = mode,
+                teamId = currentTeam
+            )
+
+            if (entries == null) return@launch
+            _uiState.update {
+                it.copy(
+                    team = it.team.copy(
+                        bulletinBoard = entries
+                    )
                 )
             }
         }
