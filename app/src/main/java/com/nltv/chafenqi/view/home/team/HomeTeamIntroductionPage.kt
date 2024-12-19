@@ -49,6 +49,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.LinkAnnotation
@@ -66,6 +67,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.nltv.chafenqi.extension.TEAM_BULLETIN_MESSAGE_LENGTH
 import com.nltv.chafenqi.extension.TEAM_CODE_LENGTH
 import com.nltv.chafenqi.extension.TEAM_NAME_LENGTH
 import com.nltv.chafenqi.extension.TEAM_REMARKS_LENGTH
@@ -361,7 +363,8 @@ fun HomeTeamIntroductionPageCreateSection(snackbarHostState: SnackbarHostState) 
                         Text(
                             text = "${teamName.length} / $TEAM_NAME_LENGTH",
                             modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.End
+                            textAlign = TextAlign.End,
+                            color = if (teamName.length > TEAM_NAME_LENGTH) MaterialTheme.colorScheme.error else Color.Unspecified
                         )
                     },
                     singleLine = true,
@@ -375,7 +378,8 @@ fun HomeTeamIntroductionPageCreateSection(snackbarHostState: SnackbarHostState) 
                         Text(
                             text = "${teamStyle.length} / $TEAM_STYLE_LENGTH",
                             modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.End
+                            textAlign = TextAlign.End,
+                            color = if (teamStyle.length > TEAM_STYLE_LENGTH) MaterialTheme.colorScheme.error else Color.Unspecified
                         )
                     },
                     placeholder = { Text("例如：自由加入、活跃者优先等") },
@@ -389,7 +393,8 @@ fun HomeTeamIntroductionPageCreateSection(snackbarHostState: SnackbarHostState) 
                         Text(
                             text = "${teamRemarks.length} / $TEAM_REMARKS_LENGTH",
                             modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.End
+                            textAlign = TextAlign.End,
+                            color = if (teamRemarks.length > TEAM_REMARKS_LENGTH) MaterialTheme.colorScheme.error else Color.Unspecified
                         )
                     },
                     modifier = Modifier.fillMaxWidth()
