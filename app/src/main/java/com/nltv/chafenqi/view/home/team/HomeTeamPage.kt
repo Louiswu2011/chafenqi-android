@@ -14,6 +14,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.AddComment
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -36,6 +37,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -54,6 +56,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.nltv.chafenqi.networking.CFQTeamServer
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -133,7 +136,6 @@ fun HomeTeamPage(navController: NavController) {
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
-    val pullToRefreshState = rememberPullToRefreshState()
 
     LaunchedEffect(selectedTabIndex) {
         pagerState.animateScrollToPage(selectedTabIndex)
@@ -163,6 +165,16 @@ fun HomeTeamPage(navController: NavController) {
                     }
                 },
                 actions = {
+                    IconButton(onClick = {
+                        scope.launch(Dispatchers.IO) {
+                            model.refresh()
+                        }
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Refresh,
+                            contentDescription = "Refresh",
+                        )
+                    }
                     IconButton(onClick = { expanded = !expanded }) {
                         Icon(
                             imageVector = Icons.Default.MoreVert,
@@ -228,8 +240,8 @@ fun HomeTeamPage(navController: NavController) {
     ) { paddingValues ->
         Column (
             modifier = Modifier
-               .fillMaxSize()
-               .padding(paddingValues)
+                .padding(paddingValues)
+                .fillMaxSize()
         ) {
             HomeTeamPageInfoSection(snackbarHostState)
 
@@ -274,6 +286,7 @@ fun HomeTeamPage(navController: NavController) {
                 }
             }
         }
+
     }
 
     if (showBulletinComposeSheet) {
