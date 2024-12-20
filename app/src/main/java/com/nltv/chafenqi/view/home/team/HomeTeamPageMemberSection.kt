@@ -75,8 +75,10 @@ fun HomeTeamPageMemberList() {
             HomeTeamPageMemberEntry(
                 member = state.team.members[it],
                 onLongClick = {
-                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                    selectedTeamMemberUserId = state.team.members[it].userId
+                    if (state.team.info.leaderUserId == model.userId) {
+                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                        selectedTeamMemberUserId = state.team.members[it].userId
+                    }
                 }
             )
         }
