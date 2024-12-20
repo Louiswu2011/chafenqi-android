@@ -1,5 +1,8 @@
 package com.nltv.chafenqi.view.home.team
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -10,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -48,6 +53,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.nltv.chafenqi.extension.toDateString
 import com.nltv.chafenqi.model.team.TeamMember
+import com.nltv.chafenqi.model.team.TeamPendingMember
 
 @Composable
 fun HomeTeamPageMemberList() {
@@ -74,9 +80,6 @@ fun HomeTeamPageMemberList() {
                 }
             )
         }
-        item {
-            HorizontalDivider()
-        }
         // TODO: Add pending member section if current user is team leader
     }
 
@@ -94,6 +97,19 @@ fun HomeTeamPageMemberList() {
     }
 }
 
+@Composable
+fun HomeTeamPagePendingMemberEntry(
+    pendingMember: TeamPendingMember
+) {
+    Card (
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+
+    }
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeTeamPageMemberEntry(
@@ -101,6 +117,12 @@ fun HomeTeamPageMemberEntry(
     onLongClick: () -> Unit
 ) {
     val context = LocalContext.current
+    var expanded by remember { mutableStateOf(false) }
+    val avatarHeight by animateDpAsState(
+        targetValue = if (expanded) 72.dp else 64.dp,
+        animationSpec = tween(durationMillis = 300),
+        label = "avatar height"
+    )
 
     @Composable
     fun MemberInfoRow(
@@ -120,9 +142,11 @@ fun HomeTeamPageMemberEntry(
     Card (
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp)
+            .padding(8.dp)
             .combinedClickable(
-                onClick = {},
+                onClick = {
+                    expanded = !expanded
+                },
                 onLongClick = {
                     onLongClick()
                 },
@@ -141,56 +165,67 @@ fun HomeTeamPageMemberEntry(
         ) {
             Row (
                 horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(85.dp)
-                    .padding(bottom = 10.dp)
+                    .height(avatarHeight)
             ) {
+                AsyncImage(
+                    model = member.avatar,
+                    contentDescription = "头像",
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .size(avatarHeight)
+                        .clip(RoundedCornerShape(12.dp)),
+                    contentScale = ContentScale.FillHeight,
+                    clipToBounds = true
+                )
+
                 Column(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxHeight(),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.SpaceBetween
+                    verticalArrangement = if (expanded) Arrangement.SpaceBetween else Arrangement.Center
                 ) {
-                    Text(text = member.trophy, style = MaterialTheme.typography.titleSmall, color = Color.Gray)
+                    AnimatedVisibility(expanded) {
+                        Text(text = member.trophy, style = MaterialTheme.typography.titleSmall, color = Color.Gray)
+                    }
                     Text(text = member.nickname, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
 
-                    Row (
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                    AnimatedVisibility(expanded) {
                         Row (
-                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text("Rating", style = MaterialTheme.typography.titleSmall)
-                            Text(member.rating, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleSmall)
-                        }
+                            Row (
+                                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                Text("Rating", style = MaterialTheme.typography.titleSmall)
+                                Text(member.rating, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleSmall)
+                            }
 
-                        Row (
-                            horizontalArrangement = Arrangement.spacedBy(10.dp)
-                        ) {
-                            Text("游玩次数", style = MaterialTheme.typography.titleSmall)
-                            Text("${member.playCount}", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleSmall)
+                            Row (
+                                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                Text("游玩次数", style = MaterialTheme.typography.titleSmall)
+                                Text("${member.playCount}", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleSmall)
+                            }
                         }
                     }
                 }
-                AsyncImage(
-                    model = member.avatar,
-                    contentDescription = "头像",
-                    modifier = Modifier
-                        .padding(start = 8.dp)
-                        .size(75.dp)
-                        .clip(RoundedCornerShape(12.dp)),
-                    contentScale = ContentScale.FillHeight,
-                    clipToBounds = true
-                )
             }
 
-            MemberInfoRow(description = "加入时间：", value = member.joinAt.toDateString(context))
-            MemberInfoRow(description = "贡献点数：", value = "${member.activityPoints}P")
-            MemberInfoRow(description = "最后游玩时间：", value = member.lastActivityAt.toDateString(context))
+            AnimatedVisibility(expanded) {
+                Column (
+                    modifier = Modifier.padding(top = 8.dp)
+                ) {
+                    MemberInfoRow(description = "加入时间：", value = member.joinAt.toDateString(context))
+                    MemberInfoRow(description = "贡献点数：", value = "${member.activityPoints}P")
+                    MemberInfoRow(description = "最后游玩时间：", value = member.lastActivityAt.toDateString(context))
+                }
+            }
         }
     }
 }
@@ -208,15 +243,19 @@ fun HomeTeamPageMemberManageSheet(
     ModalBottomSheet(
         onDismissRequest = onDismissRequest
     ) {
-        ListItem(
-            headlineContent = { Text(text = "移除该成员") },
-            leadingContent = { Icon(Icons.Default.GroupRemove, contentDescription = "移除成员") },
-            modifier = Modifier.clickable(
-                onClick = {
-                    shouldShowConfirmDialog = true
-                }
+        Column (
+            modifier = Modifier.navigationBarsPadding()
+        ) {
+            ListItem(
+                headlineContent = { Text(text = "移除该成员") },
+                leadingContent = { Icon(Icons.Default.GroupRemove, contentDescription = "移除成员") },
+                modifier = Modifier.clickable(
+                    onClick = {
+                        shouldShowConfirmDialog = true
+                    }
+                )
             )
-        )
+        }
     }
 
     if (shouldShowConfirmDialog) {
