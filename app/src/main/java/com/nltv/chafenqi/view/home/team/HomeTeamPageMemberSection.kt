@@ -22,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.GroupRemove
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.outlined.Warning
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,13 +30,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.ShapeDefaults
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -54,19 +59,31 @@ import coil.compose.AsyncImage
 import com.nltv.chafenqi.extension.toDateString
 import com.nltv.chafenqi.model.team.TeamMember
 import com.nltv.chafenqi.model.team.TeamPendingMember
+import com.nltv.chafenqi.networking.CFQTeamServer
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
-fun HomeTeamPageMemberList() {
+fun HomeTeamPageMemberList(
+    snackbarHostState: SnackbarHostState
+) {
+    val scope = rememberCoroutineScope()
     val haptics = LocalHapticFeedback.current
     val model: HomeTeamPageViewModel = viewModel()
     val state by model.uiState.collectAsStateWithLifecycle()
 
-    var selectedTeamMemberUserId by rememberSaveable {
+    var selectedTeamMemberUserId by remember {
         mutableLongStateOf(-1L)
     }
 
+    var shouldShowManageSheet by remember { mutableStateOf(false) }
+
     LazyColumn (
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         items(
             count = state.team.members.size,
@@ -78,6 +95,7 @@ fun HomeTeamPageMemberList() {
                     if (state.team.info.leaderUserId == model.userId) {
                         haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                         selectedTeamMemberUserId = state.team.members[it].userId
+                        shouldShowManageSheet = true
                     }
                 }
             )
@@ -85,16 +103,53 @@ fun HomeTeamPageMemberList() {
         // TODO: Add pending member section if current user is team leader
     }
 
-    if (selectedTeamMemberUserId != -1L) {
+    if (shouldShowManageSheet) {
         val member = state.team.members.firstOrNull { it.userId == selectedTeamMemberUserId }
         if (member != null) {
             HomeTeamPageMemberManageSheet(
                 member = member,
+                snackbarHostState = snackbarHostState,
+                onKick = { userId ->
+                    shouldShowManageSheet = false
+                    scope.launch(Dispatchers.IO) {
+                        val result = CFQTeamServer.adminKickMember(
+                            authToken = model.token,
+                            game = model.mode,
+                            teamId = state.team.info.id,
+                            memberId = userId
+                        )
+
+                        if (result.isNotEmpty()) {
+                            snackbarHostState.showSnackbar(
+                                message = "移除成员失败：$result"
+                            )
+                        } else {
+                            model.refresh()
+                        }
+                    }
+                },
+                onTransfer = { userId ->
+                    shouldShowManageSheet = false
+                    scope.launch(Dispatchers.IO) {
+                        val result = CFQTeamServer.adminTransferOwnership(
+                            authToken = model.token,
+                            game = model.mode,
+                            teamId = state.team.info.id,
+                            newLeaderUserId = userId
+                        )
+
+                        if (result.isNotEmpty()) {
+                            snackbarHostState.showSnackbar(
+                                message = "转让队长失败：$result"
+                            )
+                        } else {
+                            model.refresh()
+                        }
+                    }
+                }
             ) {
-                selectedTeamMemberUserId = -1L
+                shouldShowManageSheet = false
             }
-        } else {
-            selectedTeamMemberUserId = -1L
         }
     }
 }
@@ -144,7 +199,7 @@ fun HomeTeamPageMemberEntry(
     Card (
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(horizontal = 8.dp)
             .combinedClickable(
                 onClick = {
                     expanded = !expanded
@@ -236,6 +291,9 @@ fun HomeTeamPageMemberEntry(
 @Composable
 fun HomeTeamPageMemberManageSheet(
     member: TeamMember,
+    snackbarHostState: SnackbarHostState,
+    onKick: (Long) -> Unit,
+    onTransfer: (Long) -> Unit,
     onDismissRequest: () -> Unit
 ) {
     var shouldShowKickConfirmDialog by remember {
@@ -279,7 +337,10 @@ fun HomeTeamPageMemberManageSheet(
             icon = Icons.Outlined.Warning,
             title = "确认移除",
             message = "您确定要将此成员从您的团队中移除吗？该操作无法撤销。",
-            onConfirm = { shouldShowKickConfirmDialog = false },
+            onConfirm = {
+                shouldShowKickConfirmDialog = false
+                onKick(member.userId)
+            },
             onDismissRequest = { shouldShowKickConfirmDialog = false }
         )
     }
@@ -289,7 +350,10 @@ fun HomeTeamPageMemberManageSheet(
             icon = Icons.Outlined.Warning,
             title = "确认转让",
             message = "您确定将团队队长转让给该成员吗？该操作无法撤销。",
-            onConfirm = { shouldShowTransferConfirmDialog = false },
+            onConfirm = {
+                shouldShowTransferConfirmDialog = false
+                onTransfer(member.userId)
+            },
             onDismissRequest = { shouldShowTransferConfirmDialog = false }
         )
     }

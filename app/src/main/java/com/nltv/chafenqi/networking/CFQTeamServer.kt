@@ -241,7 +241,7 @@ object CFQTeamServer {
                 payload = """
                     {
                         "userId": $pendingMemberId
-                    },
+                    }
                 """.trimIndent(),
             )
             return response.bodyAsText()
@@ -262,7 +262,7 @@ object CFQTeamServer {
                 payload = """
                     {
                         "userId": $pendingMemberId
-                    },
+                    }
                 """.trimIndent(),
             )
             return response.bodyAsText()
@@ -300,7 +300,7 @@ object CFQTeamServer {
                 payload = """
                     {
                         "newLeaderUserId": $newLeaderUserId
-                    },
+                    }
                 """.trimIndent(),
             )
 
@@ -338,7 +338,7 @@ object CFQTeamServer {
                 payload = """
                     {
                         "displayName": "$newName"
-                    },
+                    }
                 """.trimIndent(),
             )
             return response.bodyAsText()
@@ -359,7 +359,7 @@ object CFQTeamServer {
                 payload = """
                     {
                         "style": "$newStyle"
-                    },
+                    }
                 """.trimIndent(),
             )
             return response.status == HttpStatusCode.OK
@@ -380,7 +380,7 @@ object CFQTeamServer {
                 payload = """
                     {
                         "remarks": "$newRemarks"
-                    },
+                    }
                 """.trimIndent(),
             )
             return response.status == HttpStatusCode.OK
@@ -401,7 +401,7 @@ object CFQTeamServer {
                 payload = """
                     {
                         "promotable": ${if (promotable) "true" else "false"}
-                    },
+                    }
                 """.trimIndent(),
             )
             return response.status == HttpStatusCode.OK
@@ -439,7 +439,7 @@ object CFQTeamServer {
                 payload = """
                     {
                         "id": $pinnedMessageId
-                    },
+                    }
                 """.trimIndent(),
             )
             return response.status == HttpStatusCode.OK

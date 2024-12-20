@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.AddComment
+import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
@@ -191,6 +192,13 @@ fun HomeTeamPage(navController: NavController) {
 
                                     }
                                 )
+                                DropdownMenuItem(
+                                    text = { Text("管理待加入成员...") },
+                                    leadingIcon = { Icon(imageVector = Icons.Default.Groups, contentDescription = "管理待加入成员...") },
+                                    onClick = {
+
+                                    }
+                                )
                                 HorizontalDivider()
                             }
                             DropdownMenuItem(
@@ -269,7 +277,9 @@ fun HomeTeamPage(navController: NavController) {
             ) { index ->
                 when (index) {
                     0 -> {
-                        HomeTeamPageMemberList()
+                        HomeTeamPageMemberList(
+                            snackbarHostState = snackbarHostState
+                        )
                     }
 
                     1 -> {
