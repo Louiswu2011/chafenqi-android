@@ -272,7 +272,7 @@ object CFQTeamServer {
         }
     }
 
-    suspend fun kickMember(authToken: String, game: Int, teamId: Int, memberId: Long): String {
+    suspend fun adminKickMember(authToken: String, game: Int, teamId: Int, memberId: Long): String {
         try {
             val response = fetchFromTeam(
                 method = HttpMethod.Delete,
@@ -285,6 +285,28 @@ object CFQTeamServer {
             return response.bodyAsText()
         } catch (e: Exception) {
             Log.e("CFQTeamServer", "Failed to kick member: ${e.localizedMessage}")
+            return "未知错误，请联系开发者。"
+        }
+    }
+
+    suspend fun adminTransferOwnership(authToken: String, game: Int, teamId: Int, newLeaderUserId: Long): String {
+        try {
+            val response = fetchFromTeam(
+                method = HttpMethod.Put,
+                path = "admin/member/transfer",
+                token = authToken,
+                teamId = teamId,
+                game = game,
+                payload = """
+                    {
+                        "newLeaderUserId": $newLeaderUserId
+                    },
+                """.trimIndent(),
+            )
+
+            return response.bodyAsText()
+        } catch (e: Exception) {
+            Log.e("CFQTeamServer", "Failed to transfer ownership: ${e.localizedMessage}")
             return "未知错误，请联系开发者。"
         }
     }
