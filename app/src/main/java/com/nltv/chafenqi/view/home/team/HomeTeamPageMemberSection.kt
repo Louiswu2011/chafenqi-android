@@ -20,11 +20,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.GroupRemove
+import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
@@ -236,12 +236,17 @@ fun HomeTeamPageMemberManageSheet(
     member: TeamMember,
     onDismissRequest: () -> Unit
 ) {
-    var shouldShowConfirmDialog by rememberSaveable {
+    var shouldShowKickConfirmDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var shouldShowTransferConfirmDialog by remember {
         mutableStateOf(false)
     }
 
     ModalBottomSheet(
-        onDismissRequest = onDismissRequest
+        onDismissRequest = onDismissRequest,
+        dragHandle = null
     ) {
         Column (
             modifier = Modifier.navigationBarsPadding()
@@ -251,20 +256,39 @@ fun HomeTeamPageMemberManageSheet(
                 leadingContent = { Icon(Icons.Default.GroupRemove, contentDescription = "移除成员") },
                 modifier = Modifier.clickable(
                     onClick = {
-                        shouldShowConfirmDialog = true
+                        shouldShowKickConfirmDialog = true
+                    }
+                )
+            )
+            ListItem(
+                headlineContent = { Text(text = "转让队长") },
+                leadingContent = { Icon(Icons.Default.Groups, contentDescription = "转让队长") },
+                modifier = Modifier.clickable(
+                    onClick = {
+                        shouldShowTransferConfirmDialog = true
                     }
                 )
             )
         }
     }
 
-    if (shouldShowConfirmDialog) {
+    if (shouldShowKickConfirmDialog) {
         HomeTeamPageConfirmDialog(
             icon = Icons.Outlined.Warning,
             title = "确认移除",
             message = "您确定要将此成员从您的团队中移除吗？该操作无法撤销。",
-            onConfirm = { shouldShowConfirmDialog = false },
-            onDismissRequest = { shouldShowConfirmDialog = false }
+            onConfirm = { shouldShowKickConfirmDialog = false },
+            onDismissRequest = { shouldShowKickConfirmDialog = false }
+        )
+    }
+
+    if (shouldShowTransferConfirmDialog) {
+        HomeTeamPageConfirmDialog(
+            icon = Icons.Outlined.Warning,
+            title = "确认转让",
+            message = "您确定将团队队长转让给该成员吗？该操作无法撤销。",
+            onConfirm = { shouldShowTransferConfirmDialog = false },
+            onDismissRequest = { shouldShowTransferConfirmDialog = false }
         )
     }
 }
