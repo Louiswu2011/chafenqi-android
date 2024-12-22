@@ -57,6 +57,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.nltv.chafenqi.networking.CFQTeamServer
+import com.nltv.chafenqi.view.home.HomeNavItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -176,44 +177,14 @@ fun HomeTeamPage(navController: NavController) {
                             contentDescription = "Refresh",
                         )
                     }
-                    IconButton(onClick = { expanded = !expanded }) {
+                    IconButton(onClick = {
+                        navController.navigate(HomeNavItem.Home.route + "/team/settings")
+                    })
+                    {
                         Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = "More",
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Settings",
                         )
-                        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                            if (state.isTeamAdmin) {
-                                DropdownMenuItem(
-                                    text = {
-                                        Text("修改团队信息...")
-                                    },
-                                    leadingIcon = { Icon(imageVector = Icons.Default.Settings, contentDescription = "修改团队信息...") },
-                                    onClick = {
-
-                                    }
-                                )
-                                DropdownMenuItem(
-                                    text = { Text("管理待加入成员...") },
-                                    leadingIcon = { Icon(imageVector = Icons.Default.Groups, contentDescription = "管理待加入成员...") },
-                                    onClick = {
-
-                                    }
-                                )
-                                HorizontalDivider()
-                            }
-                            DropdownMenuItem(
-                                text = { Text(
-                                    if (state.isTeamAdmin) "解散团队..." else "退出团队..."
-                                ) },
-                                colors = MenuDefaults.itemColors(
-                                    textColor = MaterialTheme.colorScheme.error,
-                                    leadingIconColor = MaterialTheme.colorScheme.error
-                                ),
-                                leadingIcon = { Icon(imageVector = Icons.AutoMirrored.Default.Logout, contentDescription = "退出团队") },
-                                onClick = {
-                                    expanded = false
-                                })
-                        }
                     }
                 }
             )

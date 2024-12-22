@@ -55,9 +55,6 @@ fun UpdaterQRCodePage(snackbarHostState: SnackbarHostState) {
     val uriHandler = LocalUriHandler.current
     val logoPainter = painterResource(id = R.drawable.app_icon)
     val pagerState = rememberPagerState { 2 }
-    val store = SettingsStore(context)
-
-    val shouldForward by store.uploadShouldForward.collectAsState(initial = false)
 
     val maiQrCodePainter = rememberQrCodePainter(model.buildUri(1)) {
         logo {

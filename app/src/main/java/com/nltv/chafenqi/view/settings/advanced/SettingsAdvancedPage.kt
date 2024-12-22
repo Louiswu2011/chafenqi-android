@@ -2,7 +2,9 @@ package com.nltv.chafenqi.view.settings.advanced
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.CloudSync
@@ -38,12 +40,15 @@ import com.nltv.chafenqi.view.settings.ReloadSongListDialog
 import com.nltv.chafenqi.view.settings.SettingsPageViewModel
 import com.nltv.chafenqi.view.settings.SettingsTopBar
 import kotlinx.coroutines.launch
+import me.zhanghai.compose.preference.preference
+import me.zhanghai.compose.preference.switchPreference
 
 @Composable
 fun SettingsAdvancedPage(navController: NavController) {
     val model: SettingsPageViewModel = viewModel()
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+    var showJwtToken by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         model.getCoilDiskCacheSize(context)
         model.updateSongListVersion()
@@ -74,26 +79,55 @@ fun SettingsAdvancedPage(navController: NavController) {
         topBar = { SettingsTopBar(titleText = "高级", navController = navController) },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) {
-        PreferenceScreen(
-            modifier = Modifier.padding(it),
-            settings = PreferenceSettingsDefaults.settings(),
-            scrollable = true
+        LazyColumn (
+            modifier = Modifier.padding(it)
+                .fillMaxSize()
         ) {
-            SettingsAdvancedGroup(snackbarHostState = snackbarHostState)
+            switchPreference(
+                key = "loginAutoUpdateSongList",
+                defaultValue = true,
+                title = { Text(text = "保持歌曲列表为最新") },
+                summary = { Text(text = "将会在每次启动时检测并自动更新歌曲列表") },
+            )
+
+            preference(
+                key = "refreshSongList",
+                title = { Text(text = "刷新歌曲列表") },
+                summary = {
+                    Column {
+                        Text(text = "舞萌DX更新日期：${model.maiSongListVersionString}")
+                        Text(text = "中二节奏更新日期：${model.chuSongListVersionString}")
+                    }
+                },
+                onClick = {
+                    model.showReloadListAlert = true
+                }
+            )
+
+            preference(
+                key = "clearCache",
+                title = { Text(text = "清除缓存") },
+                summary = {
+                    val sizeString = model.diskCacheSize
+                    if (sizeString.isNotEmpty()) {
+                        Text(text = "当前占用：$sizeString")
+                    } else {
+                        Text(text = "暂无缓存")
+                    }
+                },
+                onClick = {
+                    model.showClearCacheAlert = true
+                }
+            )
+
+            preference(
+                key = "showJwtToken",
+                title = { Text(text = "Token") },
+                summary = { Text(text = if (showJwtToken) model.token else "点击显示/隐藏") },
+                onClick = { showJwtToken = !showJwtToken }
+            )
         }
     }
-}
-
-@Composable
-fun PreferenceRootScope.SettingsAdvancedGroup(snackbarHostState: SnackbarHostState) {
-    val model: SettingsPageViewModel = viewModel()
-    val scope = rememberCoroutineScope()
-    val context = LocalContext.current
-    val store = SettingsStore(context)
-    val loginAutoUpdateSongList by store.loginAutoUpdateSongList.collectAsStateWithLifecycle(
-        initialValue = true
-    )
-    var showJwtToken by remember { mutableStateOf(false) }
 
     if (model.showClearCacheAlert) {
         ClearCacheAlertDialog(onDismissRequest = { model.showClearCacheAlert = false }) {
@@ -106,55 +140,4 @@ fun PreferenceRootScope.SettingsAdvancedGroup(snackbarHostState: SnackbarHostSta
             }
         }
     }
-    PreferenceBool(
-        value = loginAutoUpdateSongList,
-        onValueChange = { scope.launch { store.setLoginAutoUpdateSongList(it) } },
-        title = { Text(text = "保持歌曲列表为最新") },
-        subtitle = { Text(text = "将会在每次启动前检测并自动更新歌曲列表") },
-        icon = {
-            Icon(
-                imageVector = Icons.Default.CloudSync,
-                contentDescription = "保持歌曲列表为最新"
-            )
-        }
-    )
-    PreferenceButton(
-        onClick = { model.showReloadListAlert = true },
-        title = { Text(text = "刷新歌曲列表") },
-        subtitle = {
-            Column {
-                Text(text = "舞萌DX更新日期：${model.maiSongListVersionString}")
-                Text(text = "中二节奏更新日期：${model.chuSongListVersionString}")
-            }
-        },
-        icon = {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.List,
-                contentDescription = "刷新歌曲列表"
-            )
-        }
-    )
-    PreferenceButton(
-        onClick = {
-            if (model.diskCacheSize.isNotEmpty()) {
-                model.showClearCacheAlert = true
-            }
-        },
-        title = { Text(text = "清空图片缓存") },
-        subtitle = {
-            val sizeString = model.diskCacheSize
-            if (sizeString.isNotEmpty()) {
-                Text(text = "当前占用：$sizeString")
-            } else {
-                Text(text = "暂无缓存")
-            }
-        },
-        icon = { Icon(imageVector = Icons.Default.Delete, contentDescription = "清除图片缓存") }
-    )
-    PreferenceButton(
-        onClick = { showJwtToken = !showJwtToken },
-        title = { Text(text = "Token") },
-        subtitle = { Text(text = if (showJwtToken) model.token else "点击显示/隐藏") },
-        icon = { Icon(imageVector = Icons.Default.Token, contentDescription = "Token") }
-    )
 }

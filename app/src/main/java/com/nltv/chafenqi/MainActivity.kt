@@ -17,10 +17,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -34,6 +37,7 @@ import coil.memory.MemoryCache
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
+import com.nltv.chafenqi.storage.SettingsStore.Companion.settingsStore
 import com.nltv.chafenqi.ui.theme.ChafenqiTheme
 import com.nltv.chafenqi.view.home.HomeNavItem
 import com.nltv.chafenqi.view.home.HomePage
@@ -45,6 +49,7 @@ import com.nltv.chafenqi.view.home.rating.HomeRatingPage
 import com.nltv.chafenqi.view.home.recent.HomeRecentPage
 import com.nltv.chafenqi.view.home.recent.RecentDetailPage
 import com.nltv.chafenqi.view.home.team.HomeTeamLandingPage
+import com.nltv.chafenqi.view.home.team.settings.HomeTeamPageSettingsPage
 import com.nltv.chafenqi.view.info.InfoPage
 import com.nltv.chafenqi.view.info.chunithm.InfoChunithmCharacterPage
 import com.nltv.chafenqi.view.info.chunithm.InfoChunithmMapIconPage
@@ -68,8 +73,6 @@ import com.nltv.chafenqi.view.settings.home.SettingsHomeArrangementPage
 import com.nltv.chafenqi.view.settings.home.SettingsHomePage
 import com.nltv.chafenqi.view.settings.playerInfo.SettingsInfoPage
 import com.nltv.chafenqi.view.settings.qs.SettingsQSTilePage
-import com.nltv.chafenqi.view.settings.user.SettingsBindFishPage
-import com.nltv.chafenqi.view.settings.user.SettingsBindQQPage
 import com.nltv.chafenqi.view.settings.user.SettingsUserPage
 import com.nltv.chafenqi.view.songlist.SongDetailPage
 import com.nltv.chafenqi.view.songlist.SongListPage
@@ -78,6 +81,10 @@ import com.nltv.chafenqi.view.songlist.record.MusicRecordPage
 import com.nltv.chafenqi.view.songlist.stats.SongStatsPage
 import com.nltv.chafenqi.view.updater.UpdaterHelpPage
 import com.nltv.chafenqi.view.updater.UpdaterHomePage
+import kotlinx.coroutines.flow.MutableStateFlow
+import me.zhanghai.compose.preference.LocalPreferenceFlow
+import me.zhanghai.compose.preference.ProvidePreferenceLocals
+import me.zhanghai.compose.preference.defaultPreferenceFlow
 
 enum class UIState {
     Pending, Loading, Finished
@@ -96,7 +103,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             CompositionLocalProvider(LocalUserState provides userState) {
-                ChafenqiApp()
+                ProvidePreferenceLocals (
+                    flow = defaultPreferenceFlow()
+                ) {
+                    ChafenqiApp()
+                }
             }
         }
     }
@@ -203,6 +214,7 @@ fun LogonPage(navController: NavHostController) {
             }
 
             composable(HomeNavItem.Home.route + "/team") { HomeTeamLandingPage(navController) }
+            composable(HomeNavItem.Home.route + "/team/settings") { HomeTeamPageSettingsPage(navController) }
 
             composable(HomeNavItem.Home.route + "/log") { HomeLogPage(navController) }
             composable(HomeNavItem.Home.route + "/log/maimai/{index}") {
@@ -262,16 +274,6 @@ fun LogonPage(navController: NavHostController) {
             composable(HomeNavItem.Home.route + "/settings/about") { SettingsAboutPage(navController) }
             composable(HomeNavItem.Home.route + "/settings/user/redeem") {
                 PremiumRedeemPage(
-                    navController
-                )
-            }
-            composable(HomeNavItem.Home.route + "/settings/user/bind/fish") {
-                SettingsBindFishPage(
-                    navController
-                )
-            }
-            composable(HomeNavItem.Home.route + "/settings/user/bind/qq") {
-                SettingsBindQQPage(
                     navController
                 )
             }

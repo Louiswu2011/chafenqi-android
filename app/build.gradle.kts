@@ -1,6 +1,6 @@
-import org.jetbrains.kotlin.konan.properties.Properties
 import java.io.FileInputStream
 import java.io.FileNotFoundException
+import java.util.Properties
 
 plugins {
     id("com.android.application")
@@ -72,6 +72,7 @@ android {
     }
 
     buildFeatures {
+        compose = true
         buildConfig = true
     }
 
@@ -115,9 +116,6 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
-    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -139,11 +137,12 @@ android {
     }
 }
 
+val composeDialogs = "1.0.8"
 val ktorVersion = "3.0.1"
 val composePreferences = "0.4.7"
 
 dependencies {
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.3")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 
     implementation(platform("androidx.compose:compose-bom:2024.12.01"))
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.12.01"))
@@ -200,6 +199,24 @@ dependencies {
     implementation("com.github.MFlisar.ComposePreferences:screen-time:$composePreferences")
     implementation("com.github.MFlisar.ComposePreferences:screen-list:$composePreferences")
     implementation("com.github.MFlisar.ComposePreferences:screen-number:$composePreferences")
+
+    implementation("com.github.MFlisar.ComposeDialogs:core:$composeDialogs")
+    implementation("com.github.MFlisar.ComposeDialogs:dialog-info:$composeDialogs")
+    implementation("com.github.MFlisar.ComposeDialogs:dialog-input:$composeDialogs")
+    implementation("com.github.MFlisar.ComposeDialogs:dialog-number:$composeDialogs")
+    implementation("com.github.MFlisar.ComposeDialogs:dialog-list:$composeDialogs")
+    implementation("com.github.MFlisar.ComposeDialogs:dialog-progress:$composeDialogs")
+    implementation("com.github.MFlisar.ComposeDialogs:dialog-time:$composeDialogs")
+    implementation("com.github.MFlisar.ComposeDialogs:dialog-date:$composeDialogs")
+    implementation("com.github.MFlisar.ComposeDialogs:dialog-color:$composeDialogs")
+
+    implementation("com.maxkeppeler.sheets-compose-dialogs:core:1.3.0")
+    implementation("com.maxkeppeler.sheets-compose-dialogs:info:1.3.0")
+    implementation("com.maxkeppeler.sheets-compose-dialogs:input:1.3.0")
+    implementation("com.maxkeppeler.sheets-compose-dialogs:list:1.3.0")
+    implementation("com.maxkeppeler.sheets-compose-dialogs:state:1.3.0")
+
+    implementation("me.zhanghai.compose.preference:library:1.1.1")
 
     implementation("sh.calvin.reorderable:reorderable:2.1.1")
 

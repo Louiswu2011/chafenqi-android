@@ -83,6 +83,22 @@ class SettingsPageViewModel : ViewModel() {
     var maiSongListVersionString by mutableStateOf("")
     var chuSongListVersionString by mutableStateOf("")
 
+    var fishTokenState by mutableStateOf(user.remoteOptions.fishToken)
+        private set
+
+    var bindQQState by mutableStateOf(user.remoteOptions.bindQQ)
+        private set
+
+    fun updateFishTokenState(newToken: String) {
+        user.remoteOptions.fishToken = newToken
+        fishTokenState = newToken
+    }
+
+    fun updateBindQQState(newQQ: String) {
+        user.remoteOptions.bindQQ = newQQ
+        bindQQState = newQQ
+    }
+
     suspend fun isAppVersionLatest(): Boolean {
         val versionData = CFQServer.apiFetchLatestVersion()
         val fullVersionString = BuildConfig.VERSION_NAME

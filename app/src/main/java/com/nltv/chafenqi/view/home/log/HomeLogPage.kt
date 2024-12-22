@@ -72,6 +72,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
 import kotlinx.datetime.format.FormatStringsInDatetimeFormats
 import kotlinx.datetime.toLocalDateTime
+import me.zhanghai.compose.preference.LocalPreferenceFlow
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -116,10 +117,8 @@ fun HomeLogPageDataColumn(navController: NavController) {
     val uiState by model.uiState.collectAsStateWithLifecycle()
     val lazyListState = rememberLazyListState()
     val context = LocalContext.current
+    val settings by LocalPreferenceFlow.current.collectAsStateWithLifecycle()
     val store = SettingsStore(context)
-    val logDefaultPricePerRound by store.logDefaultPricePerRound.collectAsStateWithLifecycle(
-        initialValue = 3f
-    )
 
     LaunchedEffect(Unit) {
         model.updateInfo(CFQUser.mode)
@@ -148,7 +147,7 @@ fun HomeLogPageDataColumn(navController: NavController) {
 
                 HomeLogLargeInfo(
                     title = "预估消费",
-                    source = "￥${uiState.totalPlayCount * logDefaultPricePerRound}"
+                    source = "￥${uiState.totalPlayCount * (settings.get<Float>("logDefaultPricePerRound") ?: 3f)}"
                 )
             }
         }

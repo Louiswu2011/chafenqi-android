@@ -54,6 +54,7 @@ import com.nltv.chafenqi.SCREEN_PADDING
 import com.nltv.chafenqi.storage.SettingsStore
 import com.nltv.chafenqi.view.module.AppUpdaterDialog
 import com.nltv.chafenqi.view.module.AppUpdaterViewModel
+import me.zhanghai.compose.preference.LocalPreferenceFlow
 
 @OptIn(
     ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class
@@ -68,12 +69,9 @@ fun HomePage(navController: NavController) {
     val userState = LocalUserState.current
     val context = LocalContext.current
     val store = SettingsStore(context)
-    val homeShowRefreshButton by store.homeShowRefreshButton.collectAsStateWithLifecycle(
-        initialValue = false
-    )
-    val defaultGame by store.homeDefaultGame.collectAsStateWithLifecycle(initialValue = 1)
+    val settings by LocalPreferenceFlow.current.collectAsStateWithLifecycle()
+
     val homeArrangement by store.homeArrangement.collectAsStateWithLifecycle(initialValue = "最近动态|Rating分析|排行榜|出勤记录")
-    val homeShowTeamButton by store.homeShowTeamButton.collectAsStateWithLifecycle(initialValue = true)
 
     val refreshState = rememberPullRefreshState(
         refreshing = userState.isRefreshing,
@@ -88,7 +86,7 @@ fun HomePage(navController: NavController) {
         model.checkUpdates()
         model.saveCredentialsToCache(context)
         if (!model.isLoaded) {
-            model.switchGame(defaultGame)
+            model.switchGame(settings.get<Int>("homeDefaultGame") ?: 0)
             model.isLoaded = true
         }
     }
@@ -121,7 +119,7 @@ fun HomePage(navController: NavController) {
                     }
                 },
                 navigationIcon = {
-                    if (homeShowRefreshButton) {
+                    if (settings.get<Boolean>("homeShowRefreshButton") == true) {
                         IconButton(onClick = { model.refreshUserData(userState, context) }) {
                             Icon(imageVector = Icons.Default.Refresh, contentDescription = "刷新")
                         }
@@ -161,7 +159,7 @@ fun HomePage(navController: NavController) {
                         } else {
                             HomePageNameplateSection(navController)
 
-                            if (homeShowTeamButton) {
+                            if (settings.get<Boolean>("homeShowTeamButton") == true) {
                                 HomePageTeamSection(navController)
                             }
 
