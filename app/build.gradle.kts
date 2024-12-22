@@ -113,9 +113,6 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
-    buildFeatures {
-        compose = true
-    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -199,16 +196,6 @@ dependencies {
     implementation("com.github.MFlisar.ComposePreferences:screen-time:$composePreferences")
     implementation("com.github.MFlisar.ComposePreferences:screen-list:$composePreferences")
     implementation("com.github.MFlisar.ComposePreferences:screen-number:$composePreferences")
-
-    implementation("com.github.MFlisar.ComposeDialogs:core:$composeDialogs")
-    implementation("com.github.MFlisar.ComposeDialogs:dialog-info:$composeDialogs")
-    implementation("com.github.MFlisar.ComposeDialogs:dialog-input:$composeDialogs")
-    implementation("com.github.MFlisar.ComposeDialogs:dialog-number:$composeDialogs")
-    implementation("com.github.MFlisar.ComposeDialogs:dialog-list:$composeDialogs")
-    implementation("com.github.MFlisar.ComposeDialogs:dialog-progress:$composeDialogs")
-    implementation("com.github.MFlisar.ComposeDialogs:dialog-time:$composeDialogs")
-    implementation("com.github.MFlisar.ComposeDialogs:dialog-date:$composeDialogs")
-    implementation("com.github.MFlisar.ComposeDialogs:dialog-color:$composeDialogs")
 
     implementation("com.maxkeppeler.sheets-compose-dialogs:core:1.3.0")
     implementation("com.maxkeppeler.sheets-compose-dialogs:info:1.3.0")
