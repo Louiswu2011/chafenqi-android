@@ -26,11 +26,13 @@ import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.networking.FishServer
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.updater.ChafenqiProxy
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 val PORTAL_ADDRESS = "http://43.139.107.206:8083/"
@@ -92,6 +94,8 @@ class UpdaterViewModel : ViewModel() {
     val uiState: StateFlow<UpdaterUiState> = _uiState.asStateFlow()
 
     var shouldShowQRCode by mutableStateOf(false)
+
+    private var refreshJob: Job? = null
 
     fun updateServerStat() {
         fun makeServerStatText(time: Double): String = when (time) {
@@ -167,8 +171,9 @@ class UpdaterViewModel : ViewModel() {
 
     fun startRefreshTask() {
         Log.i("Updater", "Starting refresh task.")
-        viewModelScope.launch {
-            while (true) {
+        refreshJob?.cancel()
+        refreshJob = viewModelScope.launch {
+            while (isActive) {
                 try {
                     updateServerStat()
                     updateUploadStat()
@@ -180,6 +185,12 @@ class UpdaterViewModel : ViewModel() {
                 }
             }
         }
+    }
+
+    fun stopRefreshTask() {
+        Log.i("Updater", "Stopping refresh task.")
+        refreshJob?.cancel()
+        refreshJob = null
     }
 
     fun prepareVPN(context: Context): Intent? {
