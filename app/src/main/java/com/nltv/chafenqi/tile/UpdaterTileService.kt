@@ -4,7 +4,6 @@ import android.app.PendingIntent
 import android.content.ClipData
 import android.content.ClipDescription
 import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.net.VpnService
@@ -13,17 +12,12 @@ import android.preference.PreferenceManager
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import android.util.Log
-import androidx.compose.ui.platform.LocalContext
-import com.nltv.chafenqi.storage.SettingsStore
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.updater.ChafenqiProxy
 import com.nltv.chafenqi.view.updater.PORTAL_ADDRESS
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import me.zhanghai.compose.preference.LocalPreferenceFlow
-import me.zhanghai.compose.preference.defaultPreferenceFlow
 import me.zhanghai.compose.preference.getPreferenceFlow
 
 class UpdaterTileService : TileService() {

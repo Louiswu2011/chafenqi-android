@@ -39,12 +39,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.nltv.chafenqi.extension.TEAM_BULLETIN_MESSAGE_LENGTH
-import com.nltv.chafenqi.extension.TEAM_REMARKS_LENGTH
 import com.nltv.chafenqi.extension.toDateString
-import com.nltv.chafenqi.extension.toHalfWidth
 import com.nltv.chafenqi.model.team.TeamBulletinBoardEntry
-import com.nltv.chafenqi.networking.CFQTeamServer
-import com.nltv.chafenqi.view.songlist.comment.CommentPageViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

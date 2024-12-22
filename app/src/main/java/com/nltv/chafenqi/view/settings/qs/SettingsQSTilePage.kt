@@ -1,7 +1,6 @@
 package com.nltv.chafenqi.view.settings.qs
 
 import android.os.Build
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,25 +8,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.michaelflisar.composepreferences.core.PreferenceDivider
-import com.michaelflisar.composepreferences.core.PreferenceInfo
-import com.michaelflisar.composepreferences.core.PreferenceScreen
-import com.michaelflisar.composepreferences.core.classes.PreferenceSettingsDefaults
-import com.michaelflisar.composepreferences.core.hierarchy.PreferenceRootScope
-import com.michaelflisar.composepreferences.screen.bool.PreferenceBool
-import com.michaelflisar.composepreferences.screen.button.PreferenceButton
-import com.michaelflisar.composepreferences.screen.list.PreferenceList
-import com.nltv.chafenqi.storage.SettingsStore
-import com.nltv.chafenqi.view.settings.GAME_LIST
 import com.nltv.chafenqi.view.settings.SettingsPageViewModel
 import com.nltv.chafenqi.view.settings.SettingsTopBar
-import kotlinx.coroutines.launch
 import me.zhanghai.compose.preference.LocalPreferenceFlow
 import me.zhanghai.compose.preference.footerPreference
 import me.zhanghai.compose.preference.preference

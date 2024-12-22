@@ -67,7 +67,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.nltv.chafenqi.extension.TEAM_BULLETIN_MESSAGE_LENGTH
 import com.nltv.chafenqi.extension.TEAM_CODE_LENGTH
 import com.nltv.chafenqi.extension.TEAM_NAME_LENGTH
 import com.nltv.chafenqi.extension.TEAM_REMARKS_LENGTH
@@ -76,7 +75,6 @@ import com.nltv.chafenqi.model.team.TeamCreatePayload
 import com.nltv.chafenqi.networking.CFQTeamServer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.contracts.contract
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
