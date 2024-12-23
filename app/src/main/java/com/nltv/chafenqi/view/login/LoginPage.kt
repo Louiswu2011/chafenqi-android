@@ -92,7 +92,7 @@ fun LoginPage() {
             token,
             username,
             context,
-            settings.get<Boolean>("loginAutoUpdateSongList") == true,
+            settings.get<Boolean>("loginAutoUpdateSongList") ?: true,
             userState,
             snackbarHostState,
             loadFromCache = true
@@ -278,7 +278,7 @@ fun LoginField(snackbarHostState: SnackbarHostState) {
                             username,
                             password.sha256(),
                             context,
-                            settings.get<Boolean>("loginAutoUpdateSongList") == true,
+                            settings.get<Boolean>("loginAutoUpdateSongList") ?: true,
                             userState,
                             snackbarHostState
                         )

@@ -118,7 +118,7 @@ fun HomePage(navController: NavController) {
                     }
                 },
                 navigationIcon = {
-                    if (settings.get<Boolean>("homeShowRefreshButton") == true) {
+                    if (settings.get<Boolean>("homeShowRefreshButton") ?: false) {
                         IconButton(onClick = { model.refreshUserData(userState, context) }) {
                             Icon(imageVector = Icons.Default.Refresh, contentDescription = "刷新")
                         }
@@ -158,7 +158,7 @@ fun HomePage(navController: NavController) {
                         } else {
                             HomePageNameplateSection(navController)
 
-                            if (settings.get<Boolean>("homeShowTeamButton") == true) {
+                            if (settings.get<Boolean>("homeShowTeamButton") ?: true) {
                                 HomePageTeamSection(navController)
                             }
 

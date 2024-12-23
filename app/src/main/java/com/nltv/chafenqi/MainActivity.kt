@@ -46,6 +46,9 @@ import com.nltv.chafenqi.view.home.recent.HomeRecentPage
 import com.nltv.chafenqi.view.home.recent.RecentDetailPage
 import com.nltv.chafenqi.view.home.team.HomeTeamLandingPage
 import com.nltv.chafenqi.view.home.team.settings.HomeTeamPageSettingsPage
+import com.nltv.chafenqi.view.home.team.settings.HomeTeamSettingsCoursePage
+import com.nltv.chafenqi.view.home.team.settings.HomeTeamSettingsMemberManagePage
+import com.nltv.chafenqi.view.home.team.settings.HomeTeamSettingsPendingMemberManagePage
 import com.nltv.chafenqi.view.info.InfoPage
 import com.nltv.chafenqi.view.info.chunithm.InfoChunithmCharacterPage
 import com.nltv.chafenqi.view.info.chunithm.InfoChunithmMapIconPage
@@ -209,6 +212,9 @@ fun LogonPage(navController: NavHostController) {
 
             composable(HomeNavItem.Home.route + "/team") { HomeTeamLandingPage(navController) }
             composable(HomeNavItem.Home.route + "/team/settings") { HomeTeamPageSettingsPage(navController) }
+            composable(HomeNavItem.Home.route + "/team/settings/member") { HomeTeamSettingsMemberManagePage(navController) }
+            composable(HomeNavItem.Home.route + "/team/settings/pending") { HomeTeamSettingsPendingMemberManagePage(navController) }
+            composable(HomeNavItem.Home.route + "/team/settings/course") { HomeTeamSettingsCoursePage(navController) }
 
             composable(HomeNavItem.Home.route + "/log") { HomeLogPage(navController) }
             composable(HomeNavItem.Home.route + "/log/maimai/{index}") {

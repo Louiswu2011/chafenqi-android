@@ -96,4 +96,6 @@ data class TeamBasicInfo(
             .fromEpochSeconds(createdAt)
             .daysUntil(other = Clock.System.now(), timeZone = TimeZone.currentSystemDefault())
             .absoluteValue
+
+    @Transient val courseTracks = listOf(courseTrack1, courseTrack2, courseTrack3)
 }
