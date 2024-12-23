@@ -279,30 +279,3 @@ fun HomeTeamPage(navController: NavController) {
         }
     }
 }
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun HomeTeamPageConfirmDialog(
-    icon: ImageVector,
-    title: String,
-    message: String,
-    onConfirm: () -> Unit,
-    onDismissRequest: () -> Unit
-) {
-    AlertDialog(
-        icon = { Icon(imageVector = icon, contentDescription = title) },
-        title = { Text(text = title) },
-        text = { Text(text = message) },
-        onDismissRequest = { onDismissRequest() },
-        confirmButton = {
-            TextButton(onClick = { onConfirm() }) {
-                Text("确认")
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = { onDismissRequest() }) {
-                Text("取消")
-            }
-        }
-    )
-}
