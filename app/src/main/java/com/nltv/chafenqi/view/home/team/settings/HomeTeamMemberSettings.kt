@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -41,12 +42,16 @@ import com.michaelflisar.composepreferences.core.hierarchy.PreferenceRootScope
 import com.nltv.chafenqi.extension.toDateString
 import com.nltv.chafenqi.extension.toHalfWidth
 import com.nltv.chafenqi.model.team.TeamMember
+import com.nltv.chafenqi.networking.CFQTeamServer
 import com.nltv.chafenqi.view.home.HomeNavItem
 import com.nltv.chafenqi.view.home.team.HomeTeamPageViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeTeamSettingsMemberManagePage(navController: NavController) {
+    val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val model: HomeTeamPageViewModel = viewModel(
@@ -84,6 +89,7 @@ fun HomeTeamSettingsMemberManagePage(navController: NavController) {
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(
                 count = state.team.members.size,
@@ -93,8 +99,39 @@ fun HomeTeamSettingsMemberManagePage(navController: NavController) {
                 HomeTeamSettingsMemberEntry(
                     member = member,
                     isLeader = member.userId == state.team.info.leaderUserId,
-                    onKick = {  },
-                    onTransfer = {  }
+                    onKick = {
+                        scope.launch(Dispatchers.IO) {
+                            val result = CFQTeamServer.adminKickMember(
+                                authToken = model.token,
+                                game = model.mode,
+                                teamId = state.team.info.id,
+                                memberId = member.userId
+                            )
+                            if (result.isEmpty()) {
+                                snackbarHostState.showSnackbar("移除成员成功")
+                                model.refresh()
+                            } else {
+                                snackbarHostState.showSnackbar("移除成员失败：$result")
+                            }
+                        }
+                    },
+                    onTransfer = {
+                        scope.launch(Dispatchers.IO) {
+                            val result = CFQTeamServer.adminTransferOwnership(
+                                authToken = model.token,
+                                game = model.mode,
+                                teamId = state.team.info.id,
+                                newLeaderUserId = member.userId
+                            )
+                            if (result.isEmpty()) {
+                                snackbarHostState.showSnackbar("转让队长成功")
+                                model.refresh()
+                                navController.navigateUp()
+                            } else {
+                                snackbarHostState.showSnackbar("转让队长失败：$result")
+                            }
+                        }
+                    }
                 )
             }
         }
@@ -115,7 +152,8 @@ fun HomeTeamSettingsMemberEntry(
 
     Row (
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .padding(horizontal = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -134,7 +172,7 @@ fun HomeTeamSettingsMemberEntry(
             TextButton(
                 onClick = {
                     if (confirmTransfer) {
-
+                        onTransfer()
                     }
 
                     confirmTransfer = true
@@ -142,13 +180,13 @@ fun HomeTeamSettingsMemberEntry(
                 },
                 enabled = !isLeader
             ) {
-                Text(text = if (confirmTransfer) "确认转让" else "转让")
+                Text(text = if (confirmTransfer) "确认转让" else "转让队长")
             }
 
             TextButton(
                 onClick = {
                     if (confirmKick) {
-
+                        onKick()
                     }
 
                     confirmKick = true
@@ -156,7 +194,7 @@ fun HomeTeamSettingsMemberEntry(
                 },
                 enabled = !isLeader
             ) {
-                Text(text = if (confirmKick) "确认移除" else "移除", color = MaterialTheme.colorScheme.error)
+                Text(text = if (confirmKick) "确认移除" else "移除")
             }
         }
     }
