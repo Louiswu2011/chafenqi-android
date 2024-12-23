@@ -28,8 +28,10 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.michaelflisar.composepreferences.core.PreferenceDivider
 import com.michaelflisar.composepreferences.core.PreferenceInfo
 import com.michaelflisar.composepreferences.core.PreferenceScreen
@@ -37,6 +39,7 @@ import com.michaelflisar.composepreferences.core.PreferenceSectionHeader
 import com.michaelflisar.composepreferences.core.hierarchy.PreferenceRootScope
 import com.michaelflisar.composepreferences.screen.button.PreferenceButton
 import com.michaelflisar.composepreferences.screen.list.PreferenceList
+import com.nltv.chafenqi.view.home.HomeNavItem
 import com.nltv.chafenqi.view.home.team.HomeTeamPageViewModel
 import com.nltv.chafenqi.view.home.team.settings.TeamSettings
 
@@ -82,7 +85,11 @@ fun PreferenceRootScope.TeamCourseSettings(
     navController: NavController,
     snackbarHostState: SnackbarHostState
 ) {
-    val model: HomeTeamPageViewModel = viewModel()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val model: HomeTeamPageViewModel = viewModel(
+        viewModelStoreOwner = navBackStackEntry?.let { navController.getBackStackEntry(HomeNavItem.Home.route + "/team") }
+            ?: LocalViewModelStoreOwner.current!!
+    )
     val state by model.uiState.collectAsStateWithLifecycle()
 
     var life by remember { mutableIntStateOf(state.team.info.courseHealth) }

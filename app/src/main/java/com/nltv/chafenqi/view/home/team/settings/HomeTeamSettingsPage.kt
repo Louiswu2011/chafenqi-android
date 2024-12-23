@@ -40,8 +40,10 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.maxkeppeker.sheets.core.models.base.Header
 import com.maxkeppeker.sheets.core.models.base.IconSource
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
@@ -114,9 +116,13 @@ fun PreferenceRootScope.TeamSettings(
     snackbarHostState: SnackbarHostState
 ) {
     val scope = rememberCoroutineScope()
-    val model: HomeTeamPageViewModel = viewModel()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val model: HomeTeamPageViewModel = viewModel(
+        viewModelStoreOwner = navBackStackEntry?.let { navController.getBackStackEntry(HomeNavItem.Home.route + "/team") }
+            ?: LocalViewModelStoreOwner.current!!
+    )
     val state by model.uiState.collectAsStateWithLifecycle()
-    var promotable by remember { mutableStateOf(state.team.info.promotable) }
+    var promotable by remember { mutableStateOf(false) }
 
     val editTeamNameUseCase = rememberUseCaseState()
     val editTeamStyleUseCase = rememberUseCaseState()
@@ -124,10 +130,6 @@ fun PreferenceRootScope.TeamSettings(
 
     val confirmRefreshTeamCodeUseCase = rememberUseCaseState()
     val confirmDeleteTeamUseCase = rememberUseCaseState()
-
-    LaunchedEffect(Unit) {
-        model.refresh()
-    }
 
     val editTeamNameInputs = listOf(
         InputTextField(
@@ -153,6 +155,11 @@ fun PreferenceRootScope.TeamSettings(
             key = "newTeamRemarks"
         )
     )
+
+    LaunchedEffect(Unit) {
+        // TODO: Fix promotable not updating
+        promotable = state.team.info.promotable
+    }
 
     InputDialog(
         state = editTeamNameUseCase,

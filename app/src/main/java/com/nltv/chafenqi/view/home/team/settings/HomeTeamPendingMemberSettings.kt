@@ -14,18 +14,27 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.michaelflisar.composepreferences.core.PreferenceScreen
 import com.michaelflisar.composepreferences.core.hierarchy.PreferenceRootScope
-import com.michaelflisar.composepreferences.core.hierarchy.PreferenceScope
-import com.nltv.chafenqi.view.home.team.settings.TeamMemberManageSettings
+import com.nltv.chafenqi.view.home.HomeNavItem
+import com.nltv.chafenqi.view.home.team.HomeTeamPageViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeTeamSettingsPendingMemberManagePage(navController: NavController) {
     val snackbarHostState = remember { SnackbarHostState() }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val model: HomeTeamPageViewModel = viewModel(
+        viewModelStoreOwner = navBackStackEntry?.let { navController.getBackStackEntry(HomeNavItem.Home.route + "/team") }
+            ?: LocalViewModelStoreOwner.current!!
+    )
 
     Scaffold (
         topBar = {
