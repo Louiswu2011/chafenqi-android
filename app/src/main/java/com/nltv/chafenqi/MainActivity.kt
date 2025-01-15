@@ -34,6 +34,7 @@ import coil.memory.MemoryCache
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
+import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.ui.theme.ChafenqiTheme
 import com.nltv.chafenqi.view.home.HomeNavItem
 import com.nltv.chafenqi.view.home.HomePage
@@ -133,7 +134,7 @@ fun ChafenqiApp() {
     Coil.setImageLoader(imageLoader)
 
     LaunchedEffect(Unit) {
-        // CFQServer.setDefaultServerPath(context.getString(R.string.serverAddress))
+        CFQServer.setDefaultServerPath("http://192.168.1.151:8998")
     }
 
     ChafenqiTheme {

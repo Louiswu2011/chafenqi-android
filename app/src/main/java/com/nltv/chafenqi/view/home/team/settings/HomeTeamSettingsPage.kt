@@ -122,7 +122,7 @@ fun PreferenceRootScope.TeamSettings(
             ?: LocalViewModelStoreOwner.current!!
     )
     val state by model.uiState.collectAsStateWithLifecycle()
-    var promotable by remember { mutableStateOf(false) }
+    var promotable by remember { mutableStateOf(state.team.info.promotable) }
 
     val editTeamNameUseCase = rememberUseCaseState()
     val editTeamStyleUseCase = rememberUseCaseState()
@@ -155,11 +155,6 @@ fun PreferenceRootScope.TeamSettings(
             key = "newTeamRemarks"
         )
     )
-
-    LaunchedEffect(Unit) {
-        // TODO: Fix promotable not updating
-        promotable = state.team.info.promotable
-    }
 
     InputDialog(
         state = editTeamNameUseCase,

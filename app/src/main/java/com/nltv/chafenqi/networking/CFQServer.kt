@@ -42,7 +42,7 @@ import java.util.concurrent.TimeUnit
 
 class CFQServer {
     companion object {
-        var defaultPath = "http://192.168.1.170:8998"
+        var defaultPath = "http://192.168.1.151:8998"
 
         fun setDefaultServerPath(path: String) {
             defaultPath = path
@@ -135,11 +135,6 @@ class CFQServer {
                 Log.d("CFQServer", "Response status: ${response.status}")
                 Log.d("CFQServer", "Response headers: ${response.headers}")
                 Log.d("CFQServer", "Response body: ${response.bodyAsText()}")
-
-//                if (response.status != HttpStatusCode.OK && shouldHandleErrorCode) {
-//                    Log.e("CFQServer", "Server responded with status ${response.status.value}, body: ${response.bodyAsText()}")
-//                    handleErrorCode(response.bodyAsText())
-//                }
                 return response
             } catch (e: Exception) {
                 Log.e("CFQServer", "Failed to fetch from server, error: $e")
@@ -747,7 +742,7 @@ class CFQServer {
             }
 
         // TODO: Add server side implementation
-        suspend fun statResourceVersion(tag: String): Int =
+        suspend fun statResourceVersion(tag: String): String =
             try {
                 val response =
                     fetchFromServer(
@@ -758,10 +753,10 @@ class CFQServer {
                                 "tag" to tag,
                             ),
                     ).bodyAsText()
-                response.toInt()
+                response
             } catch (e: Exception) {
-                Log.e("CFQServer", "Failed to get music list version, $e, defaulting to 0.")
-                0
+                Log.e("CFQServer", "Failed to get music list version, $e, defaulting to empty.")
+                ""
             }
 
         // TODO: Add server side implementation
