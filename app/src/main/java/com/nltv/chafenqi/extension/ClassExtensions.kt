@@ -124,7 +124,7 @@ fun Long.toYMDString(): String {
 }
 
 fun Int.toChunithmCoverPath(): String =
-    "${CFQServer.defaultPath}/api/chunithm/cover?musicId=${this}"
+    "${CFQServer.defaultPath}/api/resource/chunithm/cover?musicId=${this}"
 
 fun Int.toMaimaiLevelString(): String {
     if (this <= 6) return this.toString()

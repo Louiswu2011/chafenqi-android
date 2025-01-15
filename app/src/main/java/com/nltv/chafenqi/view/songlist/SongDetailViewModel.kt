@@ -86,7 +86,7 @@ class SongDetailViewModel : ViewModel() {
             viewModelScope.launch {
                 _uiState.update {
                     it.copy(
-                        coverUrl = "${CFQServer.defaultPath}/api/chunithm/cover?musicId=${chuMusic?.musicId}",
+                        coverUrl = "${CFQServer.defaultPath}/api/resource/chunithm/cover?musicId=${chuMusic?.musicId}",
                         title = chuMusic?.title ?: "",
                         artist = chuMusic?.artist ?: "",
                         constants = chuMusic?.charts?.constants?.map { String.format("%.1f", it) }
