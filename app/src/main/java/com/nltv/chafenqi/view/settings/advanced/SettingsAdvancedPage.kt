@@ -38,7 +38,6 @@ fun SettingsAdvancedPage(navController: NavController) {
     var showJwtToken by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         model.getCoilDiskCacheSize(context)
-        model.updateSongListVersion()
     }
 
     if (model.showReloadListAlert) {
@@ -80,12 +79,6 @@ fun SettingsAdvancedPage(navController: NavController) {
             preference(
                 key = "refreshSongList",
                 title = { Text(text = "刷新歌曲列表") },
-                summary = {
-                    Column {
-                        Text(text = "舞萌DX更新日期：${model.maiSongListVersionString}")
-                        Text(text = "中二节奏更新日期：${model.chuSongListVersionString}")
-                    }
-                },
                 onClick = {
                     model.showReloadListAlert = true
                 }

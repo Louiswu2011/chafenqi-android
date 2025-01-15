@@ -234,27 +234,22 @@ class CFQServer {
             }
         }
 
-        // TODO: Get premium time from user info
-        suspend fun apiCheckPremiumTime(username: String): Double =
+        suspend fun apiCheckPremiumTime(token: String): Long =
             try {
                 val response =
                     fetchFromServer(
                         "POST",
-                        "api/premiumTime",
-                        payload =
-                            hashMapOf(
-                                "username" to username,
-                            ),
+                        "api/user/info",
+                        token = token
                     )
-                response.bodyAsText().toDouble()
+                decoder.decodeFromString<UserInfo>(response.bodyAsText()).premiumUntil
             } catch (e: Exception) {
                 Log.e("CFQServer", "Failed to get premium time: ${e.localizedMessage}")
-                0.0
+                0L
             }
 
-        // TODO: Add server side implementation
         suspend fun apiRedeem(
-            username: String,
+            token: String,
             redeemCode: String,
         ): Boolean {
             Log.i("CFQServer", "Redeeming code $redeemCode")
@@ -262,12 +257,12 @@ class CFQServer {
                 val response =
                     fetchFromServer(
                         "POST",
-                        "api/redeemCode",
+                        "api/user/redeem",
                         payload =
                             hashMapOf(
-                                "username" to username,
                                 "code" to redeemCode,
                             ),
+                        token = token
                     )
                 response.status.value == 200
             } catch (e: Exception) {

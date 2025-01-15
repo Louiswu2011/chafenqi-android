@@ -80,9 +80,6 @@ class SettingsPageViewModel : ViewModel() {
     val token = user.token
     val bindQQ = user.remoteOptions.bindQQ
 
-    var maiSongListVersionString by mutableStateOf("")
-    var chuSongListVersionString by mutableStateOf("")
-
     var fishTokenState by mutableStateOf(user.remoteOptions.fishToken)
         private set
 
@@ -110,22 +107,6 @@ class SettingsPageViewModel : ViewModel() {
         return versionData.isLatest(versionCode, buildNumber)
     }
 
-    @OptIn(FormatStringsInDatetimeFormats::class)
-    fun updateSongListVersion() {
-        viewModelScope.launch(Dispatchers.IO) {
-            maiSongListVersionString = Instant.fromEpochSeconds(CFQPersistentData.Maimai.version.toLong())
-                .toLocalDateTime(TimeZone.currentSystemDefault())
-                .format(LocalDateTime.Format {
-                    byUnicodePattern("yyyy-MM-dd")
-                })
-            chuSongListVersionString = Instant.fromEpochSeconds(CFQPersistentData.Chunithm.version.toLong())
-                .toLocalDateTime(TimeZone.currentSystemDefault())
-                .format(LocalDateTime.Format {
-                    byUnicodePattern("yyyy-MM-dd")
-                })
-        }
-    }
-
     fun updateSponsorList() {
         viewModelScope.launch {
             _uiState.update { currentValue ->
@@ -139,9 +120,9 @@ class SettingsPageViewModel : ViewModel() {
     @OptIn(FormatStringsInDatetimeFormats::class)
     fun updateUserPremiumTime() {
         viewModelScope.launch {
-            val time = CFQServer.apiCheckPremiumTime(username)
+            val time = CFQServer.apiCheckPremiumTime(user.token)
             val nowInstant = Clock.System.now()
-            val premiumInstant = Instant.fromEpochSeconds(time.toLong())
+            val premiumInstant = Instant.fromEpochSeconds(time)
             val dateString = premiumInstant
                 .toLocalDateTime(TimeZone.currentSystemDefault())
                 .format(LocalDateTime.Format { byUnicodePattern("yyyy-MM-dd") })

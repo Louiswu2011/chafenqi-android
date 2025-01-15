@@ -212,13 +212,13 @@ fun LoginField(snackbarHostState: SnackbarHostState) {
 
     val usernameTextFieldKeyboardOptions = KeyboardOptions(
         capitalization = KeyboardCapitalization.None,
-        autoCorrect = false,
+        autoCorrectEnabled = false,
         keyboardType = KeyboardType.Text,
         imeAction = ImeAction.Next
     )
     val passwordTextFieldKeyboardOptions = KeyboardOptions(
         capitalization = KeyboardCapitalization.None,
-        autoCorrect = false,
+        autoCorrectEnabled = false,
         keyboardType = KeyboardType.Password,
         imeAction = ImeAction.Done
     )
