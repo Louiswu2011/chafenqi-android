@@ -13,12 +13,9 @@ import androidx.compose.material.icons.outlined.GroupAdd
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nltv.chafenqi.extension.toChunithmCoverPath
@@ -161,6 +158,40 @@ class HomeTeamPageViewModel : ViewModel() {
             0 -> chunithmDifficultyColors[courseTrack.levelIndex].value.toLong()
             1 -> maimaiDifficultyColors[courseTrack.levelIndex].value.toLong()
             else -> Color.Transparent.value.toLong()
+        }
+    }
+
+    fun deleteBulletinBoardEntry(id: Int, snackbarHostState: SnackbarHostState) {
+        viewModelScope.launch {
+            val result = CFQTeamServer.deleteTeamBulletinBoardEntry(token, mode, _uiState.value.team.info.id, id)
+            if (result.isEmpty()) {
+                refresh()
+            } else {
+                snackbarHostState.showSnackbar("删除失败，$result")
+            }
+        }
+    }
+
+    fun pinBulletinBoardEntry(id: Int, snackbarHostState: SnackbarHostState) {
+        viewModelScope.launch {
+            val result = CFQTeamServer.adminSetPinnedMessage(token, mode, _uiState.value.team.info.id, id)
+            if (result) {
+                refresh()
+            } else {
+                snackbarHostState.showSnackbar("置顶失败，请联系开发者")
+            }
+        }
+    }
+
+    fun unpinBulletinBoardEntry(snackbarHostState: SnackbarHostState) {
+        viewModelScope.launch {
+            val result =
+                CFQTeamServer.adminResetPinnedMessage(token, mode, _uiState.value.team.info.id)
+            if (result) {
+                refresh()
+            } else {
+                snackbarHostState.showSnackbar("取消置顶失败，请联系开发者")
+            }
         }
     }
 

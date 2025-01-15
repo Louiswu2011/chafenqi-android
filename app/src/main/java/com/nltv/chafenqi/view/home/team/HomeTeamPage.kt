@@ -252,7 +252,7 @@ fun HomeTeamPage(navController: NavController) {
                     }
 
                     3 -> {
-                        HomeTeamPageBulletinBoardSection()
+                        HomeTeamPageBulletinBoardSection(snackbarHostState)
                     }
                 }
             }

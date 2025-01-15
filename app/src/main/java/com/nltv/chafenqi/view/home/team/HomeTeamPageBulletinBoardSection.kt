@@ -1,5 +1,8 @@
 package com.nltv.chafenqi.view.home.team
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,11 +15,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.ListItem
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -44,27 +55,114 @@ import com.nltv.chafenqi.model.team.TeamBulletinBoardEntry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HomeTeamPageBulletinBoardSection() {
+fun HomeTeamPageBulletinBoardSection(snackbarHostState: SnackbarHostState) {
     val model: HomeTeamPageViewModel = viewModel()
     val state by model.uiState.collectAsStateWithLifecycle()
+
+    var selectedEntryId by remember { mutableStateOf<Int?>(null) }
 
     LazyColumn (
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(horizontal = 8.dp)
     ) {
+        if (state.team.info.pinnedMessageId != null) {
+            if (state.team.info.pinnedMessageId!! >= 0) {
+                item {
+                    HomeTeamPageBulletinBoardEntry(entry = state.team.bulletinBoard.firstOrNull { it.id == state.team.info.pinnedMessageId }
+                        ?: return@item, modifier = Modifier.combinedClickable(
+                        onClick = {},
+                        onLongClick = {
+                            selectedEntryId = state.team.bulletinBoard.first { it.id == state.team.info.pinnedMessageId }.id
+                        }
+                    ))
+                }
+                item {
+                    HorizontalDivider()
+                }
+            }
+        }
         items(
-            count = state.team.bulletinBoard.size,
-            key = { index -> state.team.bulletinBoard[index].id },
+            count = state.team.bulletinBoard.filterNot { it.id == state.team.info.pinnedMessageId }.size,
+            key = { index -> state.team.bulletinBoard.filterNot { it.id == state.team.info.pinnedMessageId }[index].id },
         ) { index ->
-            HomeTeamPageBulletinBoardEntry(entry = state.team.bulletinBoard[index])
+            HomeTeamPageBulletinBoardEntry(
+                entry = state.team.bulletinBoard.filterNot { it.id == state.team.info.pinnedMessageId }[index],
+                modifier = Modifier.combinedClickable(
+                    onClick = {},
+                    onLongClick = {
+                        selectedEntryId = state.team.bulletinBoard.filterNot { it.id == state.team.info.pinnedMessageId }[index].id
+                    }
+                )
+            )
+        }
+    }
+
+    if (selectedEntryId != null) {
+        HomeTeamPageBulletinBoardActionSheet(state.team.bulletinBoard.first { it.id == selectedEntryId }, model.userId, state.isTeamAdmin, selectedEntryId!! == state.team.info.pinnedMessageId, snackbarHostState) { selectedEntryId = null }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@Composable
+fun HomeTeamPageBulletinBoardActionSheet(
+    selectedEntry: TeamBulletinBoardEntry,
+    userId: Long,
+    isLeader: Boolean,
+    isPinned: Boolean,
+    snackbarHostState: SnackbarHostState,
+    onDismiss: () -> Unit
+) {
+    val model: HomeTeamPageViewModel = viewModel()
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss
+    ) {
+        ListItem(
+            icon = {
+                Icon(
+                    Icons.Default.DeleteForever,
+                    contentDescription = "删除",
+                    modifier = Modifier.padding(end = 10.dp),
+                    tint = if (selectedEntry.userId == userId) Color.Red else Color.Gray
+                )
+            },
+            modifier = Modifier.clickable(enabled = selectedEntry.userId == userId) {
+                model.deleteBulletinBoardEntry(selectedEntry.id, snackbarHostState)
+                onDismiss()
+            }
+        ) {
+            Text(text = "删除", color = if (selectedEntry.userId == userId) Color.Black else Color.Gray)
+        }
+        if (isLeader) {
+            ListItem(
+                icon = {
+                    Icon(
+                        Icons.Default.PushPin,
+                        contentDescription = "置顶",
+                        modifier = Modifier.padding(end = 10.dp)
+                    )
+                },
+                modifier = Modifier.clickable {
+                    if (isPinned) {
+                        model.unpinBulletinBoardEntry(snackbarHostState)
+                    } else {
+                        model.pinBulletinBoardEntry(selectedEntry.id, snackbarHostState)
+                    }
+                    onDismiss()
+                }
+            ) {
+                Text(text = if (isPinned) "取消置顶" else "置顶")
+            }
         }
     }
 }
 
 @Composable
 fun HomeTeamPageBulletinBoardEntry(
-    entry: TeamBulletinBoardEntry
+    entry: TeamBulletinBoardEntry,
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     val model: HomeTeamPageViewModel = viewModel()
@@ -75,14 +173,16 @@ fun HomeTeamPageBulletinBoardEntry(
         modifier = Modifier
             .fillMaxWidth()
             .height(96.dp)
-            .padding(vertical = 8.dp),
+            .padding(vertical = 8.dp)
+            .then(modifier),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 4.dp,
             pressedElevation = 6.dp
         )
     ) {
         Row (
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)

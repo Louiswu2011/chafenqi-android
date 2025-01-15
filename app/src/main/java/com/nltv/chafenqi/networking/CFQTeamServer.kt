@@ -428,7 +428,7 @@ object CFQTeamServer {
         }
     }
 
-    suspend fun adminSetPinnedMessage(authToken: String, game: Int, teamId: Int, pinnedMessageId: Long): Boolean {
+    suspend fun adminSetPinnedMessage(authToken: String, game: Int, teamId: Int, pinnedMessageId: Int): Boolean {
         try {
             val response = fetchFromTeam(
                 method = HttpMethod.Post,
