@@ -1,9 +1,12 @@
 package com.nltv.chafenqi.view.home.team
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -16,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -46,6 +50,8 @@ fun HomeTeamPageCourseSection() {
     val model: HomeTeamPageViewModel = viewModel()
     val state by model.uiState.collectAsStateWithLifecycle()
 
+    var expanded by remember { mutableStateOf(true) }
+
     if (
         state.team.info.courseTrack1 == null &&
         state.team.info.courseTrack2 == null &&
@@ -70,45 +76,69 @@ fun HomeTeamPageCourseSection() {
                         .fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = "当前组曲",
-                            fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                    }
-
-                    HomeTeamCourseItem(1, state.team.info.courseTrack1!!)
-                    HomeTeamCourseItem(2, state.team.info.courseTrack2!!)
-                    HomeTeamCourseItem(3, state.team.info.courseTrack3!!)
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                    Box {
                         Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End
                         ) {
-                            Text("游玩人数：")
-                            Text("${state.team.courseRecords.size}", fontWeight = FontWeight.Bold)
-                        }
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            Text("通过人数：")
                             Text(
-                                "${state.team.courseRecords.filter { it.cleared }.size}",
-                                fontWeight = FontWeight.Bold
+                                text = if (expanded) "收起" else "展开",
+                                modifier = Modifier.clickable { expanded = !expanded },
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.primary
                             )
                         }
 
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = state.team.info.courseName,
+                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+                    }
+                    AnimatedVisibility(expanded) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            HomeTeamCourseItem(1, state.team.info.courseTrack1!!)
+                            HomeTeamCourseItem(2, state.team.info.courseTrack2!!)
+                            HomeTeamCourseItem(3, state.team.info.courseTrack3!!)
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                ) {
+                                    Text("游玩人数：")
+                                    Text(
+                                        "${state.team.courseRecords.size}",
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                ) {
+                                    Text("通过人数：")
+                                    Text(
+                                        "${state.team.courseRecords.filter { it.cleared }.size}",
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+
+                            }
+                        }
                     }
 
                     HorizontalDivider()

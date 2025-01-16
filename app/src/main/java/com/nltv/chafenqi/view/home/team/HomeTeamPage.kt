@@ -182,15 +182,6 @@ fun HomeTeamPage(navController: NavController) {
         floatingActionButton = {
             AnimatedContent(pagerState.currentPage, label = "team FAB switching") {
                 when (it) {
-                    2 -> {
-                        if (state.isTeamAdmin) {
-                            ExtendedFloatingActionButton(
-                                text = { Text("配置组曲") },
-                                icon = { Icon(Icons.Default.Settings, contentDescription = "配置组曲") },
-                                onClick = {}
-                            )
-                        }
-                    }
                     3 -> {
                         ExtendedFloatingActionButton(
                             text = { Text("发布留言") },
