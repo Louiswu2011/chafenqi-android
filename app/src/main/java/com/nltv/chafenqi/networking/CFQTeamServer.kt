@@ -77,7 +77,7 @@ object CFQTeamServer {
         Log.d("CFQTeamServer", "Response from ${method.value} $url:")
         Log.d("CFQTeamServer", "Response status: ${response.status}")
         Log.d("CFQTeamServer", "Response headers: ${response.headers}")
-        Log.d("CFQTeamServer", "Response body: ${response.bodyAsText()}")
+        Log.d("CFQTeamServer", "Response body: ${response.bodyAsText().take(50)}")
 
         return response
     }

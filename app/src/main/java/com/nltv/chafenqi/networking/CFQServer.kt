@@ -133,7 +133,7 @@ class CFQServer {
                 Log.d("CFQServer", "Response from $path:")
                 Log.d("CFQServer", "Response status: ${response.status}")
                 Log.d("CFQServer", "Response headers: ${response.headers}")
-                Log.d("CFQServer", "Response body: ${response.bodyAsText()}")
+                Log.d("CFQServer", "Response body: ${response.bodyAsText().take(50)}")
                 return response
             } catch (e: Exception) {
                 Log.e("CFQServer", "Failed to fetch from server, error: $e")
