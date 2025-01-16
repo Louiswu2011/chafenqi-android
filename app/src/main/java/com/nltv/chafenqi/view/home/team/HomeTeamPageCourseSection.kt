@@ -268,7 +268,7 @@ fun HomeTeamCourseItem(
     val model: HomeTeamPageViewModel = viewModel()
 
     var coverPath by remember { mutableStateOf(model.getCoverPath(course)) }
-    var diffColor by remember { mutableLongStateOf(model.getDifficultyColor(course)) }
+    var diffColor by remember { mutableLongStateOf(model.getDifficultyColorLong(course)) }
     var title by remember { mutableStateOf(model.getTitle(course)) }
     var artist by remember { mutableStateOf(model.getArtist(course)) }
     var difficultyString by remember { mutableStateOf(model.getDifficultyString(course).uppercase()) }

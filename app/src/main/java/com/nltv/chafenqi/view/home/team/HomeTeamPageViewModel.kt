@@ -153,7 +153,15 @@ class HomeTeamPageViewModel : ViewModel() {
         }
     }
 
-    fun getDifficultyColor(courseTrack: TeamBasicInfo.CourseTrack): Long {
+    fun getDifficultyColor(courseTrack: TeamBasicInfo.CourseTrack): Color {
+        return when (mode) {
+            0 -> chunithmDifficultyColors[courseTrack.levelIndex]
+            1 -> maimaiDifficultyColors[courseTrack.levelIndex]
+            else -> Color.Transparent
+        }
+    }
+
+    fun getDifficultyColorLong(courseTrack: TeamBasicInfo.CourseTrack): Long {
         return when (mode) {
             0 -> chunithmDifficultyColors[courseTrack.levelIndex].value.toLong()
             1 -> maimaiDifficultyColors[courseTrack.levelIndex].value.toLong()
