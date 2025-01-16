@@ -15,7 +15,6 @@ import com.nltv.chafenqi.data.leaderboard.MaimaiRatingLeaderboardItem
 import com.nltv.chafenqi.data.leaderboard.MaimaiTotalPlayedLeaderboardItem
 import com.nltv.chafenqi.data.leaderboard.MaimaiTotalScoreLeaderboardItem
 import com.nltv.chafenqi.model.user.UserInfo
-import com.nltv.chafenqi.storage.user.MaimaiB50Info
 import com.nltv.chafenqi.util.AppAnnouncement
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -61,9 +60,9 @@ class CFQServer {
                 }
                 engine {
                     config {
-                        connectTimeout(10, TimeUnit.SECONDS)
-                        readTimeout(10, TimeUnit.SECONDS)
-                        writeTimeout(10, TimeUnit.SECONDS)
+                        connectTimeout(30, TimeUnit.SECONDS)
+                        readTimeout(30, TimeUnit.SECONDS)
+                        writeTimeout(30, TimeUnit.SECONDS)
                     }
                 }
             }
@@ -974,21 +973,14 @@ class CFQServer {
         }
 
         // TODO: Add server side implementation
-        suspend fun apiFetchUserImage(
-            authToken: String,
-            gameType: String,
-            imageType: String,
+        suspend fun apiFetchB30Image(
+            authToken: String
         ): ByteArray? {
             try {
                 val response =
                     fetchFromServer(
                         method = "GET",
-                        path = "api/image",
-                        queries =
-                            hashMapOf(
-                                "game" to gameType,
-                                "type" to imageType,
-                            ),
+                        path = "api/user/chunithm/image/b30",
                         token = authToken,
                     )
                 return response.body()
@@ -998,16 +990,14 @@ class CFQServer {
             }
         }
 
-        suspend fun apiFetchB50Image(data: MaimaiB50Info): ByteArray? {
+        suspend fun apiFetchB50Image(authToken: String): ByteArray? {
             try {
                 val response =
-                    client.post("$defaultPath/api/image/b50") {
-                        accept(ContentType.Any)
-                        Json.encodeToString(data).also {
-                            this.contentType(ContentType.Application.Json)
-                            this.setBody(it)
-                        }
-                    }
+                    fetchFromServer(
+                        method = "GET",
+                        path = "api/user/maimai/image/b50",
+                        token = authToken,
+                    )
                 return response.body()
             } catch (e: Exception) {
                 Log.e("CFQServer", "Failed to fetch b50 image: ${e.localizedMessage}")

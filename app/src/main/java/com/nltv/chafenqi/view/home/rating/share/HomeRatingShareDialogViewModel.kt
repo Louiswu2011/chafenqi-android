@@ -34,7 +34,7 @@ class HomeRatingShareDialogViewModel: ViewModel() {
                             imageUri = null
                         )
                     }
-                    val byteArray = CFQServer.apiFetchUserImage(user.token, "0", "b30")
+                    val byteArray = CFQServer.apiFetchB30Image(user.token)
                     if (byteArray != null) {
                         val file = File(context.cacheDir, "b30.jpg")
                         file.delete()
@@ -66,8 +66,7 @@ class HomeRatingShareDialogViewModel: ViewModel() {
                             imageUri = null
                         )
                     }
-                    val info = user.makeB50Info()
-                    val byteArray = CFQServer.apiFetchB50Image(info)
+                    val byteArray = CFQServer.apiFetchB50Image(user.token)
                     if (byteArray != null) {
                         val file = File(context.cacheDir, "b50.jpg")
                         file.delete()
