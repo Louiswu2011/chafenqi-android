@@ -27,6 +27,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import coil.Coil
 import coil.ImageLoader
@@ -188,21 +189,6 @@ fun LogonPage(navController: NavHostController) {
             navController = navController,
             startDestination = HomeNavItem.Home.route,
             modifier = Modifier.padding(innerPadding),
-            /*enterTransition = {
-                fadeIn(tween(300, easing = LinearEasing)) +
-                        slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.Start, animationSpec = tween(300, easing = EaseIn))
-            },
-            exitTransition = {
-                fadeOut(tween(300, easing = LinearEasing)) +
-                        slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.End, animationSpec = tween(300, easing = EaseOut))
-            },
-            popEnterTransition = {
-                fadeIn(tween(300, easing = LinearEasing))
-            },*/
-            /*popExitTransition = {
-                fadeOut(tween(300, easing = LinearEasing)) +
-                        slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.End, animationSpec = tween(300, easing = EaseOut))
-            }*/
         ) {
             composable(HomeNavItem.Home.route) { HomePage(navController = navController) }
 

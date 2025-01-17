@@ -77,6 +77,7 @@ data class TeamBasicInfo(
         )
     }
 
+    @Serializable
     class CourseTrack(
         val musicId: Long,
         val levelIndex: Int,

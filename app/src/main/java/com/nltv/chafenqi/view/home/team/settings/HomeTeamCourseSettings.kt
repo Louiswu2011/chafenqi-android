@@ -1,6 +1,5 @@
 package com.nltv.chafenqi.view.home.team.settings
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
@@ -20,7 +19,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.TextField
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material.icons.Icons
@@ -45,12 +43,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -69,6 +67,16 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.compose.AsyncImage
+import com.maxkeppeker.sheets.core.models.base.Header
+import com.maxkeppeker.sheets.core.models.base.IconSource
+import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
+import com.maxkeppeler.sheets.info.InfoDialog
+import com.maxkeppeler.sheets.info.models.InfoBody
+import com.maxkeppeler.sheets.info.models.InfoSelection
+import com.maxkeppeler.sheets.input.InputDialog
+import com.maxkeppeler.sheets.input.models.InputHeader
+import com.maxkeppeler.sheets.input.models.InputSelection
+import com.maxkeppeler.sheets.input.models.InputTextField
 import com.michaelflisar.composepreferences.core.PreferenceDivider
 import com.michaelflisar.composepreferences.core.PreferenceInfo
 import com.michaelflisar.composepreferences.core.PreferenceScreen
@@ -80,22 +88,18 @@ import com.nltv.chafenqi.SCREEN_PADDING
 import com.nltv.chafenqi.extension.toChunithmCoverPath
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.model.team.TeamBasicInfo
-import com.nltv.chafenqi.storage.persistent.CFQPersistentData
+import com.nltv.chafenqi.model.team.TeamUpdateCoursePayload
+import com.nltv.chafenqi.networking.CFQTeamServer
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
-import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.view.home.HomeNavItem
 import com.nltv.chafenqi.view.home.team.HomeTeamPageViewModel
-import com.nltv.chafenqi.view.home.team.settings.TeamSettings
-import com.nltv.chafenqi.view.songlist.ChunithmLevelBadgeRow
-import com.nltv.chafenqi.view.songlist.ChunithmMusicListEntry
-import com.nltv.chafenqi.view.songlist.MaimaiLevelBadgeRow
-import com.nltv.chafenqi.view.songlist.MaimaiMusicListEntry
-import com.nltv.chafenqi.view.songlist.SongListPageViewModel
 import com.nltv.chafenqi.view.songlist.SongListSearchEmptyState
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyTitles
 import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -134,6 +138,7 @@ fun HomeTeamSettingsCoursePage(navController: NavController) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PreferenceRootScope.TeamCourseSettings(
     navController: NavController,
@@ -141,17 +146,55 @@ fun PreferenceRootScope.TeamCourseSettings(
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val model: HomeTeamPageViewModel = viewModel(
-        viewModelStoreOwner = navBackStackEntry?.let { navController.getBackStackEntry(HomeNavItem.Home.route + "/team") }
+        viewModelStoreOwner = navBackStackEntry?.let { navController.getBackStackEntry(HomeNavItem.Home.route + "/team/settings") }
             ?: LocalViewModelStoreOwner.current!!
     )
-    val state by model.uiState.collectAsStateWithLifecycle()
     val courseModel: HomeTeamCourseSettingViewModel = viewModel()
-    val courseState by courseModel.uiState.collectAsStateWithLifecycle()
 
-    var life by remember { mutableIntStateOf(state.team.info.courseHealth) }
-    var track1 by remember { mutableStateOf(state.team.info.courseTrack1) }
-    var track2 by remember { mutableStateOf(state.team.info.courseTrack2) }
-    var track3 by remember { mutableStateOf(state.team.info.courseTrack3) }
+    val editCourseNameUseCase = rememberUseCaseState()
+    val editCourseNameInputs = listOf(
+        InputTextField(
+            header = InputHeader(
+                title = "新组曲名称"
+            ),
+            key = "newCourseName"
+        )
+    )
+
+    val confirmUpdateCourseUseCase = rememberUseCaseState()
+
+    InputDialog(
+        state = editCourseNameUseCase,
+        selection = InputSelection(
+            input = editCourseNameInputs,
+            onPositiveClick = { result ->
+                val newName = result.getString("newCourseName")
+                if (newName != null) {
+                    courseModel.courseName = newName
+                }
+            }
+        )
+    )
+
+    InfoDialog(
+        state = confirmUpdateCourseUseCase,
+        header = Header.Default(
+            title = "更新组曲",
+            icon = IconSource(imageVector = Icons.Default.Refresh)
+        ),
+        body = InfoBody.Default(
+            bodyText = "确定要更新组曲吗？组曲信息每7天只能修改一次，且将会清空当前组曲排行榜。",
+        ),
+        selection = InfoSelection(
+            onPositiveClick = {
+                courseModel.upload(snackbarHostState)
+            }
+        )
+    )
+
+    LaunchedEffect(Unit) {
+        courseModel.refresh()
+    }
 
     PreferenceSectionHeader(
         title = { Text("基本信息") }
@@ -159,21 +202,21 @@ fun PreferenceRootScope.TeamCourseSettings(
 
     PreferenceButton(
         title = { Text("组曲名称") },
-        subtitle = { Text(if (state.team.info.courseName.isEmpty()) "暂未设置" else state.team.info.courseName) },
+        subtitle = { Text(if (courseModel.courseName.isEmpty()) "暂未设置" else courseModel.courseName) },
         icon = { Icon(Icons.Default.Ballot, contentDescription = "组曲名称") },
-        onClick = { /* TODO: Navigate to add course page */ }
+        onClick = { editCourseNameUseCase.show() }
     )
 
     PreferenceList(
         style = PreferenceList.Style.Spinner,
-        value = life,
-        onValueChange = { life = it },
+        value = courseModel.courseLife,
+        onValueChange = { courseModel.courseLife = it },
         items = listOf(1, 10, 50, 100, 200, 0),
         itemTextProvider = {
             if (it == 0) "无限制" else "$it"
         },
         title = { Text("生命值") },
-        subtitle = { Text(if (state.team.info.courseTrack1 == null) "暂未设置" else "${state.team.info.courseHealth}") },
+        subtitle = { Text(if (courseModel.courseTrack1 == null) "暂未设置" else "${courseModel.courseLife}") },
         icon = { Icon(Icons.Default.HeartBroken, contentDescription = "生命值") }
     )
 
@@ -188,13 +231,13 @@ fun PreferenceRootScope.TeamCourseSettings(
         subtitle = {
             Text(
                 buildAnnotatedString {
-                    if (track1 == null) {
+                    if (courseModel.courseTrack1 == null) {
                         append("暂未设定")
                     } else {
-                        append(model.getTitle(track1!!))
+                        append(model.getTitle(courseModel.courseTrack1!!))
                         append(" ")
-                        withStyle(style = SpanStyle(color = model.getDifficultyColor(track1!!))) {
-                            append(chunithmDifficultyTitles[track1!!.levelIndex])
+                        withStyle(style = SpanStyle(color = model.getDifficultyColor(courseModel.courseTrack1!!))) {
+                            append(chunithmDifficultyTitles[courseModel.courseTrack1!!.levelIndex])
                         }
                     }
                     toAnnotatedString()
@@ -210,13 +253,13 @@ fun PreferenceRootScope.TeamCourseSettings(
         subtitle = {
             Text(
                 buildAnnotatedString {
-                    if (track2 == null) {
+                    if (courseModel.courseTrack2 == null) {
                         append("暂未设定")
                     } else {
-                        append(model.getTitle(track2!!))
+                        append(model.getTitle(courseModel.courseTrack2!!))
                         append(" ")
-                        withStyle(style = SpanStyle(color = model.getDifficultyColor(track2!!))) {
-                            append(chunithmDifficultyTitles[track2!!.levelIndex])
+                        withStyle(style = SpanStyle(color = model.getDifficultyColor(courseModel.courseTrack2!!))) {
+                            append(chunithmDifficultyTitles[courseModel.courseTrack2!!.levelIndex])
                         }
                     }
                     toAnnotatedString()
@@ -232,13 +275,13 @@ fun PreferenceRootScope.TeamCourseSettings(
         subtitle = {
             Text(
                 buildAnnotatedString {
-                    if (track3 == null) {
+                    if (courseModel.courseTrack3 == null) {
                         append("暂未设定")
                     } else {
-                        append(model.getTitle(track3!!))
+                        append(model.getTitle(courseModel.courseTrack3!!))
                         append(" ")
-                        withStyle(style = SpanStyle(color = model.getDifficultyColor(track3!!))) {
-                            append(chunithmDifficultyTitles[track3!!.levelIndex])
+                        withStyle(style = SpanStyle(color = model.getDifficultyColor(courseModel.courseTrack3!!))) {
+                            append(chunithmDifficultyTitles[courseModel.courseTrack3!!.levelIndex])
                         }
                     }
                     toAnnotatedString()
@@ -256,7 +299,7 @@ fun PreferenceRootScope.TeamCourseSettings(
         title = { Text("更新组曲") },
         subtitle = { Text("组曲更新后将会重置当前排行榜") },
         icon = { Icon(Icons.Default.Refresh, contentDescription = "更新组曲") },
-        onClick = {  }
+        onClick = { confirmUpdateCourseUseCase.show() }
     )
 
     PreferenceInfo(
@@ -270,9 +313,9 @@ fun PreferenceRootScope.TeamCourseSettings(
             onDismiss = { courseModel.currentSelectedMusicSlot = null },
         ) { musicId, diff ->
             when (courseModel.currentSelectedMusicSlot!!) {
-                0 -> track1 = TeamBasicInfo.CourseTrack(musicId.toLong(), diff)
-                1 -> track2 = TeamBasicInfo.CourseTrack(musicId.toLong(), diff)
-                2 -> track3 = TeamBasicInfo.CourseTrack(musicId.toLong(), diff)
+                0 -> courseModel.courseTrack1 = TeamBasicInfo.CourseTrack(musicId.toLong(), diff)
+                1 -> courseModel.courseTrack2 = TeamBasicInfo.CourseTrack(musicId.toLong(), diff)
+                2 -> courseModel.courseTrack3 = TeamBasicInfo.CourseTrack(musicId.toLong(), diff)
             }
             courseModel.currentSelectedMusicSlot = null
         }
