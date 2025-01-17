@@ -2,6 +2,7 @@ package com.nltv.chafenqi.networking
 
 import android.util.Log
 import com.nltv.chafenqi.extension.toGameTypeString
+import com.nltv.chafenqi.model.team.TeamBasicInfo
 import com.nltv.chafenqi.model.team.TeamBulletinBoardEntry
 import com.nltv.chafenqi.model.team.TeamCreatePayload
 import com.nltv.chafenqi.model.team.TeamInfo
@@ -97,6 +98,20 @@ object CFQTeamServer {
         queries = queries,
         token = token,
     )
+
+    suspend fun fetchAllTeams(authToken: String, game: Int): List<TeamBasicInfo> {
+        try {
+            val response = fetchFromServer(
+                method = HttpMethod.Get,
+                path = game.toGameTypeString(),
+                token = authToken
+            )
+            return decoder.decodeFromString(response.bodyAsText())
+        } catch (e: Exception) {
+            Log.e("CFQTeamServer", "Failed to fetch all teams for game $game: ${e.localizedMessage}")
+            return emptyList()
+        }
+    }
 
     suspend fun fetchCurrentTeam(authToken: String, game: Int): Int? {
         try {

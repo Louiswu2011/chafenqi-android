@@ -1,17 +1,21 @@
 package com.nltv.chafenqi.view.home.team
 
+import android.content.Context
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Chat
@@ -22,6 +26,7 @@ import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -51,6 +56,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
@@ -71,6 +77,9 @@ import com.nltv.chafenqi.extension.TEAM_CODE_LENGTH
 import com.nltv.chafenqi.extension.TEAM_NAME_LENGTH
 import com.nltv.chafenqi.extension.TEAM_REMARKS_LENGTH
 import com.nltv.chafenqi.extension.TEAM_STYLE_LENGTH
+import com.nltv.chafenqi.extension.toDateString
+import com.nltv.chafenqi.extension.toYMDString
+import com.nltv.chafenqi.model.team.TeamBasicInfo
 import com.nltv.chafenqi.model.team.TeamCreatePayload
 import com.nltv.chafenqi.networking.CFQTeamServer
 import kotlinx.coroutines.Dispatchers
@@ -142,7 +151,7 @@ fun HomeTeamIntroductionPage(navController: NavController) {
                 modifier = Modifier.fillMaxSize()
             ) { index ->
                 when (index) {
-                    0 -> { HomeTeamIntroductionPageSearchSection() }
+                    0 -> { HomeTeamIntroductionPageSearchSection(snackbarHostState) }
                     1 -> { HomeTeamIntroductionPageCreateSection(snackbarHostState) }
                 }
             }
@@ -152,13 +161,29 @@ fun HomeTeamIntroductionPage(navController: NavController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeTeamIntroductionPageSearchSection() {
+fun HomeTeamIntroductionPageSearchSection(snackbarHostState: SnackbarHostState) {
+    val context = LocalContext.current
     val model: HomeTeamPageViewModel = viewModel()
     val state by model.uiState.collectAsStateWithLifecycle()
     val focus = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
+    val searchModel: HomeTeamIntroductionViewModel = viewModel()
+    val searchState by searchModel.uiState.collectAsStateWithLifecycle()
+
     var teamCodeInput by remember { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        searchModel.refresh()
+    }
+
+    LaunchedEffect(teamCodeInput) {
+        if (teamCodeInput.length == TEAM_CODE_LENGTH) {
+            searchModel.onSearch(teamCodeInput)
+        } else {
+            searchModel.onCancelSearch()
+        }
+    }
 
     Column (
         modifier = Modifier
@@ -201,7 +226,7 @@ fun HomeTeamIntroductionPageSearchSection() {
             ),
             keyboardActions = KeyboardActions(
                 onSearch = {
-                    println("Search for team code: $teamCodeInput")
+                    searchModel.onSearch(teamCodeInput)
                 }
             ),
             supportingText = {
@@ -216,18 +241,90 @@ fun HomeTeamIntroductionPageSearchSection() {
                 .focusRequester(focus)
         )
 
-        Crossfade(teamCodeInput.isEmpty(), label = "Search result fade") {
+        Crossfade(searchState.searchedTeam != null, label = "Search result fade") {
             when (it) {
                 true -> {
-                    Column (
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(text = "")
+                    val team = searchState.searchedTeam ?: return@Crossfade
+                    HomeTeamIntroductionEntry(team, context) { teamId ->
+                        searchModel.onApply(teamId, snackbarHostState)
                     }
                 }
-                false -> {}
+                false -> {
+                    LazyColumn (
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        items(
+                            count = searchState.teams.size,
+                            key = { index -> searchState.teams[index].teamCode }
+                        ) { index ->
+                            val team = searchState.teams[index]
+                            HomeTeamIntroductionEntry(team, context) { teamId ->
+                                searchModel.onApply(teamId, snackbarHostState)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun HomeTeamIntroductionEntry(
+    team: TeamBasicInfo,
+    context: Context,
+    onApply: (Int) -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Column (
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(10.dp),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.Start
+        ) {
+            Column {
+                Text(team.displayName, fontWeight = FontWeight.Bold)
+                Row (
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text("最近活动日期：")
+                    Text(team.lastActivityAt.toDateString(context))
+                }
+
+                Row (
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text("团队方针：")
+                    Text(team.style)
+                }
+
+                Row (
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text("团队介绍：")
+                    Text(team.remarks)
+                }
+            }
+
+            Row (
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TextButton(
+                    onClick = {
+                        onApply(team.id)
+                    }
+                ) {
+                    Text("申请加入")
+                }
             }
         }
     }
