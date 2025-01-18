@@ -122,7 +122,6 @@ fun PreferenceRootScope.TeamSettings(
             ?: LocalViewModelStoreOwner.current!!
     )
     val state by model.uiState.collectAsStateWithLifecycle()
-    var promotable by remember { mutableStateOf(state.team.info.promotable) }
 
     val editTeamNameUseCase = rememberUseCaseState()
     val editTeamStyleUseCase = rememberUseCaseState()
@@ -317,7 +316,7 @@ fun PreferenceRootScope.TeamSettings(
         onClick = { editTeamRemarksUseCase.show() }
     )
     PreferenceBool(
-        value = promotable,
+        value = state.team.info.promotable,
         onValueChange = {
             scope.launch(Dispatchers.IO) {
                 val result = CFQTeamServer.adminUpdateTeamPromotable(
@@ -327,7 +326,7 @@ fun PreferenceRootScope.TeamSettings(
                     promotable = it
                 )
                 if (result) {
-                    promotable = it
+                    model.refresh()
                     snackbarHostState.showSnackbar("团队状态已更新")
                 } else {
                     snackbarHostState.showSnackbar("团队状态更新失败，请联系开发者")
