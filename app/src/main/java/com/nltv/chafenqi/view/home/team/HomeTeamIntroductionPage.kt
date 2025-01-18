@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Ballot
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Leaderboard
 import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -42,6 +43,8 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.pullToRefresh
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -89,6 +92,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeTeamIntroductionPage(navController: NavController) {
     val model: HomeTeamPageViewModel = viewModel()
+    val searchModel: HomeTeamIntroductionViewModel = viewModel()
 
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val pagerState = rememberPagerState { 2 }
@@ -119,6 +123,13 @@ fun HomeTeamIntroductionPage(navController: NavController) {
                         )
                     }
                 },
+                actions = {
+                    IconButton(onClick = {
+                        searchModel.refresh()
+                    }) {
+                        Icon(Icons.Default.Refresh, "刷新")
+                    }
+                }
             )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
@@ -159,12 +170,10 @@ fun HomeTeamIntroductionPage(navController: NavController) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeTeamIntroductionPageSearchSection(snackbarHostState: SnackbarHostState) {
     val context = LocalContext.current
     val model: HomeTeamPageViewModel = viewModel()
-    val state by model.uiState.collectAsStateWithLifecycle()
     val focus = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
@@ -172,7 +181,6 @@ fun HomeTeamIntroductionPageSearchSection(snackbarHostState: SnackbarHostState) 
     val searchState by searchModel.uiState.collectAsStateWithLifecycle()
 
     var teamCodeInput by remember { mutableStateOf("") }
-
     LaunchedEffect(Unit) {
         searchModel.refresh()
     }
