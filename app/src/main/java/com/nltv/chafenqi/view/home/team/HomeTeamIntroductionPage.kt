@@ -281,13 +281,13 @@ fun HomeTeamIntroductionEntry(
     ) {
         Column (
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .padding(10.dp),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.Start
         ) {
             Column {
-                Text(team.displayName, fontWeight = FontWeight.Bold)
+                Text(team.displayName, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
                 Row (
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -323,7 +323,7 @@ fun HomeTeamIntroductionEntry(
                         onApply(team.id)
                     }
                 ) {
-                    Text("申请加入")
+                    Text("申请加入", color = MaterialTheme.colorScheme.primary)
                 }
             }
         }

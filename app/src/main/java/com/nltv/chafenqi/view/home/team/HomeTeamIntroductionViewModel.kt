@@ -1,5 +1,6 @@
 package com.nltv.chafenqi.view.home.team
 
+import android.util.Log
 import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -35,6 +36,7 @@ class HomeTeamIntroductionViewModel: ViewModel() {
 
     fun onSearch(teamCode: String) {
         viewModelScope.launch {
+            Log.i(HomeTeamIntroductionViewModel::class.simpleName, "Searching code $teamCode")
             val team = _uiState.value.teams.firstOrNull { it.teamCode == teamCode }
             _uiState.update {
                 it.copy(
