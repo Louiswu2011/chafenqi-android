@@ -46,10 +46,10 @@ fun HomeTeamPageActivitySection() {
         contentPadding = PaddingValues(horizontal = 8.dp)
     ) {
         items(
-            count = state.team.activities.size,
-            key = { index -> state.team.activities[index].id },
+            count = state.team.activities.sortedByDescending { it.timestamp }.size,
+            key = { index -> state.team.activities.sortedByDescending { it.timestamp }[index].id },
         ) { index ->
-            HomeTeamPageActivityCard(activity = state.team.activities[index])
+            HomeTeamPageActivityCard(activity = state.team.activities.sortedByDescending { it.timestamp }[index])
         }
     }
 }
