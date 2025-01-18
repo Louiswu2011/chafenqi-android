@@ -55,7 +55,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.nltv.chafenqi.data.ChunithmMusicStat
 import com.nltv.chafenqi.data.leaderboard.ChunithmDiffLeaderboardItem
 import com.nltv.chafenqi.extension.MAIMAI_MISS_JUDGE_TYPE

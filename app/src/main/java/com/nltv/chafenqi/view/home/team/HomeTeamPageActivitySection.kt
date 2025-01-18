@@ -31,7 +31,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.nltv.chafenqi.extension.toDateString
 import com.nltv.chafenqi.extension.toHalfWidth
 import com.nltv.chafenqi.model.team.TeamActivity

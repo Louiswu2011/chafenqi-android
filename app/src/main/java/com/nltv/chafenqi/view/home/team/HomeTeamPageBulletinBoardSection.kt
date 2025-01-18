@@ -48,7 +48,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.nltv.chafenqi.extension.TEAM_BULLETIN_MESSAGE_LENGTH
 import com.nltv.chafenqi.extension.toDateString
 import com.nltv.chafenqi.model.team.TeamBulletinBoardEntry
