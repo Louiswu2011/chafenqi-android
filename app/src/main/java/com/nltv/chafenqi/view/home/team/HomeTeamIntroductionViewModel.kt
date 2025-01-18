@@ -26,9 +26,9 @@ class HomeTeamIntroductionViewModel: ViewModel() {
     fun refresh() {
         viewModelScope.launch {
             val teams = CFQTeamServer.fetchAllTeams(user.token, user.mode)
-            _uiState.update {
-                it.copy(
-                    teams = teams
+            _uiState.update { state ->
+                state.copy(
+                    teams = teams.filterNot { it.promotable }
                 )
             }
         }
