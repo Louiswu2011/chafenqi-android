@@ -47,6 +47,9 @@ class CFQServer {
             defaultPath = path
         }
 
+        val b30Path = "$defaultPath/api/user/chunithm/image/b30"
+        val b50Path = "$defaultPath/api/user/maimai/image/b50"
+
         private val decoder = Json { ignoreUnknownKeys = true }
 
         val client =

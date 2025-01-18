@@ -29,10 +29,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import coil.Coil
-import coil.ImageLoader
-import coil.disk.DiskCache
-import coil.memory.MemoryCache
+import coil3.SingletonImageLoader
+import coil3.ImageLoader
+import coil3.compose.LocalPlatformContext
+import coil3.compose.setSingletonImageLoaderFactory
+import coil3.disk.DiskCache
+import coil3.disk.directory
+import coil3.memory.MemoryCache
+import coil3.request.crossfade
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
@@ -117,23 +121,25 @@ class MainActivity : ComponentActivity() {
 fun ChafenqiApp() {
     val navController = rememberNavController()
     val context = LocalContext.current
+    val platformContext = LocalPlatformContext.current
     val userState = LocalUserState.current
-    val imageLoader = ImageLoader.Builder(context)
-        .memoryCache {
-            MemoryCache.Builder(context)
-                .maxSizePercent(0.25)
-                .build()
-        }
-        .diskCache {
-            DiskCache.Builder()
-                .maxSizePercent(0.05)
-                .directory(context.cacheDir.resolve("cover_cache"))
-                .build()
-        }
-        .crossfade(true)
-        .build()
 
-    Coil.setImageLoader(imageLoader)
+    setSingletonImageLoaderFactory {
+        ImageLoader.Builder(context)
+            .memoryCache {
+                MemoryCache.Builder()
+                    .maxSizePercent(platformContext, 0.25)
+                    .build()
+            }
+            .diskCache {
+                DiskCache.Builder()
+                    .maxSizePercent(0.05)
+                    .directory(context.cacheDir.resolve("cover_cache"))
+                    .build()
+            }
+            .crossfade(true)
+            .build()
+    }
 
     LaunchedEffect(Unit) {
         CFQServer.setDefaultServerPath("http://192.168.1.151:8998")

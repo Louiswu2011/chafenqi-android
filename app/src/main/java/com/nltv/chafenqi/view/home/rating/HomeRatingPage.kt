@@ -50,7 +50,6 @@ import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.extension.toRateString
 import com.nltv.chafenqi.model.user.chunithm.UserChunithmRatingListEntry
 import com.nltv.chafenqi.model.user.maimai.UserMaimaiBestScoreEntry
-import com.nltv.chafenqi.view.home.rating.share.HomeRatingShareDialog
 import com.nltv.chafenqi.view.module.RatingBadge
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
 import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
@@ -60,8 +59,9 @@ import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
 fun HomeRatingPage(navController: NavController) {
     val model = viewModel<HomeRatingPageViewModel>().also { it.update() }
 
-    if (model.showShareDialog) {
-        HomeRatingShareDialog { model.showShareDialog = false }
+    var showImageDialog by remember { mutableStateOf(false) }
+    if (showImageDialog) {
+        HomeRatingImageDialog(model.mode) { showImageDialog = false }
     }
 
     Scaffold(
@@ -82,7 +82,7 @@ fun HomeRatingPage(navController: NavController) {
                     }
                 },
                 actions = {
-                    TextButton(onClick = { model.showShareDialog = true }) {
+                    TextButton(onClick = { showImageDialog = true }) {
                         Text("生成分表")
                     }
                 }

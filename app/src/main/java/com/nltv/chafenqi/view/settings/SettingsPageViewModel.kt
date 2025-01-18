@@ -14,8 +14,8 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import coil.annotation.ExperimentalCoilApi
-import coil.imageLoader
+import coil3.annotation.ExperimentalCoilApi
+import coil3.imageLoader
 import com.nltv.chafenqi.BuildConfig
 import com.nltv.chafenqi.R
 import com.nltv.chafenqi.cacheStore
@@ -158,7 +158,6 @@ class SettingsPageViewModel : ViewModel() {
         }
     }
 
-    @OptIn(ExperimentalCoilApi::class)
     fun clearCoilCache(context: Context) {
         val imageLoader = context.imageLoader
         val diskCache = imageLoader.diskCache
@@ -169,7 +168,6 @@ class SettingsPageViewModel : ViewModel() {
         getCoilDiskCacheSize(context)
     }
 
-    @OptIn(ExperimentalCoilApi::class)
     fun getCoilDiskCacheSize(context: Context) {
         val diskCache = context.imageLoader.diskCache
         diskCacheSize = when (val sizeInBytes = diskCache?.size ?: 0) {

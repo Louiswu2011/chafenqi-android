@@ -63,7 +63,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import coil3.compose.SubcomposeAsyncImage
-import coil.request.ImageRequest
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.nltv.chafenqi.SCREEN_PADDING
 import com.nltv.chafenqi.view.home.HomeNavItem
 import com.nltv.chafenqi.view.songlist.comment.CommentCard
