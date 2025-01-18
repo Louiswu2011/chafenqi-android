@@ -84,15 +84,15 @@ fun HomeTeamPageBulletinBoardSection(snackbarHostState: SnackbarHostState) {
             }
         }
         items(
-            count = state.team.bulletinBoard.filterNot { it.id == state.team.info.pinnedMessageId }.size,
-            key = { index -> state.team.bulletinBoard.filterNot { it.id == state.team.info.pinnedMessageId }[index].id },
+            count = state.team.bulletinBoard.filterNot { it.id == state.team.info.pinnedMessageId }.sortedByDescending { it.timestamp }.size,
+            key = { index -> state.team.bulletinBoard.filterNot { it.id == state.team.info.pinnedMessageId }.sortedByDescending { it.timestamp }[index].id },
         ) { index ->
             HomeTeamPageBulletinBoardEntry(
-                entry = state.team.bulletinBoard.filterNot { it.id == state.team.info.pinnedMessageId }[index],
+                entry = state.team.bulletinBoard.filterNot { it.id == state.team.info.pinnedMessageId }.sortedByDescending { it.timestamp }[index],
                 modifier = Modifier.combinedClickable(
                     onClick = {},
                     onLongClick = {
-                        selectedEntryId = state.team.bulletinBoard.filterNot { it.id == state.team.info.pinnedMessageId }[index].id
+                        selectedEntryId = state.team.bulletinBoard.filterNot { it.id == state.team.info.pinnedMessageId }.sortedByDescending { it.timestamp }[index].id
                     }
                 )
             )
