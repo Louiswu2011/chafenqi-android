@@ -268,26 +268,20 @@ fun HomeTeamCourseItem(
 ) {
     val model: HomeTeamPageViewModel = viewModel()
 
-    var coverPath by remember { mutableStateOf(model.getCoverPath(course)) }
-    var diffColor by remember { mutableLongStateOf(model.getDifficultyColorLong(course)) }
-    var title by remember { mutableStateOf(model.getTitle(course)) }
-    var artist by remember { mutableStateOf(model.getArtist(course)) }
-    var difficultyString by remember { mutableStateOf(model.getDifficultyString(course).uppercase()) }
-
     Row (
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
             .height(72.dp)
     ) {
         AsyncImage(
-            model = coverPath,
+            model = model.getCoverPath(course),
             contentDescription = "歌曲曲绘",
             modifier = Modifier
                 .size(72.dp)
                 .border(
                     border = BorderStroke(
                         width = 2.dp,
-                        color = Color(value = diffColor.toULong())
+                        color = model.getDifficultyColor(course)
                     ),
                     shape = RoundedCornerShape(10.dp)
                 )
@@ -308,11 +302,11 @@ fun HomeTeamCourseItem(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("TRACK $index")
-                Text(difficultyString, color = Color(value = diffColor.toULong()))
+                Text(model.getDifficultyString(course).uppercase(), color = model.getDifficultyColor(course))
             }
 
-            Text(title, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.titleMedium)
-            Text(artist, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.titleSmall)
+            Text(model.getTitle(course), maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.titleMedium)
+            Text(model.getArtist(course), maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.titleSmall)
         }
     }
 }
