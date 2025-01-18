@@ -209,7 +209,6 @@ dependencies {
 
     implementation("sh.calvin.reorderable:reorderable:2.1.1")
 
-    implementation("io.coil-kt:coil:2.6.0")
-
     implementation("dev.shreyaspatil:capturable:2.1.0")
+    implementation("me.saket.telephoto:zoomable-image-coil3:0.14.0")
 }
