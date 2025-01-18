@@ -15,6 +15,7 @@ import com.nltv.chafenqi.data.leaderboard.MaimaiRatingLeaderboardItem
 import com.nltv.chafenqi.data.leaderboard.MaimaiTotalPlayedLeaderboardItem
 import com.nltv.chafenqi.data.leaderboard.MaimaiTotalScoreLeaderboardItem
 import com.nltv.chafenqi.model.user.UserInfo
+import com.nltv.chafenqi.model.user.UserUploadStatus
 import com.nltv.chafenqi.util.AppAnnouncement
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -445,7 +446,6 @@ class CFQServer {
                 false
             }
 
-        // TODO: Adapt new data models
         suspend inline fun <reified T> apiFetchUserLeaderboardRank(authToken: String): T? {
             try {
                 val className = T::class.simpleName ?: ""
@@ -575,7 +575,6 @@ class CFQServer {
             }
         }
 
-        // TODO: Change to new status API
         suspend fun apiIsUploading(
             gameType: Int,
             authToken: String,
@@ -584,12 +583,16 @@ class CFQServer {
                 val response =
                     fetchFromServer(
                         "GET",
-                        "api/user/isUploading",
-                        queries = mapOf("dest" to gameType.toString()),
+                        "api/user/upload-status",
                         token = authToken,
                         shouldHandleErrorCode = false,
                     )
-                return response.status.value == 200
+                val status = decoder.decodeFromString<UserUploadStatus>(response.bodyAsText())
+                return when (gameType) {
+                    0 -> status.chunithm >= 0
+                    1 -> status.maimai >= 0
+                    else -> false
+                }
             } catch (e: Exception) {
                 return false
             }
