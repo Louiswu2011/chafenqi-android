@@ -40,7 +40,7 @@ fun SettingsHomePage(navController: NavController) {
                 key = "homeShowRefreshButton",
                 defaultValue = false,
                 title = { Text(text = "显示刷新按钮") },
-                summary = { Text(text = "在首页显示一个刷新按钮以便快速跳转到我的任务") },
+                summary = { Text(text = "无法下拉刷新时可以使用") },
             )
             switchPreference(
                 key = "homeUseThemedColor",
@@ -51,7 +51,7 @@ fun SettingsHomePage(navController: NavController) {
             switchPreference(
                 key = "homeShowTeamButton",
                 defaultValue = true,
-                title = { Text(text = "显示跳转到团队页面的按钮") },
+                title = { Text(text = "显示团队按钮") },
                 summary = { Text(text = "在用户信息卡下方显示跳转到团队页面的按钮") },
             )
             textFieldPreference(
