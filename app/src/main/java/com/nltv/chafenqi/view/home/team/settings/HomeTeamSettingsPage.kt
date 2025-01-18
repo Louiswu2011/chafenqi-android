@@ -156,12 +156,16 @@ fun PreferenceRootScope.TeamSettings(
         )
     )
 
+    LaunchedEffect(Unit) {
+        model.refresh()
+    }
+
     InputDialog(
         state = editTeamNameUseCase,
         selection = InputSelection(
             input = editTeamNameInputs,
-            onPositiveClick = { result ->
-                val newName = result.getString("newTeamName")
+            onPositiveClick = { inputResult ->
+                val newName = inputResult.getString("newTeamName")
                 if (newName != null) {
                     scope.launch(Dispatchers.IO) {
                         val result = CFQTeamServer.adminUpdateTeamName(
@@ -186,8 +190,8 @@ fun PreferenceRootScope.TeamSettings(
         state = editTeamStyleUseCase,
         selection = InputSelection(
             input = editTeamStyleInputs,
-            onPositiveClick = { result ->
-                val newStyle = result.getString("newTeamStyle")
+            onPositiveClick = { inputResult ->
+                val newStyle = inputResult.getString("newTeamStyle")
                 if (newStyle!= null) {
                     scope.launch(Dispatchers.IO) {
                         val result = CFQTeamServer.adminUpdateTeamStyle(
@@ -212,8 +216,8 @@ fun PreferenceRootScope.TeamSettings(
         state = editTeamRemarksUseCase,
         selection = InputSelection(
             input = editTeamRemarksInputs,
-            onPositiveClick = { result ->
-                val newRemarks = result.getString("newTeamRemarks")
+            onPositiveClick = { inputResult ->
+                val newRemarks = inputResult.getString("newTeamRemarks")
                 if (newRemarks!= null) {
                     scope.launch(Dispatchers.IO) {
                         val result = CFQTeamServer.adminUpdateTeamRemarks(
