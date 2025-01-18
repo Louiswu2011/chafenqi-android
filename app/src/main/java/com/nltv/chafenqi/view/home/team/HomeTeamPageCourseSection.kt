@@ -146,12 +146,13 @@ fun HomeTeamPageCourseSection() {
             }
 
             items(
-                count = state.team.courseRecords.size,
-                key = { state.team.courseRecords[it].id },
+                count = state.team.courseRecords.sortedByDescending { it.rawScore }.size,
+                key = { index -> state.team.courseRecords.sortedByDescending { it.rawScore }[index].id },
             ) { index ->
+                val entry = state.team.courseRecords.sortedByDescending { it.rawScore }[index]
                 HomeTeamCourseRecordCard(
-                    entry = state.team.courseRecords[index],
-                    rank = 1,
+                    entry = entry,
+                    rank = index + 1,
                 )
             }
         }
