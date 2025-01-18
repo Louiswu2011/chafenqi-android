@@ -145,8 +145,8 @@ class UpdaterViewModel : ViewModel() {
             val uploadStats = CFQServer.statCheckUpload(token)
             _uiState.update { currentValue ->
                 currentValue.copy(
-                    chuUploadStat = makeChunithmUploadStatText(uploadStats[0]),
-                    maiUploadStat = makeMaimaiUploadStatText(uploadStats[1])
+                    chuUploadStat = makeChunithmUploadStatText(uploadStats.chunithm),
+                    maiUploadStat = makeMaimaiUploadStatText(uploadStats.maimai)
                 )
             }
             // Log.i("Updater", "Got upload stats: ${uploadStats[0]} ${uploadStats[1]}")

@@ -709,9 +709,8 @@ class CFQServer {
                 return "0"
             }
         }
-
-        // TODO: Change to new data model
-        suspend fun statCheckUpload(authToken: String): List<Int> {
+        
+        suspend fun statCheckUpload(authToken: String): UserUploadStatus {
             try {
                 val response =
                     fetchFromServer(
@@ -719,11 +718,10 @@ class CFQServer {
                         "api/user/upload-status",
                         token = authToken,
                     )
-                val dict = Json.decodeFromString<Map<String, Int>>(response.bodyAsText())
-                return listOf(dict["chu"] ?: -1, dict["mai"] ?: -1)
+                return Json.decodeFromString(response.bodyAsText())
             } catch (e: Exception) {
                 Log.e("CFQServer", "Failed to check upload status: ${e.localizedMessage}")
-                return listOf(-1, -1)
+                return UserUploadStatus(chunithm = -1, maimai = -1)
             }
         }
 
