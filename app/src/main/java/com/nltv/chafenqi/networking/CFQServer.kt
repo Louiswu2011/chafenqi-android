@@ -709,7 +709,7 @@ class CFQServer {
                 return "0"
             }
         }
-        
+
         suspend fun statCheckUpload(authToken: String): UserUploadStatus {
             try {
                 val response =
@@ -725,7 +725,6 @@ class CFQServer {
             }
         }
 
-        // TODO: Add server side implementation
         suspend fun statSponsorList(): List<String> =
             try {
                 val responseText =
@@ -739,7 +738,6 @@ class CFQServer {
                 listOf()
             }
 
-        // TODO: Add server side implementation
         suspend fun statResourceVersion(tag: String): String =
             try {
                 val response =
@@ -759,6 +757,7 @@ class CFQServer {
 
         // TODO: Add server side implementation
         suspend fun apiChunithmMusicStat(
+            authToken: String,
             musicId: Int,
             difficulty: Int,
         ): ChunithmMusicStat {
@@ -770,13 +769,14 @@ class CFQServer {
                 val response =
                     fetchFromServer(
                         "GET",
-                        "api/chunithm/stats",
+                        "api/user/chunithm/stat",
                         queries =
                             mapOf(
-                                "index" to musicId.toString(),
-                                "diff" to difficulty.toString(),
+                                "musicId" to musicId.toString(),
+                                "levelIndex" to difficulty.toString(),
                             ),
                         shouldHandleErrorCode = false,
+                        token = authToken
                     )
                 Json.decodeFromString<ChunithmMusicStat>(response.bodyAsText())
             } catch (e: Exception) {
@@ -973,39 +973,6 @@ class CFQServer {
             } catch (e: Exception) {
                 Log.e("CFQServer", "Failed to delete comment: ${e.localizedMessage}")
                 return false
-            }
-        }
-
-        // TODO: Add server side implementation
-        suspend fun apiFetchB30Image(
-            authToken: String
-        ): ByteArray? {
-            try {
-                val response =
-                    fetchFromServer(
-                        method = "GET",
-                        path = "api/user/chunithm/image/b30",
-                        token = authToken,
-                    )
-                return response.body()
-            } catch (e: Exception) {
-                Log.e("CFQServer", "Failed to fetch user image: ${e.localizedMessage}")
-                return null
-            }
-        }
-
-        suspend fun apiFetchB50Image(authToken: String): ByteArray? {
-            try {
-                val response =
-                    fetchFromServer(
-                        method = "GET",
-                        path = "api/user/maimai/image/b50",
-                        token = authToken,
-                    )
-                return response.body()
-            } catch (e: Exception) {
-                Log.e("CFQServer", "Failed to fetch b50 image: ${e.localizedMessage}")
-                return null
             }
         }
 

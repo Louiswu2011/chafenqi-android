@@ -121,7 +121,7 @@ class SongStatsPageViewModel : ViewModel() {
             if (mode == 0 && CFQPersistentData.Chunithm.musicList.isNotEmpty()) {
                 val chuMusic = CFQPersistentData.Chunithm.musicList.getOrNull(index)
                 if (chuMusic != null) {
-                    val result = CFQServer.apiChunithmMusicStat(chuMusic.musicId, difficulty)
+                    val result = CFQServer.apiChunithmMusicStat(CFQUser.token, chuMusic.musicId, difficulty)
                     _uiState.update { currentValue ->
                         currentValue.copy(
                             doneLoadingStats = true,

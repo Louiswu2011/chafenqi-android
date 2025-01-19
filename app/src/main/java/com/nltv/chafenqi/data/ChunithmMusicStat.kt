@@ -6,8 +6,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ChunithmMusicStat(
     val id: Int = 0,
-    @SerialName("idx") val musicId: Int = 0,
-    @SerialName("diff") val difficulty: Int = 0,
+    val musicId: Int = 0,
+    val difficulty: Int = 0,
     val totalPlayed: Int = 0,
     val totalFullCombo: Int = 0,
     val totalAllJustice: Int = 0,
