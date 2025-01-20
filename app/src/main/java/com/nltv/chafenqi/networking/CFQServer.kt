@@ -1,7 +1,7 @@
 package com.nltv.chafenqi.networking
 
 import android.util.Log
-import com.nltv.chafenqi.data.ChunithmMusicStat
+import com.nltv.chafenqi.data.GameMusicStat
 import com.nltv.chafenqi.data.Comment
 import com.nltv.chafenqi.data.VersionData
 import com.nltv.chafenqi.data.leaderboard.ChunithmDiffLeaderboard
@@ -18,7 +18,6 @@ import com.nltv.chafenqi.model.user.UserInfo
 import com.nltv.chafenqi.model.user.UserUploadStatus
 import com.nltv.chafenqi.util.AppAnnouncement
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.ANDROID
@@ -36,7 +35,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.datetime.Clock
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.util.concurrent.TimeUnit
 
@@ -756,35 +754,39 @@ class CFQServer {
             }
 
         // TODO: Add server side implementation
-        suspend fun apiChunithmMusicStat(
+        suspend fun apiMusicStat(
             authToken: String,
+            mode: Int,
             musicId: Int,
             difficulty: Int,
-        ): ChunithmMusicStat {
+            type: String = "SD"
+        ): GameMusicStat {
+            val gameString = if (mode == 0) "chunithm" else "maimai"
             Log.i(
                 "CFQServer",
-                "Fetching chunithm music stat for music $musicId, difficulty $difficulty",
+                "Fetching $gameString music stat for music $musicId, type $type, difficulty $difficulty",
             )
             return try {
                 val response =
                     fetchFromServer(
                         "GET",
-                        "api/user/chunithm/stat",
+                        "api/user/$gameString/stat",
                         queries =
                             mapOf(
                                 "musicId" to musicId.toString(),
                                 "levelIndex" to difficulty.toString(),
+                                "type" to type
                             ),
                         shouldHandleErrorCode = false,
                         token = authToken
                     )
-                Json.decodeFromString<ChunithmMusicStat>(response.bodyAsText())
+                Json.decodeFromString<GameMusicStat>(response.bodyAsText())
             } catch (e: Exception) {
                 Log.e(
                     "CFQServer",
-                    "Failed to fetch chunithm music stat for music $musicId, difficulty $difficulty.\n$e",
+                    "Failed to fetch $gameString music stat for music $musicId, type $type, difficulty $difficulty.\n$e",
                 )
-                ChunithmMusicStat()
+                GameMusicStat()
             }
         }
 

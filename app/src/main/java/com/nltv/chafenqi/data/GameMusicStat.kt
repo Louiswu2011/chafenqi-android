@@ -1,10 +1,9 @@
 package com.nltv.chafenqi.data
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ChunithmMusicStat(
+data class GameMusicStat(
     val id: Int = 0,
     val musicId: Int = 0,
     val difficulty: Int = 0,
