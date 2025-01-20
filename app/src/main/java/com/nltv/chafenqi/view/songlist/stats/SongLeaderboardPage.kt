@@ -161,7 +161,7 @@ fun ChunithmLeaderboardRow(
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.padding(horizontal = 5.dp))
-                Text(text = item.nickname)
+                Text(text = item.nickname.ifEmpty { item.username })
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -301,7 +301,7 @@ fun MaimaiLeaderboardRow(
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.padding(horizontal = 5.dp))
-                Text(text = item.nickname)
+                Text(text = item.nickname.ifEmpty { item.username })
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically
