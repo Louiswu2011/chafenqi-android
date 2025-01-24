@@ -124,7 +124,7 @@ fun Long.toYMDString(): String {
 }
 
 fun Int.toChunithmCoverPath(): String =
-    "${CFQServer.defaultPath}/api/chunithm/cover?musicId=${this}"
+    "${CFQServer.defaultPath}/api/resource/chunithm/cover?musicId=${this}"
 
 fun Int.toMaimaiLevelString(): String {
     if (this <= 6) return this.toString()
@@ -203,27 +203,28 @@ fun UserMaimaiBestScoreEntry.associatedMusicEntry(): MaimaiMusicEntry {
         if (musicList.isNotEmpty()) {
             musicList.first { it.musicId == musicId }
         } else {
-            Log.e("我有意见", "无法匹配歌曲：${this.musicId}")
+            Log.e("UserMaimaiBestScoreEntry", "无法匹配歌曲：${this.musicId}")
             MaimaiMusicEntry()
         }
     } catch (e: Exception) {
-        Log.e("我有意见", "找不到这首歌：${this.musicId}")
+        Log.e("UserMaimaiBestScoreEntry", "找不到这首歌：${this.musicId}, $e")
         MaimaiMusicEntry()
     }
 }
 
 fun UserMaimaiRecentScoreEntry.associatedMusicEntry(): MaimaiMusicEntry {
     return try {
-        if (CFQUser.Maimai.best.isNotEmpty() && CFQPersistentData.Maimai.musicList.isNotEmpty()) {
-            CFQUser.Maimai.best.first {
+        val musicList = CFQPersistentData.Maimai.musicList
+        if (CFQUser.Maimai.best.isNotEmpty() && musicList.isNotEmpty()) {
+            CFQUser.Maimai.best.firstOrNull {
                 it.musicId == musicId
-            }.associatedMusicEntry
+            }?.associatedMusicEntry ?: musicList.first { it.musicId == musicId }
         } else {
-            Log.e("我有意见", "无法匹配歌曲：${this.musicId}")
+            Log.e("UserMaimaiRecentScoreEntry", "无法匹配歌曲：${this.musicId}")
             MaimaiMusicEntry()
         }
     } catch (e: Exception) {
-        Log.e("我有意见", "找不到这首歌：${this.musicId}")
+        Log.e("UserMaimaiRecentScoreEntry", "找不到这首歌：${this.musicId}, $e")
         MaimaiMusicEntry()
     }
 }
@@ -333,4 +334,31 @@ fun Modifier.conditional(condition: Boolean, modifier: Modifier.() -> Modifier):
     } else {
         this
     }
+}
+
+fun Int.toGameTypeString() = when (this) {
+    0 -> "chunithm"
+    1 -> "maimai"
+    else -> throw IllegalArgumentException("Invalid game type: $this")
+}
+
+fun String.toHalfWidth(): String {
+    val builder = StringBuilder()
+    for (char in this) {
+        val code = char.code
+        when (code) {
+            in 65281..65374 -> {
+                // Full-width ASCII variants
+                builder.append((code - 65248).toChar())
+            }
+            12288 -> {
+                // Full-width space
+                builder.append(' ')
+            }
+            else -> {
+                builder.append(char)
+            }
+        }
+    }
+    return builder.toString()
 }

@@ -58,7 +58,7 @@ class RecentDetailPageViewModel : ViewModel() {
             chuEntry = CFQUser.chunithm.recent[index]
             chuMusic = chuEntry?.associatedMusicEntry
 
-            coverUrl = "${CFQServer.defaultPath}/api/chunithm/cover?musicId=${chuMusic?.musicId}"
+            coverUrl = "${CFQServer.defaultPath}/api/resource/chunithm/cover?musicId=${chuMusic?.musicId}"
             title = chuMusic?.title ?: ""
             artist = chuMusic?.artist ?: ""
             playDateString = chuEntry?.timestamp?.toDateString(context) ?: ""

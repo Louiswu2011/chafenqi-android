@@ -7,6 +7,7 @@ import kotlinx.serialization.Transient
 @Serializable
 data class UserChunithmRecentScoreEntry(
     val timestamp: Long,
+    val track: Int,
     val musicId: Int,
     val difficulty: String,
     val score: Int,

@@ -26,11 +26,13 @@ import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.networking.FishServer
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.updater.ChafenqiProxy
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 val PORTAL_ADDRESS = "http://43.139.107.206:8083/"
@@ -93,6 +95,8 @@ class UpdaterViewModel : ViewModel() {
 
     var shouldShowQRCode by mutableStateOf(false)
 
+    private var refreshJob: Job? = null
+
     fun updateServerStat() {
         fun makeServerStatText(time: Double): String = when (time) {
             in 0.0..45.0 -> "畅通 (${String.format("%.2f", time)}s)"
@@ -141,8 +145,8 @@ class UpdaterViewModel : ViewModel() {
             val uploadStats = CFQServer.statCheckUpload(token)
             _uiState.update { currentValue ->
                 currentValue.copy(
-                    chuUploadStat = makeChunithmUploadStatText(uploadStats[0]),
-                    maiUploadStat = makeMaimaiUploadStatText(uploadStats[1])
+                    chuUploadStat = makeChunithmUploadStatText(uploadStats.chunithm),
+                    maiUploadStat = makeMaimaiUploadStatText(uploadStats.maimai)
                 )
             }
             // Log.i("Updater", "Got upload stats: ${uploadStats[0]} ${uploadStats[1]}")
@@ -167,19 +171,26 @@ class UpdaterViewModel : ViewModel() {
 
     fun startRefreshTask() {
         Log.i("Updater", "Starting refresh task.")
-        viewModelScope.launch {
-            while (true) {
+        refreshJob?.cancel()
+        refreshJob = viewModelScope.launch {
+            while (isActive) {
                 try {
                     updateServerStat()
                     updateUploadStat()
                     updateQuickUploadStat()
-                    delay(5000)
+                    delay(10000)
                 } catch (e: Exception) {
                     Log.e("Updater", "Failed to fetch stats, error: $e, skipping...")
                     continue
                 }
             }
         }
+    }
+
+    fun stopRefreshTask() {
+        Log.i("Updater", "Stopping refresh task.")
+        refreshJob?.cancel()
+        refreshJob = null
     }
 
     fun prepareVPN(context: Context): Intent? {
@@ -262,7 +273,7 @@ class UpdaterViewModel : ViewModel() {
             val result =
                 CFQServer.apiUploadUserOption<Boolean>(token, "forwarding_fish", state)
             if (result) {
-                CFQServer.apiFetchUserOption<Boolean>(token, "forwarding_fish", "boolean") == true
+                CFQServer.apiFetchUserOption(token, "forwarding_fish", "boolean").toBoolean()
             } else {
                 Log.e("Updater", "Server error while setting forward fish.")
                 !state

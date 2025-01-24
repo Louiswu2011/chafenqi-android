@@ -9,6 +9,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
+import com.nltv.chafenqi.model.user.chunithm.UserChunithmRecentScoreEntry
+import com.nltv.chafenqi.model.user.maimai.UserMaimaiRecentScoreEntry
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.user.CFQUser
 import kotlinx.coroutines.Dispatchers
@@ -43,7 +45,9 @@ class CFQUserStateViewModel : ViewModel() {
 
                 maimai.info = deserializer.decodeFromString(infoString)
                 maimai.best = deserializer.decodeFromString(bestString)
-                maimai.recent = deserializer.decodeFromString(recentString)
+                maimai.recent = deserializer
+                    .decodeFromString<List<UserMaimaiRecentScoreEntry>>(recentString)
+                    .sortedByDescending { it.timestamp }
 
                 maimai.isBasicEmpty = false
                 Log.i(tag, "Loaded user maimai basic data.")
@@ -89,7 +93,9 @@ class CFQUserStateViewModel : ViewModel() {
 
                 chunithm.info = deserializer.decodeFromString(infoString)
                 chunithm.best = deserializer.decodeFromString(bestString)
-                chunithm.recent = deserializer.decodeFromString(recentString)
+                chunithm.recent = deserializer
+                    .decodeFromString<List<UserChunithmRecentScoreEntry>>(recentString)
+                    .sortedByDescending { it.timestamp }
                 chunithm.rating = deserializer.decodeFromString(ratingString)
 
                 chunithm.isBasicEmpty = false

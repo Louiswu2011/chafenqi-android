@@ -1,6 +1,6 @@
-import org.jetbrains.kotlin.konan.properties.Properties
 import java.io.FileInputStream
 import java.io.FileNotFoundException
+import java.util.Properties
 
 plugins {
     id("com.android.application")
@@ -19,7 +19,7 @@ kotlin {
 
 android {
     namespace = "com.nltv.chafenqi"
-    compileSdk = 34
+    compileSdk = 35
 
     val versionFile = file("version.properties")
 
@@ -53,7 +53,7 @@ android {
         defaultConfig {
             applicationId = "com.nltv.chafenqi"
             minSdk = 28
-            targetSdk = 33
+            targetSdk = 35
             versionCode = versionProperties.getProperty("VERSION_MAJOR").toInt()
             versionName = "$mVersionName (${versionProperties.getProperty("VERSION_BUILD")})"
 
@@ -72,6 +72,7 @@ android {
     }
 
     buildFeatures {
+        compose = true
         buildConfig = true
     }
 
@@ -112,12 +113,6 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
-    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -139,14 +134,15 @@ android {
     }
 }
 
-val ktorVersion = "2.3.12"
+val composeDialogs = "1.0.8"
+val ktorVersion = "3.0.3"
 val composePreferences = "0.4.7"
 
 dependencies {
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.2")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 
-    implementation(platform("androidx.compose:compose-bom:2024.06.00"))
-    androidTestImplementation(platform("androidx.compose:compose-bom:2024.06.00"))
+    implementation(platform("androidx.compose:compose-bom:2025.01.00"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2025.01.00"))
 
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
@@ -157,39 +153,41 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
 
-    implementation("androidx.core:core-ktx:1.13.1")
+    implementation("androidx.core:core-ktx:1.15.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
     implementation("androidx.activity:activity-compose")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
-    implementation("io.ktor:ktor-client-core:2.3.12")
+    implementation("io.ktor:ktor-client-core:3.0.3")
     implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
 
-    implementation("androidx.navigation:navigation-compose:2.8.0")
+    implementation("androidx.navigation:navigation-compose:2.8.5")
     implementation("io.ktor:ktor-client-logging:$ktorVersion")
     implementation("org.slf4j:slf4j-simple:2.0.13")
-    implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation("io.coil-kt.coil3:coil-compose:3.0.4")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.4")
     implementation("androidx.lifecycle:lifecycle-runtime-compose")
-    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation("androidx.datastore:datastore-preferences:1.1.2")
     implementation("com.onesignal:OneSignal:5.1.15")
 
-    implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
+    implementation(platform("com.google.firebase:firebase-bom:33.8.0"))
     implementation("com.google.firebase:firebase-crashlytics-ktx")
     implementation("com.google.firebase:firebase-perf-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
-    implementation("androidx.compose.material:material:1.7.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
+    implementation("androidx.compose.material:material:1.7.6")
     implementation("io.github.alexzhirkevich:qrose:1.0.1")
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
     implementation("com.google.accompanist:accompanist-permissions:0.34.0")
-    implementation("com.google.accompanist:accompanist-drawablepainter:0.35.1-alpha")
-    implementation("com.patrykandpatrick.vico:compose-m3:2.0.0-alpha.28")
+    implementation("com.google.accompanist:accompanist-drawablepainter:0.36.0")
+    implementation("com.patrykandpatrick.vico:compose-m3:2.0.1")
 
     implementation("com.github.MFlisar.ComposePreferences:core:$composePreferences")
     implementation("com.github.MFlisar.ComposePreferences:screen-bool:$composePreferences")
@@ -201,9 +199,16 @@ dependencies {
     implementation("com.github.MFlisar.ComposePreferences:screen-list:$composePreferences")
     implementation("com.github.MFlisar.ComposePreferences:screen-number:$composePreferences")
 
+    implementation("com.maxkeppeler.sheets-compose-dialogs:core:1.3.0")
+    implementation("com.maxkeppeler.sheets-compose-dialogs:info:1.3.0")
+    implementation("com.maxkeppeler.sheets-compose-dialogs:input:1.3.0")
+    implementation("com.maxkeppeler.sheets-compose-dialogs:list:1.3.0")
+    implementation("com.maxkeppeler.sheets-compose-dialogs:state:1.3.0")
+
+    implementation("me.zhanghai.compose.preference:library:1.1.1")
+
     implementation("sh.calvin.reorderable:reorderable:2.1.1")
 
-    implementation("io.coil-kt:coil:2.6.0")
-
     implementation("dev.shreyaspatil:capturable:2.1.0")
+    implementation("me.saket.telephoto:zoomable-image-coil3:0.14.0")
 }

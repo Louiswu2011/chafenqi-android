@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import coil3.Image
 import com.nltv.chafenqi.data.Comment
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.model.user.chunithm.UserChunithmBestScoreEntry
@@ -43,7 +44,7 @@ val chunithmDifficultyColors = listOf(
 data class SongDetailUiState(
     var chartUrls: List<String> = emptyList(),
     var expertAvailable: Boolean = false,
-    var chartImages: MutableList<Drawable?> = mutableListOf(null, null, null),
+    var chartImages: MutableList<Image?> = mutableListOf(null, null, null),
     var chartExpanded: Boolean = false,
     var loved: Boolean = false,
     var syncing: Boolean = false,
@@ -86,7 +87,7 @@ class SongDetailViewModel : ViewModel() {
             viewModelScope.launch {
                 _uiState.update {
                     it.copy(
-                        coverUrl = "${CFQServer.defaultPath}/api/chunithm/cover?musicId=${chuMusic?.musicId}",
+                        coverUrl = "${CFQServer.defaultPath}/api/resource/chunithm/cover?musicId=${chuMusic?.musicId}",
                         title = chuMusic?.title ?: "",
                         artist = chuMusic?.artist ?: "",
                         constants = chuMusic?.charts?.constants?.map { String.format("%.1f", it) }
@@ -184,7 +185,7 @@ class SongDetailViewModel : ViewModel() {
         }
     }
 
-    fun updateChartImage(index: Int, drawable: Drawable) {
+    fun updateChartImage(index: Int, drawable: Image) {
         _uiState.update {
             it.copy(
                 chartImages = it.chartImages.apply {

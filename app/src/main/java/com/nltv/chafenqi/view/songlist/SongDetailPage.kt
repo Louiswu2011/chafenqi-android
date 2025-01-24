@@ -1,7 +1,6 @@
 package com.nltv.chafenqi.view.songlist
 
 import android.net.Uri
-import android.os.Debug
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -62,9 +61,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
-import coil.compose.SubcomposeAsyncImage
-import coil.request.ImageRequest
+import coil3.compose.AsyncImage
+import coil3.compose.SubcomposeAsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.nltv.chafenqi.SCREEN_PADDING
 import com.nltv.chafenqi.view.home.HomeNavItem
 import com.nltv.chafenqi.view.songlist.comment.CommentCard
@@ -447,7 +447,7 @@ fun ChunithmExpandedChartCard() {
                     },
                     contentDescription = "Chunithm Chart Layer",
                     onSuccess = {
-                        model.updateChartImage(index, it.result.drawable)
+                        model.updateChartImage(index, it.result.image)
                     }
                 )
             }

@@ -25,6 +25,7 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -81,6 +82,12 @@ fun UpdaterHomePage(navController: NavController) {
 
                 else -> {}
             }
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            model.stopRefreshTask()
         }
     }
 
@@ -310,7 +317,7 @@ fun PreferenceRootScope.UpdaterSettingsGroup(
 
     LaunchedEffect(Unit) {
         isUploading = true
-        shouldForward = CFQServer.apiFetchUserOption<Boolean>(model.token, "forwarding_fish", "boolean") == true
+        shouldForward = CFQServer.apiFetchUserOption(model.token, "forwarding_fish", "boolean").toBoolean()
         isUploading = false
     }
 

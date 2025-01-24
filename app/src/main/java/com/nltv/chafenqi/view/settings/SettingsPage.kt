@@ -1,7 +1,9 @@
 package com.nltv.chafenqi.view.settings
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Contacts
@@ -22,11 +24,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import com.michaelflisar.composepreferences.core.PreferenceScreen
-import com.michaelflisar.composepreferences.core.classes.PreferenceSettingsDefaults
-import com.michaelflisar.composepreferences.core.hierarchy.PreferenceRootScope
-import com.michaelflisar.composepreferences.screen.button.PreferenceButton
 import com.nltv.chafenqi.view.home.HomeNavItem
+import me.zhanghai.compose.preference.preference
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,57 +55,55 @@ fun SettingsPage(navController: NavController) {
         topBar = { SettingsTopBar(titleText = "设置", navController = navController) },
         containerColor = MaterialTheme.colorScheme.surface
     ) { paddingValues ->
-        PreferenceScreen(
-            settings = PreferenceSettingsDefaults.settings(),
-            scrollable = true,
-            modifier = Modifier.padding(paddingValues)
+        LazyColumn (
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize()
         ) {
-            SettingsEntry(navController)
+            preference(
+                key = "user_preferences",
+                onClick = { navController.navigate(HomeNavItem.Home.route + "/settings/user") },
+                title = { Text(text = "用户") },
+                summary = { Text(text = "绑定账号、兑换会员、登出") },
+                icon = { Icon(imageVector = Icons.Default.Contacts, contentDescription = "用户") }
+            )
+            preference(
+                key = "home_preferences",
+                onClick = { navController.navigate(HomeNavItem.Home.route + "/settings/home") },
+                title = { Text(text = "主页") },
+                summary = { Text(text = "默认游戏、刷新按钮、单局币价、主页排序") },
+                icon = { Icon(imageVector = Icons.Default.Home, contentDescription = "主页") }
+            )
+            // TODO: Fix default level index not working
+            /*PreferenceButton(
+                onClick = { navController.navigate(HomeNavItem.Home.route + "/settings/playerInfo") },
+                title = { Text(text = "玩家信息") },
+                subtitle = { Text(text = "歌曲完成度") },
+                icon = { Icon(imageVector = Icons.Default.Info, contentDescription = "玩家信息") }
+            )*/
+            preference(
+                key = "qs_preferences",
+                onClick = { navController.navigate(HomeNavItem.Home.route + "/settings/qsTile") },
+                title = { Text(text = "快捷设置") },
+                summary = { Text(text = "自动复制链接、跳转至微信") },
+                icon = { Icon(imageVector = Icons.Default.Widgets, contentDescription = "快捷设置") }
+            )
+            preference(
+                key = "advanced_preferences",
+                onClick = { navController.navigate(HomeNavItem.Home.route + "/settings/advanced") },
+                title = { Text(text = "高级") },
+                summary = { Text(text = "图片缓存、歌曲列表、Token") },
+                icon = { Icon(imageVector = Icons.Default.DeveloperMode, contentDescription = "高级") }
+            )
+            preference(
+                key = "about_preferences",
+                onClick = { navController.navigate(HomeNavItem.Home.route + "/settings/about") },
+                title = { Text(text = "关于") },
+                summary = { Text(text = "版本、鸣谢、QQ群、Github") },
+                icon = { Icon(imageVector = Icons.Default.Info, contentDescription = "关于") }
+            )
         }
     }
-}
-
-@Composable
-fun PreferenceRootScope.SettingsEntry(
-    navController: NavController
-) {
-    PreferenceButton(
-        onClick = { navController.navigate(HomeNavItem.Home.route + "/settings/user") },
-        title = { Text(text = "用户") },
-        subtitle = { Text(text = "绑定账号、兑换会员、登出") },
-        icon = { Icon(imageVector = Icons.Default.Contacts, contentDescription = "用户") }
-    )
-    PreferenceButton(
-        onClick = { navController.navigate(HomeNavItem.Home.route + "/settings/home") },
-        title = { Text(text = "主页") },
-        subtitle = { Text(text = "默认游戏、刷新按钮、单局币价、主页排序") },
-        icon = { Icon(imageVector = Icons.Default.Home, contentDescription = "主页") }
-    )
-    // TODO: Fix default level index not working
-    /*PreferenceButton(
-        onClick = { navController.navigate(HomeNavItem.Home.route + "/settings/playerInfo") },
-        title = { Text(text = "玩家信息") },
-        subtitle = { Text(text = "歌曲完成度") },
-        icon = { Icon(imageVector = Icons.Default.Info, contentDescription = "玩家信息") }
-    )*/
-    PreferenceButton(
-        onClick = { navController.navigate(HomeNavItem.Home.route + "/settings/qsTile") },
-        title = { Text(text = "快捷设置") },
-        subtitle = { Text(text = "自动复制链接、跳转至微信") },
-        icon = { Icon(imageVector = Icons.Default.Widgets, contentDescription = "快捷设置") }
-    )
-    PreferenceButton(
-        onClick = { navController.navigate(HomeNavItem.Home.route + "/settings/advanced") },
-        title = { Text(text = "高级") },
-        subtitle = { Text(text = "图片缓存、歌曲列表、Token") },
-        icon = { Icon(imageVector = Icons.Default.DeveloperMode, contentDescription = "高级") }
-    )
-    PreferenceButton(
-        onClick = { navController.navigate(HomeNavItem.Home.route + "/settings/about") },
-        title = { Text(text = "关于") },
-        subtitle = { Text(text = "版本、鸣谢、QQ群、Github") },
-        icon = { Icon(imageVector = Icons.Default.Info, contentDescription = "关于") }
-    )
 }
 
 @Composable

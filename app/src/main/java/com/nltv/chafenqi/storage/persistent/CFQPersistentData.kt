@@ -24,7 +24,7 @@ object CFQPersistentData {
     private val maiMusicConfig = CFQPersistentLoaderConfig(
         name = "Maimai",
         cacheKey = stringPreferencesKey("maimaiMusicList"),
-        versionKey = intPreferencesKey("maimaiMusicListVersion"),
+        versionKey = stringPreferencesKey("maimaiMusicListVersion"),
         fetcher = { CFQServer.apiMaimaiMusicData() },
         gameType = 0,
         resourceTag = "maimai_song_list"
@@ -32,7 +32,7 @@ object CFQPersistentData {
     private val maiGenreConfig = CFQPersistentLoaderConfig(
         name = "MaimaiGenre",
         cacheKey = stringPreferencesKey("maimaiGenreList"),
-        versionKey = intPreferencesKey("maimaiGenreListVersion"),
+        versionKey = stringPreferencesKey("maimaiGenreListVersion"),
         fetcher = { CFQServer.apiMaimaiGenreData() },
         gameType = 0,
         resourceTag = "maimai_genre_list"
@@ -40,7 +40,7 @@ object CFQPersistentData {
     private val maiVersionConfig = CFQPersistentLoaderConfig(
         name = "MaimaiVersion",
         cacheKey = stringPreferencesKey("maimaiVersionList"),
-        versionKey = intPreferencesKey("maimaiVersionListVersion"),
+        versionKey = stringPreferencesKey("maimaiVersionListVersion"),
         fetcher = { CFQServer.apiMaimaiVersionData() },
         gameType = 0,
         resourceTag = "maimai_version_list"
@@ -49,7 +49,7 @@ object CFQPersistentData {
     private val chuConfig = CFQPersistentLoaderConfig(
         name = "Chunithm",
         cacheKey = stringPreferencesKey("chunithmMusicList"),
-        versionKey = intPreferencesKey("chunithmMusicListVersion"),
+        versionKey = stringPreferencesKey("chunithmMusicListVersion"),
         fetcher = { CFQServer.apiChuithmMusicData() },
         gameType = 1,
         resourceTag = "chunithm_song_list"
@@ -59,12 +59,12 @@ object CFQPersistentData {
         var musicList = listOf<MaimaiMusicEntry>()
         var genreList = listOf<MaimaiGenreEntry>()
         var versionList = listOf<MaimaiVersionEntry>()
-        var version: Int = 0
+        var version: String = ""
     }
 
     object Chunithm {
         var musicList = listOf<ChunithmMusicEntry>()
-        var version: Int = 0
+        var version: String = ""
     }
 
     suspend fun loadData(shouldValidate: Boolean = true, context: Context) {

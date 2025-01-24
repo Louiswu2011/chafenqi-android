@@ -14,7 +14,7 @@ import kotlinx.serialization.json.Json
 data class CFQPersistentLoaderConfig(
     val name: String,
     val cacheKey: Preferences.Key<String>,
-    val versionKey: Preferences.Key<Int>,
+    val versionKey: Preferences.Key<String>,
     val fetcher: suspend () -> String,
     val gameType: Int,
     val resourceTag: String
@@ -54,7 +54,10 @@ class CFQPersistentLoader {
                 val localVersion = store.data.map { p -> p[config.versionKey] ?: 0 }.first()
                 val remoteVersion = CFQServer.statResourceVersion(tag = config.resourceTag)
 
-                if (localVersion >= remoteVersion) {
+                Log.i(tag, "Local ${config.name} hash: $localVersion")
+                Log.i(tag, "Remote ${config.name} hash: $remoteVersion")
+
+                if (localVersion == remoteVersion) {
                     Log.i(tag, "Local ${config.name} music list is up to date.")
                     return list
                 }

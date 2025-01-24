@@ -61,15 +61,16 @@ import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.networking.UsernameOccupiedException
 import com.nltv.chafenqi.storage.SettingsStore
 import kotlinx.coroutines.launch
+import me.zhanghai.compose.preference.LocalPreferenceFlow
 
 @Composable
 fun LoginPage() {
     val model: LoginPageViewModel = viewModel()
     val context = LocalContext.current
+    val settings by LocalPreferenceFlow.current.collectAsStateWithLifecycle()
     val store = SettingsStore(context)
     val userState = LocalUserState.current
     val loginUiState by model.loginUiState.collectAsStateWithLifecycle()
-    val shouldValidate by store.loginAutoUpdateSongList.collectAsStateWithLifecycle(initialValue = true)
     val snackbarHostState = remember { SnackbarHostState() }
 
 
@@ -91,7 +92,7 @@ fun LoginPage() {
             token,
             username,
             context,
-            shouldValidate,
+            settings.get<Boolean>("loginAutoUpdateSongList") ?: true,
             userState,
             snackbarHostState,
             loadFromCache = true
@@ -194,9 +195,7 @@ fun LoginField(snackbarHostState: SnackbarHostState) {
 
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val store = SettingsStore(context)
-    val defaultGame by store.homeDefaultGame.collectAsStateWithLifecycle(initialValue = 1)
-    val shouldValidate by store.loginAutoUpdateSongList.collectAsStateWithLifecycle(initialValue = true)
+    val settings by LocalPreferenceFlow.current.collectAsStateWithLifecycle()
 
     var registerMode by remember {
         mutableStateOf(false)
@@ -213,13 +212,13 @@ fun LoginField(snackbarHostState: SnackbarHostState) {
 
     val usernameTextFieldKeyboardOptions = KeyboardOptions(
         capitalization = KeyboardCapitalization.None,
-        autoCorrect = false,
+        autoCorrectEnabled = false,
         keyboardType = KeyboardType.Text,
         imeAction = ImeAction.Next
     )
     val passwordTextFieldKeyboardOptions = KeyboardOptions(
         capitalization = KeyboardCapitalization.None,
-        autoCorrect = false,
+        autoCorrectEnabled = false,
         keyboardType = KeyboardType.Password,
         imeAction = ImeAction.Done
     )
@@ -279,11 +278,11 @@ fun LoginField(snackbarHostState: SnackbarHostState) {
                             username,
                             password.sha256(),
                             context,
-                            shouldValidate,
+                            settings.get<Boolean>("loginAutoUpdateSongList") ?: true,
                             userState,
                             snackbarHostState
                         )
-                        model.user.mode = defaultGame
+                        model.user.mode = settings.get<Int>("homeDefaultGame") ?: 0
                     }
                 }
             },

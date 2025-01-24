@@ -31,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
@@ -41,7 +40,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.nltv.chafenqi.R
-import com.nltv.chafenqi.storage.SettingsStore
+import me.zhanghai.compose.preference.LocalPreferenceFlow
 
 val nameplateChunithmTopColor = Color(red = 254, green = 241, blue = 65)
 val nameplateChunithmBottomColor = Color(red = 243, green = 200, blue = 48)
@@ -90,13 +89,12 @@ fun HomePageNameplateSection(navController: NavController) {
 
 @Composable
 fun HomePageMaimaiNameplate(navController: NavController) {
-    val store = SettingsStore(LocalContext.current)
+    val settings by LocalPreferenceFlow.current.collectAsStateWithLifecycle()
     val model: HomePageViewModel = viewModel()
     val uiState by model.uiState.collectAsState()
     var showEmptyDataAlert by remember {
         mutableStateOf(false)
     }
-    val homeUseThemedColor by store.homeUseThemedColor.collectAsStateWithLifecycle(initialValue = true)
 
     val brush = Brush.verticalGradient(listOf(nameplateMaimaiTopColor, nameplateMaimaiBottomColor))
     val themedBrush = Brush.linearGradient(colors = nameplateThemedMaiColors, start = Offset.Zero, end = Offset.Infinite)
@@ -117,7 +115,7 @@ fun HomePageMaimaiNameplate(navController: NavController) {
         )
     ) {
         Box(
-            modifier = Modifier.background(if (homeUseThemedColor) themedBrush else brush)
+            modifier = Modifier.background(if (settings.get<Boolean>("homeUseThemedColor") == true) themedBrush else brush)
         ) {
             Column(
                 horizontalAlignment = Alignment.End,
@@ -126,7 +124,7 @@ fun HomePageMaimaiNameplate(navController: NavController) {
                     .fillMaxWidth()
             ) {
                 Image(
-                    painter = painterResource(id = if (homeUseThemedColor) nameplateThemedMaimaiAvatarResource else R.drawable.nameplate_salt),
+                    painter = painterResource(id = if (settings.get<Boolean>("homeUseThemedColor") == true) nameplateThemedMaimaiAvatarResource else R.drawable.nameplate_salt),
                     contentDescription = "名牌纱露朵形象",
                     Modifier.size(128.dp)
                 )
@@ -188,13 +186,12 @@ fun HomePageMaimaiNameplate(navController: NavController) {
 
 @Composable
 fun HomePageChunithmNameplate(navController: NavController) {
-    val store = SettingsStore(LocalContext.current)
+    val settings by LocalPreferenceFlow.current.collectAsStateWithLifecycle()
     val model: HomePageViewModel = viewModel()
     val uiState by model.uiState.collectAsState()
     var showEmptyDataAlert by remember {
         mutableStateOf(false)
     }
-    val homeUseThemedColor by store.homeUseThemedColor.collectAsStateWithLifecycle(initialValue = true)
 
     val brush =
         Brush.verticalGradient(listOf(nameplateChunithmTopColor, nameplateChunithmBottomColor))
@@ -216,7 +213,7 @@ fun HomePageChunithmNameplate(navController: NavController) {
         )
     ) {
         Box(
-            modifier = Modifier.background(if (homeUseThemedColor) themedBrush else brush)
+            modifier = Modifier.background(if (settings.get<Boolean>("homeUseThemedColor") == true) themedBrush else brush)
         ) {
             Column(
                 horizontalAlignment = Alignment.End,
@@ -225,7 +222,7 @@ fun HomePageChunithmNameplate(navController: NavController) {
                     .fillMaxWidth()
             ) {
                 Image(
-                    painter = painterResource(id = if (homeUseThemedColor) nameplateThemedChunithmAvatarResource else R.drawable.nameplate_penguin),
+                    painter = painterResource(id = if (settings.get<Boolean>("homeUseThemedColor") == true) nameplateThemedChunithmAvatarResource else R.drawable.nameplate_penguin),
                     contentDescription = "名牌中二企鹅形象",
                     Modifier.size(128.dp)
                 )

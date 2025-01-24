@@ -269,7 +269,7 @@ class HomeLeaderboardPageViewModel : ViewModel() {
                             username = item.username,
                             nickname = item.nickname,
                             info = String.format(
-                                Locale.ENGLISH,
+                                Locale.getDefault(),
                                 "%.4f",
                                 item.totalAchievements
                             ) + "%"

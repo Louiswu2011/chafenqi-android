@@ -27,9 +27,11 @@ import com.nltv.chafenqi.data.rank.MaimaiFirstRank
 import com.nltv.chafenqi.data.rank.MaimaiRatingRank
 import com.nltv.chafenqi.data.rank.MaimaiTotalPlayedRank
 import com.nltv.chafenqi.data.rank.MaimaiTotalScoreRank
+import com.nltv.chafenqi.model.team.TeamInfo
 import com.nltv.chafenqi.model.user.chunithm.UserChunithmRatingListEntry
 import com.nltv.chafenqi.model.user.maimai.UserMaimaiBestScoreEntry
 import com.nltv.chafenqi.networking.CFQServer
+import com.nltv.chafenqi.networking.CFQTeamServer
 import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.storage.user.ChunithmRecentLineup
@@ -94,7 +96,10 @@ data class HomePageUiState(
     val logLastPlayedTime: String = "",
     val logLastPlayedCount: String = "",
     val logLastPlayedDuration: String = "",
-    val logLastPlayedAverageScore: String = ""
+    val logLastPlayedAverageScore: String = "",
+
+    val currentTeamId: Int? = null,
+    val team: TeamInfo? = null,
 )
 
 class HomePageViewModel : ViewModel() {
@@ -137,60 +142,72 @@ class HomePageViewModel : ViewModel() {
     }
 
     fun update() {
-        _uiState.update { currentState ->
-            when (user.mode) {
-                1 -> {
-                    currentState.copy(
-                        mode = 1,
-                        nickname = user.maimai.info.lastOrNull()?.nickname ?: "",
-                        rating = user.maimai.info.lastOrNull()?.rating.toString(),
-                        playCount = user.maimai.info.lastOrNull()?.playCount.toString(),
-                        canNavigateToRecentList = user.maimai.recent.isNotEmpty(),
-                        canNavigateToRatingList = user.maimai.aux.pastBest.isNotEmpty() && user.maimai.aux.newBest.isNotEmpty(),
-                        nameplateUpdateTime = user.maimai.aux.updateTime,
-                        maiRecentLineup = user.maimai.aux.recommendList.take(3),
-                        maiPastRating = user.maimai.aux.pastRating.toString(),
-                        maiNewRating = user.maimai.aux.newRating.toString(),
-                        maiIndicatorsCount = this.maiIndicatorsCount,
-                        maiPastIndicatorsCount = user.maimai.aux.pastBest.size,
-                        maiNewIndicatorsCount = user.maimai.aux.newBest.size,
-                        maiPastRatingList = user.maimai.aux.pastBest,
-                        maiNewRatingList = user.maimai.aux.newBest,
-                        indicatorHeights = MutableList(this.maiIndicatorsCount) { 20.dp },
-                        maiCurrentSelectedRatingEntry = if (user.maimai.aux.pastBest.isNotEmpty()) user.maimai.aux.pastBest.first() else UserMaimaiBestScoreEntry(),
-                        maiCurrentSelectedRatingEntryType = "旧曲",
-                        maiCurrentSelectedRatingEntryRank = 1,
-                        currentSelectedIndicatorIndex = 0,
-                        canOpenMaimaiInfo = user.isPremium && !user.maimai.isExtraEmpty,
-                        shouldShowRatingBar = user.maimai.aux.newBest.isNotEmpty() || user.maimai.aux.pastBest.isNotEmpty()
-                    )
-                }
+        viewModelScope.launch(Dispatchers.IO) {
+            val currentTeamId = CFQTeamServer.fetchCurrentTeam(user.token, user.mode)
 
-                0 -> {
-                    currentState.copy(
-                        mode = 0,
-                        nickname = user.chunithm.info.lastOrNull()?.nickname ?: "",
-                        rating = String.format("%.2f", user.chunithm.info.lastOrNull()?.rating),
-                        playCount = user.chunithm.info.lastOrNull()?.playCount.toString(),
-                        nameplateUpdateTime = user.chunithm.aux.updateTime,
-                        canNavigateToRecentList = user.chunithm.recent.isNotEmpty(),
-                        canNavigateToRatingList = !user.chunithm.rating.isEmpty,
-                        chuRecentLineup = user.chunithm.aux.recommendList.take(3),
-                        chuMaxRating = String.format("%.2f", user.chunithm.info.lastOrNull()?.maxRating),
-                        chuBestRating = String.format("%.2f", user.chunithm.aux.bestRating),
-                        chuRecentRating = String.format("%.2f", user.chunithm.aux.recentRating),
-                        chuIndicatorsCount = user.chunithm.aux.bestList.size,
-                        chuBestRatingList = user.chunithm.aux.bestList,
-                        indicatorHeights = MutableList(this.chuIndicatorsCount) { 20.dp },
-                        chuCurrentSelectedRatingEntry = if (user.chunithm.aux.bestList.isNotEmpty()) user.chunithm.aux.bestList.first() else UserChunithmRatingListEntry(),
-                        currentSelectedIndicatorIndex = 0,
-                        canOpenChunithmInfo = user.isPremium && !user.chunithm.isExtraEmpty,
-                        shouldShowRatingBar = user.chunithm.aux.bestList.isNotEmpty()
-                    )
-                }
+            _uiState.update { currentState ->
+                when (user.mode) {
+                    1 -> {
+                        currentState.copy(
+                            mode = 1,
+                            nickname = user.maimai.info.lastOrNull()?.nickname ?: "",
+                            rating = user.maimai.info.lastOrNull()?.rating.toString(),
+                            playCount = user.maimai.info.lastOrNull()?.playCount.toString(),
+                            canNavigateToRecentList = user.maimai.recent.isNotEmpty(),
+                            canNavigateToRatingList = user.maimai.aux.pastBest.isNotEmpty() && user.maimai.aux.newBest.isNotEmpty(),
+                            nameplateUpdateTime = user.maimai.aux.updateTime,
+                            maiRecentLineup = user.maimai.aux.recommendList.take(3),
+                            maiPastRating = user.maimai.aux.pastRating.toString(),
+                            maiNewRating = user.maimai.aux.newRating.toString(),
+                            maiIndicatorsCount = maiIndicatorsCount,
+                            maiPastIndicatorsCount = user.maimai.aux.pastBest.size,
+                            maiNewIndicatorsCount = user.maimai.aux.newBest.size,
+                            maiPastRatingList = user.maimai.aux.pastBest,
+                            maiNewRatingList = user.maimai.aux.newBest,
+                            indicatorHeights = MutableList(maiIndicatorsCount) { 20.dp },
+                            maiCurrentSelectedRatingEntry = if (user.maimai.aux.pastBest.isNotEmpty()) user.maimai.aux.pastBest.first() else UserMaimaiBestScoreEntry(),
+                            maiCurrentSelectedRatingEntryType = "旧曲",
+                            maiCurrentSelectedRatingEntryRank = 1,
+                            currentSelectedIndicatorIndex = 0,
+                            canOpenMaimaiInfo = user.isPremium && !user.maimai.isExtraEmpty,
+                            shouldShowRatingBar = user.maimai.aux.newBest.isNotEmpty() || user.maimai.aux.pastBest.isNotEmpty(),
+                            currentTeamId = currentTeamId,
+                            team = if (currentTeamId != null) CFQTeamServer.fetchTeamInfo(user.token, user.mode, currentTeamId) else null,
+                        )
+                    }
 
-                else -> {
-                    currentState
+                    0 -> {
+                        currentState.copy(
+                            mode = 0,
+                            nickname = user.chunithm.info.lastOrNull()?.nickname ?: "",
+                            rating = String.format(Locale.getDefault(), "%.2f", user.chunithm.info.lastOrNull()?.rating),
+                            playCount = user.chunithm.info.lastOrNull()?.playCount.toString(),
+                            nameplateUpdateTime = user.chunithm.aux.updateTime,
+                            canNavigateToRecentList = user.chunithm.recent.isNotEmpty(),
+                            canNavigateToRatingList = !user.chunithm.rating.isEmpty,
+                            chuRecentLineup = user.chunithm.aux.recommendList.take(3),
+                            chuMaxRating = String.format(
+                                Locale.getDefault(),
+                                "%.2f",
+                                user.chunithm.info.lastOrNull()?.maxRating
+                            ),
+                            chuBestRating = String.format(Locale.getDefault(), "%.2f", user.chunithm.aux.bestRating),
+                            chuRecentRating = String.format(Locale.getDefault(), "%.2f", user.chunithm.aux.recentRating),
+                            chuIndicatorsCount = user.chunithm.aux.bestList.size,
+                            chuBestRatingList = user.chunithm.aux.bestList,
+                            indicatorHeights = MutableList(chuIndicatorsCount) { 20.dp },
+                            chuCurrentSelectedRatingEntry = if (user.chunithm.aux.bestList.isNotEmpty()) user.chunithm.aux.bestList.first() else UserChunithmRatingListEntry(),
+                            currentSelectedIndicatorIndex = 0,
+                            canOpenChunithmInfo = user.isPremium && !user.chunithm.isExtraEmpty,
+                            shouldShowRatingBar = user.chunithm.aux.bestList.isNotEmpty(),
+                            currentTeamId = currentTeamId,
+                            team = if (currentTeamId != null) CFQTeamServer.fetchTeamInfo(user.token, user.mode, currentTeamId) else null,
+                        )
+                    }
+
+                    else -> {
+                        currentState
+                    }
                 }
             }
         }

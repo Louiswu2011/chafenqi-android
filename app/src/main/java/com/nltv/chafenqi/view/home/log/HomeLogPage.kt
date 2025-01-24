@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
@@ -25,6 +24,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -49,27 +49,29 @@ import com.nltv.chafenqi.view.home.nameplateChunithmTopColor
 import com.nltv.chafenqi.view.home.nameplateMaimaiBottomColor
 import com.nltv.chafenqi.view.home.nameplateMaimaiTopColor
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottomAxis
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStartAxis
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLine
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.marker.rememberDefaultCartesianMarker
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
-import com.patrykandpatrick.vico.compose.cartesian.segmented
 import com.patrykandpatrick.vico.compose.common.fill
-import com.patrykandpatrick.vico.core.cartesian.HorizontalLayout
+import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
+import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
 import com.patrykandpatrick.vico.core.cartesian.marker.DefaultCartesianMarker
+import com.patrykandpatrick.vico.core.common.Fill
 import com.patrykandpatrick.vico.core.common.component.Shadow
 import com.patrykandpatrick.vico.core.common.component.ShapeComponent
 import com.patrykandpatrick.vico.core.common.component.TextComponent
-import com.patrykandpatrick.vico.core.common.shape.Shape
+import com.patrykandpatrick.vico.core.common.shape.CorneredShape
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
 import kotlinx.datetime.format.FormatStringsInDatetimeFormats
 import kotlinx.datetime.toLocalDateTime
+import me.zhanghai.compose.preference.LocalPreferenceFlow
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -114,10 +116,8 @@ fun HomeLogPageDataColumn(navController: NavController) {
     val uiState by model.uiState.collectAsStateWithLifecycle()
     val lazyListState = rememberLazyListState()
     val context = LocalContext.current
+    val settings by LocalPreferenceFlow.current.collectAsStateWithLifecycle()
     val store = SettingsStore(context)
-    val logDefaultPricePerRound by store.logDefaultPricePerRound.collectAsStateWithLifecycle(
-        initialValue = 3f
-    )
 
     LaunchedEffect(Unit) {
         model.updateInfo(CFQUser.mode)
@@ -146,7 +146,7 @@ fun HomeLogPageDataColumn(navController: NavController) {
 
                 HomeLogLargeInfo(
                     title = "预估消费",
-                    source = "￥${uiState.totalPlayCount * logDefaultPricePerRound}"
+                    source = "￥${uiState.totalPlayCount * (settings.get<Float>("logDefaultPricePerRound") ?: 3f)}"
                 )
             }
         }
@@ -274,11 +274,11 @@ fun HomeLogPageDataChart() {
                     rememberLineCartesianLayer(
                         pointSpacing = 50.dp,
                         lineProvider = LineCartesianLayer.LineProvider.series(
-                            rememberLine(
+                            LineCartesianLayer.rememberLine(
                                 remember {
                                     LineCartesianLayer.LineFill.double(
                                         topFill = fill(
-                                            if (CFQUser.mode == 0) nameplateChunithmTopColor else nameplateMaimaiTopColor
+                                            if (CFQUser.mode == 0) nameplateChunithmBottomColor else nameplateMaimaiBottomColor
                                         ),
                                         bottomFill = fill(
                                             if (CFQUser.mode == 0) nameplateChunithmBottomColor else nameplateMaimaiBottomColor
@@ -288,16 +288,16 @@ fun HomeLogPageDataChart() {
                             )
                         )
                     ),
-                    startAxis = rememberStartAxis(),
-                    bottomAxis = rememberBottomAxis(
-                        valueFormatter = { x, chartValues, _ -> chartValues.model.extraStore[model.labelKeyList][x.toInt()] }
+                    startAxis = VerticalAxis.rememberStart(),
+                    bottomAxis = HorizontalAxis.rememberBottom(
+                        valueFormatter = { context, chartValues, _ -> context.model.extraStore[model.labelKeyList][chartValues.toInt()] },
+                        itemPlacer = HorizontalAxis.ItemPlacer.segmented()
                     ),
-                    horizontalLayout = HorizontalLayout.segmented(),
                     marker = rememberDefaultCartesianMarker(
                         label = TextComponent(),
                         indicator = { _ -> ShapeComponent(
-                            color = Color.GRAY,
-                            shape = Shape.Pill,
+                            fill = Fill(Color.GRAY),
+                            shape = CorneredShape.Pill,
                             shadow = Shadow(radiusDp = 5f)
                         ) },
                         labelPosition = DefaultCartesianMarker.LabelPosition.Top

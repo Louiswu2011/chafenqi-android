@@ -9,7 +9,7 @@ data class VersionData(
     val androidBuild: String = ""
 ) {
     fun isLatest(versionCode: String, buildNumber: Int): Boolean {
-        return buildNumber >= androidBuild.toInt()
+        return buildNumber >= (androidBuild.toIntOrNull() ?: 0)
     }
 
     companion object {
