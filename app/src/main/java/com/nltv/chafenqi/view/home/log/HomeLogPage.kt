@@ -278,7 +278,7 @@ fun HomeLogPageDataChart() {
                                 remember {
                                     LineCartesianLayer.LineFill.double(
                                         topFill = fill(
-                                            if (CFQUser.mode == 0) nameplateChunithmTopColor else nameplateMaimaiTopColor
+                                            if (CFQUser.mode == 0) nameplateChunithmBottomColor else nameplateMaimaiBottomColor
                                         ),
                                         bottomFill = fill(
                                             if (CFQUser.mode == 0) nameplateChunithmBottomColor else nameplateMaimaiBottomColor

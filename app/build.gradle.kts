@@ -187,7 +187,7 @@ dependencies {
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
     implementation("com.google.accompanist:accompanist-permissions:0.34.0")
     implementation("com.google.accompanist:accompanist-drawablepainter:0.36.0")
-    implementation("com.patrykandpatrick.vico:compose-m3:2.0.0-beta.3")
+    implementation("com.patrykandpatrick.vico:compose-m3:2.0.1")
 
     implementation("com.github.MFlisar.ComposePreferences:core:$composePreferences")
     implementation("com.github.MFlisar.ComposePreferences:screen-bool:$composePreferences")
