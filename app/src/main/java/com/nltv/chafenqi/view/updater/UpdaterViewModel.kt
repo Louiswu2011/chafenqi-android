@@ -178,7 +178,7 @@ class UpdaterViewModel : ViewModel() {
                     updateServerStat()
                     updateUploadStat()
                     updateQuickUploadStat()
-                    delay(5000)
+                    delay(10000)
                 } catch (e: Exception) {
                     Log.e("Updater", "Failed to fetch stats, error: $e, skipping...")
                     continue
