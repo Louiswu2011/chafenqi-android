@@ -271,11 +271,11 @@ class CFQServer {
             }
         }
 
-        suspend inline fun <reified T> apiFetchUserOption(
+        suspend fun apiFetchUserOption(
             token: String,
             param: String,
             type: String,
-        ): T? {
+        ): String? {
             Log.i("CFQServer", "Fetching user option: $param.")
             return try {
                 val response =
@@ -289,8 +289,7 @@ class CFQServer {
                                 "type" to type,
                             ),
                     )
-                val value: T? = response.bodyAsText() as? T
-                return value
+                return response.bodyAsText()
             } catch (e: Exception) {
                 Log.e("CFQServer", "Failed to fetch user option: $param, type: $type, error: ${e.localizedMessage}")
                 null
@@ -310,7 +309,7 @@ class CFQServer {
                         "api/user/properties",
                         payload =
                             hashMapOf(
-                                "param" to param,
+                                "property" to param,
                                 "value" to value.toString(),
                             ),
                         token = token,
@@ -596,7 +595,6 @@ class CFQServer {
             }
         }
 
-        // TODO: Add server side implementation
         suspend fun apiHasTokenCache(
             gameType: Int,
             authToken: String,
@@ -605,12 +603,12 @@ class CFQServer {
                 val response =
                     fetchFromServer(
                         "GET",
-                        "api/user/hasCache",
+                        "api/user/has-cache",
                         queries = mapOf("dest" to gameType.toString()),
                         token = authToken,
                         shouldHandleErrorCode = false,
                     )
-                return response.status.value == 200
+                return response.bodyAsText().toBoolean()
             } catch (e: Exception) {
                 Log.e("CFQServer", "Failed to check token cache: ${e.localizedMessage}")
                 return false
@@ -625,7 +623,7 @@ class CFQServer {
             try {
                 fetchFromServer(
                     "POST",
-                    "api/quick_upload",
+                    "api/quick-upload",
                     payload =
                         hashMapOf(
                             "dest" to gameType,
@@ -671,7 +669,7 @@ class CFQServer {
 
         suspend fun fishFetchToken(authToken: String): String {
             try {
-                return apiFetchUserOption<String>(authToken, "fish_token", "string") ?: ""
+                return apiFetchUserOption(authToken, "fish_token", "string") ?: ""
             } catch (e: Exception) {
                 Log.e("CFQServer", "Failed to fetch fish token: ${e.localizedMessage}")
                 return ""

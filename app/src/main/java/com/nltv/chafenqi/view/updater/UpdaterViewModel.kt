@@ -273,7 +273,7 @@ class UpdaterViewModel : ViewModel() {
             val result =
                 CFQServer.apiUploadUserOption<Boolean>(token, "forwarding_fish", state)
             if (result) {
-                CFQServer.apiFetchUserOption<Boolean>(token, "forwarding_fish", "boolean") == true
+                CFQServer.apiFetchUserOption(token, "forwarding_fish", "boolean").toBoolean()
             } else {
                 Log.e("Updater", "Server error while setting forward fish.")
                 !state

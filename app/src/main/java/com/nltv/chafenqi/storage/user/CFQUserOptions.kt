@@ -28,21 +28,21 @@ class CFQUserOptions() {
         }.also { Log.i(tag, "Fetched user fish token: $fishToken") }
 
         forwardToFish = try {
-            CFQServer.apiFetchUserOption<Boolean>(authToken, "forwarding_fish", "boolean") == true
+            CFQServer.apiFetchUserOption(authToken, "forwarding_fish", "boolean").toBoolean()
         } catch (e: Exception) {
             Log.i(tag, "User fish forward option failed to load, fallback to false")
             false
         }.also { Log.i(tag, "Fetched user fish forward option: $forwardToFish") }
 
         forwardToFish = try {
-            CFQServer.apiFetchUserOption<Boolean>(authToken, "forwarding_lxns", "boolean") == true
+            CFQServer.apiFetchUserOption(authToken, "forwarding_lxns", "boolean").toBoolean()
         } catch (e: Exception) {
             Log.i(tag, "User lxns forward option failed to load, fallback to false")
             false
         }.also { Log.i(tag, "Fetched user lxns forward option: $forwardToLxns") }
 
         rateLimiting = try {
-            CFQServer.apiFetchUserOption<Boolean>(authToken, "rate_limiting", "boolean") == true
+            CFQServer.apiFetchUserOption(authToken, "rate_limiting", "boolean").toBoolean()
         } catch (e: Exception) {
             Log.i(tag, "User rate limiting option failed to load, fallback to false")
             false
@@ -60,7 +60,7 @@ class CFQUserOptions() {
         chunithmFavList = fetchFavMusic(0)
     }
 
-    suspend fun fetchFavMusic(gameType: Int): String {
+    private suspend fun fetchFavMusic(gameType: Int): String {
         return try {
             CFQServer.apiFetchFavMusic(authToken, gameType) ?: throw IllegalStateException("Fav list is null.")
         } catch (e: Exception) {
