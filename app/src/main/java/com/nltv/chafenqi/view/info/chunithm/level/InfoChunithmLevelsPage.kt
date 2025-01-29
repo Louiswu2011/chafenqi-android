@@ -1,5 +1,6 @@
 package com.nltv.chafenqi.view.info.chunithm.level
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -49,7 +50,7 @@ import androidx.compose.ui.unit.times
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.nltv.chafenqi.SCREEN_PADDING
 import com.nltv.chafenqi.extension.CHUNITHM_LEVEL_STRINGS
 import com.nltv.chafenqi.extension.RATE_COLORS_CHUNITHM
@@ -58,8 +59,8 @@ import com.nltv.chafenqi.extension.RATE_STRINGS_CHUNITHM
 import com.nltv.chafenqi.extension.rating
 import com.nltv.chafenqi.extension.toChunithmCoverPath
 import com.nltv.chafenqi.extension.toRateString
+import com.nltv.chafenqi.model.user.chunithm.UserChunithmBestScoreEntry
 import com.nltv.chafenqi.storage.SettingsStore
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmBestScoreEntry
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.util.navigateToMusicEntry
 import com.nltv.chafenqi.view.info.maimai.level.InfoLevelLegend
@@ -149,6 +150,7 @@ fun InfoChunithmLevelsPage(navController: NavController) {
     }
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun InfoChunithmLevelsIndicator() {
     val model: InfoChunithmLevelsViewModel = viewModel()
@@ -233,7 +235,7 @@ fun InfoChunithmLevelList(navController: NavController) {
     ) {
         items(
             count = uiState.levelEntries.size,
-            key = { index -> uiState.levelEntries[index].title + index }
+            key = { index -> uiState.levelEntries[index].associatedMusicEntry.title + index }
         ) { index ->
             val entry = uiState.levelEntries[index]
             InfoChunithmLevelEntry(
@@ -245,7 +247,7 @@ fun InfoChunithmLevelList(navController: NavController) {
         if (uiState.musicEntries.isNotEmpty()) {
             items(
                 count = uiState.musicEntries.size,
-                key = { index -> uiState.musicEntries[index].musicID }
+                key = { index -> uiState.musicEntries[index].musicId }
             ) { index ->
                 val entry = uiState.musicEntries[index]
                 InfoChunithmLevelEntry(music = entry, best = null, navController = navController)
@@ -257,7 +259,7 @@ fun InfoChunithmLevelList(navController: NavController) {
 @Composable
 fun InfoChunithmLevelEntry(
     music: ChunithmMusicEntry,
-    best: ChunithmBestScoreEntry?,
+    best: UserChunithmBestScoreEntry?,
     navController: NavController
 ) {
     val model: InfoChunithmLevelsViewModel = viewModel()
@@ -272,7 +274,7 @@ fun InfoChunithmLevelEntry(
         horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         AsyncImage(
-            model = music.musicID.toChunithmCoverPath(),
+            model = music.musicId.toChunithmCoverPath(),
             contentDescription = "歌曲封面",
             modifier = Modifier
                 .size(64.dp)

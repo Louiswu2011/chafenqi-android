@@ -31,6 +31,9 @@ data class MaimaiTotalPlayedRank(
 
 @Serializable
 data class MaimaiFirstRank(
+    var uid: Int = 0,
+    var username: String = "",
+    var nickname: String = "",
     var rank: Int = 0,
     var firstCount: Int = 0
 ) : LeaderboardRank

@@ -3,13 +3,12 @@ package com.nltv.chafenqi.view.songlist.record
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nltv.chafenqi.extension.toMonthDayString
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
+import com.nltv.chafenqi.model.user.chunithm.UserChunithmRecentScoreEntry
+import com.nltv.chafenqi.model.user.maimai.UserMaimaiRecentScoreEntry
 import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import com.nltv.chafenqi.storage.user.CFQUser
-import com.patrykandpatrick.vico.core.cartesian.data.AxisValueOverrider
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,8 +18,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class MusicRecordPageUiState(
-    val maiHistoryEntries: List<MaimaiRecentScoreEntry> = listOf(),
-    val chuHistoryEntries: List<ChunithmRecentScoreEntry> = listOf(),
+    val maiHistoryEntries: List<UserMaimaiRecentScoreEntry> = listOf(),
+    val chuHistoryEntries: List<UserChunithmRecentScoreEntry> = listOf(),
     val maiHistoryDateStringMap: MutableMap<Int, String> = mutableMapOf(),
     val chuHistoryDateStringMap: MutableMap<Int, String> = mutableMapOf(),
 )
@@ -49,7 +48,7 @@ class MusicRecordPageViewModel : ViewModel() {
                 chuMusic = chuMusicList[index]
                 val map = mutableMapOf<Int, String>()
                 val entries = chuRecentEntries.filter {
-                    it.idx == chuMusic.musicID.toString() && it.levelIndex == levelIndex
+                    it.musicId == chuMusic.musicId && it.levelIndex == levelIndex
                 }
                 entries.reversed().forEachIndexed { idx, entry ->
                     map[idx] = entry.timestamp.toMonthDayString()

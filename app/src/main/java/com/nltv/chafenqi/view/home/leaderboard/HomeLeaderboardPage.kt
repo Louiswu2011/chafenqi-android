@@ -206,7 +206,7 @@ fun HomeLeaderboardRow(
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.padding(horizontal = 5.dp))
-                    Text(text = rowData.nickname)
+                    Text(text = rowData.nickname.ifEmpty { rowData.username })
                 }
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -217,25 +217,6 @@ fun HomeLeaderboardRow(
                     )
                 }
             }
-
-//            AnimatedVisibility(visible = expanded) {
-//                val firstMusics = rowData.extraInfo as? List<*>
-//                val chuMusics = firstMusics?.filterIsInstance<ChunithmFirstLeaderboardMusicEntry>()
-//                val maiMusics = firstMusics?.filterIsInstance<MaimaiFirstLeaderboardMusicEntry>()
-//                Row (
-//                    modifier = Modifier.fillMaxWidth(),
-//                    horizontalArrangement = Arrangement.SpaceBetween,
-//                    verticalAlignment = Alignment.CenterVertically
-//                ) {
-//                    if (chuMusics != null) {
-//
-//                    } else if (maiMusics != null) {
-//
-//                    } else {
-//                        expanded = false
-//                    }
-//                }
-//            }
         }
     }
 }

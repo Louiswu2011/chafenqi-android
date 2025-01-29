@@ -31,6 +31,9 @@ data class ChunithmTotalPlayedRank(
 
 @Serializable
 data class ChunithmFirstRank(
+    var uid: Int = 0,
+    var username: String = "",
+    var nickname: String = "",
     var rank: Int = 0,
     var firstCount: Int = 0
 ) : LeaderboardRank

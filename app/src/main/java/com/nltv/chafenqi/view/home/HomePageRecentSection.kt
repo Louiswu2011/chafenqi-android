@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.nltv.chafenqi.extension.toChunithmCoverPath
 import com.nltv.chafenqi.extension.toDateString
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
@@ -144,7 +144,7 @@ fun HomePageRecentMaimaiEntry(item: MaimaiRecentLineup) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         AsyncImage(
-            model = item.entry.associatedMusicEntry.musicID.toMaimaiCoverPath(),
+            model = item.entry.associatedMusicEntry.coverId.toMaimaiCoverPath(),
             contentDescription = "最近动态歌曲封面",
             modifier = Modifier
                 .padding(end = 8.dp)
@@ -156,7 +156,7 @@ fun HomePageRecentMaimaiEntry(item: MaimaiRecentLineup) {
                     ),
                     shape = RoundedCornerShape(10.dp)
                 )
-                .padding(2.dp)
+                // .padding(2.dp)
                 .clip(RoundedCornerShape(size = 10.dp))
         )
         Column(
@@ -176,7 +176,7 @@ fun HomePageRecentMaimaiEntry(item: MaimaiRecentLineup) {
                 Alignment.CenterVertically
             ) {
                 Text(
-                    item.entry.title,
+                    item.entry.associatedMusicEntry.title,
                     fontSize = 16.sp,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
@@ -203,7 +203,7 @@ fun HomePageRecentChunithmEntry(item: ChunithmRecentLineup) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         AsyncImage(
-            model = item.entry.associatedMusicEntry.musicID.toChunithmCoverPath(),
+            model = item.entry.associatedMusicEntry.musicId.toChunithmCoverPath(),
             contentDescription = "最近动态歌曲封面",
             modifier = Modifier
                 .padding(end = 8.dp)
@@ -235,7 +235,7 @@ fun HomePageRecentChunithmEntry(item: ChunithmRecentLineup) {
                 Alignment.CenterVertically
             ) {
                 Text(
-                    item.entry.title,
+                    item.entry.associatedMusicEntry.title,
                     fontSize = 16.sp,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,

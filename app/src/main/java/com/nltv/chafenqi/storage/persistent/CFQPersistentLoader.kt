@@ -7,7 +7,6 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.SettingsStore.Companion.settingsStore
-import com.nltv.chafenqi.storage.songlist.MusicEntry
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
@@ -15,16 +14,17 @@ import kotlinx.serialization.json.Json
 data class CFQPersistentLoaderConfig(
     val name: String,
     val cacheKey: Preferences.Key<String>,
-    val versionKey: Preferences.Key<Int>,
+    val versionKey: Preferences.Key<String>,
     val fetcher: suspend () -> String,
-    val gameType: Int
+    val gameType: Int,
+    val resourceTag: String
 )
 
 class CFQPersistentLoader {
     companion object {
         val tag = "CFQPersistentLoader"
 
-        suspend inline fun <reified T : MusicEntry> loadPersistentData(
+        suspend inline fun <reified T> loadPersistentData(
             context: Context,
             config: CFQPersistentLoaderConfig,
             shouldValidate: Boolean
@@ -35,7 +35,7 @@ class CFQPersistentLoader {
             return loadPersistentData(cacheStore, config, shouldValidate)
         }
 
-        suspend inline fun <reified T : MusicEntry> loadPersistentData(
+        suspend inline fun <reified T> loadPersistentData(
             store: DataStore<Preferences>,
             config: CFQPersistentLoaderConfig,
             shouldValidate: Boolean
@@ -52,9 +52,12 @@ class CFQPersistentLoader {
             return try {
                 // Compare local and remote music list version.
                 val localVersion = store.data.map { p -> p[config.versionKey] ?: 0 }.first()
-                val remoteVersion = CFQServer.statMusicListVersion(gameType = config.gameType)
+                val remoteVersion = CFQServer.statResourceVersion(tag = config.resourceTag)
 
-                if (localVersion >= remoteVersion) {
+                Log.i(tag, "Local ${config.name} hash: $localVersion")
+                Log.i(tag, "Remote ${config.name} hash: $remoteVersion")
+
+                if (localVersion == remoteVersion) {
                     Log.i(tag, "Local ${config.name} music list is up to date.")
                     return list
                 }

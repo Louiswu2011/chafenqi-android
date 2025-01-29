@@ -23,8 +23,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,7 +34,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.nltv.chafenqi.R
 import com.nltv.chafenqi.SCREEN_PADDING
-import com.nltv.chafenqi.storage.SettingsStore
 import com.nltv.chafenqi.view.home.nameplateChunithmBottomColor
 import com.nltv.chafenqi.view.home.nameplateMaimaiBottomColor
 import io.github.alexzhirkevich.qrose.options.QrBrush
@@ -55,9 +52,6 @@ fun UpdaterQRCodePage(snackbarHostState: SnackbarHostState) {
     val uriHandler = LocalUriHandler.current
     val logoPainter = painterResource(id = R.drawable.app_icon)
     val pagerState = rememberPagerState { 2 }
-    val store = SettingsStore(context)
-
-    val shouldForward by store.uploadShouldForward.collectAsState(initial = false)
 
     val maiQrCodePainter = rememberQrCodePainter(model.buildUri(1)) {
         logo {

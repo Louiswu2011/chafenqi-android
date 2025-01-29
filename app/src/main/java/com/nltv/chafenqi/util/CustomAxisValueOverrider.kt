@@ -1,9 +1,9 @@
 package com.nltv.chafenqi.util
 
-import com.patrykandpatrick.vico.core.cartesian.data.AxisValueOverrider
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianLayerRangeProvider
 import com.patrykandpatrick.vico.core.common.data.ExtraStore
 
-class MaimaiAxisValueOverrider: AxisValueOverrider {
+class MaimaiAxisValueOverrider: CartesianLayerRangeProvider {
     override fun getMinY(minY: Double, maxY: Double, extraStore: ExtraStore): Double {
         return if (minY - 1.0 < 0) 0.0 else minY - 1.0
     }
@@ -13,7 +13,7 @@ class MaimaiAxisValueOverrider: AxisValueOverrider {
     }
 }
 
-class ChunithmAxisValueOverrider: AxisValueOverrider {
+class ChunithmAxisValueOverrider: CartesianLayerRangeProvider {
     override fun getMinY(minY: Double, maxY: Double, extraStore: ExtraStore): Double {
         return if (minY - 5000.0 < 0) 0.0 else minY - 5000.0
     }

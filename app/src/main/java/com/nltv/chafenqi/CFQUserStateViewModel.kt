@@ -9,6 +9,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.ktx.Firebase
+import com.nltv.chafenqi.model.user.chunithm.UserChunithmRecentScoreEntry
+import com.nltv.chafenqi.model.user.maimai.UserMaimaiRecentScoreEntry
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.user.CFQUser
 import kotlinx.coroutines.Dispatchers
@@ -43,7 +45,9 @@ class CFQUserStateViewModel : ViewModel() {
 
                 maimai.info = deserializer.decodeFromString(infoString)
                 maimai.best = deserializer.decodeFromString(bestString)
-                maimai.recent = deserializer.decodeFromString(recentString)
+                maimai.recent = deserializer
+                    .decodeFromString<List<UserMaimaiRecentScoreEntry>>(recentString)
+                    .sortedByDescending { it.timestamp }
 
                 maimai.isBasicEmpty = false
                 Log.i(tag, "Loaded user maimai basic data.")
@@ -55,10 +59,8 @@ class CFQUserStateViewModel : ViewModel() {
 
             if (user.isPremium && !isEmpty) {
                 try {
-                    val deltaString = CFQServer.apiMaimai("delta", token)
                     val extraString = CFQServer.apiMaimai("extra", token)
 
-                    maimai.delta = deserializer.decodeFromString(deltaString)
                     maimai.extra = deserializer.decodeFromString(extraString)
                     maimai.isExtraEmpty = false
                 } catch (e: Exception) {
@@ -91,7 +93,9 @@ class CFQUserStateViewModel : ViewModel() {
 
                 chunithm.info = deserializer.decodeFromString(infoString)
                 chunithm.best = deserializer.decodeFromString(bestString)
-                chunithm.recent = deserializer.decodeFromString(recentString)
+                chunithm.recent = deserializer
+                    .decodeFromString<List<UserChunithmRecentScoreEntry>>(recentString)
+                    .sortedByDescending { it.timestamp }
                 chunithm.rating = deserializer.decodeFromString(ratingString)
 
                 chunithm.isBasicEmpty = false
@@ -104,10 +108,8 @@ class CFQUserStateViewModel : ViewModel() {
 
             if (user.isPremium && !isEmpty) {
                 try {
-                    val deltaString = CFQServer.apiChunithm("delta", token)
-                    val extraString = CFQServer.apiChunithm("extras", token)
+                    val extraString = CFQServer.apiChunithm("extra", token)
 
-                    chunithm.delta = deserializer.decodeFromString(deltaString)
                     chunithm.extra = deserializer.decodeFromString(extraString)
                     chunithm.isExtraEmpty = false
                     Log.i(tag, "Loaded user chunithm premium data.")
@@ -122,7 +124,9 @@ class CFQUserStateViewModel : ViewModel() {
 
                 chunithm.best.filterNot { it.associatedMusicEntry.isWE }
                 chunithm.recent.filterNot { it.associatedMusicEntry.isWE }
-                chunithm.rating.filterNot { it.associatedMusicEntry.isWE }
+                chunithm.rating.best.filterNot { it.associatedMusicEntry.isWE }
+                chunithm.rating.recent.filterNot { it.associatedMusicEntry.isWE }
+                chunithm.rating.candidate.filterNot { it.associatedMusicEntry.isWE }
             }
         }
     }

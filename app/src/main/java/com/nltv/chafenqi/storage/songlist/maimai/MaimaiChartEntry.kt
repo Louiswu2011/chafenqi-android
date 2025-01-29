@@ -58,5 +58,5 @@ data class MaimaiChartEntry(
 }
 
 enum class MaimaiChartType {
-    Standard, Deluxe
+    Standard, Deluxe, Utage
 }

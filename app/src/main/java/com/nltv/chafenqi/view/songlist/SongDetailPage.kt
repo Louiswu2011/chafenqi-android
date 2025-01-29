@@ -1,7 +1,6 @@
 package com.nltv.chafenqi.view.songlist
 
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -13,12 +12,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -65,15 +61,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
-import coil.compose.SubcomposeAsyncImage
-import coil.request.ImageRequest
+import coil3.compose.AsyncImage
+import coil3.compose.SubcomposeAsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.nltv.chafenqi.SCREEN_PADDING
-import com.nltv.chafenqi.data.Comment
 import com.nltv.chafenqi.view.home.HomeNavItem
 import com.nltv.chafenqi.view.songlist.comment.CommentCard
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -135,7 +130,7 @@ fun SongDetailPage(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 AsyncImage(
-                    model = model.coverUrl,
+                    model = state.coverUrl,
                     contentDescription = "歌曲封面",
                     modifier = Modifier
                         .size(128.dp)
@@ -164,14 +159,14 @@ fun SongDetailPage(
                         horizontalAlignment = Alignment.Start
                     ) {
                         Text(
-                            text = model.title,
+                            text = state.title,
                             fontWeight = FontWeight.Bold,
                             fontSize = 26.sp,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )
                         Text(
-                            text = model.artist,
+                            text = state.artist,
                             fontSize = 18.sp,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -187,18 +182,18 @@ fun SongDetailPage(
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    model.constants.forEachIndexed { index, string ->
+                    state.constants.forEachIndexed { index, string ->
                         Text(text = string, fontSize = 16.sp, color = model.difficultyColors[index])
                     }
                 }
-                Text(text = "BPM: ${model.bpm}", fontSize = 16.sp)
+                Text(text = "BPM: ${state.bpm}", fontSize = 16.sp)
             }
             Row(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
             ) {
-                Text(text = model.version)
+                Text(text = state.version)
             }
             TextButton(
                 onClick = {
@@ -207,7 +202,7 @@ fun SongDetailPage(
                         uriHandler.openUri(
                             Uri.parse("bilibili://search")
                                 .buildUpon()
-                                .appendQueryParameter("keyword", "${model.title} $gameName")
+                                .appendQueryParameter("keyword", "${state.title} $gameName")
                                 .build()
                                 .toString()
                         )
@@ -243,11 +238,11 @@ fun SongDetailPage(
                 )
             }
             if (mode == 1) {
-                model.maiDiffInfos.onEach {
+                state.maiDiffInfos.onEach {
                     MaimaiDifficultyCard(info = it, navController)
                 }
             } else if (mode == 0) {
-                model.chuDiffInfos.onEach {
+                state.chuDiffInfos.onEach {
                     ChunithmDifficultyCard(info = it, navController)
                 }
             }
@@ -452,7 +447,7 @@ fun ChunithmExpandedChartCard() {
                     },
                     contentDescription = "Chunithm Chart Layer",
                     onSuccess = {
-                        model.updateChartImage(index, it.result.drawable)
+                        model.updateChartImage(index, it.result.image)
                     }
                 )
             }

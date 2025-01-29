@@ -32,14 +32,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.nltv.chafenqi.SCREEN_PADDING
 import com.nltv.chafenqi.extension.toChunithmCoverPath
 import com.nltv.chafenqi.extension.toDateString
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.extension.toRateString
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
+import com.nltv.chafenqi.model.user.chunithm.UserChunithmRecentScoreEntry
+import com.nltv.chafenqi.model.user.maimai.UserMaimaiRecentScoreEntry
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.util.ChunithmAxisValueOverrider
 import com.nltv.chafenqi.util.MaimaiAxisValueOverrider
@@ -53,15 +53,15 @@ import com.nltv.chafenqi.view.module.RatingBadge
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
 import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottomAxis
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStartAxis
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLine
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 import com.patrykandpatrick.vico.compose.common.fill
+import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
-import com.patrykandpatrick.vico.core.cartesian.data.AxisValueOverrider
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
 import java.util.Locale
 
@@ -122,14 +122,14 @@ fun MusicRecordScoreChart() {
     CartesianChartHost(
         chart = rememberCartesianChart(
             rememberLineCartesianLayer(
-                axisValueOverrider = if (model.mode == 0) ChunithmAxisValueOverrider() else MaimaiAxisValueOverrider(),
+                rangeProvider = if (model.mode == 0) ChunithmAxisValueOverrider() else MaimaiAxisValueOverrider(),
                 pointSpacing = 50.dp,
                 lineProvider = LineCartesianLayer.LineProvider.series(
-                    rememberLine(
+                    LineCartesianLayer.rememberLine(
                         remember {
                             LineCartesianLayer.LineFill.double(
                                 topFill = fill(
-                                    if (CFQUser.mode == 0) nameplateChunithmTopColor else nameplateMaimaiTopColor
+                                    if (CFQUser.mode == 0) nameplateChunithmBottomColor else nameplateMaimaiBottomColor
                                 ),
                                 bottomFill = fill(
                                     if (CFQUser.mode == 0) nameplateChunithmBottomColor else nameplateMaimaiBottomColor
@@ -139,8 +139,8 @@ fun MusicRecordScoreChart() {
                     )
                 )
             ),
-            startAxis = rememberStartAxis(
-                valueFormatter = { value, _, _ ->
+            startAxis = VerticalAxis.rememberStart(
+                valueFormatter = { _, value, _ ->
                     if (model.mode == 0) {
                         String.format(Locale.getDefault(), "%.0f", value)
                     } else {
@@ -149,8 +149,8 @@ fun MusicRecordScoreChart() {
                 },
                 itemPlacer = VerticalAxis.ItemPlacer.count( { 10 } )
             ),
-            bottomAxis = rememberBottomAxis(
-                valueFormatter = { value, _, _ ->
+            bottomAxis = HorizontalAxis.rememberBottom(
+                valueFormatter = { _, value, _ ->
                     if (model.mode == 0) {
                         uiState.chuHistoryDateStringMap[value.toInt()] ?: ""
                     } else {
@@ -186,8 +186,8 @@ fun MusicRecordMaimaiEntryList(navController: NavController) {
             MusicRecordEntry(
                 modifier = Modifier.padding(horizontal = SCREEN_PADDING),
                 mode = 1,
-                coverUrl = entry.associatedMusicEntry.musicID.toMaimaiCoverPath(),
-                title = entry.title,
+                coverUrl = entry.associatedMusicEntry.coverId.toMaimaiCoverPath(),
+                title = entry.associatedMusicEntry.title,
                 levelIndex = entry.levelIndex,
                 playDate = entry.timestamp.toDateString(context),
                 badge = entry.achievements.toRateString(),
@@ -219,8 +219,8 @@ fun MusicRecordChunithmEntryList(navController: NavController) {
             MusicRecordEntry(
                 modifier = Modifier.padding(horizontal = SCREEN_PADDING),
                 mode = 0,
-                coverUrl = entry.associatedMusicEntry.musicID.toChunithmCoverPath(),
-                title = entry.title,
+                coverUrl = entry.associatedMusicEntry.musicId.toChunithmCoverPath(),
+                title = entry.associatedMusicEntry.title,
                 levelIndex = entry.levelIndex,
                 playDate = entry.timestamp.toDateString(context),
                 badge = entry.score.toRateString(),
@@ -243,8 +243,8 @@ fun MusicRecordEntry(
     badge: String,
     score: String,
     navController: NavController? = null,
-    maiRecentEntry: MaimaiRecentScoreEntry? = null,
-    chuRecentEntry: ChunithmRecentScoreEntry? = null
+    maiRecentEntry: UserMaimaiRecentScoreEntry? = null,
+    chuRecentEntry: UserChunithmRecentScoreEntry? = null
 ) {
     Row(
         modifier = Modifier

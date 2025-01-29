@@ -26,7 +26,7 @@ class PremiumRedeemPageViewModel : ViewModel() {
     }
 
     suspend fun redeemMembership(redeemCode: String): Boolean {
-        return CFQServer.apiRedeem(user.username, redeemCode)
+        return CFQServer.apiRedeem(user.token, redeemCode)
     }
 }
 

@@ -39,9 +39,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.nltv.chafenqi.SCREEN_PADDING
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiCharacterEntry
+import com.nltv.chafenqi.model.user.maimai.UserMaimaiCharacterEntry
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.view.home.HomeNavItem
 
@@ -71,7 +71,7 @@ fun InfoMaimaiCollectionArea() {
         Modifier.padding(SCREEN_PADDING)
     ) {
         AsyncImage(
-            model = model.currentNameplate.image,
+            model = model.currentNameplate.url,
             contentDescription = "当前名牌",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
@@ -82,7 +82,7 @@ fun InfoMaimaiCollectionArea() {
             verticalAlignment = Alignment.Bottom
         ) {
             AsyncImage(
-                model = model.currentLeader.image,
+                model = model.currentLeader.url,
                 contentDescription = "当前人物",
                 modifier = Modifier.fillMaxWidth(0.5f),
                 contentScale = ContentScale.Crop
@@ -100,14 +100,14 @@ fun InfoMaimaiCollectionArea() {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(text = "Rating")
-                        Text(text = "${model.info.rating}", fontWeight = FontWeight.Bold)
+                        Text(text = "${model.info.lastOrNull()?.rating}", fontWeight = FontWeight.Bold)
                     }
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(15.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(text = "游玩次数")
-                        Text(text = "${model.info.playCount}", fontWeight = FontWeight.Bold)
+                        Text(text = "${model.info.lastOrNull()?.playCount}", fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -219,13 +219,13 @@ fun InfoMaimaiDetailButtons(navController: NavController) {
 }
 
 @Composable
-fun InfoMaimaiCharacterCapsule(entry: MaimaiCharacterEntry) {
+fun InfoMaimaiCharacterCapsule(entry: UserMaimaiCharacterEntry) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.width(64.dp)
     ) {
         AsyncImage(
-            model = entry.image,
+            model = entry.url,
             contentDescription = "${entry.name}的头像",
             modifier = Modifier
                 .clip(CircleShape)

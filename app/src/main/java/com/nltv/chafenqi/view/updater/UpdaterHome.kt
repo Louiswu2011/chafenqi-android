@@ -4,7 +4,6 @@ import android.app.Activity
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -12,7 +11,6 @@ import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.QrCode
-import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,6 +25,7 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -58,8 +57,6 @@ import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.SettingsStore
 import com.nltv.chafenqi.view.home.HomeNavItem
 import com.nltv.chafenqi.view.settings.GAME_LIST
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,6 +82,12 @@ fun UpdaterHomePage(navController: NavController) {
 
                 else -> {}
             }
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            model.stopRefreshTask()
         }
     }
 
@@ -314,7 +317,7 @@ fun PreferenceRootScope.UpdaterSettingsGroup(
 
     LaunchedEffect(Unit) {
         isUploading = true
-        shouldForward = CFQServer.apiFetchUserOption(model.token, "forwarding_fish") == "1"
+        shouldForward = CFQServer.apiFetchUserOption(model.token, "forwarding_fish", "boolean").toBoolean()
         isUploading = false
     }
 

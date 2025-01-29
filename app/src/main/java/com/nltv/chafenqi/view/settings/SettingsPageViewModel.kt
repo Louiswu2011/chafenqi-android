@@ -14,8 +14,8 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import coil.annotation.ExperimentalCoilApi
-import coil.imageLoader
+import coil3.annotation.ExperimentalCoilApi
+import coil3.imageLoader
 import com.nltv.chafenqi.BuildConfig
 import com.nltv.chafenqi.R
 import com.nltv.chafenqi.cacheStore
@@ -80,8 +80,21 @@ class SettingsPageViewModel : ViewModel() {
     val token = user.token
     val bindQQ = user.remoteOptions.bindQQ
 
-    var maiSongListVersionString by mutableStateOf("")
-    var chuSongListVersionString by mutableStateOf("")
+    var fishTokenState by mutableStateOf(user.remoteOptions.fishToken)
+        private set
+
+    var bindQQState by mutableStateOf(user.remoteOptions.bindQQ)
+        private set
+
+    fun updateFishTokenState(newToken: String) {
+        user.remoteOptions.fishToken = newToken
+        fishTokenState = newToken
+    }
+
+    fun updateBindQQState(newQQ: String) {
+        user.remoteOptions.bindQQ = newQQ
+        bindQQState = newQQ
+    }
 
     suspend fun isAppVersionLatest(): Boolean {
         val versionData = CFQServer.apiFetchLatestVersion()
@@ -92,22 +105,6 @@ class SettingsPageViewModel : ViewModel() {
             .removeSuffix(")")
             .toInt()
         return versionData.isLatest(versionCode, buildNumber)
-    }
-
-    @OptIn(FormatStringsInDatetimeFormats::class)
-    fun updateSongListVersion() {
-        viewModelScope.launch(Dispatchers.IO) {
-            maiSongListVersionString = Instant.fromEpochSeconds(CFQPersistentData.Maimai.version.toLong())
-                .toLocalDateTime(TimeZone.currentSystemDefault())
-                .format(LocalDateTime.Format {
-                    byUnicodePattern("yyyy-MM-dd")
-                })
-            chuSongListVersionString = Instant.fromEpochSeconds(CFQPersistentData.Chunithm.version.toLong())
-                .toLocalDateTime(TimeZone.currentSystemDefault())
-                .format(LocalDateTime.Format {
-                    byUnicodePattern("yyyy-MM-dd")
-                })
-        }
     }
 
     fun updateSponsorList() {
@@ -123,9 +120,9 @@ class SettingsPageViewModel : ViewModel() {
     @OptIn(FormatStringsInDatetimeFormats::class)
     fun updateUserPremiumTime() {
         viewModelScope.launch {
-            val time = CFQServer.apiCheckPremiumTime(username)
+            val time = CFQServer.apiCheckPremiumTime(user.token)
             val nowInstant = Clock.System.now()
-            val premiumInstant = Instant.fromEpochSeconds(time.toLong())
+            val premiumInstant = Instant.fromEpochSeconds(time)
             val dateString = premiumInstant
                 .toLocalDateTime(TimeZone.currentSystemDefault())
                 .format(LocalDateTime.Format { byUnicodePattern("yyyy-MM-dd") })
@@ -161,7 +158,6 @@ class SettingsPageViewModel : ViewModel() {
         }
     }
 
-    @OptIn(ExperimentalCoilApi::class)
     fun clearCoilCache(context: Context) {
         val imageLoader = context.imageLoader
         val diskCache = imageLoader.diskCache
@@ -172,7 +168,6 @@ class SettingsPageViewModel : ViewModel() {
         getCoilDiskCacheSize(context)
     }
 
-    @OptIn(ExperimentalCoilApi::class)
     fun getCoilDiskCacheSize(context: Context) {
         val diskCache = context.imageLoader.diskCache
         diskCacheSize = when (val sizeInBytes = diskCache?.size ?: 0) {

@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.nltv.chafenqi.SCREEN_PADDING
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.view.home.HomeNavItem
@@ -124,7 +124,7 @@ fun InfoChunithmActiveSkill() {
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 AsyncImage(
-                    model = model.currentSkill.icon,
+                    model = model.currentSkill.url,
                     contentDescription = "当前技能图标",
                     modifier = Modifier
                         .fillMaxHeight(),
@@ -175,7 +175,7 @@ fun InfoChunithmStats() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = "游玩次数")
-            Text(text = model.info.playCount.toString(), fontWeight = FontWeight.Bold)
+            Text(text = model.info.lastOrNull()?.playCount.toString(), fontWeight = FontWeight.Bold)
         }
         Row(
             Modifier.fillMaxWidth(),
@@ -186,9 +186,9 @@ fun InfoChunithmStats() {
             Text(
                 buildAnnotatedString {
                     withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append("${String.format("%.2f", model.info.rawOverpower)} ")
+                        append("${String.format("%.2f", model.info.lastOrNull()?.rawOverpower)} ")
                     }
-                    append("(${String.format("%.2f", model.info.overpowerPercentage)}%)")
+                    append("(${String.format("%.2f", model.info.lastOrNull()?.percentOverpower)}%)")
 
                 }
             )
@@ -202,9 +202,9 @@ fun InfoChunithmStats() {
             Text(
                 buildAnnotatedString {
                     withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append("${model.info.currentGold} ")
+                        append("${model.info.lastOrNull()?.currentGold} ")
                     }
-                    append("(${model.info.totalGold})")
+                    append("(${model.info.lastOrNull()?.totalGold})")
                 }
             )
         }
@@ -342,9 +342,9 @@ fun InfoChunithmFriendCode(snackbarHostState: SnackbarHostState) {
             horizontalArrangement = Arrangement.spacedBy(SCREEN_PADDING),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = model.info.friendCode, fontWeight = FontWeight.Bold)
+            Text(text = model.info.lastOrNull()?.friendCode ?: "", fontWeight = FontWeight.Bold)
             Text(text = "复制", modifier = Modifier.clickable {
-                clipboardManager.setText(AnnotatedString(model.info.friendCode))
+                clipboardManager.setText(AnnotatedString(model.info.lastOrNull()?.friendCode ?: ""))
                 scope.launch { snackbarHostState.showSnackbar("已复制到剪贴板") }
             }, color = MaterialTheme.colorScheme.primary)
         }

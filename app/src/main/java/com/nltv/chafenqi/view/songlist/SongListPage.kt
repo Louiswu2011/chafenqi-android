@@ -5,11 +5,11 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,9 +31,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.VideogameAsset
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -45,6 +43,7 @@ import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -65,7 +64,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.nltv.chafenqi.SCREEN_PADDING
 import com.nltv.chafenqi.extension.CHUNITHM_GENRE_STRINGS
 import com.nltv.chafenqi.extension.CHUNITHM_LEVEL_STRINGS
@@ -200,100 +199,110 @@ fun SongListSearchBar(navController: NavController) {
     val chuSearchResult = uiState.chuSearchResult
     val maiSearchResult = uiState.maiSearchResult
 
+    val onActiveChange: (Boolean) -> Unit = { activeChange -> model.isSearchBarActive = activeChange }
+    val colors1 = SearchBarDefaults.colors()
     SearchBar(
-        query = queryText,
-        onQueryChange = { newQuery -> queryText = newQuery },
-        onSearch = { scope.launch { model.onSearchQueryChange(queryText) } },
-        active = model.isSearchBarActive,
-        onActiveChange = { activeChange -> model.isSearchBarActive = activeChange },
-        placeholder = { Text(text = "输入曲名或作曲家") },
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Search,
-                contentDescription = "搜索歌曲列表"
+        inputField = {
+            SearchBarDefaults.InputField(
+                query = queryText,
+                onQueryChange = { newQuery -> queryText = newQuery },
+                onSearch = { scope.launch { model.onSearchQueryChange(queryText) } },
+                expanded = model.isSearchBarActive,
+                onExpandedChange = onActiveChange,
+                placeholder = { Text(text = "输入曲名或作曲家") },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "搜索歌曲列表"
+                    )
+                },
+                trailingIcon = {
+                    if (model.isSearchBarActive) {
+                        IconButton(onClick = {
+                            if (model.searchQuery.isNotEmpty()) {
+                                model.onSearchQueryChange("")
+                            } else {
+                                model.isSearchBarActive = false
+                            }
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "清除或关闭"
+                            )
+                        }
+                    }
+                },
             )
         },
-        trailingIcon = {
-            if (model.isSearchBarActive) {
-                IconButton(onClick = {
-                    if (model.searchQuery.isNotEmpty()) {
-                        model.onSearchQueryChange("")
-                    } else {
-                        model.isSearchBarActive = false
-                    }
-                }) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "清除或关闭"
-                    )
-                }
-            }
-        },
+        expanded = model.isSearchBarActive,
+        onExpandedChange = onActiveChange,
         modifier = Modifier
             .padding(horizontal = searchBarHorizontalPadding)
             .padding(bottom = SCREEN_PADDING)
-            .fillMaxWidth()
-    ) {
-        when (model.user.mode) {
-            0 -> {
-                when {
-                    chuSearchResult.isNotEmpty() -> {
-                        LazyColumn(
-                            Modifier.fillMaxWidth(),
-                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp),
-                            state = chuResultListState
-                        ) {
-                            items(
-                                count = chuSearchResult.size,
-                                key = { index ->
-                                    chuSearchResult[index].musicID
+            .fillMaxWidth(),
+        colors = colors1,
+        content = {
+            when (model.user.mode) {
+                0 -> {
+                    when {
+                        chuSearchResult.isNotEmpty() -> {
+                            LazyColumn(
+                                Modifier.fillMaxWidth(),
+                                contentPadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp),
+                                state = chuResultListState
+                            ) {
+                                items(
+                                    count = chuSearchResult.size,
+                                    key = { index ->
+                                        chuSearchResult[index].musicId
+                                    }
+                                ) { index ->
+                                    ChunithmMusicListEntry(
+                                        music = chuSearchResult[index],
+                                        index = -1,
+                                        navController = navController
+                                    )
                                 }
-                            ) { index ->
-                                ChunithmMusicListEntry(
-                                    music = chuSearchResult[index],
-                                    index = -1,
-                                    navController = navController
-                                )
                             }
                         }
-                    }
 
-                    model.searchQuery.isNotEmpty() -> {
-                        SongListSearchEmptyState()
+                        model.searchQuery.isNotEmpty() -> {
+                            SongListSearchEmptyState()
+                        }
+                    }
+                }
+
+                1 -> {
+                    when {
+                        maiSearchResult.isNotEmpty() -> {
+                            LazyColumn(
+                                Modifier.fillMaxWidth(),
+                                contentPadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp),
+                                state = maiResultListState
+                            ) {
+                                items(
+                                    count = maiSearchResult.size,
+                                    key = { index ->
+                                        maiSearchResult[index].musicId
+                                    }
+                                ) { index ->
+                                    MaimaiMusicListEntry(
+                                        music = maiSearchResult[index],
+                                        index = -1,
+                                        navController = navController
+                                    )
+                                }
+                            }
+                        }
+
+                        model.searchQuery.isNotEmpty() -> {
+                            SongListSearchEmptyState()
+                        }
                     }
                 }
             }
-
-            1 -> {
-                when {
-                    maiSearchResult.isNotEmpty() -> {
-                        LazyColumn(
-                            Modifier.fillMaxWidth(),
-                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp),
-                            state = maiResultListState
-                        ) {
-                            items(
-                                count = maiSearchResult.size,
-                                key = { index ->
-                                    maiSearchResult[index].musicID
-                                }
-                            ) { index ->
-                                MaimaiMusicListEntry(
-                                    music = maiSearchResult[index],
-                                    index = -1,
-                                    navController = navController
-                                )
-                            }
-                        }
-                    }
-
-                    model.searchQuery.isNotEmpty() -> {
-                        SongListSearchEmptyState()
-                    }
-                }
-            }
-        }
-    }
+        },
+    )
 }
 
 @Composable
@@ -303,7 +312,7 @@ fun SongListFilterChips() {
     val levelStrings = if (model.user.mode == 0) CHUNITHM_LEVEL_STRINGS else MAIMAI_LEVEL_STRINGS
     val genreStrings = if (model.user.mode == 0) CHUNITHM_GENRE_STRINGS else MAIMAI_GENRE_STRINGS
     val versionStrings =
-        if (model.user.mode == 0) CHUNITHM_VERSION_STRINGS else MAIMAI_VERSION_STRINGS
+        if (model.user.mode == 0) CHUNITHM_VERSION_STRINGS else MAIMAI_VERSION_STRINGS.values.toList()
     val filterLevelList =
         if (model.user.mode == 0) model.filterChunithmLevelList else model.filterMaimaiLevelList
     val filterGenreList =
@@ -512,7 +521,7 @@ fun MaimaiMusicListEntry(music: MaimaiMusicEntry, index: Int, navController: Nav
             horizontalArrangement = Arrangement.Start
         ) {
             AsyncImage(
-                model = music.musicID.toMaimaiCoverPath(),
+                model = music.coverId.toMaimaiCoverPath(),
                 contentDescription = "${music.title}的封面",
                 modifier = Modifier
                     .padding(end = 8.dp)
@@ -574,7 +583,7 @@ fun ChunithmMusicListEntry(music: ChunithmMusicEntry, index: Int, navController:
             horizontalArrangement = Arrangement.Start
         ) {
             AsyncImage(
-                model = music.musicID.toChunithmCoverPath(),
+                model = music.musicId.toChunithmCoverPath(),
                 contentDescription = "${music.title}的封面",
                 modifier = Modifier
                     .padding(end = 8.dp)

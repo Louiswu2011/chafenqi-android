@@ -2,8 +2,8 @@ package com.nltv.chafenqi.view.home.log
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
+import com.nltv.chafenqi.model.user.chunithm.UserChunithmRecentScoreEntry
+import com.nltv.chafenqi.model.user.maimai.UserMaimaiRecentScoreEntry
 import com.nltv.chafenqi.storage.user.CFQUser
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,8 +19,8 @@ class LogDetailPageViewModel : ViewModel() {
         val playCountGain: String = "",
         val ratingGainIndicator: String = "",
         val playCountGainIndicator: String = "",
-        val maimaiEntries: List<MaimaiRecentScoreEntry> = listOf(),
-        val chunithmEntries: List<ChunithmRecentScoreEntry> = listOf()
+        val maimaiEntries: List<UserMaimaiRecentScoreEntry> = listOf(),
+        val chunithmEntries: List<UserChunithmRecentScoreEntry> = listOf()
     )
 
     private val _uiState = MutableStateFlow(LogDetailPageUiState())

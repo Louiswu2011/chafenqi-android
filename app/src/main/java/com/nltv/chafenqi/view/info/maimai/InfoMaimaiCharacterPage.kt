@@ -26,9 +26,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.nltv.chafenqi.SCREEN_PADDING
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiCharacterEntry
+import com.nltv.chafenqi.model.user.maimai.UserMaimaiCharacterEntry
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -88,7 +88,7 @@ fun MaimaiCharacterStickyHeader(area: String, size: Int) {
 }
 
 @Composable
-fun MaimaiCharacterListEntry(entry: MaimaiCharacterEntry) {
+fun MaimaiCharacterListEntry(entry: UserMaimaiCharacterEntry) {
     Row(
         Modifier
             .fillMaxWidth()
@@ -101,7 +101,7 @@ fun MaimaiCharacterListEntry(entry: MaimaiCharacterEntry) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = entry.image,
+                model = entry.url,
                 contentDescription = "${entry.name}角色头像",
                 modifier = Modifier.size(72.dp)
             )

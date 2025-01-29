@@ -1,11 +1,9 @@
 package com.nltv.chafenqi.view.home.recent
 
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nltv.chafenqi.storage.datastore.user.RecentScoreEntry
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
+import com.nltv.chafenqi.model.user.chunithm.UserChunithmRecentScoreEntry
+import com.nltv.chafenqi.model.user.maimai.UserMaimaiRecentScoreEntry
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.util.RecentSelectableDates
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,8 +15,8 @@ import kotlin.math.ceil
 import kotlin.math.min
 
 data class HomeRecentViewUiState(
-    var maiRecentList: List<MaimaiRecentScoreEntry> = listOf(),
-    var chuRecentList: List<ChunithmRecentScoreEntry> = listOf(),
+    var maiRecentList: List<UserMaimaiRecentScoreEntry> = listOf(),
+    var chuRecentList: List<UserChunithmRecentScoreEntry> = listOf(),
     var currentPageIndex: Int = 0,
 )
 
@@ -64,22 +62,6 @@ class HomeRecentViewModel : ViewModel() {
                         )
                     }
                 }
-            }
-        }
-    }
-
-    fun getRecentList(): List<RecentScoreEntry> {
-        return when (user.mode) {
-            0 -> {
-                chuRecentList
-            }
-
-            1 -> {
-                maiRecentList
-            }
-
-            else -> {
-                listOf()
             }
         }
     }

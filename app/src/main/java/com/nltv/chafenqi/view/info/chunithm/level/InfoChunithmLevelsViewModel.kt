@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nltv.chafenqi.extension.CHUNITHM_LEVEL_STRINGS
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmBestScoreEntry
+import com.nltv.chafenqi.model.user.chunithm.UserChunithmBestScoreEntry
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.user.CFQUser
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class InfoChunithmLevelUiState(
-    val levelEntries: List<ChunithmBestScoreEntry> = listOf(),
+    val levelEntries: List<UserChunithmBestScoreEntry> = listOf(),
     val musicEntries: List<ChunithmMusicEntry> = listOf(),
     val rateSizes: List<Int> = listOf(),
     val entrySize: Int = 0

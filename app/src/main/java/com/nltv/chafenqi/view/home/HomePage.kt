@@ -10,12 +10,10 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SwapHoriz
@@ -24,8 +22,6 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -57,6 +53,7 @@ import com.nltv.chafenqi.SCREEN_PADDING
 import com.nltv.chafenqi.storage.SettingsStore
 import com.nltv.chafenqi.view.module.AppUpdaterDialog
 import com.nltv.chafenqi.view.module.AppUpdaterViewModel
+import me.zhanghai.compose.preference.LocalPreferenceFlow
 
 @OptIn(
     ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class
@@ -71,10 +68,8 @@ fun HomePage(navController: NavController) {
     val userState = LocalUserState.current
     val context = LocalContext.current
     val store = SettingsStore(context)
-    val homeShowRefreshButton by store.homeShowRefreshButton.collectAsStateWithLifecycle(
-        initialValue = false
-    )
-    val defaultGame by store.homeDefaultGame.collectAsStateWithLifecycle(initialValue = 1)
+    val settings by LocalPreferenceFlow.current.collectAsStateWithLifecycle()
+
     val homeArrangement by store.homeArrangement.collectAsStateWithLifecycle(initialValue = "最近动态|Rating分析|排行榜|出勤记录")
 
     val refreshState = rememberPullRefreshState(
@@ -90,7 +85,7 @@ fun HomePage(navController: NavController) {
         model.checkUpdates()
         model.saveCredentialsToCache(context)
         if (!model.isLoaded) {
-            model.switchGame(defaultGame)
+            model.switchGame(settings.get<Int>("homeDefaultGame") ?: 0)
             model.isLoaded = true
         }
     }
@@ -123,7 +118,7 @@ fun HomePage(navController: NavController) {
                     }
                 },
                 navigationIcon = {
-                    if (homeShowRefreshButton) {
+                    if (settings.get<Boolean>("homeShowRefreshButton") ?: false) {
                         IconButton(onClick = { model.refreshUserData(userState, context) }) {
                             Icon(imageVector = Icons.Default.Refresh, contentDescription = "刷新")
                         }
@@ -156,12 +151,16 @@ fun HomePage(navController: NavController) {
                         Modifier
                             .padding(paddingValues)
                             .verticalScroll(scrollState),
-                        verticalArrangement = Arrangement.spacedBy(25.dp)
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         if ((model.user.mode == 1 && model.user.maimai.isBasicEmpty) || (model.user.mode == 0 && model.user.chunithm.isBasicEmpty)) {
                             EmptyDataPage()
                         } else {
                             HomePageNameplateSection(navController)
+
+                            if (settings.get<Boolean>("homeShowTeamButton") ?: true) {
+                                HomePageTeamSection(navController)
+                            }
 
                             homeArrangement.split("|").forEach { item ->
                                 when (item) {

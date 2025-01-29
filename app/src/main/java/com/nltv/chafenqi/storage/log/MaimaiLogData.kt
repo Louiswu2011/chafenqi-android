@@ -1,24 +1,18 @@
 package com.nltv.chafenqi.storage.log
 
-import androidx.compose.ui.util.fastFirst
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiDeltaEntry
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
+import com.nltv.chafenqi.model.user.maimai.UserMaimaiPlayerInfoEntry
+import com.nltv.chafenqi.model.user.maimai.UserMaimaiRecentScoreEntry
 import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
-import kotlinx.datetime.format.DateTimeComponents
-import kotlinx.datetime.format.parse
-import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
-import kotlin.math.abs
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
 class MaimaiLogData(
-    recentEntries: List<MaimaiRecentScoreEntry>,
-    deltaEntries: List<MaimaiDeltaEntry>
+    recentEntries: List<UserMaimaiRecentScoreEntry>,
+    deltaEntries: List<UserMaimaiPlayerInfoEntry>
 ) {
     data class MaimaiDayData(
         var date: Instant = Instant.fromEpochSeconds(0),
@@ -28,8 +22,8 @@ class MaimaiLogData(
         var totalAchievementGain: Double = 0.0,
         var syncPointGain: Int = 0,
 
-        var latestDeltaEntry: MaimaiDeltaEntry = MaimaiDeltaEntry(),
-        var recentEntries: List<MaimaiRecentScoreEntry> = listOf(),
+        var latestDeltaEntry: UserMaimaiPlayerInfoEntry = UserMaimaiPlayerInfoEntry(),
+        var recentEntries: List<UserMaimaiRecentScoreEntry> = listOf(),
 
         var hasDelta: Boolean = false,
 
@@ -74,10 +68,7 @@ class MaimaiLogData(
                 )
 
                 val latestDelta = deltaEntries.lastOrNull {
-                    DateTimeComponents.parse(it.createdAt.replaceFirst(' ', 'T').filterNot { char -> char.isWhitespace() }, DateTimeComponents.Formats.ISO_DATE_TIME_OFFSET)
-                        .toLocalDateTime()
-                        .toInstant(TimeZone.currentSystemDefault())
-                        .epochSeconds in (pointer - 86400)..pointer
+                    it.timestamp in (pointer - 86400)..pointer
                 }
                 if (latestDelta != null) record.latestDeltaEntry = latestDelta
 
@@ -86,10 +77,6 @@ class MaimaiLogData(
                     record.hasDelta = true
                     record.ratingGain = latestDelta.rating - previousDelta.rating
                     record.playCountGain = latestDelta.playCount - previousDelta.playCount
-                    record.totalAchievementGain =
-                        latestDelta.achievement - previousDelta.achievement
-                    record.dxScoreGain = latestDelta.dxScore - previousDelta.dxScore
-                    record.syncPointGain = latestDelta.syncPoint - previousDelta.syncPoint
                 }
 
                 if (record.recentEntries.isNotEmpty()) {

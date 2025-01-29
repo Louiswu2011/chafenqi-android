@@ -6,9 +6,9 @@ import androidx.navigation.NavController
 import com.nltv.chafenqi.extension.toDateString
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.extension.toRateString
+import com.nltv.chafenqi.model.user.chunithm.UserChunithmRecentScoreEntry
+import com.nltv.chafenqi.model.user.maimai.UserMaimaiRecentScoreEntry
 import com.nltv.chafenqi.networking.CFQServer
-import com.nltv.chafenqi.storage.datastore.user.chunithm.ChunithmRecentScoreEntry
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiRecentScoreEntry
 import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
@@ -20,8 +20,8 @@ class RecentDetailPageViewModel : ViewModel() {
 
     var mode: Int = 0
 
-    var maiEntry: MaimaiRecentScoreEntry? = null
-    var chuEntry: ChunithmRecentScoreEntry? = null
+    var maiEntry: UserMaimaiRecentScoreEntry? = null
+    var chuEntry: UserChunithmRecentScoreEntry? = null
 
     var maiMusic: MaimaiMusicEntry? = null
     var chuMusic: ChunithmMusicEntry? = null
@@ -58,7 +58,7 @@ class RecentDetailPageViewModel : ViewModel() {
             chuEntry = CFQUser.chunithm.recent[index]
             chuMusic = chuEntry?.associatedMusicEntry
 
-            coverUrl = "${CFQServer.defaultPath}/api/chunithm/cover?musicId=${chuMusic?.musicID}"
+            coverUrl = "${CFQServer.defaultPath}/api/resource/chunithm/cover?musicId=${chuMusic?.musicId}"
             title = chuMusic?.title ?: ""
             artist = chuMusic?.artist ?: ""
             playDateString = chuEntry?.timestamp?.toDateString(context) ?: ""
@@ -71,27 +71,27 @@ class RecentDetailPageViewModel : ViewModel() {
         } else if (mode == 1 && CFQPersistentData.Maimai.musicList.isNotEmpty() && CFQUser.maimai.recent.isNotEmpty()) {
             maiEntry = CFQUser.maimai.recent[index]
             maiMusic =
-                CFQPersistentData.Maimai.musicList.firstOrNull { it.title == maiEntry?.title && it.type == maiEntry?.type }
+                CFQPersistentData.Maimai.musicList.firstOrNull { it.title == maiEntry?.associatedMusicEntry?.title && it.type == maiEntry?.type }
 
-            coverUrl = maiMusic?.musicID?.toMaimaiCoverPath() ?: ""
+            coverUrl = maiMusic?.coverId?.toMaimaiCoverPath() ?: ""
             title = maiMusic?.title ?: ""
             artist = maiMusic?.basicInfo?.artist ?: ""
             playDateString = maiEntry?.timestamp?.toDateString(context) ?: ""
             score = String.format("%.4f", maiEntry?.achievements) + "%"
             rateString = maiEntry?.achievements?.toRateString() ?: ""
 
-            maiTap = maiEntry?.notesTap?.split(",") ?: listOf()
-            maiHold = maiEntry?.notesHold?.split(",") ?: listOf()
-            maiSlide = maiEntry?.notesSlide?.split(",") ?: listOf()
-            maiTouch = maiEntry?.notesTouch?.split(",") ?: listOf()
-            maiBreak = maiEntry?.notesBreak?.split(",") ?: listOf()
+            maiTap = maiEntry?.noteTap ?: listOf()
+            maiHold = maiEntry?.noteHold ?: listOf()
+            maiSlide = maiEntry?.noteSlide ?: listOf()
+            maiTouch = maiEntry?.noteTouch ?: listOf()
+            maiBreak = maiEntry?.noteBreak ?: listOf()
             maiJudges = listOf(maiTap, maiHold, maiSlide, maiTouch, maiBreak)
 
             maiCombo = maiEntry?.maxCombo ?: ""
             maiMatchingPlayers = listOf(
-                maiEntry?.matching1 ?: "-",
-                maiEntry?.matching2 ?: "-",
-                maiEntry?.matching3 ?: "-"
+                maiEntry?.players?.getOrNull(0) ?: "-",
+                maiEntry?.players?.getOrNull(1) ?: "-",
+                maiEntry?.players?.getOrNull(2) ?: "-"
             )
             maiSync = maiEntry?.maxSync ?: ""
             maiHasSync = maiSync != "―"

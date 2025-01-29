@@ -8,17 +8,17 @@ import android.content.Intent
 import android.net.Uri
 import android.net.VpnService
 import android.os.PersistableBundle
+import android.preference.PreferenceManager
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import android.util.Log
-import com.nltv.chafenqi.storage.SettingsStore
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.updater.ChafenqiProxy
 import com.nltv.chafenqi.view.updater.PORTAL_ADDRESS
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import me.zhanghai.compose.preference.getPreferenceFlow
 
 class UpdaterTileService : TileService() {
     private var isVpnRunning = false
@@ -49,19 +49,20 @@ class UpdaterTileService : TileService() {
     @OptIn(DelicateCoroutinesApi::class)
     private fun doExtraActions() {
         GlobalScope.launch {
-            val store = SettingsStore(applicationContext)
+            @Suppress("DEPRECATION")
+            val settings = PreferenceManager.getDefaultSharedPreferences(applicationContext).getPreferenceFlow()
             val token = CFQUser.token
             val clipboardManager =
                 applicationContext.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
 
-            val qsInheritBaseSettings = store.qsInheritBaseSettings.firstOrNull()
-            val qsCopyTargetGame = store.qsCopyTargetGame.firstOrNull()
-            val qsCopyToClipboard = store.qsCopyToClipboard.firstOrNull() ?: 1
-            val qsShouldForward = store.qsShouldForward.firstOrNull()
-            val qsShouldAutoJump = store.qsShouldAutoJump.firstOrNull()
+            val qsInheritBaseSettings = settings.value.get<Boolean>("qsInheritBaseSettings")
+            val qsCopyTargetGame = settings.value.get<Int>("qsCopyTargetGame") ?: 0
+            val qsCopyToClipboard = settings.value.get<Boolean>("qsCopyToClipboard")
+            val qsShouldForward = settings.value.get<Boolean>("qsShouldForward")
+            val qsShouldAutoJump = settings.value.get<Boolean>("qsShouldAutoJump")
 
-            val updaterShouldForward = store.uploadShouldForward.firstOrNull()
-            val updaterShouldAutoJump = store.uploadShouldAutoJump.firstOrNull()
+            val updaterShouldForward = settings.value.get<Boolean>("uploadShouldForward")
+            val updaterShouldAutoJump = settings.value.get<Boolean>("uploadShouldAutoJump")
 
             val autoJump: Boolean
             val syncToFish: Int

@@ -214,7 +214,6 @@ class HomeLeaderboardPageViewModel : ViewModel() {
                             username = item.username,
                             nickname = item.nickname,
                             info = item.firstCount.toString(),
-                            extraInfo = item.firstMusics
                         )
                     }
                 )
@@ -270,7 +269,7 @@ class HomeLeaderboardPageViewModel : ViewModel() {
                             username = item.username,
                             nickname = item.nickname,
                             info = String.format(
-                                Locale.ENGLISH,
+                                Locale.getDefault(),
                                 "%.4f",
                                 item.totalAchievements
                             ) + "%"
@@ -326,7 +325,6 @@ class HomeLeaderboardPageViewModel : ViewModel() {
                             username = item.username,
                             nickname = item.nickname,
                             info = item.firstCount.toString(),
-                            extraInfo = item.firstMusics
                         )
                     }
                 )

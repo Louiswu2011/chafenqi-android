@@ -13,12 +13,12 @@ import kotlinx.serialization.Serializable
 data class Comment(
     var id: Int = 0,
     var timestamp: Int = 0,
-    var uid: Int = 0,
+    @SerialName("userId") var uid: Int = 0,
     var username: String = "",
     var content: String = "",
     var musicId: Int = 0,
-    @SerialName("musicFrom") var gameType: Int = 0,
-    @SerialName("reply") var replyId: Int = 0
+    var gameType: Int = 0,
+    var replyId: Int = 0
 ) {
     companion object {
         val dateFormat = LocalDateTime.Format {

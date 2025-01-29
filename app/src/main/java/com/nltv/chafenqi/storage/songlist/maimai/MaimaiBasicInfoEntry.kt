@@ -1,6 +1,6 @@
 package com.nltv.chafenqi.storage.songlist.maimai
 
-import kotlinx.serialization.SerialName
+import com.nltv.chafenqi.extension.MAIMAI_VERSION_STRINGS
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -9,7 +9,16 @@ data class MaimaiBasicInfoEntry(
     val artist: String = "",
     val genre: String = "",
     val bpm: Int = 0,
-    @SerialName("release_date") val releaseDate: String = "",
-    val from: String = "",
-    @SerialName("is_new") val isNew: Boolean = false
-)
+    val releaseDate: String = "",
+    val version: Int = 0,
+    val isNew: Boolean = false
+) {
+    // TODO: Load version list from server
+    val from =
+        MAIMAI_VERSION_STRINGS
+            .keys
+            .map { it / 100 }
+            .firstOrNull { it > version / 100 }
+            ?.let { MAIMAI_VERSION_STRINGS[it - 1] }
+            ?: ""
+}

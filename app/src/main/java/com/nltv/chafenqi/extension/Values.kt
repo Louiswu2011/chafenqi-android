@@ -81,7 +81,7 @@ val RATE_COLORS_CHUNITHM = listOf(
 ).reversed()
 val STATUS_STRINGS =
     listOf("Failed", "Clear", "Full Combo", "Full Combo+", "All Perfect", "All Perfect+")
-var MAIMAI_VERSION_STRINGS = listOf<String>()
+var MAIMAI_VERSION_STRINGS = mapOf<Int, String>()
 var MAIMAI_GENRE_STRINGS = listOf<String>()
 var CHUNITHM_VERSION_STRINGS = listOf<String>()
 var CHUNITHM_GENRE_STRINGS = listOf<String>()
@@ -92,6 +92,12 @@ val MAIMAI_NOTE_TYPE = listOf(
 val MAIMAI_MISS_JUDGE_TYPE = listOf(
     "Great", "Good", "Miss"
 )
+
+const val TEAM_CODE_LENGTH = 8
+const val TEAM_NAME_LENGTH = 24
+const val TEAM_STYLE_LENGTH = 16
+const val TEAM_REMARKS_LENGTH = 120
+const val TEAM_BULLETIN_MESSAGE_LENGTH = 120
 
 fun randomColor(): Color = Color(
     red = Random.nextInt(0..255),

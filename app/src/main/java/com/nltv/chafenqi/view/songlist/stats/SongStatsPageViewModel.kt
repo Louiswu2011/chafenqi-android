@@ -10,13 +10,14 @@ import androidx.compose.material.icons.outlined.PieChart
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nltv.chafenqi.data.ChunithmMusicStat
+import com.nltv.chafenqi.data.GameMusicStat
 import com.nltv.chafenqi.data.leaderboard.ChunithmDiffLeaderboard
 import com.nltv.chafenqi.data.leaderboard.MaimaiDiffLeaderboard
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
+import com.nltv.chafenqi.storage.user.CFQUser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,9 +29,10 @@ data class SongStatsUiState(
     val doneLoadingStats: Boolean = false,
     val chunithmMusicEntry: ChunithmMusicEntry = ChunithmMusicEntry(),
     val chunithmDiffLeaderboard: ChunithmDiffLeaderboard = listOf(),
-    val chunithmMusicStat: ChunithmMusicStat = ChunithmMusicStat(),
+    val chunithmMusicStat: GameMusicStat = GameMusicStat(),
     val maimaiMusicEntry: MaimaiMusicEntry = MaimaiMusicEntry(),
-    val maimaiDiffLeaderboard: MaimaiDiffLeaderboard = listOf()
+    val maimaiDiffLeaderboard: MaimaiDiffLeaderboard = listOf(),
+    val maimaiMusicStat: GameMusicStat = GameMusicStat()
 )
 
 data class SongStatsTabItem(
@@ -42,6 +44,8 @@ data class SongStatsTabItem(
 class SongStatsPageViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(SongStatsUiState())
     val statsState = _uiState.asStateFlow()
+
+    val token = CFQUser.token
 
     val statsTabs = listOf(
         SongStatsTabItem(
@@ -88,7 +92,7 @@ class SongStatsPageViewModel : ViewModel() {
             if (mode == 0 && CFQPersistentData.Chunithm.musicList.isNotEmpty()) {
                 val chuMusic = CFQPersistentData.Chunithm.musicList.getOrNull(index)
                 if (chuMusic != null) {
-                    val result = CFQServer.apiChunithmLeaderboard(chuMusic.musicID, difficulty)
+                    val result = CFQServer.apiChunithmLeaderboard(token, chuMusic.musicId, difficulty)
                     _uiState.update { currentValue ->
                         currentValue.copy(
                             doneLoadingLeaderboard = true,
@@ -97,10 +101,11 @@ class SongStatsPageViewModel : ViewModel() {
                     }
                 }
             } else if (mode == 1 && CFQPersistentData.Maimai.musicList.isNotEmpty()) {
+                val typeString = if (type == "SD") "standard" else "dx"
                 val maiMusic = CFQPersistentData.Maimai.musicList.getOrNull(index)
                 if (maiMusic != null) {
                     val result =
-                        CFQServer.apiMaimaiLeaderboard(maiMusic.musicID.toInt(), type, difficulty)
+                        CFQServer.apiMaimaiLeaderboard(token, maiMusic.coverId, typeString, difficulty)
                     _uiState.update { currentValue ->
                         currentValue.copy(
                             doneLoadingLeaderboard = true,
@@ -117,7 +122,12 @@ class SongStatsPageViewModel : ViewModel() {
             if (mode == 0 && CFQPersistentData.Chunithm.musicList.isNotEmpty()) {
                 val chuMusic = CFQPersistentData.Chunithm.musicList.getOrNull(index)
                 if (chuMusic != null) {
-                    val result = CFQServer.apiChunithmMusicStat(chuMusic.musicID, difficulty)
+                    val result = CFQServer.apiMusicStat(
+                        CFQUser.token,
+                        mode,
+                        chuMusic.musicId,
+                        difficulty
+                    )
                     _uiState.update { currentValue ->
                         currentValue.copy(
                             doneLoadingStats = true,
@@ -128,9 +138,17 @@ class SongStatsPageViewModel : ViewModel() {
             } else if (mode == 1 && CFQPersistentData.Maimai.musicList.isNotEmpty()) {
                 val maiMusic = CFQPersistentData.Maimai.musicList.getOrNull(index)
                 if (maiMusic != null) {
+                    val result = CFQServer.apiMusicStat(
+                        CFQUser.token,
+                        mode,
+                        maiMusic.coverId,
+                        difficulty,
+                        maiMusic.type
+                    )
                     _uiState.update { currentValue ->
                         currentValue.copy(
-                            doneLoadingStats = true
+                            doneLoadingStats = true,
+                            maimaiMusicStat = result
                         )
                     }
                 }

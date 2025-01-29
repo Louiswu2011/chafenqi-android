@@ -3,6 +3,7 @@ package com.nltv.chafenqi
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,11 +27,16 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import coil.Coil
-import coil.ImageLoader
-import coil.disk.DiskCache
-import coil.memory.MemoryCache
+import coil3.SingletonImageLoader
+import coil3.ImageLoader
+import coil3.compose.LocalPlatformContext
+import coil3.compose.setSingletonImageLoaderFactory
+import coil3.disk.DiskCache
+import coil3.disk.directory
+import coil3.memory.MemoryCache
+import coil3.request.crossfade
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
@@ -45,6 +51,11 @@ import com.nltv.chafenqi.view.home.log.LogDetailPage
 import com.nltv.chafenqi.view.home.rating.HomeRatingPage
 import com.nltv.chafenqi.view.home.recent.HomeRecentPage
 import com.nltv.chafenqi.view.home.recent.RecentDetailPage
+import com.nltv.chafenqi.view.home.team.HomeTeamLandingPage
+import com.nltv.chafenqi.view.home.team.settings.HomeTeamPageSettingsPage
+import com.nltv.chafenqi.view.home.team.settings.HomeTeamSettingsCoursePage
+import com.nltv.chafenqi.view.home.team.settings.HomeTeamSettingsMemberManagePage
+import com.nltv.chafenqi.view.home.team.settings.HomeTeamSettingsPendingMemberManagePage
 import com.nltv.chafenqi.view.info.InfoPage
 import com.nltv.chafenqi.view.info.chunithm.InfoChunithmCharacterPage
 import com.nltv.chafenqi.view.info.chunithm.InfoChunithmMapIconPage
@@ -68,8 +79,6 @@ import com.nltv.chafenqi.view.settings.home.SettingsHomeArrangementPage
 import com.nltv.chafenqi.view.settings.home.SettingsHomePage
 import com.nltv.chafenqi.view.settings.playerInfo.SettingsInfoPage
 import com.nltv.chafenqi.view.settings.qs.SettingsQSTilePage
-import com.nltv.chafenqi.view.settings.user.SettingsBindFishPage
-import com.nltv.chafenqi.view.settings.user.SettingsBindQQPage
 import com.nltv.chafenqi.view.settings.user.SettingsUserPage
 import com.nltv.chafenqi.view.songlist.SongDetailPage
 import com.nltv.chafenqi.view.songlist.SongListPage
@@ -78,6 +87,8 @@ import com.nltv.chafenqi.view.songlist.record.MusicRecordPage
 import com.nltv.chafenqi.view.songlist.stats.SongStatsPage
 import com.nltv.chafenqi.view.updater.UpdaterHelpPage
 import com.nltv.chafenqi.view.updater.UpdaterHomePage
+import me.zhanghai.compose.preference.ProvidePreferenceLocals
+import me.zhanghai.compose.preference.defaultPreferenceFlow
 
 enum class UIState {
     Pending, Loading, Finished
@@ -96,7 +107,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             CompositionLocalProvider(LocalUserState provides userState) {
-                ChafenqiApp()
+                ProvidePreferenceLocals (
+                    flow = defaultPreferenceFlow()
+                ) {
+                    ChafenqiApp()
+                }
             }
         }
     }
@@ -106,26 +121,28 @@ class MainActivity : ComponentActivity() {
 fun ChafenqiApp() {
     val navController = rememberNavController()
     val context = LocalContext.current
+    val platformContext = LocalPlatformContext.current
     val userState = LocalUserState.current
-    val imageLoader = ImageLoader.Builder(context)
-        .memoryCache {
-            MemoryCache.Builder(context)
-                .maxSizePercent(0.25)
-                .build()
-        }
-        .diskCache {
-            DiskCache.Builder()
-                .maxSizePercent(0.05)
-                .directory(context.cacheDir.resolve("cover_cache"))
-                .build()
-        }
-        .crossfade(true)
-        .build()
 
-    Coil.setImageLoader(imageLoader)
+    setSingletonImageLoaderFactory {
+        ImageLoader.Builder(context)
+            .memoryCache {
+                MemoryCache.Builder()
+                    .maxSizePercent(platformContext, 0.25)
+                    .build()
+            }
+            .diskCache {
+                DiskCache.Builder()
+                    .maxSizePercent(0.05)
+                    .directory(context.cacheDir.resolve("cover_cache"))
+                    .build()
+            }
+            .crossfade(true)
+            .build()
+    }
 
     LaunchedEffect(Unit) {
-        CFQServer.setDefaultServerPath(context.getString(R.string.serverAddress))
+        CFQServer.setDefaultServerPath("http://192.168.1.151:8998")
     }
 
     ChafenqiTheme {
@@ -178,21 +195,6 @@ fun LogonPage(navController: NavHostController) {
             navController = navController,
             startDestination = HomeNavItem.Home.route,
             modifier = Modifier.padding(innerPadding),
-            /*enterTransition = {
-                fadeIn(tween(300, easing = LinearEasing)) +
-                        slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.Start, animationSpec = tween(300, easing = EaseIn))
-            },
-            exitTransition = {
-                fadeOut(tween(300, easing = LinearEasing)) +
-                        slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.End, animationSpec = tween(300, easing = EaseOut))
-            },
-            popEnterTransition = {
-                fadeIn(tween(300, easing = LinearEasing))
-            },*/
-            /*popExitTransition = {
-                fadeOut(tween(300, easing = LinearEasing)) +
-                        slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.End, animationSpec = tween(300, easing = EaseOut))
-            }*/
         ) {
             composable(HomeNavItem.Home.route) { HomePage(navController = navController) }
 
@@ -201,6 +203,12 @@ fun LogonPage(navController: NavHostController) {
                     navController = navController
                 )
             }
+
+            composable(HomeNavItem.Home.route + "/team") { HomeTeamLandingPage(navController) }
+            composable(HomeNavItem.Home.route + "/team/settings") { HomeTeamPageSettingsPage(navController) }
+            composable(HomeNavItem.Home.route + "/team/settings/member") { HomeTeamSettingsMemberManagePage(navController) }
+            composable(HomeNavItem.Home.route + "/team/settings/pending") { HomeTeamSettingsPendingMemberManagePage(navController) }
+            composable(HomeNavItem.Home.route + "/team/settings/course") { HomeTeamSettingsCoursePage(navController) }
 
             composable(HomeNavItem.Home.route + "/log") { HomeLogPage(navController) }
             composable(HomeNavItem.Home.route + "/log/maimai/{index}") {
@@ -260,16 +268,6 @@ fun LogonPage(navController: NavHostController) {
             composable(HomeNavItem.Home.route + "/settings/about") { SettingsAboutPage(navController) }
             composable(HomeNavItem.Home.route + "/settings/user/redeem") {
                 PremiumRedeemPage(
-                    navController
-                )
-            }
-            composable(HomeNavItem.Home.route + "/settings/user/bind/fish") {
-                SettingsBindFishPage(
-                    navController
-                )
-            }
-            composable(HomeNavItem.Home.route + "/settings/user/bind/qq") {
-                SettingsBindQQPage(
                     navController
                 )
             }

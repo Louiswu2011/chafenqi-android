@@ -6,6 +6,8 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,13 +19,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -55,13 +60,15 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
-import com.nltv.chafenqi.data.ChunithmMusicStat
+import coil3.compose.AsyncImage
+import com.nltv.chafenqi.data.GameMusicStat
 import com.nltv.chafenqi.data.leaderboard.ChunithmDiffLeaderboardItem
 import com.nltv.chafenqi.extension.MAIMAI_MISS_JUDGE_TYPE
 import com.nltv.chafenqi.extension.MAIMAI_NOTE_TYPE
 import com.nltv.chafenqi.extension.RATE_COLORS_CHUNITHM
+import com.nltv.chafenqi.extension.RATE_COLORS_MAIMAI
 import com.nltv.chafenqi.extension.RATE_STRINGS_CHUNITHM
+import com.nltv.chafenqi.extension.RATE_STRINGS_MAIMAI
 import com.nltv.chafenqi.extension.toChunithmCoverPath
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.view.songlist.ChunithmDifficultyInfo
@@ -145,7 +152,7 @@ fun ChunithmStatView(musicIndex: Int, difficulty: Int, navController: NavControl
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             AsyncImage(
-                model = state.chunithmMusicEntry.musicID.toChunithmCoverPath(),
+                model = state.chunithmMusicEntry.musicId.toChunithmCoverPath(),
                 contentDescription = "歌曲封面",
                 modifier = Modifier
                     .size(128.dp)
@@ -275,7 +282,7 @@ fun ChunithmMusicStatPage(index: Int, difficulty: Int) {
 }
 
 @Composable
-fun ChunithmMusicStatTab(musicStat: ChunithmMusicStat, info: ChunithmDifficultyInfo) {
+fun ChunithmMusicStatTab(musicStat: GameMusicStat, info: ChunithmDifficultyInfo) {
     var lastValue = -90f
 
     val splitValues = listOf(
@@ -437,7 +444,7 @@ fun MaimaiStatView(musicIndex: Int, difficulty: Int, navController: NavControlle
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             AsyncImage(
-                model = state.maimaiMusicEntry.musicID.toMaimaiCoverPath(),
+                model = state.maimaiMusicEntry.coverId.toMaimaiCoverPath(),
                 contentDescription = "歌曲封面",
                 modifier = Modifier
                     .size(128.dp)
@@ -508,8 +515,9 @@ fun MaimaiStatView(musicIndex: Int, difficulty: Int, navController: NavControlle
                         info = MaimaiDifficultyInfo(
                             title = state.maimaiMusicEntry.title,
                             difficultyIndex = difficulty,
-                            musicEntry = state.maimaiMusicEntry
-                        )
+                            musicEntry = state.maimaiMusicEntry,
+                        ),
+                        musicStat = state.maimaiMusicStat
                     )
                 }
 
@@ -527,62 +535,188 @@ fun MaimaiStatView(musicIndex: Int, difficulty: Int, navController: NavControlle
 }
 
 @Composable
-fun MaimaiStatPage(index: Int, difficulty: Int, type: String, info: MaimaiDifficultyInfo?) {
+fun MaimaiStatPage(index: Int, difficulty: Int, type: String, info: MaimaiDifficultyInfo?, musicStat: GameMusicStat) {
     val model = viewModel<SongStatsPageViewModel>()
     val state by model.statsState.collectAsStateWithLifecycle()
     val chartEntry = state.maimaiMusicEntry.charts[difficulty]
+
+    var lastValue = -90f
+
+    val splitValues = listOf(
+        musicStat.ssspSplit,
+        musicStat.sssSplit,
+        musicStat.sspSplit,
+        musicStat.ssSplit,
+        musicStat.spSplit,
+        musicStat.sSplit,
+        musicStat.otherSplit
+    )
+    val chartValues = splitValues
+        .map { (it * 360f / musicStat.totalPlayed) }
 
     LaunchedEffect(Unit) {
         model.fetchStats(mode = 1, index = index, difficulty = difficulty)
     }
 
-    Column(
+    LazyColumn(
         modifier = Modifier
             .padding(10.dp)
             .fillMaxWidth()
-            .fillMaxHeight()
     ) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .animateContentSize()
-                .padding(bottom = 20.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(text = "定数：${info?.constant}")
-            Text(text = "谱师：${info?.charter}")
+        item {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .animateContentSize()
+                    .padding(bottom = 10.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = "定数：${info?.constant}")
+                Text(text = "谱师：${info?.charter}")
+            }
         }
 
-        if (chartEntry.notes.isNotEmpty()) {
+
+        item {
             Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 10.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Column(
-                    horizontalAlignment = Alignment.Start
+                Text(text = "总游玩人数：${musicStat.totalPlayed}")
+                Text(
+                    text = "平均分数：${
+                        String.format(
+                            Locale.getDefault(),
+                            "%.4f",
+                            musicStat.totalScore / musicStat.totalPlayed
+                        )
+                    }%"
+                )
+            }
+        }
+
+        item {
+            Row(
+                Modifier.height(200.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .fillMaxHeight()
+                        .padding(start = 10.dp),
+                    contentAlignment = Alignment.CenterStart
                 ) {
-                    Text(text = "")
-                    MAIMAI_NOTE_TYPE.forEachIndexed { index, type ->
-                        if (index == 3 && chartEntry.possibleNormalLoss[3].isNotEmpty()) {
-                            Text(text = type, fontWeight = FontWeight.Bold)
-                        } else if (index != 3) {
-                            Text(text = type, fontWeight = FontWeight.Bold)
+                    Canvas(
+                        modifier = Modifier.size(140.dp)
+                    ) {
+                        chartValues.forEachIndexed { index, value ->
+                            drawArc(
+                                color = RATE_COLORS_MAIMAI[index],
+                                startAngle = lastValue,
+                                sweepAngle = value,
+                                useCenter = false,
+                                style = Stroke(35f, cap = StrokeCap.Butt)
+                            )
+
+                            lastValue += value
                         }
                     }
+
                 }
 
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(20.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .padding(vertical = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    MAIMAI_MISS_JUDGE_TYPE.forEachIndexed { judgeIndex, judgeType ->
-                        Column(
-                            horizontalAlignment = Alignment.End
-                        ) {
-                            Text(text = judgeType, fontWeight = FontWeight.Bold)
-                            chartEntry.possibleNormalLoss.forEachIndexed { lossIndex, _ ->
-                                if (chartEntry.possibleNormalLoss[lossIndex].isNotEmpty() && judgeIndex < chartEntry.possibleNormalLoss.size - 1) {
-                                    Text(text = chartEntry.possibleNormalLoss[lossIndex][judgeIndex])
+                    Column(
+                        modifier = Modifier.fillMaxHeight(),
+                        verticalArrangement = Arrangement.SpaceBetween,
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        splitValues.forEachIndexed { index, split ->
+                            Text(
+                                buildAnnotatedString {
+                                    withStyle(
+                                        SpanStyle(
+                                            fontWeight = FontWeight.Bold,
+                                            color = RATE_COLORS_MAIMAI[index]
+                                        )
+                                    ) {
+                                        append(RATE_STRINGS_MAIMAI.filterNot { it == "AAA" }[index])
+                                    }
+                                    append("：")
+                                    withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                                        append(split.toString())
+                                    }
+                                }
+                            )
+                        }
+                    }
+                    Column(
+                        modifier = Modifier.fillMaxHeight(),
+                        horizontalAlignment = Alignment.End,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(text = "拟合定数")
+                        Text(text = "拟合定数", fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.padding(vertical = 10.dp))
+                        Text(text = "最高分")
+                        Text(
+                            text = String.format(
+                                Locale.ENGLISH,
+                                "%.4f",
+                                musicStat.highestScore
+                            ) + "%",
+                            fontWeight = FontWeight.Bold
+                        )
+
+                    }
+                }
+            }
+        }
+
+        if (chartEntry.notes.isNotEmpty()) {
+            item {
+                HorizontalDivider()
+            }
+
+            item {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(top = 10.dp)
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        Text(text = "")
+                        MAIMAI_NOTE_TYPE.forEachIndexed { index, type ->
+                            if (index == 3 && chartEntry.possibleNormalLoss[3].isNotEmpty()) {
+                                Text(text = type, fontWeight = FontWeight.Bold)
+                            } else if (index != 3) {
+                                Text(text = type, fontWeight = FontWeight.Bold)
+                            }
+                        }
+                    }
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(20.dp)
+                    ) {
+                        MAIMAI_MISS_JUDGE_TYPE.forEachIndexed { judgeIndex, judgeType ->
+                            Column(
+                                horizontalAlignment = Alignment.End
+                            ) {
+                                Text(text = judgeType, fontWeight = FontWeight.Bold)
+                                chartEntry.possibleNormalLoss.forEachIndexed { lossIndex, _ ->
+                                    if (chartEntry.possibleNormalLoss[lossIndex].isNotEmpty() && judgeIndex < chartEntry.possibleNormalLoss.size - 1) {
+                                        Text(text = chartEntry.possibleNormalLoss[lossIndex][judgeIndex])
+                                    }
                                 }
                             }
                         }
@@ -590,74 +724,78 @@ fun MaimaiStatPage(index: Int, difficulty: Int, type: String, info: MaimaiDiffic
                 }
             }
 
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 10.dp)
-            ) {
-                Text(text = "Break", fontWeight = FontWeight.Bold)
-
+            item {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(20.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 10.dp)
                 ) {
-                    Column {
-                        Text(text = "${chartEntry.possibleBreakLoss[2]}\n${chartEntry.possibleBreakLoss[4]}")
-                        // Text(text = chartEntry.possibleBreakLoss[4])
-                    }
+                    Text(text = "Break", fontWeight = FontWeight.Bold)
 
-                    Text(text = chartEntry.possibleBreakLoss[5])
-                    Text(text = chartEntry.possibleBreakLoss[6])
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(20.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text(text = "${chartEntry.possibleBreakLoss[2]}\n${chartEntry.possibleBreakLoss[4]}")
+                            // Text(text = chartEntry.possibleBreakLoss[4])
+                        }
+
+                        Text(text = chartEntry.possibleBreakLoss[5])
+                        Text(text = chartEntry.possibleBreakLoss[6])
+                    }
                 }
             }
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Top
                 ) {
-                    Text(text = "50/100落", fontWeight = FontWeight.Bold)
-                    Text(text = "${chartEntry.possibleBreakLoss[0]} /")
-                    Text(text = chartEntry.possibleBreakLoss[1])
-                }
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(text = "50/100落", fontWeight = FontWeight.Bold)
+                        Text(text = "${chartEntry.possibleBreakLoss[0]} /")
+                        Text(text = chartEntry.possibleBreakLoss[1])
+                    }
 
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(text = "SSS/SSS+容错", fontWeight = FontWeight.Bold)
-                    Text(
-                        text = "-${
-                            String.format(
-                                Locale.ENGLISH,
-                                "%.1f",
-                                chartEntry.lossUntilSSS
-                            )
-                        } / -${
-                            String.format(
-                                Locale.ENGLISH,
-                                "%.1f",
-                                chartEntry.lossUntilSSSPlus
-                            )
-                        }"
-                    )
-                }
-
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(text = "50落/Great比", fontWeight = FontWeight.Bold)
-                    Text(
-                        text = String.format(
-                            Locale.ENGLISH,
-                            "%.1f",
-                            chartEntry.breakToGreatRatio
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(text = "SSS/SSS+容错", fontWeight = FontWeight.Bold)
+                        Text(
+                            text = "-${
+                                String.format(
+                                    Locale.ENGLISH,
+                                    "%.1f",
+                                    chartEntry.lossUntilSSS
+                                )
+                            } / -${
+                                String.format(
+                                    Locale.ENGLISH,
+                                    "%.1f",
+                                    chartEntry.lossUntilSSSPlus
+                                )
+                            }"
                         )
-                    )
+                    }
+
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(text = "50落/Great比", fontWeight = FontWeight.Bold)
+                        Text(
+                            text = String.format(
+                                Locale.ENGLISH,
+                                "%.1f",
+                                chartEntry.breakToGreatRatio
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -679,7 +817,7 @@ fun SongLeaderboardPagePreview() {
                 uid = 12,
                 username = "chafenqi1",
                 nickname = "Player1",
-                highscore = 1000000,
+                score = 1000000,
                 rankIndex = 13
             ),
             ChunithmDiffLeaderboardItem(
@@ -687,7 +825,7 @@ fun SongLeaderboardPagePreview() {
                 uid = 12,
                 username = "chafenqi2",
                 nickname = "Player2",
-                highscore = 1000000,
+                score = 1000000,
                 rankIndex = 13
             ),
             ChunithmDiffLeaderboardItem(
@@ -695,7 +833,7 @@ fun SongLeaderboardPagePreview() {
                 uid = 12,
                 username = "chafenqi3",
                 nickname = "Player3",
-                highscore = 1000000,
+                score = 1000000,
                 rankIndex = 13
             ),
             ChunithmDiffLeaderboardItem(
@@ -703,7 +841,7 @@ fun SongLeaderboardPagePreview() {
                 uid = 12,
                 username = "chafenqi4",
                 nickname = "Player4",
-                highscore = 1000000,
+                score = 1000000,
                 rankIndex = 13
             ),
             ChunithmDiffLeaderboardItem(
@@ -711,7 +849,7 @@ fun SongLeaderboardPagePreview() {
                 uid = 12,
                 username = "chafenqi5",
                 nickname = "Player5",
-                highscore = 1000000,
+                score = 1000000,
                 rankIndex = 13
             ),
             ChunithmDiffLeaderboardItem(
@@ -719,7 +857,7 @@ fun SongLeaderboardPagePreview() {
                 uid = 12,
                 username = "chafenqi6",
                 nickname = "Player6",
-                highscore = 1000000,
+                score = 1000000,
                 rankIndex = 13
             )
         )

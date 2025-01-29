@@ -7,7 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nltv.chafenqi.extension.MAIMAI_LEVEL_STRINGS
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiBestScoreEntry
+import com.nltv.chafenqi.model.user.maimai.UserMaimaiBestScoreEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import com.nltv.chafenqi.storage.user.CFQUser
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class InfoMaimaiLevelsUiState(
-    val levelEntries: List<MaimaiBestScoreEntry> = listOf(),
+    val levelEntries: List<UserMaimaiBestScoreEntry> = listOf(),
     val musicEntries: List<MaimaiMusicEntry> = listOf(),
     val rateSizes: List<Int> = listOf(),
     val entrySize: Int = 0,

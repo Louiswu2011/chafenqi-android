@@ -28,7 +28,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.nltv.chafenqi.SCREEN_PADDING
 import com.nltv.chafenqi.extension.toMaimaiTrophyType
-import com.nltv.chafenqi.storage.datastore.user.maimai.MaimaiTrophyEntry
+import com.nltv.chafenqi.model.user.maimai.UserMaimaiTrophyEntry
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -91,7 +91,7 @@ fun MaimaiTrophyStickyHeader(type: String, size: Int) {
 }
 
 @Composable
-fun MaimaiTrophyListEntry(entry: MaimaiTrophyEntry) {
+fun MaimaiTrophyListEntry(entry: UserMaimaiTrophyEntry) {
     Column(
         Modifier
             .fillMaxWidth()
