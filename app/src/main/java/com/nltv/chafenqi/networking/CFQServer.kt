@@ -32,6 +32,7 @@ import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.datetime.Clock
@@ -40,7 +41,7 @@ import java.util.concurrent.TimeUnit
 
 class CFQServer {
     companion object {
-        var defaultPath = "http://192.168.1.151:8998"
+        var defaultPath = "http://43.139.107.206:8998"
 
         fun setDefaultServerPath(path: String) {
             defaultPath = path
@@ -160,7 +161,7 @@ class CFQServer {
         suspend fun authLogin(
             username: String,
             password: String,
-        ): String {
+        ): Pair<HttpStatusCode, String> {
             val response =
                 fetchFromServer(
                     "POST",
@@ -174,7 +175,7 @@ class CFQServer {
 
             val body = response.bodyAsText()
             Log.i("CFQServer", "Auth Login response: ${response.status.value}")
-            return body
+            return response.status to body
         }
 
         private suspend fun authCheckUsername(username: String): Boolean {
@@ -237,13 +238,7 @@ class CFQServer {
 
         suspend fun apiCheckPremiumTime(token: String): Long =
             try {
-                val response =
-                    fetchFromServer(
-                        "POST",
-                        "api/user/info",
-                        token = token
-                    )
-                decoder.decodeFromString<UserInfo>(response.bodyAsText()).premiumUntil
+                apiUserInfo(token)?.premiumUntil ?: 0L
             } catch (e: Exception) {
                 Log.e("CFQServer", "Failed to get premium time: ${e.localizedMessage}")
                 0L

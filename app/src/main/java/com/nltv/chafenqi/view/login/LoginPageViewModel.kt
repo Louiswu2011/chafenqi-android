@@ -19,6 +19,7 @@ import com.nltv.chafenqi.networking.CredentialsMismatchException
 import com.nltv.chafenqi.networking.UserNotFoundException
 import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.user.CFQUser
+import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
@@ -89,12 +90,16 @@ class LoginPageViewModel : ViewModel() {
                     username = username,
                     password = passwordHash
                 )
+                val (status, token) = response
 
-                if (response.isNotEmpty()) {
+                if (status != HttpStatusCode.OK) {
+                    updateLoginState(UIState.Pending)
+                    snackbarHostState.showSnackbar("用户名或密码错误，请重试")
+                } else if (token.isNotEmpty()) {
                     // successfully logged in
                     println("Successfully logged in.")
                     // updateLoginPromptText("以${username}的身份登录...")
-                    user.createProfile(response, username)
+                    user.createProfile(token, username)
 
                     loadPersistentStorage(context, shouldValidate)
 
@@ -108,7 +113,7 @@ class LoginPageViewModel : ViewModel() {
                     userState.isLoggedIn = true
                 } else {
                     updateLoginState(UIState.Pending)
-                    snackbarHostState.showSnackbar("用户名或密码错误，请重试")
+                    snackbarHostState.showSnackbar("未知错误，请重试")
                 }
             } catch (e: Exception) {
                 loginExceptionHandler(snackbarHostState, e)

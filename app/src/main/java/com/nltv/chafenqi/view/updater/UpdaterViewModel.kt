@@ -35,7 +35,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-val PORTAL_ADDRESS = "http://43.139.107.206:8083/"
+const val PORTAL_ADDRESS = "http://43.139.107.206:9030/"
 
 data class UpdaterUiState(
     val maiServerStat: String = "暂无数据",
@@ -217,7 +217,8 @@ class UpdaterViewModel : ViewModel() {
     fun buildUri(mode: Int): String {
         return Uri.parse(PORTAL_ADDRESS)
             .buildUpon()
-            .appendPath(if (mode == 0) "upload_chunithm" else "upload_maimai")
+            .appendPath("upload")
+            .appendPath(if (mode == 0) "chunithm" else "maimai")
             .appendQueryParameter("jwt", token)
             .build()
             .toString()
