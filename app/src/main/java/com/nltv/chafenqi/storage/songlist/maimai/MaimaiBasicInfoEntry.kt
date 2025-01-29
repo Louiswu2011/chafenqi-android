@@ -14,5 +14,11 @@ data class MaimaiBasicInfoEntry(
     val isNew: Boolean = false
 ) {
     // TODO: Load version list from server
-    val from = MAIMAI_VERSION_STRINGS[version]
+    val from =
+        MAIMAI_VERSION_STRINGS
+            .keys
+            .map { it / 100 }
+            .firstOrNull { it > version / 100 }
+            ?.let { MAIMAI_VERSION_STRINGS[it - 1] }
+            ?: ""
 }
