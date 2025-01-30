@@ -199,7 +199,7 @@ fun SettingsUserPage(navController: NavController) {
             preference(
                 key = "bind_qq_account",
                 onClick = {
-                    if ((model.bindQQState.toIntOrNull()?: -1) > 0) {
+                    if ((model.bindQQState.toLongOrNull()?: -1) > 0) {
                         unbindQQUseState.show()
                     } else {
                         bindQQUseState.show()
@@ -207,7 +207,7 @@ fun SettingsUserPage(navController: NavController) {
                 },
                 title = { Text(text = "QQ号") },
                 summary = {
-                    Text(text = if ((model.bindQQState.toIntOrNull() ?: -1) > 0) "已绑定QQ: ${model.bindQQState}" else "未绑定")
+                    Text(text = if ((model.bindQQState.toLongOrNull() ?: -1) > 0) "已绑定QQ: ${model.bindQQState}" else "未绑定")
                 },
                 icon = {
                     Icon(
