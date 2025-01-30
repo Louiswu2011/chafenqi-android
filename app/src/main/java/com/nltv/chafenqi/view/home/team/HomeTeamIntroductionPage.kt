@@ -533,18 +533,6 @@ fun HomeTeamIntroductionPageCreateSection(snackbarHostState: SnackbarHostState) 
                     Text("使团队可被推荐和搜索（稍后可变更）")
                 }
 
-                Row (
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Checkbox(
-                        checked = agreedToTerms,
-                        onCheckedChange = { agreedToTerms = it }
-                    )
-
-                    Text(text = teamCreateTermsText)
-                }
-
             }
 
             // Action Buttons
