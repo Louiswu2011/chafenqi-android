@@ -92,23 +92,22 @@ class LoginPageViewModel : ViewModel() {
                 )
                 val (status, token) = response
 
-                if (status != HttpStatusCode.OK) {
-                    updateLoginState(UIState.Pending)
-                    snackbarHostState.showSnackbar("用户名或密码错误，请重试")
-                } else if (token.isNotEmpty()) {
-                    // successfully logged in
-                    println("Successfully logged in.")
-                    // updateLoginPromptText("以${username}的身份登录...")
-                    user.createProfile(token, username)
+            if (status != HttpStatusCode.OK) {
+                updateLoginState(UIState.Pending)
+                snackbarHostState.showSnackbar("用户名或密码错误，请重试")
+            } else if (token.isNotEmpty()) {
+                // successfully logged in
+                println("Successfully logged in.")
+                // updateLoginPromptText("以${username}的身份登录...")
+                user.createProfile(token, username)
 
-                    loadPersistentStorage(context, shouldValidate)
+                loadPersistentStorage(context, shouldValidate)
 
-                    updateLoginPromptText("加载舞萌DX数据...")
-                    userState.loadMaimaiData(context)
+                updateLoginPromptText("加载舞萌DX数据...")
+                userState.loadMaimaiData(context)
 
-                    updateLoginPromptText("加载中二节奏数据...")
-                    userState.loadChunithmData(context)
-
+                updateLoginPromptText("加载中二节奏数据...")
+                userState.loadChunithmData(context)
                     updateLoginState(UIState.Pending)
                     userState.isLoggedIn = true
                 } else {

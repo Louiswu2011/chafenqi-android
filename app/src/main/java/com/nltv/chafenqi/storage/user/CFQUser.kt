@@ -114,10 +114,16 @@ object CFQUser {
                 Aux.newRating =
                     Aux.newBest.fold(0) { acc, maimaiBestScoreEntry -> acc + maimaiBestScoreEntry.rating() }
 
-                Aux.updateTime = Instant.ofEpochSecond(info.last().timestamp)
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDateTime()
-                    .format(if (DateFormat.is24HourFormat(context)) nameplateDateFormatter else nameplateDateTimeFormatterWithIndicator)
+                Aux.updateTime =
+                    info.lastOrNull()
+                        ?.timestamp
+                        ?.let {
+                            Instant
+                                .ofEpochSecond(it)
+                                .atZone(ZoneId.systemDefault())
+                                .toLocalDateTime()
+                                .format(if (DateFormat.is24HourFormat(context)) nameplateDateFormatter else nameplateDateTimeFormatterWithIndicator)
+                        } ?: ""
 
                 val mostRecent = recent.take(30).toMutableList()
                 mostRecent.firstOrNull { it.judgeStatus == "applus" }
@@ -256,10 +262,17 @@ object CFQUser {
                     (recentSlice.fold(0.0) { acc, chunithmRatingEntry -> acc + chunithmRatingEntry.rating() } / 10).cutForRating()
 
 
-                Aux.updateTime = Instant.ofEpochSecond(info.last().timestamp)
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDateTime()
-                    .format(if (DateFormat.is24HourFormat(context)) nameplateDateFormatter else nameplateDateTimeFormatterWithIndicator)
+                Aux.updateTime =
+                    info
+                        .lastOrNull()
+                        ?.timestamp
+                        ?.let {
+                            Instant
+                                .ofEpochSecond(it)
+                                .atZone(ZoneId.systemDefault())
+                                .toLocalDateTime()
+                             .format(if (DateFormat.is24HourFormat(context)) nameplateDateFormatter else nameplateDateTimeFormatterWithIndicator) }
+                        ?: ""
 
                 val mostRecent = recent.take(30).toMutableList()
                 mostRecent.firstOrNull { it.score == 1010000 }
