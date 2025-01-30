@@ -478,7 +478,7 @@ fun HomeTeamIntroductionPageCreateSection(snackbarHostState: SnackbarHostState) 
             ) {
                 OutlinedTextField(
                     value = teamName,
-                    onValueChange = { if (teamName.length <= TEAM_NAME_LENGTH) teamName = it },
+                    onValueChange = { teamName = it },
                     label = { Text("团队名称") },
                     supportingText = {
                         Text(
@@ -493,7 +493,7 @@ fun HomeTeamIntroductionPageCreateSection(snackbarHostState: SnackbarHostState) 
                 )
                 OutlinedTextField(
                     value = teamStyle,
-                    onValueChange = { if (teamStyle.length <= TEAM_STYLE_LENGTH) teamStyle = it },
+                    onValueChange = { teamStyle = it },
                     label = { Text("团队方针") },
                     supportingText = {
                         Text(
@@ -508,7 +508,7 @@ fun HomeTeamIntroductionPageCreateSection(snackbarHostState: SnackbarHostState) 
                 )
                 OutlinedTextField(
                     value = teamRemarks,
-                    onValueChange = { if (teamRemarks.length <= TEAM_REMARKS_LENGTH) teamRemarks = it },
+                    onValueChange = { teamRemarks = it },
                     label = { Text("团队介绍") },
                     supportingText = {
                         Text(
@@ -582,7 +582,7 @@ fun HomeTeamIntroductionPageCreateSection(snackbarHostState: SnackbarHostState) 
                         }
                     },
                     shape = MaterialTheme.shapes.small,
-                    enabled = teamName.isNotBlank() && teamRemarks.isNotBlank() && teamStyle.isNotBlank() && agreedToTerms,
+                    enabled = (teamName.length in 1..TEAM_NAME_LENGTH) && (teamRemarks.length in 1..TEAM_REMARKS_LENGTH) && (teamStyle.length in 1..TEAM_STYLE_LENGTH),
                     modifier = Modifier.weight(1f)
                 ) {
                     Text("创建")
