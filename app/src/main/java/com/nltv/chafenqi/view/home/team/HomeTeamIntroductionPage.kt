@@ -375,34 +375,46 @@ fun HomeTeamIntroductionPageCreateSection(snackbarHostState: SnackbarHostState) 
             }
         }
 
-        Column (
+        LazyColumn (
             modifier = Modifier
                 .fillMaxSize()
                 .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
-            Column (
-                verticalArrangement = Arrangement.spacedBy(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text("团队功能介绍", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+            item {
+                Text(
+                    "团队功能介绍",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
+                )
+            }
 
+            item {
                 TeamIntroductionRow(
                     title = "成员一览",
                     message = "通过团队代码邀请好友加入团队，并在App内查看成员的Rating和游玩次数等信息。",
                     icon = Icons.Filled.People
                 )
+            }
+
+            item {
                 TeamIntroductionRow(
                     title = "留言板",
                     message = "使用队内的留言板给队友留言。留言对所有人可见。",
                     icon = Icons.AutoMirrored.Filled.Chat
                 )
+            }
+
+            item {
                 TeamIntroductionRow(
                     title = "月间排行",
                     message = "通过在机台上游玩并上传成绩来为团队积攒点数，并参加月间的团队点数排行榜。",
                     icon = Icons.Filled.Leaderboard
                 )
+            }
+
+            item {
                 TeamIntroductionRow(
                     title = "组曲挑战",
                     message = "队长可以挑选三首歌曲作为团队的组曲挑战。成员在机台按顺序游玩后上传成绩，即可同步到App内，并参加队内排行榜。",
@@ -410,19 +422,25 @@ fun HomeTeamIntroductionPageCreateSection(snackbarHostState: SnackbarHostState) 
                 )
             }
 
-            Column (
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                Text("注：创建团队需要订阅会员", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.secondary)
-                Button(
-                    onClick = {
-                        shouldShowForm = true
-                    },
-                    shape = MaterialTheme.shapes.small,
-                    modifier = Modifier.fillMaxWidth()
+            item {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    Text(text = "创建团队")
+                    Text(
+                        "注：创建团队需要订阅会员",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                    Button(
+                        onClick = {
+                            shouldShowForm = true
+                        },
+                        shape = MaterialTheme.shapes.small,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "创建团队")
+                    }
                 }
             }
         }
