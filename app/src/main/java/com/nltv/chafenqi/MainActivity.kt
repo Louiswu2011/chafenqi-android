@@ -141,9 +141,9 @@ fun ChafenqiApp() {
             .build()
     }
 
-    LaunchedEffect(Unit) {
-        CFQServer.setDefaultServerPath("http://192.168.1.151:8998")
-    }
+//    LaunchedEffect(Unit) {
+//        CFQServer.setDefaultServerPath("http://43.139.107.206:8998")
+//    }
 
     ChafenqiTheme {
         Surface(
