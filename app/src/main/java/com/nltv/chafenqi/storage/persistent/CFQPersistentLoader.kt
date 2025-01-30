@@ -69,9 +69,9 @@ class CFQPersistentLoader {
                 val remoteString = config.fetcher()
                 Json.decodeFromString(remoteString) ?: list
             } catch (e: Exception) {
-                // Network error, return cache or empty list
+                // Network error, return empty list
                 Log.e(tag, "Error loading remote music list: $e")
-                if (musicListString.isNotEmpty()) Json.decodeFromString(musicListString) else emptyList()
+                emptyList()
             }
         }
     }
