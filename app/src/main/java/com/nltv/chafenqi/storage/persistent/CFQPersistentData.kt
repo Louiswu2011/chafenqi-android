@@ -100,6 +100,8 @@ object CFQPersistentData {
         val store = context.settingsStore
         store.edit { it.clear() }
         Maimai.musicList = listOf()
+        Maimai.genreList = listOf()
+        Maimai.versionList = listOf()
         Chunithm.musicList = listOf()
     }
 
