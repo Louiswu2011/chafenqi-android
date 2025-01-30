@@ -59,8 +59,10 @@ fun HomePageRatingSection(navController: NavController) {
         HomePageRatingBar(navController = navController)
     }
     if (model.user.isPremium) {
-        HomePageRatingIndicators()
-        HomePageRatingSelection(navController = navController)
+        if ((model.user.mode == 1 && !model.user.maimai.isBasicEmpty) || (model.user.mode == 0 && !model.user.chunithm.isBasicEmpty)) {
+            HomePageRatingIndicators()
+            HomePageRatingSelection(navController = navController)
+        }
     }
 }
 
