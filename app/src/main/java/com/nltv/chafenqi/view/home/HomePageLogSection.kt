@@ -37,6 +37,7 @@ fun HomePageLogSection(navController: NavController) {
 @Composable
 fun HomePageLogBar(navController: NavController) {
     val model: HomePageViewModel = viewModel()
+    val uiState by model.uiState.collectAsState()
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -55,7 +56,7 @@ fun HomePageLogBar(navController: NavController) {
             text = "显示全部",
             fontSize = TextUnit(14f, TextUnitType.Sp),
             modifier = Modifier.clickable {
-                if (CFQUser.isPremium) {
+                if (CFQUser.isPremium && !uiState.isLogEmpty) {
                     navController.navigate(HomeNavItem.Home.route + "/log")
                 } else {
                     navController.navigate(HomeNavItem.Home.route + "/settings/user/redeem")
