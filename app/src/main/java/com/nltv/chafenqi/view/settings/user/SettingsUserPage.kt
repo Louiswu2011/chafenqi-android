@@ -101,7 +101,7 @@ fun SettingsUserPage(navController: NavController) {
             ),
             validationListener = { value ->
                 if (value?.isNotBlank() == true) {
-                    if (value.toIntOrNull() != null) {
+                    if (value.toLongOrNull() != null) {
                         ValidationResult.Valid
                     } else {
                         ValidationResult.Invalid("QQ号格式不正确")
