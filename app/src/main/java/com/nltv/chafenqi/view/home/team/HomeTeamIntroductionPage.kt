@@ -259,7 +259,8 @@ fun HomeTeamIntroductionPageSearchSection(snackbarHostState: SnackbarHostState) 
                 }
                 false -> {
                     LazyColumn (
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         items(
                             count = searchState.teams.size,
