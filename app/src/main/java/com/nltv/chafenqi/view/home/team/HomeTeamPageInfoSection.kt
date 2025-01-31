@@ -8,7 +8,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Leaderboard
 import androidx.compose.material.icons.filled.ManageAccounts
@@ -58,6 +61,8 @@ fun HomeTeamPageInfoSection(
     val leader by remember {
         mutableStateOf(state.team.info.leaderUserId.let { id -> state.team.members.firstOrNull { it.userId == id } })
     }
+
+    val infoScrollState = rememberScrollState()
 
     @Composable
     fun RowScope.InfoCard(
@@ -148,7 +153,9 @@ fun HomeTeamPageInfoSection(
             value = state.team.info.remarks,
             onValueChange = {},
             readOnly = true,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp),
             label = { Text(text = "团队介绍") },
             textStyle = MaterialTheme.typography.bodyMedium,
             shape = MaterialTheme.shapes.small,
