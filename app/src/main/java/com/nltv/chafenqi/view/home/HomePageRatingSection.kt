@@ -227,11 +227,15 @@ fun HomePageRatingSelection(navController: NavController) {
     ) {
         when (it) {
             0 -> {
-                HomePageChunithmRatingSelection(navController)
+                if (uiState.chuBestRatingList.isNotEmpty()) {
+                    HomePageChunithmRatingSelection(navController)
+                }
             }
 
             1 -> {
-                HomePageMaimaiRatingSelection(navController)
+                if (uiState.maiPastRatingList.isNotEmpty() && uiState.maiNewRatingList.isNotEmpty()) {
+                    HomePageMaimaiRatingSelection(navController)
+                }
             }
         }
     }
