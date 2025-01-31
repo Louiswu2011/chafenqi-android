@@ -49,10 +49,7 @@ class CFQUserStateViewModel : ViewModel() {
                     .decodeFromString<List<UserMaimaiRecentScoreEntry>>(recentString)
                     .sortedByDescending { it.timestamp }
 
-                maimai.isBasicEmpty =
-                    maimai.info.isNotEmpty() &&
-                            maimai.best.isNotEmpty() &&
-                            maimai.recent.isNotEmpty()
+                maimai.isBasicEmpty = false
                 Log.i(tag, "Loaded user maimai basic data.")
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -101,11 +98,7 @@ class CFQUserStateViewModel : ViewModel() {
                     .sortedByDescending { it.timestamp }
                 chunithm.rating = deserializer.decodeFromString(ratingString)
 
-                chunithm.isBasicEmpty =
-                    chunithm.info.isNotEmpty() &&
-                            chunithm.best.isNotEmpty() &&
-                            chunithm.recent.isNotEmpty() &&
-                            !chunithm.rating.isEmpty
+                chunithm.isBasicEmpty = false
                 Log.i(tag, "Loaded user chunithm basic data.")
             } catch (e: Exception) {
                 e.printStackTrace()
