@@ -10,7 +10,9 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.AddComment
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
@@ -46,6 +48,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.maxkeppeker.sheets.core.models.base.Header
+import com.maxkeppeker.sheets.core.models.base.IconSource
+import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
+import com.maxkeppeler.sheets.info.InfoDialog
+import com.maxkeppeler.sheets.info.models.InfoBody
+import com.maxkeppeler.sheets.info.models.InfoSelection
 import com.nltv.chafenqi.networking.CFQTeamServer
 import com.nltv.chafenqi.view.home.HomeNavItem
 import kotlinx.coroutines.Dispatchers
@@ -139,6 +147,8 @@ fun HomeTeamPage(navController: NavController) {
 
     var showBulletinComposeSheet by remember { mutableStateOf(false) }
 
+    val leaveTeamConfirmUseCase = rememberUseCaseState()
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -167,14 +177,25 @@ fun HomeTeamPage(navController: NavController) {
                             contentDescription = "Refresh",
                         )
                     }
-                    IconButton(onClick = {
-                        navController.navigate(HomeNavItem.Home.route + "/team/settings")
-                    })
-                    {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = "Settings",
-                        )
+                    if (state.isTeamAdmin) {
+                        IconButton(onClick = {
+                            navController.navigate(HomeNavItem.Home.route + "/team/settings")
+                        })
+                        {
+                            Icon(
+                                imageVector = Icons.Default.Settings,
+                                contentDescription = "Settings",
+                            )
+                        }
+                    } else {
+                        IconButton(onClick = {
+                            leaveTeamConfirmUseCase.show()
+                        }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Default.Logout,
+                                contentDescription = "Leave Team"
+                            )
+                        }
                     }
                 }
             )
@@ -269,4 +290,31 @@ fun HomeTeamPage(navController: NavController) {
             }
         }
     }
+
+    InfoDialog(
+        state = leaveTeamConfirmUseCase,
+        header = Header.Default(
+            title = "离开团队",
+            icon = IconSource(imageVector = Icons.AutoMirrored.Default.Logout)
+        ),
+        body = InfoBody.Default(
+            bodyText = "确定要离开该团队吗？",
+        ),
+        selection = InfoSelection(
+            onPositiveClick = {
+                scope.launch(Dispatchers.IO) {
+                    val result = CFQTeamServer.leaveTeam(
+                        authToken = model.token,
+                        game = model.mode,
+                        teamId = state.team.info.id
+                    )
+                    if (result.isEmpty()) {
+                        navController.navigateUp()
+                    } else {
+                        snackbarHostState.showSnackbar("离开团队失败，$result")
+                    }
+                }
+            }
+        )
+    )
 }
