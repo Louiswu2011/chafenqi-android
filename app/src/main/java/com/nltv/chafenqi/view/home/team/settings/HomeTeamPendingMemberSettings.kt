@@ -134,7 +134,7 @@ fun HomeTeamSettingsPendingMemberManagePage(navController: NavController) {
                                     snackbarHostState.showSnackbar("已拒绝加入")
                                     model.refresh()
                                 } else {
-                                    snackbarHostState.showSnackbar("拒绝加入失败，请联系开发者")
+                                    snackbarHostState.showSnackbar("拒绝加入失败，$result")
                                 }
                             }
                         },
