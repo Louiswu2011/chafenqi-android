@@ -168,7 +168,7 @@ fun HomeTeamSettingsPendingMemberEntry(
             horizontalAlignment = Alignment.Start
         ) {
             Text(pendingMember.nickname.toHalfWidth())
-            Text("加入时间：${pendingMember.timestamp.toDateString(context)}")
+            Text("申请时间：${pendingMember.timestamp.toDateString(context)}")
         }
 
         Row (
