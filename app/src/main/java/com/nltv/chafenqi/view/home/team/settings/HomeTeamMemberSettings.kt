@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -53,11 +54,7 @@ import kotlinx.coroutines.launch
 fun HomeTeamSettingsMemberManagePage(navController: NavController) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val model: HomeTeamPageViewModel = viewModel(
-        viewModelStoreOwner = navBackStackEntry?.let { navController.getBackStackEntry(HomeNavItem.Home.route + "/team") }
-            ?: LocalViewModelStoreOwner.current!!
-    )
+    val model: HomeMemberViewModel = viewModel()
     val state by model.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
@@ -79,6 +76,13 @@ fun HomeTeamSettingsMemberManagePage(navController: NavController) {
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "返回上一级"
                         )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = {
+                        model.refresh()
+                    }) {
+                        Icon(Icons.Default.Refresh, "刷新")
                     }
                 }
             )
