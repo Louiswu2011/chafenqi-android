@@ -37,9 +37,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
-import com.michaelflisar.composepreferences.core.PreferenceScreen
-import com.michaelflisar.composepreferences.core.hierarchy.PreferenceRootScope
 import com.nltv.chafenqi.extension.toDateString
 import com.nltv.chafenqi.extension.toHalfWidth
 import com.nltv.chafenqi.model.team.TeamMember

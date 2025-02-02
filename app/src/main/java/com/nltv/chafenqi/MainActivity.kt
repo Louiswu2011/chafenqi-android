@@ -89,6 +89,7 @@ import com.nltv.chafenqi.view.updater.UpdaterHelpPage
 import com.nltv.chafenqi.view.updater.UpdaterHomePage
 import me.zhanghai.compose.preference.ProvidePreferenceLocals
 import me.zhanghai.compose.preference.defaultPreferenceFlow
+import me.zhanghai.compose.preference.preferenceTheme
 
 enum class UIState {
     Pending, Loading, Finished
@@ -107,11 +108,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             CompositionLocalProvider(LocalUserState provides userState) {
-                ProvidePreferenceLocals (
-                    flow = defaultPreferenceFlow()
-                ) {
-                    ChafenqiApp()
-                }
+                ChafenqiApp()
             }
         }
     }
@@ -146,15 +143,20 @@ fun ChafenqiApp() {
 //    }
 
     ChafenqiTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.surface
+        ProvidePreferenceLocals (
+            flow = defaultPreferenceFlow(),
+            theme = preferenceTheme()
         ) {
-            Crossfade(targetState = userState.isLoggedIn, label = "Login page") {
-                if (it) {
-                    LogonPage(navController)
-                } else {
-                    LoginPage()
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colorScheme.surface
+            ) {
+                Crossfade(targetState = userState.isLoggedIn, label = "Login page") {
+                    if (it) {
+                        LogonPage(navController)
+                    } else {
+                        LoginPage()
+                    }
                 }
             }
         }

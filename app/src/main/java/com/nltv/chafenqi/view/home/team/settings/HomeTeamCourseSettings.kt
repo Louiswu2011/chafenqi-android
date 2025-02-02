@@ -47,7 +47,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -80,16 +79,14 @@ import com.maxkeppeler.sheets.input.models.InputTextField
 import com.michaelflisar.composepreferences.core.PreferenceDivider
 import com.michaelflisar.composepreferences.core.PreferenceInfo
 import com.michaelflisar.composepreferences.core.PreferenceScreen
-import com.michaelflisar.composepreferences.core.PreferenceSectionHeader
-import com.michaelflisar.composepreferences.core.hierarchy.PreferenceRootScope
+import com.michaelflisar.composepreferences.core.PreferenceSection
+import com.michaelflisar.composepreferences.core.scopes.PreferenceRootScope
 import com.michaelflisar.composepreferences.screen.button.PreferenceButton
 import com.michaelflisar.composepreferences.screen.list.PreferenceList
 import com.nltv.chafenqi.SCREEN_PADDING
 import com.nltv.chafenqi.extension.toChunithmCoverPath
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.model.team.TeamBasicInfo
-import com.nltv.chafenqi.model.team.TeamUpdateCoursePayload
-import com.nltv.chafenqi.networking.CFQTeamServer
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import com.nltv.chafenqi.view.home.HomeNavItem
@@ -98,8 +95,6 @@ import com.nltv.chafenqi.view.songlist.SongListSearchEmptyState
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyTitles
 import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -196,114 +191,80 @@ fun PreferenceRootScope.TeamCourseSettings(
         courseModel.refresh()
     }
 
-    PreferenceSectionHeader(
-        title = { Text("基本信息") }
-    )
+    PreferenceSection(
+        title = "基本信息"
+    ) {
+        PreferenceButton(
+            title = "组曲名称",
+            subtitle = courseModel.courseName.ifEmpty { "暂未设置" },
+            icon = { Icon(Icons.Default.Ballot, contentDescription = "组曲名称") },
+            onClick = { editCourseNameUseCase.show() }
+        )
 
-    PreferenceButton(
-        title = { Text("组曲名称") },
-        subtitle = { Text(if (courseModel.courseName.isEmpty()) "暂未设置" else courseModel.courseName) },
-        icon = { Icon(Icons.Default.Ballot, contentDescription = "组曲名称") },
-        onClick = { editCourseNameUseCase.show() }
-    )
+        PreferenceList(
+            style = PreferenceList.Style.Spinner,
+            value = courseModel.courseLife,
+            onValueChange = { courseModel.courseLife = it },
+            items = listOf(1, 10, 50, 100, 200, 0),
+            itemTextProvider = {
+                if (it == 0) "无限制" else "$it"
+            },
+            title = "生命值",
+            subtitle = if (courseModel.courseTrack1 == null) "暂未设置" else "${courseModel.courseLife}",
+            icon = { Icon(Icons.Default.HeartBroken, contentDescription = "生命值") }
+        )
+    }
 
-    PreferenceList(
-        style = PreferenceList.Style.Spinner,
-        value = courseModel.courseLife,
-        onValueChange = { courseModel.courseLife = it },
-        items = listOf(1, 10, 50, 100, 200, 0),
-        itemTextProvider = {
-            if (it == 0) "无限制" else "$it"
-        },
-        title = { Text("生命值") },
-        subtitle = { Text(if (courseModel.courseTrack1 == null) "暂未设置" else "${courseModel.courseLife}") },
-        icon = { Icon(Icons.Default.HeartBroken, contentDescription = "生命值") }
-    )
+    PreferenceSection(
+        title = "歌曲配置"
+    ) {
 
-    PreferenceDivider()
-
-    PreferenceSectionHeader(
-        title = { Text("歌曲配置") }
-    )
-
-    PreferenceButton(
-        title = { Text("TRACK 1") },
-        subtitle = {
-            Text(
-                buildAnnotatedString {
-                    if (courseModel.courseTrack1 == null) {
-                        append("暂未设定")
-                    } else {
-                        append(model.getTitle(courseModel.courseTrack1!!))
-                        append(" ")
-                        withStyle(style = SpanStyle(color = model.getDifficultyColor(courseModel.courseTrack1!!))) {
-                            append(chunithmDifficultyTitles[courseModel.courseTrack1!!.levelIndex])
-                        }
-                    }
-                    toAnnotatedString()
-                }
-            )
-        },
-        onClick = {
-            courseModel.currentSelectedMusicSlot = 0
-        }
-    )
-    PreferenceButton(
-        title = { Text("TRACK 2") },
-        subtitle = {
-            Text(
-                buildAnnotatedString {
-                    if (courseModel.courseTrack2 == null) {
-                        append("暂未设定")
-                    } else {
-                        append(model.getTitle(courseModel.courseTrack2!!))
-                        append(" ")
-                        withStyle(style = SpanStyle(color = model.getDifficultyColor(courseModel.courseTrack2!!))) {
-                            append(chunithmDifficultyTitles[courseModel.courseTrack2!!.levelIndex])
-                        }
-                    }
-                    toAnnotatedString()
-                }
-            )
-        },
-        onClick = {
-            courseModel.currentSelectedMusicSlot = 1
-        }
-    )
-    PreferenceButton(
-        title = { Text("TRACK 3") },
-        subtitle = {
-            Text(
-                buildAnnotatedString {
-                    if (courseModel.courseTrack3 == null) {
-                        append("暂未设定")
-                    } else {
-                        append(model.getTitle(courseModel.courseTrack3!!))
-                        append(" ")
-                        withStyle(style = SpanStyle(color = model.getDifficultyColor(courseModel.courseTrack3!!))) {
-                            append(chunithmDifficultyTitles[courseModel.courseTrack3!!.levelIndex])
-                        }
-                    }
-                    toAnnotatedString()
-                }
-            )
-        },
-        onClick = {
-            courseModel.currentSelectedMusicSlot = 2
-        }
-    )
+        PreferenceButton(
+            title = "TRACK 1",
+            subtitle = if (courseModel.courseTrack1 == null) {
+                "暂未设定"
+            } else {
+                "${model.getTitle(courseModel.courseTrack1!!)} ${chunithmDifficultyTitles[courseModel.courseTrack1!!.levelIndex]}"
+            },
+            onClick = {
+                courseModel.currentSelectedMusicSlot = 0
+            }
+        )
+        PreferenceButton(
+            title = "TRACK 2",
+            subtitle = if (courseModel.courseTrack2 == null) {
+                "暂未设定"
+            } else {
+                "${model.getTitle(courseModel.courseTrack2!!)} ${chunithmDifficultyTitles[courseModel.courseTrack2!!.levelIndex]}"
+            },
+            onClick = {
+                courseModel.currentSelectedMusicSlot = 1
+            }
+        )
+        PreferenceButton(
+            title = "TRACK 3",
+            subtitle = if (courseModel.courseTrack3 == null) {
+                "暂未设定"
+            } else {
+                "${model.getTitle(courseModel.courseTrack3!!)} ${chunithmDifficultyTitles[courseModel.courseTrack3!!.levelIndex]}"
+            },
+            onClick = {
+                courseModel.currentSelectedMusicSlot = 2
+            }
+        )
+    }
 
     PreferenceDivider()
 
     PreferenceButton(
-        title = { Text("更新组曲") },
-        subtitle = { Text("组曲更新后将会重置当前排行榜") },
+        title = "更新组曲",
+        subtitle = "组曲更新后将会重置当前排行榜",
         icon = { Icon(Icons.Default.Refresh, contentDescription = "更新组曲") },
         onClick = { confirmUpdateCourseUseCase.show() }
     )
 
     PreferenceInfo(
-        title = { Text("组曲每7天只能修改一次") },
+        title = "组曲每7天只能修改一次",
         icon = { Icon(Icons.Default.Info, contentDescription = "组曲相关信息") }
     )
 

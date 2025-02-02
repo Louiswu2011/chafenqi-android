@@ -136,7 +136,7 @@ android {
 
 val composeDialogs = "1.0.8"
 val ktorVersion = "3.0.3"
-val composePreferences = "0.4.7"
+val composepreferences = "1.0.0"
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
@@ -189,15 +189,19 @@ dependencies {
     implementation("com.google.accompanist:accompanist-drawablepainter:0.36.0")
     implementation("com.patrykandpatrick.vico:compose-m3:2.0.1")
 
-    implementation("com.github.MFlisar.ComposePreferences:core:$composePreferences")
-    implementation("com.github.MFlisar.ComposePreferences:screen-bool:$composePreferences")
-    implementation("com.github.MFlisar.ComposePreferences:screen-button:$composePreferences")
-    implementation("com.github.MFlisar.ComposePreferences:screen-input:$composePreferences")
-    implementation("com.github.MFlisar.ComposePreferences:screen-color:$composePreferences")
-    implementation("com.github.MFlisar.ComposePreferences:screen-date:$composePreferences")
-    implementation("com.github.MFlisar.ComposePreferences:screen-time:$composePreferences")
-    implementation("com.github.MFlisar.ComposePreferences:screen-list:$composePreferences")
-    implementation("com.github.MFlisar.ComposePreferences:screen-number:$composePreferences")
+    // core
+    implementation("io.github.mflisar.composepreferences:core:$composepreferences")
+
+    implementation("io.github.mflisar.composepreferences:screen-bool:$composepreferences")
+    implementation("io.github.mflisar.composepreferences:screen-button:$composepreferences")
+    implementation("io.github.mflisar.composepreferences:screen-color:$composepreferences")
+    implementation("io.github.mflisar.composepreferences:screen-date:$composepreferences")
+    implementation("io.github.mflisar.composepreferences:screen-input:$composepreferences")
+    implementation("io.github.mflisar.composepreferences:screen-list:$composepreferences")
+    implementation("io.github.mflisar.composepreferences:screen-number:$composepreferences")
+    implementation("io.github.mflisar.composepreferences:screen-time:$composepreferences")
+
+    implementation("io.github.mflisar.composepreferences:kotpreferences:$composepreferences")
 
     implementation("com.maxkeppeler.sheets-compose-dialogs:core:1.3.0")
     implementation("com.maxkeppeler.sheets-compose-dialogs:info:1.3.0")

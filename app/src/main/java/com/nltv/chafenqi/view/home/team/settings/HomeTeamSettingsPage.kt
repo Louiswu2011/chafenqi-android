@@ -57,11 +57,9 @@ import com.maxkeppeler.sheets.input.models.InputTextField
 import com.michaelflisar.composepreferences.core.PreferenceDivider
 import com.michaelflisar.composepreferences.core.PreferenceInfo
 import com.michaelflisar.composepreferences.core.PreferenceScreen
-import com.michaelflisar.composepreferences.core.PreferenceSectionHeader
+import com.michaelflisar.composepreferences.core.PreferenceSection
 import com.michaelflisar.composepreferences.core.PreferenceSubScreen
-import com.michaelflisar.composepreferences.core.classes.PreferenceStyleDefaults
-import com.michaelflisar.composepreferences.core.hierarchy.PreferenceRootScope
-import com.michaelflisar.composepreferences.core.hierarchy.PreferenceScope
+import com.michaelflisar.composepreferences.core.scopes.PreferenceRootScope
 import com.michaelflisar.composepreferences.screen.bool.PreferenceBool
 import com.michaelflisar.composepreferences.screen.button.PreferenceButton
 import com.michaelflisar.composepreferences.screen.list.PreferenceList
@@ -294,94 +292,91 @@ fun PreferenceRootScope.TeamSettings(
         )
     )
 
-    PreferenceSectionHeader(
-        title = { Text("基本信息") }
-    )
-    PreferenceButton(
-        title = { Text("团队名称") },
-        subtitle = { Text(state.team.info.displayName) },
-        icon = { Icon(Icons.Default.Badge, contentDescription = "团队名称") },
-        onClick = { editTeamNameUseCase.show() }
-    )
-    PreferenceButton(
-        title = { Text("团队方针") },
-        subtitle = { Text(state.team.info.style) },
-        icon = { Icon(Icons.Default.Flag, contentDescription = "团队方针") },
-        onClick = { editTeamStyleUseCase.show() }
-    )
-    PreferenceButton(
-        title = { Text("团队介绍") },
-        subtitle = { Text(state.team.info.remarks) },
-        icon = { Icon(Icons.Default.Info, contentDescription = "团队介绍") },
-        onClick = { editTeamRemarksUseCase.show() }
-    )
-    PreferenceBool(
-        value = state.team.info.promotable,
-        onValueChange = {
-            scope.launch(Dispatchers.IO) {
-                val result = CFQTeamServer.adminUpdateTeamPromotable(
-                    authToken = model.token,
-                    game = model.mode,
-                    teamId = state.team.info.id,
-                    promotable = it
-                )
-                if (result) {
-                    model.refresh()
-                    snackbarHostState.showSnackbar("团队状态已更新")
-                } else {
-                    snackbarHostState.showSnackbar("团队状态更新失败，请联系开发者")
+    PreferenceSection(
+        title = "基本信息"
+    ) {
+        PreferenceButton(
+            title = "团队名称",
+            subtitle = state.team.info.displayName,
+            icon = { Icon(Icons.Default.Badge, contentDescription = "团队名称") },
+            onClick = { editTeamNameUseCase.show() }
+        )
+        PreferenceButton(
+            title = "团队方针",
+            subtitle = state.team.info.style,
+            icon = { Icon(Icons.Default.Flag, contentDescription = "团队方针") },
+            onClick = { editTeamStyleUseCase.show() }
+        )
+        PreferenceButton(
+            title = "团队介绍",
+            subtitle = state.team.info.remarks,
+            icon = { Icon(Icons.Default.Info, contentDescription = "团队介绍") },
+            onClick = { editTeamRemarksUseCase.show() }
+        )
+        PreferenceBool(
+            value = state.team.info.promotable,
+            onValueChange = {
+                scope.launch(Dispatchers.IO) {
+                    val result = CFQTeamServer.adminUpdateTeamPromotable(
+                        authToken = model.token,
+                        game = model.mode,
+                        teamId = state.team.info.id,
+                        promotable = it
+                    )
+                    if (result) {
+                        model.refresh()
+                        snackbarHostState.showSnackbar("团队状态已更新")
+                    } else {
+                        snackbarHostState.showSnackbar("团队状态更新失败，请联系开发者")
+                    }
                 }
-            }
-        },
-        title = { Text("可被搜索") },
-        subtitle = { Text("启用该选项将可以让团队被搜索或推荐") },
-        icon = { Icon(Icons.Default.Search, contentDescription = "可被搜索") }
-    )
+            },
+            title = "可被搜索",
+            subtitle = "启用该选项将可以让团队被搜索或推荐",
+            icon = { Icon(Icons.Default.Search, contentDescription = "可被搜索") }
+        )
 
-    PreferenceButton(
-        title = { Text("管理组曲") },
-        subtitle = {
-            Text(if (state.team.info.courseName.isEmpty()) "当前未设置组曲" else state.team.info.courseName)
-        },
-        icon = { Icon(Icons.Default.Ballot, contentDescription = "添加组曲") },
-        onClick = { navController.navigate(HomeNavItem.Home.route + "/team/settings/course") }
-    )
+        PreferenceButton(
+            title = "管理组曲",
+            subtitle = state.team.info.courseName.ifEmpty { "当前未设置组曲" },
+            icon = { Icon(Icons.Default.Ballot, contentDescription = "添加组曲") },
+            onClick = { navController.navigate(HomeNavItem.Home.route + "/team/settings/course") }
+        )
+    }
 
-    PreferenceDivider()
+    PreferenceSection(
+        title = "成员管理"
+    ) {
 
-    PreferenceSectionHeader(
-        title = { Text("成员管理") }
-    )
+        PreferenceButton(
+            title = "管理成员",
+            subtitle = "当前人数：${state.team.members.size}",
+            icon = { Icon(Icons.Default.Groups, contentDescription = "团队成员") },
+            onClick = { navController.navigate(HomeNavItem.Home.route + "/team/settings/member") }
+        )
 
-    PreferenceButton(
-        title = { Text("管理成员") },
-        subtitle = { Text("当前人数：${state.team.members.size}") },
-        icon = { Icon(Icons.Default.Groups, contentDescription = "团队成员") },
-        onClick = { navController.navigate(HomeNavItem.Home.route + "/team/settings/member") }
-    )
+        PreferenceButton(
+            title = "管理待加入成员",
+            subtitle = if (state.team.pendingMembers.isEmpty()) "暂未收到加入申请" else "${state.team.pendingMembers.size}人待加入",
+            icon = { Icon(Icons.Default.PersonAdd, contentDescription = "添加成员") },
+            onClick = { navController.navigate(HomeNavItem.Home.route + "/team/settings/pending") }
+        )
+    }
 
-    PreferenceButton(
-        title = { Text("管理待加入成员") },
-        subtitle = { Text(if (state.team.pendingMembers.isEmpty()) "暂未收到加入申请" else "${state.team.pendingMembers.size}人待加入") },
-        icon = { Icon(Icons.Default.PersonAdd, contentDescription = "添加成员") },
-        onClick = { navController.navigate(HomeNavItem.Home.route + "/team/settings/pending") }
-    )
-
-    PreferenceDivider()
-
-    PreferenceSectionHeader(
-        title = { Text("高级功能") }
-    )
-    PreferenceButton(
-        title = { Text("重新生成团队代码") },
-        subtitle = { Text("重新生成后将无法通过原有的团队代码搜索到本团队") },
-        icon = { Icon(Icons.Default.Refresh, contentDescription = "重新生成团队代码") },
-        onClick = { confirmRefreshTeamCodeUseCase.show() }
-    )
-    PreferenceButton(
-        title = { Text("解散团队", color = MaterialTheme.colorScheme.error) },
-        subtitle = { Text("解散后将无法撤销") },
-        icon = { Icon(Icons.Default.DeleteForever, contentDescription = "解散团队") },
-        onClick = { confirmDeleteTeamUseCase.show() },
-    )
+    PreferenceSection(
+        title = "高级功能"
+    ) {
+        PreferenceButton(
+            title = "重新生成团队代码",
+            subtitle = "重新生成后将无法通过原有的团队代码搜索到本团队",
+            icon = { Icon(Icons.Default.Refresh, contentDescription = "重新生成团队代码") },
+            onClick = { confirmRefreshTeamCodeUseCase.show() }
+        )
+        PreferenceButton(
+            title = "解散团队",
+            subtitle = "解散后将无法撤销",
+            icon = { Icon(Icons.Default.DeleteForever, contentDescription = "解散团队") },
+            onClick = { confirmDeleteTeamUseCase.show() },
+        )
+    }
 }

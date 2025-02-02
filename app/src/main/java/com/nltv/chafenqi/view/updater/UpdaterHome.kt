@@ -46,10 +46,10 @@ import androidx.navigation.NavController
 import com.michaelflisar.composepreferences.core.PreferenceDivider
 import com.michaelflisar.composepreferences.core.PreferenceInfo
 import com.michaelflisar.composepreferences.core.PreferenceScreen
-import com.michaelflisar.composepreferences.core.PreferenceSectionHeader
+import com.michaelflisar.composepreferences.core.PreferenceSection
 import com.michaelflisar.composepreferences.core.classes.Dependency
 import com.michaelflisar.composepreferences.core.classes.PreferenceSettingsDefaults
-import com.michaelflisar.composepreferences.core.hierarchy.PreferenceRootScope
+import com.michaelflisar.composepreferences.core.scopes.PreferenceRootScope
 import com.michaelflisar.composepreferences.screen.bool.PreferenceBool
 import com.michaelflisar.composepreferences.screen.button.PreferenceButton
 import com.michaelflisar.composepreferences.screen.list.PreferenceList
@@ -143,19 +143,18 @@ fun PreferenceRootScope.UpdaterProxyGroup(snackbarHostState: SnackbarHostState) 
     val model: UpdaterViewModel = viewModel()
     val uiState by model.uiState.collectAsState()
 
-    PreferenceSectionHeader(title = { Text(text = "代理") })
-    ProxyToggle()
-    PreferenceInfo(
-        title = { Text(text = "传分状态") },
-        subtitle = { Text(text = "舞萌DX: ${uiState.maiUploadStat}\n" + "中二节奏: ${uiState.chuUploadStat}") },
-        // icon = { Icon(imageVector = Icons.Default.Info, contentDescription = "传分状态") }
-    )
-    PreferenceInfo(
-        title = { Text(text = "服务器状态") },
-        subtitle = { Text(text = "舞萌DX: ${uiState.maiServerStat}\n" + "中二节奏: ${uiState.chuServerStat}") },
-        // icon = { Icon(imageVector = Icons.Default.AccessTime, contentDescription = "服务器状态") }
-    )
-    UpdaterWechatActions(snackbarHostState)
+    PreferenceSection(title = "代理") {
+        this@UpdaterProxyGroup.ProxyToggle()
+        PreferenceInfo(
+            title = "传分状态",
+            subtitle = "舞萌DX: ${uiState.maiUploadStat}\n" + "中二节奏: ${uiState.chuUploadStat}",
+        )
+        PreferenceInfo(
+            title = "服务器状态",
+            subtitle = "舞萌DX: ${uiState.maiServerStat}\n" + "中二节奏: ${uiState.chuServerStat}",
+        )
+        this@UpdaterProxyGroup.UpdaterWechatActions(snackbarHostState)
+    }
 }
 
 @Composable
@@ -188,7 +187,7 @@ fun PreferenceRootScope.ProxyToggle() {
                 model.stopVPN(context)
             }
         },
-        title = { Text(text = "开关") }
+        title = "开关"
     )
 }
 
@@ -204,29 +203,35 @@ fun PreferenceRootScope.UpdaterClipboardGroup(snackbarHostState: SnackbarHostSta
         scope.launch { snackbarHostState.showSnackbar("已复制到剪贴板") }
     }
 
-    PreferenceSectionHeader(title = { Text(text = "链接和二维码") })
+    PreferenceSection(title = "链接和二维码") {
 
-    PreferenceButton(
-        onClick = {
-            clipboardManager.setText(AnnotatedString(model.buildUri(1)))
-            makeToast()
-        },
-        title = { Text(text = "复制舞萌DX链接") },
-        icon = { Icon(imageVector = Icons.Default.Link, contentDescription = "复制舞萌DX链接") }
-    )
-    PreferenceButton(
-        onClick = {
-            clipboardManager.setText(AnnotatedString(model.buildUri(0)))
-            makeToast()
-        },
-        title = { Text(text = "复制中二节奏链接") },
-        icon = { Icon(imageVector = Icons.Default.Link, contentDescription = "复制中二节奏链接") }
-    )
-    PreferenceButton(
-        onClick = { model.shouldShowQRCode = true },
-        title = { Text(text = "生成二维码") },
-        icon = { Icon(imageVector = Icons.Default.QrCode, contentDescription = "生成二维码") }
-    )
+        PreferenceButton(
+            onClick = {
+                clipboardManager.setText(AnnotatedString(model.buildUri(1)))
+                makeToast()
+            },
+            title = "复制舞萌DX链接",
+            icon = { Icon(imageVector = Icons.Default.Link, contentDescription = "复制舞萌DX链接") }
+        )
+        PreferenceButton(
+            onClick = {
+                clipboardManager.setText(AnnotatedString(model.buildUri(0)))
+                makeToast()
+            },
+            title = "复制中二节奏链接",
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Link,
+                    contentDescription = "复制中二节奏链接"
+                )
+            }
+        )
+        PreferenceButton(
+            onClick = { model.shouldShowQRCode = true },
+            title = "生成二维码",
+            icon = { Icon(imageVector = Icons.Default.QrCode, contentDescription = "生成二维码") }
+        )
+    }
 }
 
 @Composable
@@ -237,7 +242,7 @@ fun PreferenceRootScope.UpdaterWechatActions(snackbarHostState: SnackbarHostStat
 
     PreferenceButton(
         onClick = { model.openWeChat(context, uriHandler, snackbarHostState) },
-        title = { Text(text = "跳转到微信") },
+        title = "跳转到微信",
         icon = {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.OpenInNew,
@@ -257,45 +262,42 @@ fun PreferenceRootScope.UpdaterQuickActionsGroup(snackbarHostState: SnackbarHost
     var uploadGame by rememberSaveable { mutableIntStateOf(1) }
 
 
-    PreferenceSectionHeader(title = { Text(text = "快速上传") })
-    PreferenceList(
-        value = uploadGame,
-        onValueChange = { uploadGame = it },
-        items = listOf(1, 0),
-        itemTextProvider = { GAME_LIST[it] },
-        title = { Text(text = "游戏") },
-        style = PreferenceList.Style.Spinner
-    )
-    PreferenceInfo(
-        title = { Text(text = "状态") },
-        subtitle = {
-            Text(
-                text = when (uploadGame) {
-                    0 -> uiState.chuTokenCacheStat
-                    1 -> uiState.maiTokenCacheStat
-                    else -> ""
-                }
-            )
-        }
-    )
-    PreferenceButton(
-        onClick = {
-            scope.launch {
-                if (model.triggerQuickUpload(uploadGame)) {
-                    snackbarHostState.showSnackbar("提交成功，请留意传分状态")
-                } else {
-                    snackbarHostState.showSnackbar("已有上传任务，请勿重复提交")
-                }
+    PreferenceSection(title = "快速上传") {
+        PreferenceList(
+            value = uploadGame,
+            onValueChange = { uploadGame = it },
+            items = listOf(1, 0),
+            itemTextProvider = { GAME_LIST[it] },
+            title = "游戏",
+            style = PreferenceList.Style.Spinner
+        )
+        PreferenceInfo(
+            title = "状态",
+            subtitle = when (uploadGame) {
+                0 -> uiState.chuTokenCacheStat
+                1 -> uiState.maiTokenCacheStat
+                else -> ""
             }
-        },
-        title = { Text(text = "提交上传请求") },
-        icon = { Icon(imageVector = Icons.Default.Upload, contentDescription = "上传") },
-        enabled = when (uploadGame) {
-            0 -> if (uiState.canPerformChuQuickUpload) Dependency.Enabled else Dependency.Disabled
-            1 -> if (uiState.canPerformMaiQuickUpload) Dependency.Enabled else Dependency.Disabled
-            else -> Dependency.Disabled
-        }
-    )
+        )
+        PreferenceButton(
+            onClick = {
+                scope.launch {
+                    if (model.triggerQuickUpload(uploadGame)) {
+                        snackbarHostState.showSnackbar("提交成功，请留意传分状态")
+                    } else {
+                        snackbarHostState.showSnackbar("已有上传任务，请勿重复提交")
+                    }
+                }
+            },
+            title = "提交上传请求",
+            icon = { Icon(imageVector = Icons.Default.Upload, contentDescription = "上传") },
+            enabled = when (uploadGame) {
+                0 -> if (uiState.canPerformChuQuickUpload) Dependency.Enabled else Dependency.Disabled
+                1 -> if (uiState.canPerformMaiQuickUpload) Dependency.Enabled else Dependency.Disabled
+                else -> Dependency.Disabled
+            }
+        )
+    }
 }
 
 @Composable
@@ -321,37 +323,38 @@ fun PreferenceRootScope.UpdaterSettingsGroup(
         isUploading = false
     }
 
-    PreferenceSectionHeader(title = { Text(text = "设置") })
-    PreferenceBool(
-        value = shouldForward,
-        onValueChange = { newValue ->
-            scope.launch {
-                Log.i("UpdaterHome", "Setting fish forward to $newValue")
-                isUploading = true
-                val remoteSetting = model.setFishForwardState(newValue)
-                if (remoteSetting == newValue) {
-                    shouldForward = newValue
-                    isUploading = false
-                    Log.i("UpdaterHome", "Success, remote setting: $remoteSetting")
-                } else {
-                    isUploading = false
-                    Log.e("UpdaterHome", "Failed, remote setting: $remoteSetting")
-                    snackbarHostState.showSnackbar("更改设置失败，请稍后再试")
+    PreferenceSection(title = "设置") {
+        PreferenceBool(
+            value = shouldForward,
+            onValueChange = { newValue ->
+                scope.launch {
+                    Log.i("UpdaterHome", "Setting fish forward to $newValue")
+                    isUploading = true
+                    val remoteSetting = model.setFishForwardState(newValue)
+                    if (remoteSetting == newValue) {
+                        shouldForward = newValue
+                        isUploading = false
+                        Log.i("UpdaterHome", "Success, remote setting: $remoteSetting")
+                    } else {
+                        isUploading = false
+                        Log.e("UpdaterHome", "Failed, remote setting: $remoteSetting")
+                        snackbarHostState.showSnackbar("更改设置失败，请稍后再试")
+                    }
                 }
-            }
-        },
-        title = { Text(text = "同步到水鱼网") },
-        subtitle = { Text(text = "需要在设置中绑定账号") },
-        enabled = if (isUploading) Dependency.Disabled else Dependency.Enabled
-    )
-    PreferenceBool(
-        value = shouldAutoJump,
-        onValueChange = {
-            scope.launch {
-                store.setUploadShouldAutoJump(it)
-            }
-        },
-        title = { Text(text = "自动跳转") },
-        subtitle = { Text(text = "开启代理后自动跳转至微信扫一扫") }
-    )
+            },
+            title = "同步到水鱼网",
+            subtitle = "需要在设置中绑定账号",
+            enabled = if (isUploading) Dependency.Disabled else Dependency.Enabled
+        )
+        PreferenceBool(
+            value = shouldAutoJump,
+            onValueChange = {
+                scope.launch {
+                    store.setUploadShouldAutoJump(it)
+                }
+            },
+            title = "自动跳转",
+            subtitle = "开启代理后自动跳转至微信扫一扫"
+        )
+    }
 }
