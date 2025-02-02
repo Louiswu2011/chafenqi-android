@@ -21,6 +21,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.filled.Ballot
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Leaderboard
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Refresh
@@ -76,6 +77,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.maxkeppeker.sheets.core.models.base.Header
+import com.maxkeppeker.sheets.core.models.base.IconSource
+import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
+import com.maxkeppeler.sheets.info.InfoDialog
+import com.maxkeppeler.sheets.info.models.InfoBody
+import com.maxkeppeler.sheets.info.models.InfoSelection
 import com.nltv.chafenqi.extension.TEAM_CODE_LENGTH
 import com.nltv.chafenqi.extension.TEAM_NAME_LENGTH
 import com.nltv.chafenqi.extension.TEAM_REMARKS_LENGTH
@@ -170,27 +177,59 @@ fun HomeTeamIntroductionPage(navController: NavController) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeTeamIntroductionPageSearchSection(snackbarHostState: SnackbarHostState) {
+    val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val model: HomeTeamPageViewModel = viewModel()
     val focus = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
     val searchModel: HomeTeamIntroductionViewModel = viewModel()
     val searchState by searchModel.uiState.collectAsStateWithLifecycle()
 
+    var searchedTeam by remember { mutableStateOf<TeamBasicInfo?>(null) }
+
     var teamCodeInput by remember { mutableStateOf("") }
     LaunchedEffect(Unit) {
         searchModel.refresh()
     }
 
-    LaunchedEffect(teamCodeInput) {
-        if (teamCodeInput.length == TEAM_CODE_LENGTH) {
-            searchModel.onSearch(teamCodeInput)
+    val confirmApplyUseCase = rememberUseCaseState()
+    InfoDialog(
+        state = confirmApplyUseCase,
+        header = Header.Default(
+            title = "加入团队",
+            icon = IconSource(imageVector = Icons.Default.DeleteForever)
+        ),
+        body = InfoBody.Default(
+            preBody = {
+                Text(searchedTeam?.displayName ?: "未知团队")
+            },
+            bodyText = "确定要加入该团队吗？",
+        ),
+        selection = InfoSelection(
+            onPositiveClick = {
+                if (searchedTeam != null) {
+                    searchModel.onApply(searchedTeam!!.id, snackbarHostState)
+                }
+                searchedTeam = null
+            },
+            onNegativeClick = {
+                searchedTeam = null
+            }
+        )
+    )
+
+    suspend fun onSearch() {
+        focusManager.clearFocus()
+        searchedTeam = searchState.teams.firstOrNull { it.teamCode == teamCodeInput }
+        if (searchedTeam == null) {
+            snackbarHostState.showSnackbar("未找到团队")
         } else {
-            searchModel.onCancelSearch()
+            confirmApplyUseCase.show()
         }
+        teamCodeInput = ""
     }
 
     Column (
@@ -200,78 +239,76 @@ fun HomeTeamIntroductionPageSearchSection(snackbarHostState: SnackbarHostState) 
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        OutlinedTextField(
-            value = teamCodeInput,
-            onValueChange = {
-                if (it.length <= TEAM_CODE_LENGTH) {
+        Row {
+            OutlinedTextField(
+                value = teamCodeInput,
+                onValueChange = {
                     teamCodeInput = it
-                }
-            },
-            label = { Text(text = "团队代码") },
-            placeholder = { Text(text = "输入8位团队代码来搜索团队") },
-            leadingIcon = {
-                Icon(Icons.Filled.Search, contentDescription = "搜索")
-            },
-            trailingIcon = {
-                IconButton(
-                    onClick = {
-                        teamCodeInput = ""
-                        focusManager.clearFocus()
-                    },
-                    colors = IconButtonDefaults.iconButtonColors(
-                        contentColor = MaterialTheme.colorScheme.secondary
-                    )
-                ) {
-                    Icon(Icons.Filled.Clear, contentDescription = "清除")
-                }
-            },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Ascii,
-                capitalization = KeyboardCapitalization.None,
-                autoCorrectEnabled = false,
-                imeAction = ImeAction.Search
-            ),
-            keyboardActions = KeyboardActions(
-                onSearch = {
-                    searchModel.onSearch(teamCodeInput)
-                }
-            ),
-            supportingText = {
-                Text(
-                    text = "${teamCodeInput.length} / $TEAM_CODE_LENGTH",
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.End
-                )
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .focusRequester(focus)
-        )
-
-        Crossfade(searchState.searchedTeam != null, label = "Search result fade") {
-            when (it) {
-                true -> {
-                    val team = searchState.searchedTeam ?: return@Crossfade
-                    HomeTeamIntroductionEntry(team, context) { teamId ->
-                        searchModel.onApply(teamId, snackbarHostState)
-                    }
-                }
-                false -> {
-                    LazyColumn (
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                },
+                label = { Text(text = "团队代码") },
+                placeholder = { Text(text = "输入8位团队代码来加入团队") },
+                leadingIcon = {
+                    Icon(Icons.Filled.Search, contentDescription = "加入")
+                },
+                trailingIcon = {
+                    IconButton(
+                        onClick = {
+                            teamCodeInput = ""
+                            focusManager.clearFocus()
+                        },
+                        colors = IconButtonDefaults.iconButtonColors(
+                            contentColor = MaterialTheme.colorScheme.secondary
+                        )
                     ) {
-                        items(
-                            count = searchState.teams.size,
-                            key = { index -> searchState.teams[index].teamCode }
-                        ) { index ->
-                            val team = searchState.teams[index]
-                            HomeTeamIntroductionEntry(team, context) { teamId ->
-                                searchModel.onApply(teamId, snackbarHostState)
-                            }
+                        Icon(Icons.Filled.Clear, contentDescription = "清除")
+                    }
+                },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Ascii,
+                    capitalization = KeyboardCapitalization.None,
+                    autoCorrectEnabled = false,
+                    imeAction = ImeAction.Search
+                ),
+                keyboardActions = KeyboardActions(
+                    onSearch = {
+                        scope.launch {
+                            onSearch()
                         }
                     }
+                ),
+                supportingText = {
+                    Text(
+                        text = "${teamCodeInput.length} / $TEAM_CODE_LENGTH",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.End
+                    )
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focus)
+            )
+
+            TextButton(onClick = {
+                scope.launch {
+                    onSearch()
+                }
+            }) {
+                Text("加入")
+            }
+        }
+
+        LazyColumn (
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            items(
+                count = searchState.teams.size,
+                key = { index -> searchState.teams[index].teamCode }
+            ) { index ->
+                val team = searchState.teams[index]
+                HomeTeamIntroductionEntry(team, context) { teamId ->
+                    searchModel.onApply(teamId, snackbarHostState)
                 }
             }
         }

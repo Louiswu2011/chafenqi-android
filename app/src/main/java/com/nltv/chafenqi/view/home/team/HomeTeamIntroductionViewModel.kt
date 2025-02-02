@@ -34,29 +34,6 @@ class HomeTeamIntroductionViewModel: ViewModel() {
         }
     }
 
-    fun onSearch(teamCode: String) {
-        viewModelScope.launch {
-            Log.i(HomeTeamIntroductionViewModel::class.simpleName, "Searching code $teamCode")
-            val team = _uiState.value.teams.firstOrNull { it.teamCode == teamCode }
-            _uiState.update {
-                it.copy(
-                    searchedTeam = team
-                )
-            }
-        }
-    }
-
-    fun onCancelSearch() {
-        if (_uiState.value.searchedTeam == null) return
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    searchedTeam = null
-                )
-            }
-        }
-    }
-
     fun onApply(teamId: Int, snackbarHostState: SnackbarHostState) {
         viewModelScope.launch {
             val result = CFQTeamServer.applyForTeam(user.token, user.mode, teamId, "")
