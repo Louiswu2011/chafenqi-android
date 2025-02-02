@@ -261,15 +261,12 @@ fun LoginField(snackbarHostState: SnackbarHostState) {
                         return@Button
                     }
                     scope.launch {
-                        try {
-                            if (CFQServer.authRegister(username, password.sha256())) {
-                                snackbarHostState.showSnackbar("注册成功")
-                                registerMode = false
-                            }
-                        } catch (e: UsernameOccupiedException) {
-                            snackbarHostState.showSnackbar("该用户名已被占用")
-                        } catch (e: Exception) {
-                            snackbarHostState.showSnackbar("出错了：${e.localizedMessage}")
+                        val (response, statusCode) = CFQServer.authRegister(username, password.sha256())
+                        if (statusCode == 200) {
+                            snackbarHostState.showSnackbar("注册成功")
+                            registerMode = false
+                        } else {
+                            snackbarHostState.showSnackbar("注册失败，$response")
                         }
                     }
                 } else {

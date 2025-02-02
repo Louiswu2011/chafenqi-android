@@ -199,9 +199,9 @@ class CFQServer {
         suspend fun authRegister(
             username: String,
             password: String,
-        ): Boolean {
+        ): Pair<String, Int> {
             try {
-                if (!authCheckUsername(username)) return false
+                if (!authCheckUsername(username)) return "该用户名已被占用" to 500
                 val registerResponse =
                     fetchFromServer(
                         "POST",
@@ -212,10 +212,10 @@ class CFQServer {
                                 "password" to password,
                             ),
                     )
-                return registerResponse.status.value == 200
+                return registerResponse.bodyAsText() to registerResponse.status.value
             } catch (e: Exception) {
                 Log.e("CFQServer", "Failed to register user, error: $e")
-                return false
+                return "未知错误，请联系开发者" to 500
             }
         }
 
