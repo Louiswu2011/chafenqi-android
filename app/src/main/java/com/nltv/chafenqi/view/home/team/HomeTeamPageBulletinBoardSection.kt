@@ -167,12 +167,11 @@ fun HomeTeamPageBulletinBoardEntry(
     val context = LocalContext.current
     val model: HomeTeamPageViewModel = viewModel()
     val state by model.uiState.collectAsStateWithLifecycle()
-    var member by remember { mutableStateOf(state.team.members.firstOrNull { it.userId == entry.userId }) }
+    val member by remember { mutableStateOf(state.team.members.firstOrNull { it.userId == entry.userId }) }
 
     Card (
         modifier = Modifier
             .fillMaxWidth()
-            .height(96.dp)
             .padding(vertical = 8.dp)
             .then(modifier),
         elevation = CardDefaults.cardElevation(
@@ -197,13 +196,11 @@ fun HomeTeamPageBulletinBoardEntry(
 
             Column (
                 modifier = Modifier
-                    .fillMaxHeight()
                     .weight(1f),
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 horizontalAlignment = Alignment.Start
             ) {
                 Row (
-                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -211,10 +208,8 @@ fun HomeTeamPageBulletinBoardEntry(
                     Text(text = entry.timestamp.toDateString(context), style = MaterialTheme.typography.bodyMedium)
                 }
                 HorizontalDivider()
-                Column (
-                    modifier = Modifier.fillMaxHeight()
-                ) {
-                    Text(text = entry.content, fontWeight = FontWeight.Bold, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                Column {
+                    Text(text = entry.content, fontWeight = FontWeight.Bold, overflow = TextOverflow.Ellipsis)
                 }
             }
         }
