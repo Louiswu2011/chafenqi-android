@@ -304,10 +304,10 @@ fun HomeTeamIntroductionPageSearchSection(snackbarHostState: SnackbarHostState) 
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             items(
-                count = searchState.teams.size,
-                key = { index -> searchState.teams[index].teamCode }
+                count = searchState.teams.filter { it.promotable }.size,
+                key = { index -> searchState.teams.filter { it.promotable }[index].teamCode }
             ) { index ->
-                val team = searchState.teams[index]
+                val team = searchState.teams.filter { it.promotable }[index]
                 HomeTeamIntroductionEntry(team, context) { teamId ->
                     searchModel.onApply(teamId, snackbarHostState)
                 }
