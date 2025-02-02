@@ -222,6 +222,7 @@ fun HomeTeamIntroductionPageSearchSection(snackbarHostState: SnackbarHostState) 
     )
 
     suspend fun onSearch() {
+        if (teamCodeInput.length != 8) return
         focusManager.clearFocus()
         searchedTeam = searchState.teams.firstOrNull { it.teamCode == teamCodeInput }
         if (searchedTeam == null) {
