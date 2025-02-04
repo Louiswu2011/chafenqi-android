@@ -25,27 +25,55 @@ fun HomePageTeamSection(navController: NavController) {
     val model: HomePageViewModel = viewModel()
     val state by model.uiState.collectAsStateWithLifecycle()
 
-    Card (
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(32.dp)
-            .padding(horizontal = 10.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 2.dp
-        ),
-        shape = MaterialTheme.shapes.small,
-        onClick = {
-            navController.navigate(HomeNavItem.Home.route + "/team")
-        }
+    Row (
+        modifier = Modifier.fillMaxWidth()
     ) {
-        Row (
+        Card (
             modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+                .weight(1f)
+                .height(32.dp)
+                .padding(start = 10.dp, end = 5.dp),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 2.dp
+            ),
+            shape = MaterialTheme.shapes.small,
+            onClick = {
+                navController.navigate(HomeNavItem.Home.route + "/team")
+            }
         ) {
-            Text(if (state.team == null) "加入或创建团队" else state.team!!.info.displayName, fontWeight = FontWeight.Bold)
+            Row (
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(if (state.team == null) "加入或创建团队" else state.team!!.info.displayName, fontWeight = FontWeight.Bold)
+            }
+        }
+
+        Card (
+            modifier = Modifier
+                .weight(1f)
+                .height(32.dp)
+                .padding(start = 5.dp, end = 10.dp),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 2.dp
+            ),
+            shape = MaterialTheme.shapes.small,
+            onClick = {
+                navController.navigate(HomeNavItem.Home.route + "/team/leaderboard")
+            }
+        ) {
+            Row (
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text("团队排行榜", fontWeight = FontWeight.Bold)
+            }
         }
     }
 }

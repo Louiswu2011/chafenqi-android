@@ -52,6 +52,7 @@ import com.nltv.chafenqi.view.home.rating.HomeRatingPage
 import com.nltv.chafenqi.view.home.recent.HomeRecentPage
 import com.nltv.chafenqi.view.home.recent.RecentDetailPage
 import com.nltv.chafenqi.view.home.team.HomeTeamLandingPage
+import com.nltv.chafenqi.view.home.team.HomeTeamLeaderboardPage
 import com.nltv.chafenqi.view.home.team.settings.HomeTeamPageSettingsPage
 import com.nltv.chafenqi.view.home.team.settings.HomeTeamSettingsCoursePage
 import com.nltv.chafenqi.view.home.team.settings.HomeTeamSettingsMemberManagePage
@@ -207,6 +208,7 @@ fun LogonPage(navController: NavHostController) {
             }
 
             composable(HomeNavItem.Home.route + "/team") { HomeTeamLandingPage(navController) }
+            composable(HomeNavItem.Home.route + "/team/leaderboard") { HomeTeamLeaderboardPage(navController) }
             composable(HomeNavItem.Home.route + "/team/settings") { HomeTeamPageSettingsPage(navController) }
             composable(HomeNavItem.Home.route + "/team/settings/member") { HomeTeamSettingsMemberManagePage(navController) }
             composable(HomeNavItem.Home.route + "/team/settings/pending") { HomeTeamSettingsPendingMemberManagePage(navController) }

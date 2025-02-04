@@ -17,8 +17,8 @@
       ],
       "attributes": [],
       "versionCode": 1,
-      "versionName": "1.2.2 (1519)",
-      "outputFile": "chafenqi-1.2.2-Build1519-armeabi-v7a-release.apk"
+      "versionName": "1.2.2 (1520)",
+      "outputFile": "chafenqi-1.2.2-Build1520-armeabi-v7a-release.apk"
     },
     {
       "type": "ONE_OF_MANY",
@@ -30,8 +30,8 @@
       ],
       "attributes": [],
       "versionCode": 1,
-      "versionName": "1.2.2 (1519)",
-      "outputFile": "chafenqi-1.2.2-Build1519-arm64-v8a-release.apk"
+      "versionName": "1.2.2 (1520)",
+      "outputFile": "chafenqi-1.2.2-Build1520-arm64-v8a-release.apk"
     }
   ],
   "elementType": "File",
@@ -40,16 +40,16 @@
       "minApi": 28,
       "maxApi": 30,
       "baselineProfiles": [
-        "baselineProfiles/1/chafenqi-1.2.2-Build1519-armeabi-v7a-release.dm",
-        "baselineProfiles/1/chafenqi-1.2.2-Build1519-arm64-v8a-release.dm"
+        "baselineProfiles/1/chafenqi-1.2.2-Build1520-armeabi-v7a-release.dm",
+        "baselineProfiles/1/chafenqi-1.2.2-Build1520-arm64-v8a-release.dm"
       ]
     },
     {
       "minApi": 31,
       "maxApi": 2147483647,
       "baselineProfiles": [
-        "baselineProfiles/0/chafenqi-1.2.2-Build1519-armeabi-v7a-release.dm",
-        "baselineProfiles/0/chafenqi-1.2.2-Build1519-arm64-v8a-release.dm"
+        "baselineProfiles/0/chafenqi-1.2.2-Build1520-armeabi-v7a-release.dm",
+        "baselineProfiles/0/chafenqi-1.2.2-Build1520-arm64-v8a-release.dm"
       ]
     }
   ],
