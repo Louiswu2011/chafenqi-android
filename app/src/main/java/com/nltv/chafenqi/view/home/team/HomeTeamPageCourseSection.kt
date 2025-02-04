@@ -68,13 +68,15 @@ fun HomeTeamPageCourseSection() {
         LazyColumn(
             modifier = Modifier.fillMaxSize()
                 .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Box {
                         Row(
@@ -100,6 +102,10 @@ fun HomeTeamPageCourseSection() {
                             )
                         }
                     }
+                    Text(
+                        text = "组曲生命值：${if (state.team.info.courseHealth > 0) state.team.info.courseHealth else "无限制"}",
+                        style = MaterialTheme.typography.bodySmall
+                    )
                     AnimatedVisibility(expanded) {
                         Column(
                             modifier = Modifier
@@ -182,76 +188,117 @@ fun HomeTeamCourseRecordCard(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("TRACK $trackNumber", style = MaterialTheme.typography.bodyMedium)
-            Text(displayScore, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+            Text("TRACK $trackNumber", style = MaterialTheme.typography.bodySmall)
+            Text(displayScore, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium)
         }
     }
 
     Card (
         modifier = Modifier
-            .fillMaxWidth()
-            .height(72.dp),
+            .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 4.dp,
             pressedElevation = 6.dp
         ),
-        onClick = { showDetail =!showDetail },
+        onClick = { showDetail = !showDetail },
     ) {
         Row (
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
         ) {
-            Column (
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(64.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text("${rank}位", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
-                Text(member?.nickname?: "", style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            }
             AsyncImage(
                 model = member?.avatar ?: "",
                 contentDescription = "成员头像",
                 modifier = Modifier
-                    .size(72.dp)
+                    .size(64.dp)
                     .clip(RoundedCornerShape(size = 12.dp))
             )
 
             AnimatedContent(showDetail, label = "Detailed score") {
                 when (it) {
                     true -> {
-                        Row (
+                        Column (
                             modifier = Modifier
-                                .fillMaxSize()
-                                .padding(start = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
+                                .fillMaxWidth()
+                                .fillMaxHeight()
+                                .padding(start = 10.dp),
+                            verticalArrangement = Arrangement.SpaceBetween,
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            DetailScoreColumn(1, entry.trackRecords[0].score)
-                            DetailScoreColumn(2, entry.trackRecords[1].score)
-                            DetailScoreColumn(3, entry.trackRecords[2].score)
+                            Column (
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(
+                                        member?.nickname ?: "",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                    Text(
+                                        entry.timestamp.toDateString(context),
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+                                }
+                                HorizontalDivider()
+                            }
+                            Row (
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(start = 4.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                DetailScoreColumn(1, entry.trackRecords[0].score)
+                                DetailScoreColumn(2, entry.trackRecords[1].score)
+                                DetailScoreColumn(3, entry.trackRecords[2].score)
+                            }
                         }
                     }
                     false -> {
                         Column (
                             modifier = Modifier
-                                .fillMaxSize()
-                                .padding(start = 4.dp),
-                            verticalArrangement = Arrangement.Center,
+                                .fillMaxWidth()
+                                .fillMaxHeight()
+                                .padding(start = 10.dp),
+                            verticalArrangement = Arrangement.SpaceBetween,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(
-                                entry.timestamp.toDateString(context),
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                            Text(
-                                entry.totalScore(model.mode),
-                                fontWeight = FontWeight.Bold,
-                                style = MaterialTheme.typography.titleMedium
-                            )
+                            Column (
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(
+                                        member?.nickname ?: "",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                    Text(
+                                        entry.timestamp.toDateString(context),
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+                                }
+                                HorizontalDivider()
+                            }
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                            ) {
+                                Text("#${rank}", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+                                Text(
+                                    entry.totalScore(model.mode),
+                                    fontWeight = FontWeight.Bold,
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                            }
                         }
                     }
                 }
@@ -271,13 +318,13 @@ fun HomeTeamCourseItem(
     Row (
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
-            .height(72.dp)
+            .height(64.dp)
     ) {
         AsyncImage(
             model = model.getCoverPath(course),
             contentDescription = "歌曲曲绘",
             modifier = Modifier
-                .size(72.dp)
+                .size(64.dp)
                 .border(
                     border = BorderStroke(
                         width = 2.dp,
@@ -301,12 +348,12 @@ fun HomeTeamCourseItem(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("TRACK $index")
-                Text(model.getDifficultyString(course).uppercase(), color = model.getDifficultyColor(course))
+                Text("TRACK $index", style = MaterialTheme.typography.bodyMedium)
+                Text(model.getDifficultyString(course).uppercase(), color = model.getDifficultyColor(course), style = MaterialTheme.typography.bodyMedium)
             }
 
-            Text(model.getTitle(course), maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.titleMedium)
-            Text(model.getArtist(course), maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.titleSmall)
+            Text(model.getTitle(course), maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodyMedium)
+            Text(model.getArtist(course), maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodySmall)
         }
     }
 }
