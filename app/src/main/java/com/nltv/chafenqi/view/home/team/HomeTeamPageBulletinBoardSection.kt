@@ -181,7 +181,7 @@ fun HomeTeamPageBulletinBoardEntry(
     ) {
         Row (
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -196,20 +196,23 @@ fun HomeTeamPageBulletinBoardEntry(
 
             Column (
                 modifier = Modifier
-                    .weight(1f),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.Start
             ) {
                 Row (
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = member?.nickname?: "", style = MaterialTheme.typography.bodyMedium)
-                    Text(text = entry.timestamp.toDateString(context), style = MaterialTheme.typography.bodyMedium)
+                    Text(text = member?.nickname?: "", style = MaterialTheme.typography.bodySmall)
+                    Text(text = entry.timestamp.toDateString(context), style = MaterialTheme.typography.bodySmall)
                 }
                 HorizontalDivider()
-                Column {
-                    Text(text = entry.content, fontWeight = FontWeight.Bold, overflow = TextOverflow.Ellipsis)
+                Column (
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Text(text = entry.content, fontWeight = FontWeight.Bold, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodyMedium)
                 }
             }
         }
