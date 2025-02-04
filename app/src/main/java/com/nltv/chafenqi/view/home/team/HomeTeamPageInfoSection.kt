@@ -136,7 +136,7 @@ fun HomeTeamPageInfoSection(
                     }
                 }
             })
-            InfoCard(title = "活动天数", icon = Icons.Default.Timelapse, value = state.team.info.activityDays.toString() + "天"  )
+            InfoCard(title = "本月积分", icon = Icons.Default.Leaderboard, value = "${state.team.info.currentActivityPoints}")
         }
 
         Row (
@@ -144,7 +144,7 @@ fun HomeTeamPageInfoSection(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            InfoCard(title = "本月积分", icon = Icons.Default.Leaderboard, value = "${state.team.info.currentActivityPoints}P")
+            InfoCard(title = "活动天数", icon = Icons.Default.Timelapse, value = state.team.info.activityDays.toString() + "天"  )
             InfoCard(title = "队长", icon = Icons.Default.ManageAccounts, value = leader?.nickname?.toHalfWidth() ?: "")
             InfoCard(title = "团队人数", icon = Icons.Default.People, value = state.team.members.size.toString() + "人")
         }
