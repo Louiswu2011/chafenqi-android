@@ -95,11 +95,11 @@ fun HomeTeamPageInfoSection(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Icon(icon, contentDescription = title)
-                    Text(text = value, fontWeight = FontWeight.Bold, overflow = TextOverflow.Ellipsis, maxLines = 1)
+                    Text(text = value, fontWeight = FontWeight.Bold, overflow = TextOverflow.Ellipsis, maxLines = 1, style = MaterialTheme.typography.bodyMedium)
                 }
 
                 AnimatedVisibility(expanded) {
-                    Text(text = title, style = MaterialTheme.typography.labelMedium)
+                    Text(text = title, style = MaterialTheme.typography.bodySmall)
                 }
             }
         }
