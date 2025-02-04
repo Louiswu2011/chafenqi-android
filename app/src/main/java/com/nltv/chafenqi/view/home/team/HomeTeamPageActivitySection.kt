@@ -84,7 +84,9 @@ fun HomeTeamPageActivityCard(activity: TeamActivity) {
                     .clip(RoundedCornerShape(size = 12.dp))
             )
 
-            Column {
+            Column (
+                modifier = Modifier.padding(start = 8.dp)
+            ) {
                 Text(
                     buildAnnotatedString {
                         val style = SpanStyle(
@@ -99,7 +101,7 @@ fun HomeTeamPageActivityCard(activity: TeamActivity) {
                         append(activity.activity)
                     },
                     textAlign = TextAlign.Start,
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.weight(1f)
                 )
 
