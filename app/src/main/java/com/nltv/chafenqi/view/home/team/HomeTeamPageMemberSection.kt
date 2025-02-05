@@ -48,6 +48,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -158,7 +159,13 @@ fun HomeTeamPageMemberEntry(
                     verticalArrangement = if (expanded) Arrangement.SpaceBetween else Arrangement.Center
                 ) {
                     AnimatedVisibility(expanded) {
-                        Text(text = member.trophy, style = MaterialTheme.typography.titleSmall, color = Color.Gray)
+                        Text(
+                            text = member.trophy,
+                            style = MaterialTheme.typography.titleSmall,
+                            color = Color.Gray,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
                     }
                     Text(text = member.nickname, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
 
