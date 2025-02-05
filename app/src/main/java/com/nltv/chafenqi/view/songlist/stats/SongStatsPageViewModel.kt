@@ -101,11 +101,10 @@ class SongStatsPageViewModel : ViewModel() {
                     }
                 }
             } else if (mode == 1 && CFQPersistentData.Maimai.musicList.isNotEmpty()) {
-                val typeString = if (type == "SD") "standard" else "dx"
                 val maiMusic = CFQPersistentData.Maimai.musicList.getOrNull(index)
                 if (maiMusic != null) {
                     val result =
-                        CFQServer.apiMaimaiLeaderboard(token, maiMusic.coverId, typeString, difficulty)
+                        CFQServer.apiMaimaiLeaderboard(token, maiMusic.musicId, type, difficulty)
                     _uiState.update { currentValue ->
                         currentValue.copy(
                             doneLoadingLeaderboard = true,
