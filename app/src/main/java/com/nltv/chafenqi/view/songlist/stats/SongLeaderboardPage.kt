@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -153,29 +154,31 @@ fun ChunithmLeaderboardRow(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "#${index + 1}",
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.padding(horizontal = 5.dp))
-                Text(text = item.nickname.ifEmpty { item.username })
-            }
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                if (item.rankIndex > 8) {
-                    RatingBadge(rate = RATE_STRINGS_CHUNITHM[13 - item.rankIndex])
-                }
-
-                Spacer(modifier = Modifier.padding(horizontal = 5.dp))
-                Text(
-                    text = item.score.toString(),
-                    fontWeight = FontWeight.Bold
+            Text(
+                text = "#${index + 1}",
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = item.nickname.ifEmpty { item.username },
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .padding(horizontal = 10.dp)
+            )
+            if (item.rankIndex > 8) {
+                RatingBadge(
+                    rate = RATE_STRINGS_CHUNITHM[13 - item.rankIndex],
+                    modifier =
+                        Modifier
+                            .wrapContentWidth()
+                            .padding(end = 5.dp)
                 )
             }
+            Text(
+                text = item.score.toString(),
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.wrapContentWidth()
+            )
         }
     }
 }
@@ -293,26 +296,29 @@ fun MaimaiLeaderboardRow(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "#${index + 1}",
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.padding(horizontal = 5.dp))
-                Text(text = item.nickname.ifEmpty { item.username })
-            }
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                RatingBadge(rate = item.rate.toRateString())
-                Spacer(modifier = Modifier.padding(horizontal = 5.dp))
-                Text(
-                    text = String.format(Locale.ENGLISH, "%.4f", item.achievements) + "%",
-                    fontWeight = FontWeight.Bold
-                )
-            }
+            Text(
+                text = "#${index + 1}",
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = item.nickname.ifEmpty { item.username },
+                modifier =
+                Modifier
+                    .weight(1f)
+                    .padding(horizontal = 10.dp)
+            )
+            RatingBadge(
+                rate = item.rate.toRateString(),
+                modifier =
+                Modifier
+                    .wrapContentWidth()
+                    .padding(end = 5.dp)
+            )
+            Text(
+                text = String.format(Locale.getDefault(), "%.4f", item.achievements) + "%",
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.wrapContentWidth()
+            )
         }
     }
 }

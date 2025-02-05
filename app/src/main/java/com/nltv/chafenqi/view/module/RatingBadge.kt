@@ -39,7 +39,7 @@ val LOW_BADGE_BACKGROUND_COLOR = Color(red = 191, green = 155, blue = 48)
 val DEFAULT_BADGE_BACKGROUND_COLOR = Color.Gray
 
 @Composable
-fun RatingBadge(rate: String) {
+fun RatingBadge(rate: String, modifier: Modifier = Modifier) {
     Row(
         horizontalArrangement = Arrangement.Center
     ) {
@@ -61,7 +61,8 @@ fun RatingBadge(rate: String) {
                         shape = RoundedCornerShape(5.dp)
                     )
                 }
-                .padding(horizontal = 5.dp, vertical = 2.dp),
+                .padding(horizontal = 5.dp, vertical = 2.dp)
+                .then(modifier),
             fontWeight = FontWeight.Bold,
             fontSize = 14.sp,
             color = when (rate) {
