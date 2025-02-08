@@ -3,6 +3,7 @@ package com.nltv.chafenqi.view.module
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.material3.Icon
@@ -22,7 +23,10 @@ fun InfoBlock(
     modifier: Modifier = Modifier
 ) {
     Row (
-        modifier = modifier,
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .then(modifier),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
