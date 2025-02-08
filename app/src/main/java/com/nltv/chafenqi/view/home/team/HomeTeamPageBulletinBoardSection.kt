@@ -16,8 +16,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.ListItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.PushPin
@@ -120,7 +120,7 @@ fun HomeTeamPageBulletinBoardActionSheet(
         onDismissRequest = onDismiss
     ) {
         ListItem(
-            icon = {
+            leadingContent = {
                 Icon(
                     Icons.Default.DeleteForever,
                     contentDescription = "删除",
@@ -128,21 +128,25 @@ fun HomeTeamPageBulletinBoardActionSheet(
                     tint = if (selectedEntry.userId == userId) Color.Red else Color.Gray
                 )
             },
+            headlineContent = {
+                Text(text = "删除")
+            },
             modifier = Modifier.clickable(enabled = selectedEntry.userId == userId) {
                 model.deleteBulletinBoardEntry(selectedEntry.id, snackbarHostState)
                 onDismiss()
             }
-        ) {
-            Text(text = "删除", color = if (selectedEntry.userId == userId) Color.Black else Color.Gray)
-        }
+        )
         if (isLeader) {
             ListItem(
-                icon = {
+                leadingContent = {
                     Icon(
                         Icons.Default.PushPin,
                         contentDescription = "置顶",
                         modifier = Modifier.padding(end = 10.dp)
                     )
+                },
+                headlineContent = {
+                    Text(text = if (isPinned) "取消置顶" else "置顶")
                 },
                 modifier = Modifier.clickable {
                     if (isPinned) {
@@ -152,9 +156,7 @@ fun HomeTeamPageBulletinBoardActionSheet(
                     }
                     onDismiss()
                 }
-            ) {
-                Text(text = if (isPinned) "取消置顶" else "置顶")
-            }
+            )
         }
     }
 }
