@@ -5,21 +5,26 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.AddComment
-import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -30,7 +35,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -44,7 +48,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -56,6 +60,7 @@ import com.maxkeppeler.sheets.info.models.InfoBody
 import com.maxkeppeler.sheets.info.models.InfoSelection
 import com.nltv.chafenqi.networking.CFQTeamServer
 import com.nltv.chafenqi.view.home.HomeNavItem
+import com.nltv.chafenqi.view.module.InfoBlock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -133,7 +138,10 @@ fun HomeTeamPage(navController: NavController) {
     val pagerState = rememberPagerState {
         model.tabs.size
     }
-    val sheetState = rememberModalBottomSheetState(
+    val bulletinSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
+    val helpSheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
 
@@ -146,6 +154,7 @@ fun HomeTeamPage(navController: NavController) {
     }
 
     var showBulletinComposeSheet by remember { mutableStateOf(false) }
+    var showHelpSheet by remember { mutableStateOf(false) }
 
     val leaveTeamConfirmUseCase = rememberUseCaseState()
 
@@ -167,35 +176,75 @@ fun HomeTeamPage(navController: NavController) {
                     }
                 },
                 actions = {
-                    IconButton(onClick = {
-                        scope.launch(Dispatchers.IO) {
-                            model.refresh()
+                    IconButton(
+                        onClick = {
+                            expanded = true
                         }
-                    }) {
+                    ) {
                         Icon(
-                            imageVector = Icons.Default.Refresh,
-                            contentDescription = "Refresh",
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "更多"
                         )
                     }
-                    if (state.isTeamAdmin) {
-                        IconButton(onClick = {
-                            navController.navigate(HomeNavItem.Home.route + "/team/settings")
-                        })
-                        {
-                            Icon(
-                                imageVector = Icons.Default.Settings,
-                                contentDescription = "Settings",
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("刷新") },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Refresh,
+                                    contentDescription = "Refresh",
+                                )
+                            },
+                            onClick = {
+                                scope.launch(Dispatchers.IO) {
+                                    model.refresh()
+                                }
+                            }
+                        )
+                        if (state.isTeamAdmin) {
+                            DropdownMenuItem(
+                                text = { Text("管理团队") },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Default.Settings,
+                                        contentDescription = "Settings",
+                                    )
+                                },
+                                onClick = {
+                                    navController.navigate(HomeNavItem.Home.route + "/team/settings")
+                                }
+                            )
+                        } else {
+                            DropdownMenuItem(
+                                text = { Text("离开团队") },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Default.Logout,
+                                        contentDescription = "Leave Team"
+                                    )
+                                },
+                                onClick = {
+                                    expanded = false
+                                    leaveTeamConfirmUseCase.show()
+                                }
                             )
                         }
-                    } else {
-                        IconButton(onClick = {
-                            leaveTeamConfirmUseCase.show()
-                        }) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Default.Logout,
-                                contentDescription = "Leave Team"
-                            )
-                        }
+                        HorizontalDivider()
+                        DropdownMenuItem(
+                            text = { Text("帮助") },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Default.Help,
+                                    contentDescription = "Help",
+                                )
+                            },
+                            onClick = {
+                                showHelpSheet = true
+                            }
+                        )
                     }
                 }
             )
@@ -275,7 +324,7 @@ fun HomeTeamPage(navController: NavController) {
     if (showBulletinComposeSheet) {
         ModalBottomSheet(
             onDismissRequest = { showBulletinComposeSheet = false },
-            sheetState = sheetState
+            sheetState = bulletinSheetState
         ) {
             BulletinComposeSheet (
                 snackbarHostState = snackbarHostState,
@@ -288,6 +337,15 @@ fun HomeTeamPage(navController: NavController) {
                     message = content
                 )
             }
+        }
+    }
+
+    if (showHelpSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { showHelpSheet = false },
+            sheetState = helpSheetState
+        ) {
+            HomeTeamHelpSheet { showHelpSheet = false }
         }
     }
 
@@ -318,3 +376,38 @@ fun HomeTeamPage(navController: NavController) {
         )
     )
 }
+
+@Composable
+fun HomeTeamHelpSheet(
+    onDismissRequest: () -> Unit
+) {
+    val model = viewModel<HomeTeamPageViewModel>()
+
+    Column (
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(10.dp),
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("团队帮助")
+        Column (
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            model.helpData.forEach { data ->
+                InfoBlock(
+                    icon = data.icon,
+                    title = data.title,
+                    content = data.content,
+                )
+            }
+        }
+        Button(onClick = onDismissRequest) {
+            Text("关闭")
+        }
+    }
+}
+

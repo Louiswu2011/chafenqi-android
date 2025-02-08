@@ -6,11 +6,15 @@ import androidx.compose.material.icons.automirrored.outlined.Chat
 import androidx.compose.material.icons.filled.Ballot
 import androidx.compose.material.icons.filled.GroupAdd
 import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.PeopleOutline
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Ballot
 import androidx.compose.material.icons.outlined.GroupAdd
 import androidx.compose.material.icons.outlined.History
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.MoreHoriz
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.SnackbarHostState
@@ -48,6 +52,11 @@ class HomeTeamPageViewModel : ViewModel() {
         val title: String,
         val icon: ImageVector,
         val iconSelected: ImageVector,
+    )
+    data class HomeTeamHelpData(
+        val title: String,
+        val content: String,
+        val icon: ImageVector,
     )
 
     private val _uiState = MutableStateFlow(HomeTeamPageUiState())
@@ -238,5 +247,38 @@ class HomeTeamPageViewModel : ViewModel() {
             icon = Icons.Outlined.GroupAdd,
             iconSelected = Icons.Filled.GroupAdd
         )
+    )
+    
+    val helpData = listOf(
+        HomeTeamHelpData(
+            title = "团队信息",
+            content = "位于团队页面上方的团队信息区域，点击任意项目可以显示该项详细信息",
+            icon = Icons.Outlined.Info
+        ),
+        HomeTeamHelpData(
+            title = "成员列表",
+            content = "显示当前团队成员信息，按照加入时间排序，点击任意成员可显示成员详细信息",
+            icon = Icons.Outlined.People
+        ),
+        HomeTeamHelpData(
+            title = "团队动态列表",
+            content = "显示团队动态，包括成员变动，团队信息变动及组曲挑战变动等",
+            icon = Icons.Outlined.History
+        ),
+        HomeTeamHelpData(
+            title = "组曲挑战",
+            content = "显示当前团队的组曲挑战，在1PC内按顺序连续游玩指定谱面后上传成绩，即可参与组曲挑战",
+            icon = Icons.Outlined.Ballot
+        ),
+        HomeTeamHelpData(
+            title = "留言板",
+            content = "显示团队留言板，长按以管理自己的留言，队长可长按管理任意留言",
+            icon = Icons.AutoMirrored.Outlined.Chat
+        ),
+        HomeTeamHelpData(
+            title = "更多",
+            content = "当前团队人数上限为20人，团队在订阅会员过期后仍可正常使用，但无法变更团队内的成员",
+            icon = Icons.Outlined.MoreHoriz
+        ),
     )
 }
