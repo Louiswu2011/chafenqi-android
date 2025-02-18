@@ -25,6 +25,9 @@ data class TeamBasicInfo(
     @SerialName("courseTrack1") val courseTrack1String: String,
     @SerialName("courseTrack2") val courseTrack2String: String,
     @SerialName("courseTrack3") val courseTrack3String: String,
+    val coursePrimaryErrorPenalty: Int,
+    val courseSecondaryErrorPenalty: Int,
+    val courseTertiaryErrorPenalty: Int,
     val courseHealth: Int,
     val courseLastModifiedAt: Long,
     val pinnedMessageId: Int?,
@@ -32,28 +35,6 @@ data class TeamBasicInfo(
     val lastActivityAt: Long,
 ) {
     companion object {
-        val sample = TeamBasicInfo(
-            id = 1,
-            displayName = "HBK Team",
-            nameLastModifiedAt = 1655975168,
-            teamCode = "5VQ2d3Pr",
-            leaderUserId = 1,
-            style = "仅限熟人",
-            remarks = "好崩溃战队",
-            promotable = true,
-            lastMonthActivityPoints = 1000,
-            currentActivityPoints = 2000,
-            courseName = "HBK 2024 Challenge",
-            courseTrack1String = "834,4",
-            courseTrack2String = "799,4",
-            courseTrack3String = "11663,4",
-            courseHealth = 100,
-            courseLastModifiedAt = 1655975168,
-            pinnedMessageId = null,
-            createdAt = 1655975168,
-            lastActivityAt = 1655975168,
-        )
-
         val empty = TeamBasicInfo(
             id = 0,
             displayName = "",
@@ -69,6 +50,9 @@ data class TeamBasicInfo(
             courseTrack1String = "0,0",
             courseTrack2String = "0,0",
             courseTrack3String = "0,0",
+            coursePrimaryErrorPenalty = 0,
+            courseSecondaryErrorPenalty = 0,
+            courseTertiaryErrorPenalty = 0,
             courseHealth = 0,
             courseLastModifiedAt = 0,
             pinnedMessageId = null,

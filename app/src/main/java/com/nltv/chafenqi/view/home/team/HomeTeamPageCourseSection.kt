@@ -103,7 +103,12 @@ fun HomeTeamPageCourseSection() {
                         }
                     }
                     Text(
-                        text = "组曲生命值：${if (state.team.info.courseHealth > 0) state.team.info.courseHealth else "无限制"}",
+                        text = "组曲生命值：${if (state.team.info.courseHealth > 0) state.team.info.courseHealth else "无限制"}" +
+                                "(" +
+                                "-${state.team.info.coursePrimaryErrorPenalty}/" +
+                                "-${state.team.info.courseSecondaryErrorPenalty}/" +
+                                "-${state.team.info.courseTertiaryErrorPenalty}" +
+                                ")",
                         style = MaterialTheme.typography.bodySmall
                     )
                     AnimatedVisibility(expanded) {
