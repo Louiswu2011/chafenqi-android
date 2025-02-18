@@ -141,8 +141,8 @@ val composepreferences = "1.0.0"
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 
-    implementation(platform("androidx.compose:compose-bom:2025.01.01"))
-    androidTestImplementation(platform("androidx.compose:compose-bom:2025.01.01"))
+    implementation(platform("androidx.compose:compose-bom:2025.02.00"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2025.02.00"))
 
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
@@ -166,7 +166,7 @@ dependencies {
     implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
 
-    implementation("androidx.navigation:navigation-compose:2.8.6")
+    implementation("androidx.navigation:navigation-compose:2.8.7")
     implementation("io.ktor:ktor-client-logging:$ktorVersion")
     implementation("org.slf4j:slf4j-simple:2.0.13")
     implementation("io.coil-kt.coil3:coil-compose:3.0.4")
@@ -182,7 +182,7 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
-    implementation("androidx.compose.material:material:1.7.7")
+    implementation("androidx.compose.material:material:1.7.8")
     implementation("io.github.alexzhirkevich:qrose:1.0.1")
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
     implementation("com.google.accompanist:accompanist-permissions:0.34.0")
