@@ -52,7 +52,6 @@ object CFQUser {
     var maimai = Maimai
     var chunithm = Chunithm
 
-    val isoTimeParser: DateTimeFormatter = DateTimeFormatter.ISO_INSTANT
     val nameplateDateTimeFormatterWithIndicator: DateTimeFormatter =
         DateTimeFormatter.ofPattern("MM-dd hh:mm a")
     val nameplateDateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MM-dd HH:mm")

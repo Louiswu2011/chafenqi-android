@@ -78,7 +78,9 @@ class ChunithmLogData(
 
                 if (record.recentEntries.isNotEmpty()) {
                     record.averageScore = record.recentEntries.sumOf { it.score } / record.recentEntries.size.toDouble()
-                    record.duration = (record.recentEntries.maxBy { it.timestamp }.timestamp - record.recentEntries.minBy { it.timestamp }.timestamp).toDuration(
+                    val latest = record.recentEntries.maxByOrNull { it.timestamp } ?: continue
+                    val earliest = record.recentEntries.minByOrNull { it.timestamp } ?: continue
+                    record.duration = (latest.timestamp - earliest.timestamp).toDuration(
                         DurationUnit.SECONDS)
                     record.durationString = record.duration.toComponents { hours, minutes, _, _ ->
                         if (hours > 0) {
