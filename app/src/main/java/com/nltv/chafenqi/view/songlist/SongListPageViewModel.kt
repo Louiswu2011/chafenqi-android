@@ -145,7 +145,10 @@ class SongListPageViewModel : ViewModel() {
         }
         if (filterVersion && filterMaimaiVersionList.any { it }) {
             result = result.filter {
-                val versionIndex = MAIMAI_VERSION_STRINGS.values.toList().indexOf(it.basicInfo.from)
+                val version = MAIMAI_VERSION_STRINGS.keys.last { version ->
+                    version <= it.basicInfo.version
+                }
+                val versionIndex = MAIMAI_VERSION_STRINGS.keys.indexOf(version)
                 if (versionIndex < 0) return@filter false
                 filterMaimaiVersionList[versionIndex]
             }
