@@ -15,13 +15,14 @@ import android.os.ParcelFileDescriptor
 import android.os.PowerManager
 import android.os.PowerManager.WakeLock
 import android.os.RemoteException
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.text.TextUtils
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.nltv.chafenqi.ChafenqiApplication
 import com.nltv.chafenqi.R
 import java.io.IOException
+import androidx.core.content.edit
 
 class ChafenqiProxy : VpnService() {
     private val PREF_RUNNING = "pref_running"
@@ -141,7 +142,7 @@ class ChafenqiProxy : VpnService() {
         builder.addAddress("fd00:1:fd00:1:fd00:1:fd00:1", 128)
         builder.addRoute("0.0.0.0", 0)
         builder.addRoute("0:0:0:0:0:0:0:0", 0)
-        var dnsList: MutableList<String> =
+        val dnsList: MutableList<String> =
             Util.getDefaultDNS(ChafenqiApplication.applicationContext()).toMutableList()
         for (dns in dnsList) {
             Log.i(TAG, "default DNS:$dns")
@@ -162,7 +163,7 @@ class ChafenqiProxy : VpnService() {
         if (!TextUtils.isEmpty(proxyHost)) {
             val prefs = PreferenceManager.getDefaultSharedPreferences(this)
             jni_start(vpn.fd, false, 3, proxyHost, proxyPort)
-            prefs.edit().putBoolean(PREF_RUNNING, true).apply()
+            prefs.edit { putBoolean(PREF_RUNNING, true) }
         }
     }
 
@@ -180,7 +181,7 @@ class ChafenqiProxy : VpnService() {
             jni_stop(-1)
         }
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        prefs.edit().putBoolean(PREF_RUNNING, false).apply()
+        prefs.edit { putBoolean(PREF_RUNNING, false) }
     }
 
     private fun stopVPN(pfd: ParcelFileDescriptor) {
@@ -202,7 +203,7 @@ class ChafenqiProxy : VpnService() {
         Log.w(TAG, "Native exit reason=$reason")
         if (reason != null) {
             val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-            prefs.edit().putBoolean("enabled", false).apply()
+            prefs.edit { putBoolean("enabled", false) }
         }
     }
 
@@ -219,7 +220,7 @@ class ChafenqiProxy : VpnService() {
         // Native init
         jni_init()
         super.onCreate()
-        val channelId = createNotificationChannel(this, "chafenqi-proxy", "vpn-service")
+        val channelId = createNotificationChannel(this)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
         val notification = notificationBuilder.setOngoing(true)
             .setSmallIcon(R.drawable.app_icon)
@@ -232,18 +233,16 @@ class ChafenqiProxy : VpnService() {
 
     private fun createNotificationChannel(
         context: Context,
-        channelId: String,
-        channelName: String
     ): String {
         val chan = NotificationChannel(
-            channelId,
-            channelName, NotificationManager.IMPORTANCE_NONE
+            "chafenqi-proxy",
+            "vpn-service", NotificationManager.IMPORTANCE_NONE
         )
         chan.lightColor = Color.BLUE
         chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
         val service = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         service.createNotificationChannel(chan)
-        return channelId
+        return "chafenqi-proxy"
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
