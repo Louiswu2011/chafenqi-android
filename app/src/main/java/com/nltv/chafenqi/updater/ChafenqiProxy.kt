@@ -63,7 +63,6 @@ class ChafenqiProxy : VpnService() {
         val intent = Intent(context, ChafenqiProxy::class.java)
         intent.action = ACTION_STOP
         context.startForegroundService(intent)
-        stopSelf()
     }
 
     private external fun jni_init()
@@ -249,7 +248,6 @@ class ChafenqiProxy : VpnService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.i(TAG, "Received $intent")
-        // Handle service restart
         if (intent == null) {
             return START_STICKY
         }
@@ -258,6 +256,7 @@ class ChafenqiProxy : VpnService() {
         }
         if (ACTION_STOP == intent.action) {
             stop()
+            stopSelf()
         }
         return START_STICKY
     }
