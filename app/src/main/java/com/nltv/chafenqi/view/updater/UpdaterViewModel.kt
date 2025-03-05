@@ -2,7 +2,6 @@ package com.nltv.chafenqi.view.updater
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.net.VpnService
 import android.util.Log
 import androidx.compose.material.icons.Icons
@@ -35,6 +34,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import androidx.core.net.toUri
+import java.util.Locale
 
 const val PORTAL_ADDRESS = "http://43.139.107.206:9030/"
 
@@ -98,12 +98,12 @@ class UpdaterViewModel : ViewModel() {
 
     private var refreshJob: Job? = null
 
-    fun updateServerStat() {
+    private fun updateServerStat() {
         fun makeServerStatText(time: Double): String = when (time) {
-            in 0.0..45.0 -> "畅通 (${String.format("%.2f", time)}s)"
-            in 45.0..120.0 -> "缓慢 (${String.format("%.2f", time)}s)"
-            in 120.0..300.0 -> "拥堵 (${String.format("%.2f", time)}s)"
-            in 300.0..Double.MAX_VALUE -> "严重拥堵 (${String.format("%.2f", time)}s)"
+            in 0.0..45.0 -> "畅通 (${String.format(Locale.getDefault(), "%.2f", time)}s)"
+            in 45.0..120.0 -> "缓慢 (${String.format(Locale.getDefault(),"%.2f", time)}s)"
+            in 120.0..300.0 -> "拥堵 (${String.format(Locale.getDefault(),"%.2f", time)}s)"
+            in 300.0..Double.MAX_VALUE -> "严重拥堵 (${String.format(Locale.getDefault(),"%.2f", time)}s)"
             else -> "暂无数据"
         }
 
@@ -225,7 +225,7 @@ class UpdaterViewModel : ViewModel() {
             .toString()
     }
 
-    fun openWeChat(context: Context, uriHandler: UriHandler, snackbarHostState: SnackbarHostState) {
+    fun openWeChat(uriHandler: UriHandler, snackbarHostState: SnackbarHostState) {
         try {
             uriHandler.openUri("weixin://")
         } catch (e: Exception) {
@@ -237,7 +237,6 @@ class UpdaterViewModel : ViewModel() {
     }
 
     fun openWeChatScan(
-        context: Context,
         uriHandler: UriHandler,
         snackbarHostState: SnackbarHostState
     ) {

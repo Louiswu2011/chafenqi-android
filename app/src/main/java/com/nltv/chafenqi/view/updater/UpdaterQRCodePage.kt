@@ -27,7 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -48,7 +47,6 @@ import io.github.alexzhirkevich.qrose.rememberQrCodePainter
 @Composable
 fun UpdaterQRCodePage(snackbarHostState: SnackbarHostState) {
     val model: UpdaterViewModel = viewModel()
-    val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
     val logoPainter = painterResource(id = R.drawable.app_icon)
     val pagerState = rememberPagerState { 2 }
@@ -141,7 +139,7 @@ fun UpdaterQRCodePage(snackbarHostState: SnackbarHostState) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Button(onClick = {
-                    model.openWeChatScan(context, uriHandler, snackbarHostState)
+                    model.openWeChatScan(uriHandler, snackbarHostState)
                 }) {
                     Text(text = "跳转到微信")
                 }

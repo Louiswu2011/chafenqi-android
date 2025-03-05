@@ -195,9 +195,7 @@ fun PreferenceRootScope.ProxyToggle() {
 fun PreferenceRootScope.UpdaterClipboardGroup(snackbarHostState: SnackbarHostState) {
     val model: UpdaterViewModel = viewModel()
     val clipboardManager = LocalClipboardManager.current
-    val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val store = SettingsStore(context)
 
     fun makeToast() {
         scope.launch { snackbarHostState.showSnackbar("已复制到剪贴板") }
@@ -236,12 +234,11 @@ fun PreferenceRootScope.UpdaterClipboardGroup(snackbarHostState: SnackbarHostSta
 
 @Composable
 fun PreferenceRootScope.UpdaterWechatActions(snackbarHostState: SnackbarHostState) {
-    val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
     val model: UpdaterViewModel = viewModel()
 
     PreferenceButton(
-        onClick = { model.openWeChat(context, uriHandler, snackbarHostState) },
+        onClick = { model.openWeChat(uriHandler, snackbarHostState) },
         title = "跳转到微信",
         icon = {
             Icon(
@@ -256,8 +253,6 @@ fun PreferenceRootScope.UpdaterWechatActions(snackbarHostState: SnackbarHostStat
 fun PreferenceRootScope.UpdaterQuickActionsGroup(snackbarHostState: SnackbarHostState) {
     val model: UpdaterViewModel = viewModel()
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
-    val store = SettingsStore(context)
     val uiState by model.uiState.collectAsStateWithLifecycle()
     var uploadGame by rememberSaveable { mutableIntStateOf(1) }
 

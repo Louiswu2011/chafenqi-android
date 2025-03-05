@@ -36,6 +36,7 @@ class ChafenqiProxy : VpnService() {
     private var lastBuilder: VpnService.Builder? = null
     private var vpn: ParcelFileDescriptor? = null
 
+    @Suppress("unused")
     @Synchronized
     private fun getLock(context: Context): WakeLock? {
         if (wlInstance == null) {
@@ -84,10 +85,6 @@ class ChafenqiProxy : VpnService() {
 
     override fun onBind(intent: Intent?): IBinder {
         return ServiceBinder()
-    }
-
-    fun isRunning(): Boolean {
-        return vpn != null
     }
 
     private fun start() {
@@ -199,6 +196,7 @@ class ChafenqiProxy : VpnService() {
     }
 
     // Called from native code
+    @Suppress("unused")
     private fun nativeExit(reason: String?) {
         Log.w(TAG, "Native exit reason=$reason")
         if (reason != null) {
@@ -208,10 +206,12 @@ class ChafenqiProxy : VpnService() {
     }
 
     // Called from native code
+    @Suppress("unused")
     private fun nativeError(error: Int, message: String) {
         Log.w(TAG, "Native error $error: $message")
     }
 
+    @Suppress("unused")
     private fun isSupported(protocol: Int): Boolean {
         return protocol == 1 || protocol == 59 || protocol == 6 || protocol == 17 /* UDP */
     }
