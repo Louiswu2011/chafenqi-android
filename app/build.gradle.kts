@@ -61,6 +61,8 @@ android {
             vectorDrawables {
                 useSupportLibrary = true
             }
+
+            @Suppress("UnstableApiUsage")
             externalNativeBuild {
                 cmake {
                     cppFlags += ""

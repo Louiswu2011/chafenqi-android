@@ -8,7 +8,7 @@ import android.content.Intent
 import android.net.Uri
 import android.net.VpnService
 import android.os.PersistableBundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import android.util.Log
@@ -19,6 +19,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import me.zhanghai.compose.preference.getPreferenceFlow
+import androidx.core.net.toUri
 
 class UpdaterTileService : TileService() {
     private var isVpnRunning = false
@@ -49,7 +50,6 @@ class UpdaterTileService : TileService() {
     @OptIn(DelicateCoroutinesApi::class)
     private fun doExtraActions() {
         GlobalScope.launch {
-            @Suppress("DEPRECATION")
             val settings = PreferenceManager.getDefaultSharedPreferences(applicationContext).getPreferenceFlow()
             val token = CFQUser.token
             val clipboardManager =
@@ -79,7 +79,7 @@ class UpdaterTileService : TileService() {
             // Log.i("TileService", "$autoJump, $syncToFish")
 
             if (qsCopyToClipboard == true) {
-                val link = Uri.parse(PORTAL_ADDRESS)
+                val link = PORTAL_ADDRESS.toUri()
                     .buildUpon()
                     .appendPath(if (qsCopyTargetGame == 0) "upload_chunithm" else "upload_maimai")
                     .appendQueryParameter("jwt", token)
@@ -99,7 +99,7 @@ class UpdaterTileService : TileService() {
                 try {
                     val intent = Intent(Intent.ACTION_VIEW)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    intent.data = Uri.parse("weixin://")
+                    intent.data = "weixin://".toUri()
                     if (android.os.Build.VERSION.SDK_INT >= 34) {
                         val pendingIntent = PendingIntent.getBroadcast(
                             applicationContext,

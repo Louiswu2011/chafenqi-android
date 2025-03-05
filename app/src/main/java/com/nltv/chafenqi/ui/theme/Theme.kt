@@ -38,6 +38,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
+@Suppress("deprecation")
 fun ChafenqiTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
