@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import androidx.core.net.toUri
 
 const val PORTAL_ADDRESS = "http://43.139.107.206:9030/"
 
@@ -215,7 +216,7 @@ class UpdaterViewModel : ViewModel() {
     }
 
     fun buildUri(mode: Int): String {
-        return Uri.parse(PORTAL_ADDRESS)
+        return PORTAL_ADDRESS.toUri()
             .buildUpon()
             .appendPath("upload")
             .appendPath(if (mode == 0) "chunithm" else "maimai")
