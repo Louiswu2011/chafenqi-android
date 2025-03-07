@@ -109,9 +109,13 @@ object CFQUser {
                 Aux.newBest = newBest.sortedByDescending { it.rating() }.take(15)
 
                 Aux.pastRating =
-                    Aux.pastBest.fold(0) { acc, maimaiBestScoreEntry -> acc + maimaiBestScoreEntry.rating() }
+                    if (Aux.pastBest.isEmpty()) 0 else {
+                        Aux.pastBest.fold(0) { acc, maimaiBestScoreEntry -> acc + maimaiBestScoreEntry.rating() }
+                    }
                 Aux.newRating =
-                    Aux.newBest.fold(0) { acc, maimaiBestScoreEntry -> acc + maimaiBestScoreEntry.rating() }
+                    if (Aux.newBest.isEmpty()) 0 else {
+                        Aux.newBest.fold(0) { acc, maimaiBestScoreEntry -> acc + maimaiBestScoreEntry.rating() }
+                    }
 
                 Aux.updateTime =
                     info.lastOrNull()
@@ -258,9 +262,13 @@ object CFQUser {
                 Aux.bestList = bestSlice
                 Aux.recentList = recentSlice
                 Aux.bestRating =
-                    (bestSlice.fold(0.0) { acc, chunithmRatingEntry -> acc + chunithmRatingEntry.rating() } / 30).cutForRating()
+                    if (bestSlice.isEmpty()) 0.0 else {
+                        (bestSlice.fold(0.0) { acc, chunithmRatingEntry -> acc + chunithmRatingEntry.rating() } / 30).cutForRating()
+                    }
                 Aux.recentRating =
-                    (recentSlice.fold(0.0) { acc, chunithmRatingEntry -> acc + chunithmRatingEntry.rating() } / 10).cutForRating()
+                    if (recentSlice.isEmpty()) 0.0 else {
+                        (recentSlice.fold(0.0) { acc, chunithmRatingEntry -> acc + chunithmRatingEntry.rating() } / 10).cutForRating()
+                    }
 
 
                 Aux.updateTime =
@@ -296,7 +304,8 @@ object CFQUser {
                     ?.also { Aux.recommendList.add(ChunithmRecentLineup(it, "最近一首")) }
                     ?.also { mostRecent.remove(it) }
                 try {
-                    mostRecent.filter { it.newRecord }
+                    mostRecent
+                        .filter { it.newRecord }
                         .maxByOrNull { it.timestamp }
                         ?.also { Aux.recommendList.add(ChunithmRecentLineup(it, "新纪录")) }
                 } catch (_: Exception) {

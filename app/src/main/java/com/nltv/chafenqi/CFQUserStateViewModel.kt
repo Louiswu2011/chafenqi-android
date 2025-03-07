@@ -54,6 +54,11 @@ class CFQUserStateViewModel : ViewModel() {
                 Log.i(tag, "Loaded user maimai basic data.")
             } catch (e: Exception) {
                 e.printStackTrace()
+                Firebase.crashlytics.apply {
+                    setCustomKey("error_location", "maimai_data_loading")
+                    setCustomKey("error_type", e::class.simpleName ?: "Unknown")
+                    recordException(e)
+                }
                 Log.e(tag, "User maimai data is empty, skipping...")
                 isEmpty = true
             }
@@ -103,6 +108,11 @@ class CFQUserStateViewModel : ViewModel() {
                 Log.i(tag, "Loaded user chunithm basic data.")
             } catch (e: Exception) {
                 e.printStackTrace()
+                Firebase.crashlytics.apply {
+                    setCustomKey("error_location", "chunithm_data_loading")
+                    setCustomKey("error_type", e::class.simpleName ?: "Unknown")
+                    recordException(e)
+                }
                 Log.e(tag, "User chunithm data is empty, skipping...")
                 isEmpty = true
             }

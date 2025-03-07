@@ -136,7 +136,6 @@ android {
     }
 }
 
-val composeDialogs = "1.0.8"
 val ktorVersion = "3.0.3"
 val composepreferences = "1.0.0"
 
