@@ -10,6 +10,8 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.perf.metrics.AddTrace
+import com.google.firebase.Firebase
+import com.google.firebase.crashlytics.crashlytics
 import com.nltv.chafenqi.CFQUserStateViewModel
 import com.nltv.chafenqi.UIState
 import com.nltv.chafenqi.cacheStore
@@ -40,6 +42,7 @@ class LoginPageViewModel : ViewModel() {
     var loginUiState = loginState.asStateFlow()
 
     @AddTrace(name = "login_cached")
+    @Suppress("UNUSED_PARAMETER")
     fun login(
         token: String,
         username: String,
@@ -139,6 +142,11 @@ class LoginPageViewModel : ViewModel() {
             else -> {
                 snackbarHostState.showSnackbar("未知错误: ${e.localizedMessage}")
             }
+        }
+        Firebase.crashlytics.apply { 
+            setCustomKey("loginException", e::class.simpleName ?: "Unknown")
+            setCustomKey("location", "LoginPageViewModel")
+            recordException(e)
         }
     }
 
