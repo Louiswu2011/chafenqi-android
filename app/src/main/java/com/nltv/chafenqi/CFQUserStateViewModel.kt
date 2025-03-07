@@ -14,6 +14,7 @@ import com.nltv.chafenqi.model.user.maimai.UserMaimaiRecentScoreEntry
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.user.CFQUser
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 
@@ -39,14 +40,14 @@ class CFQUserStateViewModel : ViewModel() {
 
         withContext(Dispatchers.IO) {
             try {
-                val infoString = CFQServer.apiMaimai("info", token)
-                val bestString = CFQServer.apiMaimai("best", token)
-                val recentString = CFQServer.apiMaimai("recent", token)
+                val infoString = async { CFQServer.apiMaimai("info", token) }
+                val bestString = async { CFQServer.apiMaimai("best", token) }
+                val recentString = async { CFQServer.apiMaimai("recent", token) }
 
-                maimai.info = deserializer.decodeFromString(infoString)
-                maimai.best = deserializer.decodeFromString(bestString)
+                maimai.info = deserializer.decodeFromString(infoString.await())
+                maimai.best = deserializer.decodeFromString(bestString.await())
                 maimai.recent = deserializer
-                    .decodeFromString<List<UserMaimaiRecentScoreEntry>>(recentString)
+                    .decodeFromString<List<UserMaimaiRecentScoreEntry>>(recentString.await())
                     .sortedByDescending { it.timestamp }
 
                 maimai.isBasicEmpty = false
@@ -86,17 +87,17 @@ class CFQUserStateViewModel : ViewModel() {
 
         withContext(Dispatchers.IO) {
             try {
-                val infoString = CFQServer.apiChunithm("info", token)
-                val bestString = CFQServer.apiChunithm("best", token)
-                val recentString = CFQServer.apiChunithm("recent", token)
-                val ratingString = CFQServer.apiChunithm("rating", token)
+                val infoString = async { CFQServer.apiChunithm("info", token) }
+                val bestString = async { CFQServer.apiChunithm("best", token) }
+                val recentString = async { CFQServer.apiChunithm("recent", token) }
+                val ratingString = async { CFQServer.apiChunithm("rating", token) }
 
-                chunithm.info = deserializer.decodeFromString(infoString)
-                chunithm.best = deserializer.decodeFromString(bestString)
+                chunithm.info = deserializer.decodeFromString(infoString.await())
+                chunithm.best = deserializer.decodeFromString(bestString.await())
                 chunithm.recent = deserializer
-                    .decodeFromString<List<UserChunithmRecentScoreEntry>>(recentString)
+                    .decodeFromString<List<UserChunithmRecentScoreEntry>>(recentString.await())
                     .sortedByDescending { it.timestamp }
-                chunithm.rating = deserializer.decodeFromString(ratingString)
+                chunithm.rating = deserializer.decodeFromString(ratingString.await())
 
                 chunithm.isBasicEmpty = false
                 Log.i(tag, "Loaded user chunithm basic data.")
@@ -124,11 +125,20 @@ class CFQUserStateViewModel : ViewModel() {
 
                 chunithm.best = chunithm.best.filterNot { it.associatedMusicEntry.isWE }
                 chunithm.recent = chunithm.recent.filterNot { it.associatedMusicEntry.isWE }
-                chunithm.rating = chunithm.rating.copy(
-                    best = chunithm.rating.best.filterNot { it.associatedMusicEntry.isWE },
-                    recent = chunithm.rating.recent.filterNot { it.associatedMusicEntry.isWE },
-                    candidate = chunithm.rating.candidate.filterNot { it.associatedMusicEntry.isWE }
-                )
+
+                val bestFiltered = chunithm.best.filterNot { it.associatedMusicEntry.isWE }
+                val recentFiltered = chunithm.recent.filterNot { it.associatedMusicEntry.isWE }
+                val candidateFiltered = chunithm.rating.candidate.filterNot { it.associatedMusicEntry.isWE }
+
+                if (bestFiltered.size != chunithm.rating.best.size || 
+                    recentFiltered.size != chunithm.rating.recent.size ||
+                    candidateFiltered.size != chunithm.rating.candidate.size) {
+                    chunithm.rating = chunithm.rating.copy(
+                        best = chunithm.rating.best.filterNot { it.associatedMusicEntry.isWE },
+                        recent = chunithm.rating.recent.filterNot { it.associatedMusicEntry.isWE },
+                        candidate = chunithm.rating.candidate.filterNot { it.associatedMusicEntry.isWE }
+                    )
+                }
             }
         }
     }
