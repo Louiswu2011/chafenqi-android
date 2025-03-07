@@ -245,11 +245,13 @@ object CFQUser {
                 rating.candidate.forEach {
                     it.associatedMusicEntry = it.associatedMusicEntry()
                 }
-                best.filterNot { it.associatedMusicEntry == ChunithmMusicEntry() }
-                recent.filterNot { it.associatedMusicEntry == ChunithmMusicEntry() }
-                rating.best.filterNot { it.associatedMusicEntry == ChunithmMusicEntry() }
-                rating.recent.filterNot { it.associatedMusicEntry == ChunithmMusicEntry() }
-                rating.candidate.filterNot { it.associatedMusicEntry == ChunithmMusicEntry() }
+                best = best.filterNot { it.associatedMusicEntry == ChunithmMusicEntry() }
+                recent = recent.filterNot { it.associatedMusicEntry == ChunithmMusicEntry() }
+                rating = rating.copy(
+                    best = rating.best.filterNot { it.associatedMusicEntry == ChunithmMusicEntry() },
+                    recent = rating.recent.filterNot { it.associatedMusicEntry == ChunithmMusicEntry() },
+                    candidate = rating.candidate.filterNot { it.associatedMusicEntry == ChunithmMusicEntry() }
+                )
 
                 val bestSlice = rating.best
                 val recentSlice = rating.recent
