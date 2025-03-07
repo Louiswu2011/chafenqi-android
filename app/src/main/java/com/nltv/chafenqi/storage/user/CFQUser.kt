@@ -305,7 +305,7 @@ object CFQUser {
                         it.charts.levels.contains(level)
                     }
                     val playedBestEntries =
-                        best.filter { it.associatedMusicEntry.charts.levels[it.levelIndex] == level }
+                        best.filter { it.associatedMusicEntry.charts.levels.getOrNull(it.levelIndex) == level }
                     val playedMusicEntries = playedBestEntries.map { it.associatedMusicEntry }
                     val notPlayedMusicEntries =
                         levelMusicEntries.filterNot { playedMusicEntries.contains(it) }

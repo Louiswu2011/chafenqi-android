@@ -122,11 +122,13 @@ class CFQUserStateViewModel : ViewModel() {
             if (!chunithm.isBasicEmpty) {
                 chunithm.addAuxiliaryData(context)
 
-                chunithm.best.filterNot { it.associatedMusicEntry.isWE }
-                chunithm.recent.filterNot { it.associatedMusicEntry.isWE }
-                chunithm.rating.best.filterNot { it.associatedMusicEntry.isWE }
-                chunithm.rating.recent.filterNot { it.associatedMusicEntry.isWE }
-                chunithm.rating.candidate.filterNot { it.associatedMusicEntry.isWE }
+                chunithm.best = chunithm.best.filterNot { it.associatedMusicEntry.isWE }
+                chunithm.recent = chunithm.recent.filterNot { it.associatedMusicEntry.isWE }
+                chunithm.rating = chunithm.rating.copy(
+                    best = chunithm.rating.best.filterNot { it.associatedMusicEntry.isWE },
+                    recent = chunithm.rating.recent.filterNot { it.associatedMusicEntry.isWE },
+                    candidate = chunithm.rating.candidate.filterNot { it.associatedMusicEntry.isWE }
+                )
             }
         }
     }
