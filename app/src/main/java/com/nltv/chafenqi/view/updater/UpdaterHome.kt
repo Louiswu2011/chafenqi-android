@@ -77,7 +77,7 @@ fun UpdaterHomePage(navController: NavController) {
                 duration = SnackbarDuration.Indefinite
             )) {
                 SnackbarResult.ActionPerformed -> {
-                    navController.navigate(HomeNavItem.Home.route + "/settings/user/bind/fish")
+                    navController.navigate(HomeNavItem.Home.route + "/settings/user")
                 }
 
                 else -> {}
