@@ -81,12 +81,12 @@ fun InfoChunithmLeader() {
         verticalArrangement = Arrangement.spacedBy(SCREEN_PADDING)
     ) {
         AsyncImage(
-            model = model.currentCollection.charUrl,
+            model = model.currentCollection?.charUrl,
             contentDescription = "角色立绘",
             modifier = Modifier.fillMaxWidth(0.8f),
             contentScale = ContentScale.Crop
         )
-        Text(text = model.currentCollection.charName, fontWeight = FontWeight.Bold)
+        Text(text = model.currentCollection?.charName ?: "", fontWeight = FontWeight.Bold)
         Row(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(SCREEN_PADDING),
@@ -96,10 +96,10 @@ fun InfoChunithmLeader() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(text = "等级")
-                Text(text = model.currentCollection.charRank, fontWeight = FontWeight.Bold)
+                Text(text = model.currentCollection?.charRank ?: "", fontWeight = FontWeight.Bold)
             }
             LinearProgressIndicator(
-                progress = { model.currentCollection.charExp.toFloat() },
+                progress = { model.currentCollection?.charExp?.toFloat() ?: 0f },
                 modifier = Modifier.fillMaxWidth(),
             )
         }
