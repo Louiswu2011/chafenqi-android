@@ -1,8 +1,11 @@
 package com.nltv.chafenqi.view.login
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.util.Log
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -70,7 +73,7 @@ class LoginPageViewModel : ViewModel() {
                 updateLoginState(UIState.Pending)
                 userState.isLoggedIn = true
             } catch (e: Exception) {
-                loginExceptionHandler(snackbarHostState, e)
+                loginExceptionHandler(context, snackbarHostState, e)
             }
         }
 
@@ -118,29 +121,48 @@ class LoginPageViewModel : ViewModel() {
                     snackbarHostState.showSnackbar("未知错误，请重试")
                 }
             } catch (e: Exception) {
-                loginExceptionHandler(snackbarHostState, e)
+                loginExceptionHandler(context, snackbarHostState, e)
             }
         }
     }
 
-    private suspend fun loginExceptionHandler(snackbarHostState: SnackbarHostState, e: Exception) {
+    private suspend fun loginExceptionHandler(context: Context, snackbarHostState: SnackbarHostState, e: Exception) {
         updateLoginState(UIState.Pending)
         Log.e("LoginPageViewModel", "$e ${e::class.simpleName}")
-        when (e) {
+        val result = when (e) {
             is UserNotFoundException, is CredentialsMismatchException -> {
-                snackbarHostState.showSnackbar("用户名或密码错误")
+                snackbarHostState.showSnackbar("用户名或密码错误",
+                    actionLabel = "复制日志")
             }
 
             is CFQServerSideException -> {
-                snackbarHostState.showSnackbar("服务器出错，请稍后再试")
+                snackbarHostState.showSnackbar("服务器出错，请稍后再试",
+                    actionLabel = "复制日志")
             }
 
             is ConnectException -> {
-                snackbarHostState.showSnackbar("无法连接到服务器，请稍后再试")
+                snackbarHostState.showSnackbar("无法连接到服务器，请稍后再试",
+                    actionLabel = "复制日志")
             }
 
             else -> {
-                snackbarHostState.showSnackbar("未知错误: ${e.localizedMessage}")
+                snackbarHostState.showSnackbar(
+                    message = "未知错误: $e",
+                    actionLabel = "复制日志"
+                )
+            }
+        }
+        if (result == SnackbarResult.ActionPerformed) {
+            try {
+                val clipboardManager =
+                    context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clipData = ClipData.newPlainText(
+                    "Exceptions",
+                    "${e.message}\n${e.stackTraceToString()}"
+                )
+                clipboardManager.setPrimaryClip(clipData)
+            } catch (e: Exception) {
+                snackbarHostState.showSnackbar("复制日志失败")
             }
         }
         Firebase.crashlytics.apply { 

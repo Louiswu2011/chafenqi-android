@@ -248,6 +248,9 @@ class HomePageViewModel : ViewModel() {
         with(density) {
             val indicatorCount =
                 if (user.mode == 1) _uiState.value.maiIndicatorsCount else _uiState.value.chuIndicatorsCount
+            
+            if (indicatorCount <= 0) return
+
             val x = touchPoint.x.toDp()
 
             val gridWidth = maxWidth / (indicatorCount * 2 - 1)
