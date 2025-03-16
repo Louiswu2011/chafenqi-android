@@ -142,8 +142,8 @@ val composepreferences = "1.0.0"
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 
-    implementation(platform("androidx.compose:compose-bom:2025.02.00"))
-    androidTestImplementation(platform("androidx.compose:compose-bom:2025.02.00"))
+    implementation(platform("androidx.compose:compose-bom:2025.03.00"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2025.03.00"))
 
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
@@ -168,7 +168,7 @@ dependencies {
     implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
 
-    implementation("androidx.navigation:navigation-compose:2.8.8")
+    implementation("androidx.navigation:navigation-compose:2.8.9")
     implementation("io.ktor:ktor-client-logging:$ktorVersion")
     implementation("org.slf4j:slf4j-simple:2.0.13")
     implementation("io.coil-kt.coil3:coil-compose:3.0.4")
@@ -189,7 +189,7 @@ dependencies {
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
     implementation("com.google.accompanist:accompanist-permissions:0.34.0")
     implementation("com.google.accompanist:accompanist-drawablepainter:0.36.0")
-    implementation("com.patrykandpatrick.vico:compose-m3:2.0.2")
+    implementation("com.patrykandpatrick.vico:compose-m3:2.0.3")
 
     // core
     implementation("io.github.mflisar.composepreferences:core:$composepreferences")

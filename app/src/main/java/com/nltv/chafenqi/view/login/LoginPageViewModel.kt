@@ -98,22 +98,22 @@ class LoginPageViewModel : ViewModel() {
                 )
                 val (status, token) = response
 
-            if (status != HttpStatusCode.OK) {
-                updateLoginState(UIState.Pending)
-                snackbarHostState.showSnackbar("用户名或密码错误，请重试")
-            } else if (token.isNotEmpty()) {
-                // successfully logged in
-                println("Successfully logged in.")
-                // updateLoginPromptText("以${username}的身份登录...")
-                user.createProfile(token, username)
+                if (status != HttpStatusCode.OK) {
+                    updateLoginState(UIState.Pending)
+                    snackbarHostState.showSnackbar("用户名或密码错误，请重试")
+                } else if (token.isNotEmpty()) {
+                    // successfully logged in
+                    println("Successfully logged in.")
+                    // updateLoginPromptText("以${username}的身份登录...")
+                    user.createProfile(token, username)
 
-                loadPersistentStorage(context, shouldValidate)
+                    loadPersistentStorage(context, shouldValidate)
 
-                updateLoginPromptText("加载舞萌DX数据...")
-                userState.loadMaimaiData(context)
+                    updateLoginPromptText("加载舞萌DX数据...")
+                    userState.loadMaimaiData(context)
 
-                updateLoginPromptText("加载中二节奏数据...")
-                userState.loadChunithmData(context)
+                    updateLoginPromptText("加载中二节奏数据...")
+                    userState.loadChunithmData(context)
                     updateLoginState(UIState.Pending)
                     userState.isLoggedIn = true
                 } else {
@@ -132,22 +132,26 @@ class LoginPageViewModel : ViewModel() {
         val result = when (e) {
             is UserNotFoundException, is CredentialsMismatchException -> {
                 snackbarHostState.showSnackbar("用户名或密码错误",
+                    withDismissAction = true,
                     actionLabel = "复制日志")
             }
 
             is CFQServerSideException -> {
                 snackbarHostState.showSnackbar("服务器出错，请稍后再试",
+                    withDismissAction = true,
                     actionLabel = "复制日志")
             }
 
             is ConnectException -> {
                 snackbarHostState.showSnackbar("无法连接到服务器，请稍后再试",
+                    withDismissAction = true,
                     actionLabel = "复制日志")
             }
 
             else -> {
                 snackbarHostState.showSnackbar(
-                    message = "未知错误: $e",
+                    message = "未知错误: ${e.localizedMessage}",
+                    withDismissAction = true,
                     actionLabel = "复制日志"
                 )
             }
