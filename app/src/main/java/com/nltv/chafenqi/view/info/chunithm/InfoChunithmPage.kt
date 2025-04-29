@@ -1,5 +1,6 @@
 package com.nltv.chafenqi.view.info.chunithm
 
+import android.content.ClipData
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,6 +35,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
@@ -328,7 +331,7 @@ fun InfoChunithmFriendCode(snackbarHostState: SnackbarHostState) {
     val model: InfoChunithmPageViewModel = viewModel()
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val clipboardManager = LocalClipboardManager.current
+    val clipboardManager = LocalClipboard.current
 
     Row(
         Modifier
@@ -344,8 +347,10 @@ fun InfoChunithmFriendCode(snackbarHostState: SnackbarHostState) {
         ) {
             Text(text = model.info.lastOrNull()?.friendCode ?: "", fontWeight = FontWeight.Bold)
             Text(text = "复制", modifier = Modifier.clickable {
-                clipboardManager.setText(AnnotatedString(model.info.lastOrNull()?.friendCode ?: ""))
-                scope.launch { snackbarHostState.showSnackbar("已复制到剪贴板") }
+                scope.launch {
+                    clipboardManager.setClipEntry(ClipEntry(ClipData.newPlainText("Friend Code", model.info.lastOrNull()?.friendCode ?: "")))
+                    snackbarHostState.showSnackbar("已复制到剪贴板")
+                }
             }, color = MaterialTheme.colorScheme.primary)
         }
     }

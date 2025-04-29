@@ -1,5 +1,6 @@
 package com.nltv.chafenqi.view.home.team
 
+import android.content.ClipData
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
@@ -37,6 +38,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -56,7 +59,7 @@ fun HomeTeamPageInfoSection(
     val state by model.uiState.collectAsStateWithLifecycle()
 
     val scope = rememberCoroutineScope()
-    val clipboardManager = LocalClipboardManager.current
+    val clipboardManager = LocalClipboard.current
 
     val leader by remember {
         mutableStateOf(state.team.info.leaderUserId.let { id -> state.team.members.firstOrNull { it.userId == id } })
@@ -129,7 +132,7 @@ fun HomeTeamPageInfoSection(
             InfoCard(title = "团队代码", icon = Icons.Default.Search, value = if (state.team.info.promotable) state.team.info.teamCode else "已隐藏", onLongClick = {
                 if (state.team.info.promotable) {
                     scope.launch {
-                        clipboardManager.setText(AnnotatedString(text = state.team.info.teamCode))
+                        clipboardManager.setClipEntry(ClipEntry(ClipData.newPlainText("Team Code", state.team.info.teamCode)))
                         snackbarHostState.showSnackbar(
                             message = "已复制到剪贴板",
                         )

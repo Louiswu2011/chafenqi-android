@@ -1,6 +1,7 @@
 package com.nltv.chafenqi.view.updater
 
 import android.app.Activity
+import android.content.ClipData
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -36,6 +37,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
@@ -194,7 +197,7 @@ fun PreferenceRootScope.ProxyToggle() {
 @Composable
 fun PreferenceRootScope.UpdaterClipboardGroup(snackbarHostState: SnackbarHostState) {
     val model: UpdaterViewModel = viewModel()
-    val clipboardManager = LocalClipboardManager.current
+    val clipboardManager = LocalClipboard.current
     val scope = rememberCoroutineScope()
 
     fun makeToast() {
@@ -205,7 +208,9 @@ fun PreferenceRootScope.UpdaterClipboardGroup(snackbarHostState: SnackbarHostSta
 
         PreferenceButton(
             onClick = {
-                clipboardManager.setText(AnnotatedString(model.buildUri(1)))
+                scope.launch {
+                    clipboardManager.setClipEntry(ClipEntry(ClipData.newPlainText("舞萌DX链接", model.buildUri(1))))
+                }
                 makeToast()
             },
             title = "复制舞萌DX链接",
@@ -213,7 +218,9 @@ fun PreferenceRootScope.UpdaterClipboardGroup(snackbarHostState: SnackbarHostSta
         )
         PreferenceButton(
             onClick = {
-                clipboardManager.setText(AnnotatedString(model.buildUri(0)))
+                scope.launch {
+                    clipboardManager.setClipEntry(ClipEntry(ClipData.newPlainText("中二节奏链接", model.buildUri(0))))
+                }
                 makeToast()
             },
             title = "复制中二节奏链接",
