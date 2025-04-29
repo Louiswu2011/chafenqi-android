@@ -142,8 +142,8 @@ val composepreferences = "1.0.0"
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 
-    implementation(platform("androidx.compose:compose-bom:2025.04.00"))
-    androidTestImplementation(platform("androidx.compose:compose-bom:2025.04.00"))
+    implementation(platform("androidx.compose:compose-bom:2025.04.01"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2025.04.01"))
 
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
@@ -174,17 +174,17 @@ dependencies {
     implementation("io.coil-kt.coil3:coil-compose:3.0.4")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.4")
     implementation("androidx.lifecycle:lifecycle-runtime-compose")
-    implementation("androidx.datastore:datastore-preferences:1.1.4")
+    implementation("androidx.datastore:datastore-preferences:1.1.5")
     implementation("com.onesignal:OneSignal:5.1.15")
 
-    implementation(platform("com.google.firebase:firebase-bom:33.12.0"))
+    implementation(platform("com.google.firebase:firebase-bom:33.13.0"))
     implementation("com.google.firebase:firebase-crashlytics-ktx")
     implementation("com.google.firebase:firebase-perf-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
-    implementation("androidx.compose.material:material:1.7.8")
+    implementation("androidx.compose.material:material:1.8.0")
     implementation("io.github.alexzhirkevich:qrose:1.0.1")
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
     implementation("com.google.accompanist:accompanist-permissions:0.34.0")
