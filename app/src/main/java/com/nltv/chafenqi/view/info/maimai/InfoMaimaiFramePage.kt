@@ -61,13 +61,13 @@ fun InfoMaimaiFramePage(navController: NavController) {
             Modifier
                 .padding(innerPadding)
         ) {
-            model.frameGroups.forEach {
-                stickyHeader { MaimaiFrameStickyHeader(area = it.key, size = it.value.size) }
+            model.frameGroups.forEach { group ->
+                stickyHeader { MaimaiFrameStickyHeader(area = group.key, size = group.value.size) }
                 items(
-                    count = it.value.size,
-                    key = { index -> it.key + it.value[index].name }
+                    count = group.value.size,
+                    key = { index -> group.key + group.value[index].name }
                 ) { index ->
-                    MaimaiFrameListEntry(entry = it.value[index])
+                    MaimaiFrameListEntry(entry = group.value[index])
                 }
             }
         }

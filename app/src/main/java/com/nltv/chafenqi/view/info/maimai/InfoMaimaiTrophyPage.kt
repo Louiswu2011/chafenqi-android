@@ -60,13 +60,13 @@ fun InfoMaimaiTrophyPage(navController: NavController) {
             Modifier
                 .padding(innerPadding)
         ) {
-            model.trophyGroups.forEach {
-                stickyHeader { MaimaiTrophyStickyHeader(type = it.key, size = it.value.size) }
+            model.trophyGroups.forEach { group ->
+                stickyHeader { MaimaiTrophyStickyHeader(type = group.key, size = group.value.size) }
                 items(
-                    count = it.value.size,
-                    key = { index -> it.key + it.value[index].name }
+                    count = group.value.size,
+                    key = { index -> group.key + group.value[index].name }
                 ) { index ->
-                    MaimaiTrophyListEntry(entry = it.value[index])
+                    MaimaiTrophyListEntry(entry = group.value[index])
                 }
             }
         }

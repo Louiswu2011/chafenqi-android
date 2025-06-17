@@ -60,13 +60,13 @@ fun InfoChunithmTrophyPage(navController: NavController) {
             modifier = Modifier
                 .padding(innerPadding)
         ) {
-            model.trophyGroups.forEach {
-                stickyHeader { ChunithmTrophyStickyHeader(type = it.key, size = it.value.size) }
+            model.trophyGroups.forEach { group ->
+                stickyHeader { ChunithmTrophyStickyHeader(type = group.key, size = group.value.size) }
                 items(
-                    count = it.value.size,
-                    key = { index -> it.key + it.value[index].name }
+                    count = group.value.size,
+                    key = { index -> group.key + group.value[index].name }
                 ) { index ->
-                    ChunithmTrophyListEntry(entry = it.value[index])
+                    ChunithmTrophyListEntry(entry = group.value[index])
                 }
             }
         }

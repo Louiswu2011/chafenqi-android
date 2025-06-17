@@ -60,13 +60,13 @@ fun InfoMaimaiCharacterPage(navController: NavController) {
             Modifier
                 .padding(innerPadding)
         ) {
-            model.characterGroups.forEach {
-                stickyHeader { MaimaiCharacterStickyHeader(area = it.key, size = it.value.size) }
+            model.characterGroups.forEach { group ->
+                stickyHeader { MaimaiCharacterStickyHeader(area = group.key, size = group.value.size) }
                 items(
-                    count = it.value.size,
-                    key = { index -> it.key + it.value[index].name }
+                    count = group.value.size,
+                    key = { index -> group.key + group.value[index].name }
                 ) { index ->
-                    MaimaiCharacterListEntry(entry = it.value[index])
+                    MaimaiCharacterListEntry(entry = group.value[index])
                 }
             }
         }
