@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
@@ -37,19 +38,28 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.nltv.chafenqi.SCREEN_PADDING
+import com.nltv.chafenqi.extension.nameplateChunithmBottomColor
+import com.nltv.chafenqi.extension.nameplateChunithmTopColor
+import com.nltv.chafenqi.extension.nameplateMaimaiBottomColor
+import com.nltv.chafenqi.extension.nameplateMaimaiTopColor
+import com.nltv.chafenqi.extension.nameplateThemedChuniColors
+import com.nltv.chafenqi.extension.nameplateThemedMaiColors
 import com.nltv.chafenqi.extension.rating
 import com.nltv.chafenqi.extension.toChunithmCoverPath
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.extension.toRateString
 import com.nltv.chafenqi.util.getChunithmCardGradientStop
+import com.nltv.chafenqi.util.getGradientStop
 import com.nltv.chafenqi.util.getMaimaiCardGradientStop
 import com.nltv.chafenqi.view.module.RatingBadge
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
 import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
+import me.zhanghai.compose.preference.LocalPreferenceFlow
 
 @Composable
 fun HomePageRatingSection(navController: NavController) {
@@ -101,6 +111,7 @@ fun HomePageRatingIndicators() {
     val density = LocalDensity.current
     val model = viewModel<HomePageViewModel>()
     val uiState by model.uiState.collectAsState()
+    val settings by LocalPreferenceFlow.current.collectAsStateWithLifecycle()
 
     var isTouching by remember { mutableStateOf(false) }
     var touchPoint by remember { mutableStateOf(Offset.Zero) }
@@ -129,6 +140,26 @@ fun HomePageRatingIndicators() {
         }
     }
 
+    fun getColor(mode: Int, ratio: Float) =
+        when (mode) {
+            0 -> {
+                if (settings.get<Boolean>("homeUseThemedColor") == true) {
+                    getGradientStop(nameplateThemedChuniColors.first(), nameplateThemedChuniColors.last(), ratio)
+                } else {
+                    getGradientStop(nameplateChunithmTopColor, nameplateChunithmBottomColor, ratio)
+                }
+            }
+            1 -> {
+                if (settings.get<Boolean>("homeUseThemedColor") == true) {
+                    getGradientStop(nameplateThemedMaiColors.first(), nameplateThemedMaiColors.last(), ratio)
+                } else {
+                    getGradientStop(nameplateMaimaiTopColor, nameplateMaimaiBottomColor, ratio)
+                }
+            }
+
+            else -> Color.Black
+        }
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -153,7 +184,7 @@ fun HomePageRatingIndicators() {
                         val gridWidth = size.width / (uiState.chuIndicatorsCount * 2 - 1).toFloat()
                         repeat(uiState.chuIndicatorsCount) { index ->
                             drawRect(
-                                getChunithmCardGradientStop(1 - index / uiState.chuIndicatorsCount.toFloat()),
+                                getColor(0, 1 - index / uiState.chuIndicatorsCount.toFloat()),
                                 topLeft = Offset(
                                     if (index != 0) (gridWidth * 2) * index else 0f,
                                     0f
@@ -189,7 +220,7 @@ fun HomePageRatingIndicators() {
                         val gridWidth = size.width / (uiState.maiIndicatorsCount * 2 - 1).toFloat()
                         repeat(uiState.maiIndicatorsCount) { index ->
                             drawRect(
-                                getMaimaiCardGradientStop(1 - index / uiState.maiIndicatorsCount.toFloat()),
+                                getColor(1, 1 - index / uiState.maiIndicatorsCount.toFloat()),
                                 topLeft = Offset(
                                     if (index != 0) (gridWidth * 2) * index else 0f,
                                     0f

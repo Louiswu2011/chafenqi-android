@@ -40,29 +40,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.nltv.chafenqi.R
+import com.nltv.chafenqi.extension.nameplateChunithmBottomColor
+import com.nltv.chafenqi.extension.nameplateChunithmTopColor
+import com.nltv.chafenqi.extension.nameplateMaimaiBottomColor
+import com.nltv.chafenqi.extension.nameplateMaimaiTopColor
+import com.nltv.chafenqi.extension.nameplateThemedChuniColors
+import com.nltv.chafenqi.extension.nameplateThemedMaiColors
 import me.zhanghai.compose.preference.LocalPreferenceFlow
 
-val nameplateChunithmTopColor = Color(red = 254, green = 241, blue = 65)
-val nameplateChunithmBottomColor = Color(red = 243, green = 200, blue = 48)
 
-val nameplateMaimaiTopColor = Color(red = 167, green = 243, blue = 254)
-val nameplateMaimaiBottomColor = Color(red = 93, green = 166, blue = 247)
-
-val nameplateThemedChuniColors = listOf(
-    Color(red = 192, green = 230, blue = 249),
-    Color(red = 219, green = 226, blue = 250),
-    Color(red = 240, green = 223, blue = 246),
-    Color(red = 248, green = 211, blue = 238),
-    Color(red = 245, green = 178, blue = 225)
-)
-
-val nameplateThemedMaiColors = listOf(
-    Color(red = 235, green = 182, blue = 85),
-    Color(red = 235, green = 187, blue = 87),
-    Color(red = 236, green = 196, blue = 90),
-    Color(red = 235, green = 200, blue = 89),
-    Color(red = 242, green = 225, blue = 68)
-)
 
 val nameplateThemedChunithmAvatarResource = R.drawable.nameplate_penguin
 val nameplateThemedMaimaiAvatarResource = R.drawable.nameplate_otohime

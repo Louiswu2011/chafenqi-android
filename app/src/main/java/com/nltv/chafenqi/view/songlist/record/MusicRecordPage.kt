@@ -34,6 +34,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.nltv.chafenqi.SCREEN_PADDING
+import com.nltv.chafenqi.extension.nameplateChunithmBottomColor
+import com.nltv.chafenqi.extension.nameplateMaimaiBottomColor
 import com.nltv.chafenqi.extension.toChunithmCoverPath
 import com.nltv.chafenqi.extension.toDateString
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
@@ -45,10 +47,6 @@ import com.nltv.chafenqi.util.ChunithmAxisValueOverrider
 import com.nltv.chafenqi.util.MaimaiAxisValueOverrider
 import com.nltv.chafenqi.util.navigateToRecentEntry
 import com.nltv.chafenqi.view.home.HomeNavItem
-import com.nltv.chafenqi.view.home.nameplateChunithmBottomColor
-import com.nltv.chafenqi.view.home.nameplateChunithmTopColor
-import com.nltv.chafenqi.view.home.nameplateMaimaiBottomColor
-import com.nltv.chafenqi.view.home.nameplateMaimaiTopColor
 import com.nltv.chafenqi.view.module.RatingBadge
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
 import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors

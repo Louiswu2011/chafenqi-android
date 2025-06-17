@@ -41,13 +41,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.nltv.chafenqi.extension.nameplateChunithmBottomColor
+import com.nltv.chafenqi.extension.nameplateMaimaiBottomColor
 import com.nltv.chafenqi.storage.SettingsStore
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.view.home.HomeNavItem
-import com.nltv.chafenqi.view.home.nameplateChunithmBottomColor
-import com.nltv.chafenqi.view.home.nameplateChunithmTopColor
-import com.nltv.chafenqi.view.home.nameplateMaimaiBottomColor
-import com.nltv.chafenqi.view.home.nameplateMaimaiTopColor
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart

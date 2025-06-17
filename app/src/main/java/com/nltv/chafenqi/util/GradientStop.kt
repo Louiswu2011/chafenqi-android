@@ -1,10 +1,10 @@
 package com.nltv.chafenqi.util
 
 import androidx.compose.ui.graphics.Color
-import com.nltv.chafenqi.view.home.nameplateChunithmBottomColor
-import com.nltv.chafenqi.view.home.nameplateChunithmTopColor
-import com.nltv.chafenqi.view.home.nameplateMaimaiBottomColor
-import com.nltv.chafenqi.view.home.nameplateMaimaiTopColor
+import com.nltv.chafenqi.extension.nameplateChunithmBottomColor
+import com.nltv.chafenqi.extension.nameplateChunithmTopColor
+import com.nltv.chafenqi.extension.nameplateMaimaiBottomColor
+import com.nltv.chafenqi.extension.nameplateMaimaiTopColor
 
 fun getGradientStop(from: Color, to: Color, ratio: Float): Color {
     val red = from.red + (to.red - from.red) * ratio
