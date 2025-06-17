@@ -104,3 +104,23 @@ fun randomColor(): Color = Color(
     blue = Random.nextInt(0..255),
     green = Random.nextInt(0..255)
 )
+
+val nameplateChunithmTopColor = Color(red = 254, green = 241, blue = 65)
+val nameplateChunithmBottomColor = Color(red = 243, green = 200, blue = 48)
+
+val nameplateMaimaiTopColor = Color(red = 167, green = 243, blue = 254)
+val nameplateMaimaiBottomColor = Color(red = 93, green = 166, blue = 247)
+
+val nameplateThemedChuniColors = listOf(
+    Color(red = 192, green = 230, blue = 249),
+    Color(red = 219, green = 226, blue = 250),
+    Color(red = 240, green = 223, blue = 246),
+    Color(red = 248, green = 211, blue = 238),
+    Color(red = 245, green = 178, blue = 225)
+)
+
+val nameplateThemedMaiColors = listOf(
+    Color(red = 144, green = 238, blue = 228),
+    Color(red = 179, green = 243, blue = 234),
+    Color(red = 217, green = 250, blue = 246),
+)
