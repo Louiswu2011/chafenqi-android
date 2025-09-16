@@ -43,14 +43,14 @@ class MaimaiLogData(
         val oldestTimestamp = recentEntries.minByOrNull { it.timestamp }?.timestamp ?: 0
 
         val truncatedOldestTimestamp = Instant
-            .fromEpochSeconds(oldestTimestamp.toLong())
+            .fromEpochSeconds(oldestTimestamp)
             .toLocalDateTime(timeZone = TimeZone.currentSystemDefault())
             .date
             .atStartOfDayIn(timeZone = TimeZone.currentSystemDefault())
             .epochSeconds
 
         val truncatedLatestTimestamp = Instant
-            .fromEpochSeconds(latestTimestamp.toLong())
+            .fromEpochSeconds(latestTimestamp)
             .toLocalDateTime(timeZone = TimeZone.currentSystemDefault())
             .date
             .atStartOfDayIn(timeZone = TimeZone.currentSystemDefault())
@@ -82,7 +82,7 @@ class MaimaiLogData(
                 }
 
                 if (record.recentEntries.isNotEmpty()) {
-                    record.averageScore = record.recentEntries.sumOf { it.achievements.toDouble() } / record.recentEntries.size
+                    record.averageScore = record.recentEntries.sumOf { it.achievements } / record.recentEntries.size
                     val latest = record.recentEntries.maxByOrNull { it.timestamp } ?: continue
                     val earliest = record.recentEntries.minByOrNull { it.timestamp } ?: continue
                     record.duration = (latest.timestamp - earliest.timestamp).toDuration(DurationUnit.SECONDS)

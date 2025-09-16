@@ -39,14 +39,14 @@ class ChunithmLogData(
         val oldestTimestamp = recentEntries.lastOrNull()?.timestamp ?: 0
 
         val truncatedOldestTimestamp = Instant
-            .fromEpochSeconds(oldestTimestamp.toLong())
+            .fromEpochSeconds(oldestTimestamp)
             .toLocalDateTime(timeZone = TimeZone.currentSystemDefault())
             .date
             .atStartOfDayIn(timeZone = TimeZone.currentSystemDefault())
             .epochSeconds
 
         val truncatedLatestTimestamp = Instant
-            .fromEpochSeconds(latestTimestamp.toLong())
+            .fromEpochSeconds(latestTimestamp)
             .toLocalDateTime(timeZone = TimeZone.currentSystemDefault())
             .date
             .atStartOfDayIn(timeZone = TimeZone.currentSystemDefault())
