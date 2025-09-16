@@ -50,6 +50,7 @@ import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
 import java.util.Locale
 import kotlin.math.ceil
+import kotlin.time.ExperimentalTime
 
 data class HomePageUiState(
     val mode: Int = 0,
@@ -428,6 +429,7 @@ class HomePageViewModel : ViewModel() {
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     @SuppressLint("DefaultLocale")
     fun updateLog() {
         viewModelScope.launch {
@@ -451,7 +453,7 @@ class HomePageViewModel : ViewModel() {
                                 char('-')
                                 monthNumber()
                                 char('-')
-                                dayOfMonth()
+                                day()
                             }) ?: "",
                             logLastPlayedCount = user.chunithm.log?.records?.first()?.recentEntries?.size?.toString()
                                 ?: "",
@@ -475,7 +477,7 @@ class HomePageViewModel : ViewModel() {
                                 char('-')
                                 monthNumber()
                                 char('-')
-                                dayOfMonth()
+                                day()
                             }) ?: "",
                             logLastPlayedCount = user.maimai.log?.records?.first()?.recentEntries?.size?.toString()
                                 ?: "",

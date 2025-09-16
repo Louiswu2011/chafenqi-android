@@ -1,6 +1,6 @@
 package com.nltv.chafenqi.data
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
@@ -8,6 +8,7 @@ import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.time.ExperimentalTime
 
 @Serializable
 data class Comment(
@@ -26,7 +27,7 @@ data class Comment(
             char('-')
             monthNumber()
             char('-')
-            dayOfMonth()
+            day()
             char(' ')
             hour()
             char(':')
@@ -36,6 +37,7 @@ data class Comment(
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     val dateString: String
         get() = Instant.fromEpochSeconds(timestamp.toLong())
             .toLocalDateTime(TimeZone.currentSystemDefault())

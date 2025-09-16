@@ -52,7 +52,7 @@ import com.michaelflisar.composepreferences.core.PreferenceScreen
 import com.michaelflisar.composepreferences.core.PreferenceSection
 import com.michaelflisar.composepreferences.core.classes.Dependency
 import com.michaelflisar.composepreferences.core.classes.PreferenceSettingsDefaults
-import com.michaelflisar.composepreferences.core.scopes.PreferenceRootScope
+import com.michaelflisar.composepreferences.core.scopes.PreferenceGroupScope
 import com.michaelflisar.composepreferences.screen.bool.PreferenceBool
 import com.michaelflisar.composepreferences.screen.button.PreferenceButton
 import com.michaelflisar.composepreferences.screen.list.PreferenceList
@@ -142,7 +142,7 @@ fun UpdaterHomePage(navController: NavController) {
 }
 
 @Composable
-fun PreferenceRootScope.UpdaterProxyGroup(snackbarHostState: SnackbarHostState) {
+fun PreferenceGroupScope.UpdaterProxyGroup(snackbarHostState: SnackbarHostState) {
     val model: UpdaterViewModel = viewModel()
     val uiState by model.uiState.collectAsState()
 
@@ -161,7 +161,7 @@ fun PreferenceRootScope.UpdaterProxyGroup(snackbarHostState: SnackbarHostState) 
 }
 
 @Composable
-fun PreferenceRootScope.ProxyToggle() {
+fun PreferenceGroupScope.ProxyToggle() {
     var isVpnOn by remember {
         mutableStateOf(false)
     }
@@ -195,7 +195,7 @@ fun PreferenceRootScope.ProxyToggle() {
 }
 
 @Composable
-fun PreferenceRootScope.UpdaterClipboardGroup(snackbarHostState: SnackbarHostState) {
+fun PreferenceGroupScope.UpdaterClipboardGroup(snackbarHostState: SnackbarHostState) {
     val model: UpdaterViewModel = viewModel()
     val clipboardManager = LocalClipboard.current
     val scope = rememberCoroutineScope()
@@ -240,7 +240,7 @@ fun PreferenceRootScope.UpdaterClipboardGroup(snackbarHostState: SnackbarHostSta
 }
 
 @Composable
-fun PreferenceRootScope.UpdaterWechatActions(snackbarHostState: SnackbarHostState) {
+fun PreferenceGroupScope.UpdaterWechatActions(snackbarHostState: SnackbarHostState) {
     val uriHandler = LocalUriHandler.current
     val model: UpdaterViewModel = viewModel()
 
@@ -257,7 +257,7 @@ fun PreferenceRootScope.UpdaterWechatActions(snackbarHostState: SnackbarHostStat
 }
 
 @Composable
-fun PreferenceRootScope.UpdaterQuickActionsGroup(snackbarHostState: SnackbarHostState) {
+fun PreferenceGroupScope.UpdaterQuickActionsGroup(snackbarHostState: SnackbarHostState) {
     val model: UpdaterViewModel = viewModel()
     val scope = rememberCoroutineScope()
     val uiState by model.uiState.collectAsStateWithLifecycle()
@@ -303,7 +303,7 @@ fun PreferenceRootScope.UpdaterQuickActionsGroup(snackbarHostState: SnackbarHost
 }
 
 @Composable
-fun PreferenceRootScope.UpdaterSettingsGroup(
+fun PreferenceGroupScope.UpdaterSettingsGroup(
     model: UpdaterViewModel,
     snackbarHostState: SnackbarHostState
 ) {

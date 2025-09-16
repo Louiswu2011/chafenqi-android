@@ -2,9 +2,10 @@ package com.nltv.chafenqi.util
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SelectableDates
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 class RecentSelectableDates (
@@ -15,6 +16,7 @@ class RecentSelectableDates (
         return utcTimeMillis in oldestMills..latestMills
     }
 
+    @OptIn(ExperimentalTime::class)
     override fun isSelectableYear(year: Int): Boolean {
         val oldestYear = Instant
             .fromEpochMilliseconds(oldestMills)

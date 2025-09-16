@@ -1,13 +1,14 @@
 package com.nltv.chafenqi.model.team
 
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
+import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.daysUntil
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlin.math.absoluteValue
+import kotlin.time.ExperimentalTime
 
 @Serializable
 data class TeamBasicInfo(
@@ -76,6 +77,7 @@ data class TeamBasicInfo(
     @Transient val courseTrack2: CourseTrack? = if (courseTrack2String.isEmpty()) null else CourseTrack(courseTrack2String)
     @Transient val courseTrack3: CourseTrack? = if (courseTrack3String.isEmpty()) null else CourseTrack(courseTrack3String)
 
+    @OptIn(ExperimentalTime::class)
     @Transient val activityDays =
         Instant
             .fromEpochSeconds(createdAt)

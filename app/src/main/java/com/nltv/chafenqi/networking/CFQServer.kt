@@ -35,9 +35,10 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.serialization.json.Json
 import java.util.concurrent.TimeUnit
+import kotlin.time.ExperimentalTime
 
 class CFQServer {
     companion object {
@@ -917,6 +918,7 @@ class CFQServer {
                 emptyList()
             }
 
+        @OptIn(ExperimentalTime::class)
         suspend fun apiPostComment(
             authToken: String,
             gameType: String,

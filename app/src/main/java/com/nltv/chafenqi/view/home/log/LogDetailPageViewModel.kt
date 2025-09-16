@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Locale
+import kotlin.time.ExperimentalTime
 
 class LogDetailPageViewModel : ViewModel() {
     data class LogDetailPageUiState(
@@ -33,6 +34,7 @@ class LogDetailPageViewModel : ViewModel() {
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     private fun updateMaimai(index: Int) {
         val log = CFQUser.maimai.log ?: return
         val entry = log.records.getOrNull(index) ?: return
@@ -62,6 +64,7 @@ class LogDetailPageViewModel : ViewModel() {
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     private fun updateChunithm(index: Int) {
         val log = CFQUser.chunithm.log ?: return
         val entry = log.records.getOrNull(index) ?: return

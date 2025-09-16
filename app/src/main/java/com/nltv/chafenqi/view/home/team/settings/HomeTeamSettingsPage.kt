@@ -59,7 +59,7 @@ import com.michaelflisar.composepreferences.core.PreferenceInfo
 import com.michaelflisar.composepreferences.core.PreferenceScreen
 import com.michaelflisar.composepreferences.core.PreferenceSection
 import com.michaelflisar.composepreferences.core.PreferenceSubScreen
-import com.michaelflisar.composepreferences.core.scopes.PreferenceRootScope
+import com.michaelflisar.composepreferences.core.scopes.PreferenceGroupScope
 import com.michaelflisar.composepreferences.screen.bool.PreferenceBool
 import com.michaelflisar.composepreferences.screen.button.PreferenceButton
 import com.michaelflisar.composepreferences.screen.list.PreferenceList
@@ -109,7 +109,7 @@ fun HomeTeamPageSettingsPage(navController: NavController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PreferenceRootScope.TeamSettings(
+fun PreferenceGroupScope.TeamSettings(
     navController: NavController,
     snackbarHostState: SnackbarHostState
 ) {

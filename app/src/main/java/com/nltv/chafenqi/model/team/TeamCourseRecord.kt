@@ -1,9 +1,10 @@
 package com.nltv.chafenqi.model.team
 
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import java.util.Locale
+import kotlin.time.ExperimentalTime
 
 @Serializable
 data class TeamCourseRecord(
@@ -20,6 +21,7 @@ data class TeamCourseRecord(
     )
 
     companion object {
+        @OptIn(ExperimentalTime::class)
         val sample = TeamCourseRecord(
             id = 1,
             timestamp = Clock.System.now().epochSeconds,

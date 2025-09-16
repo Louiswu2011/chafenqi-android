@@ -1,7 +1,8 @@
 package com.nltv.chafenqi.model.team
 
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.serialization.Serializable
+import kotlin.time.ExperimentalTime
 
 @Serializable
 data class TeamBulletinBoardEntry(
@@ -11,6 +12,7 @@ data class TeamBulletinBoardEntry(
     val content: String,
 ) {
     companion object {
+        @OptIn(ExperimentalTime::class)
         val sample = TeamBulletinBoardEntry(
             id = 1,
             timestamp = Clock.System.now().epochSeconds,

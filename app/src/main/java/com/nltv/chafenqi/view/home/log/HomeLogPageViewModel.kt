@@ -15,9 +15,11 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
+import kotlinx.datetime.format.Padding
 import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
 import java.util.Locale
+import kotlin.time.ExperimentalTime
 
 class HomeLogPageViewModel : ViewModel() {
     data class HomeLogPageUiState(
@@ -36,7 +38,7 @@ class HomeLogPageViewModel : ViewModel() {
     private val chartDateTimeFormatter = LocalDateTime.Format {
         monthNumber()
         char('-')
-        dayOfMonth()
+        day()
     }
 
     val logEntryDateTimeFormatter = LocalDateTime.Format {
@@ -44,7 +46,7 @@ class HomeLogPageViewModel : ViewModel() {
         char('/')
         monthNumber()
         char('/')
-        dayOfMonth()
+        day()
     }
 
     private var homeLogPageUiState = MutableStateFlow(HomeLogPageUiState())
@@ -98,6 +100,7 @@ class HomeLogPageViewModel : ViewModel() {
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     private fun updateMaimaiPlayCountChart() {
         if (maimaiLogData == null) return
         viewModelScope.launch {
@@ -110,6 +113,7 @@ class HomeLogPageViewModel : ViewModel() {
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     private fun updateMaimaiRatingChart() {
         if (maimaiLogData == null) return
         viewModelScope.launch {
@@ -153,6 +157,7 @@ class HomeLogPageViewModel : ViewModel() {
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     private fun updateChunithmPlayCountChart() {
         if (chunithmLogData == null) return
         viewModelScope.launch {
@@ -165,6 +170,7 @@ class HomeLogPageViewModel : ViewModel() {
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     private fun updateChunithmRatingChart() {
         if (chunithmLogData == null) return
         viewModelScope.launch {

@@ -28,10 +28,11 @@ import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import com.onesignal.OneSignal
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import kotlin.time.ExperimentalTime
 
 data class ChunithmRecentLineup(val entry: UserChunithmRecentScoreEntry, val tag: String)
 data class MaimaiRecentLineup(val entry: UserMaimaiRecentScoreEntry, val tag: String)
@@ -361,6 +362,7 @@ object CFQUser {
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     suspend fun createProfile(authToken: String, username: String) {
         token = authToken
         CFQUser.username = username
@@ -386,6 +388,7 @@ object CFQUser {
         Chunithm.reset()
     }
 
+    @OptIn(ExperimentalTime::class)
     suspend fun refreshPremiumStatus() {
         isPremium = (CFQServer.apiUserInfo(token)?.premiumUntil ?: 0L) >= Clock.System.now().epochSeconds
     }

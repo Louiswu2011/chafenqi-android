@@ -2,14 +2,16 @@ package com.nltv.chafenqi.storage.log
 
 import com.nltv.chafenqi.model.user.maimai.UserMaimaiPlayerInfoEntry
 import com.nltv.chafenqi.model.user.maimai.UserMaimaiRecentScoreEntry
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
 
+@OptIn(ExperimentalTime::class)
 class MaimaiLogData(
     recentEntries: List<UserMaimaiRecentScoreEntry>,
     deltaEntries: List<UserMaimaiPlayerInfoEntry>

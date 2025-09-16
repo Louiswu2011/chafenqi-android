@@ -1,7 +1,8 @@
 package com.nltv.chafenqi.model.team
 
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.serialization.Serializable
+import kotlin.time.ExperimentalTime
 
 @Serializable
 data class TeamPendingMember(
@@ -16,6 +17,7 @@ data class TeamPendingMember(
     val message: String,
 ) {
     companion object {
+        @OptIn(ExperimentalTime::class)
         val sample = TeamPendingMember(
             id = 1,
             userId = 1L,

@@ -80,7 +80,7 @@ import com.michaelflisar.composepreferences.core.PreferenceDivider
 import com.michaelflisar.composepreferences.core.PreferenceInfo
 import com.michaelflisar.composepreferences.core.PreferenceScreen
 import com.michaelflisar.composepreferences.core.PreferenceSection
-import com.michaelflisar.composepreferences.core.scopes.PreferenceRootScope
+import com.michaelflisar.composepreferences.core.scopes.PreferenceGroupScope
 import com.michaelflisar.composepreferences.screen.button.PreferenceButton
 import com.michaelflisar.composepreferences.screen.list.PreferenceList
 import com.nltv.chafenqi.SCREEN_PADDING
@@ -135,7 +135,7 @@ fun HomeTeamSettingsCoursePage(navController: NavController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PreferenceRootScope.TeamCourseSettings(
+fun PreferenceGroupScope.TeamCourseSettings(
     navController: NavController,
     snackbarHostState: SnackbarHostState
 ) {

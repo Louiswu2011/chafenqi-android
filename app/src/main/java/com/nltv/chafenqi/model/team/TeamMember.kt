@@ -1,7 +1,8 @@
 package com.nltv.chafenqi.model.team
 
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.serialization.Serializable
+import kotlin.time.ExperimentalTime
 
 @Serializable
 data class TeamMember(
@@ -24,6 +25,7 @@ data class TeamMember(
             "https://new.chunithm-net.com/chuni-mobile/html/mobile/img/271a7686e029bff7.png"
         )
 
+        @OptIn(ExperimentalTime::class)
         val sample = TeamMember(
             id = 1,
             userId = 1L,

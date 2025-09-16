@@ -1,7 +1,8 @@
 package com.nltv.chafenqi.model.team
 
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.serialization.Serializable
+import kotlin.time.ExperimentalTime
 
 @Serializable
 data class TeamActivity(
@@ -11,6 +12,7 @@ data class TeamActivity(
     val activity: String,
 ) {
     companion object {
+        @OptIn(ExperimentalTime::class)
         val sample = TeamActivity(
             id = 1,
             timestamp = Clock.System.now().epochSeconds,

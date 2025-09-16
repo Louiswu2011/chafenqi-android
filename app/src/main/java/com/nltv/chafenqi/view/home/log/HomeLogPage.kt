@@ -71,6 +71,7 @@ import kotlinx.datetime.format.FormatStringsInDatetimeFormats
 import kotlinx.datetime.toLocalDateTime
 import me.zhanghai.compose.preference.LocalPreferenceFlow
 import java.util.Locale
+import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -107,7 +108,7 @@ fun HomeLogPage(navController: NavController) {
     }
 }
 
-@OptIn(FormatStringsInDatetimeFormats::class)
+@OptIn(FormatStringsInDatetimeFormats::class, ExperimentalTime::class)
 @Composable
 fun HomeLogPageDataColumn(navController: NavController) {
     val model: HomeLogPageViewModel = viewModel()

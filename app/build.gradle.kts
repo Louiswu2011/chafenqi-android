@@ -19,7 +19,7 @@ kotlin {
 
 android {
     namespace = "com.nltv.chafenqi"
-    compileSdk = 35
+    compileSdk = 36
 
     val versionFile = file("version.properties")
 
@@ -136,14 +136,14 @@ android {
     }
 }
 
-val ktorVersion = "3.0.3"
-val composepreferences = "1.0.0"
+val ktorVersion = "3.3.0"
+val composepreferences = "2.0.0"
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 
-    implementation(platform("androidx.compose:compose-bom:2025.06.00"))
-    androidTestImplementation(platform("androidx.compose:compose-bom:2025.06.00"))
+    implementation(platform("androidx.compose:compose-bom:2025.09.00"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2025.09.00"))
 
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
@@ -154,42 +154,42 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
 
-    implementation("androidx.core:core-ktx:1.16.0")
+    implementation("androidx.core:core-ktx:1.17.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.3")
     implementation("androidx.activity:activity-compose")
     implementation("androidx.preference:preference-ktx:1.2.1")
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    androidTestImplementation("androidx.test.ext:junit:1.3.0")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
 
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
-    implementation("io.ktor:ktor-client-core:3.0.3")
+    implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
 
-    implementation("androidx.navigation:navigation-compose:2.9.0")
+    implementation("androidx.navigation:navigation-compose:2.9.4")
     implementation("io.ktor:ktor-client-logging:$ktorVersion")
-    implementation("org.slf4j:slf4j-simple:2.0.13")
-    implementation("io.coil-kt.coil3:coil-compose:3.0.4")
-    implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.4")
+    implementation("org.slf4j:slf4j-simple:2.0.17")
+    implementation("io.coil-kt.coil3:coil-compose:3.3.0")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.3.0")
     implementation("androidx.lifecycle:lifecycle-runtime-compose")
     implementation("androidx.datastore:datastore-preferences:1.1.7")
-    implementation("com.onesignal:OneSignal:5.1.15")
+    implementation("com.onesignal:OneSignal:5.1.37")
 
-    implementation(platform("com.google.firebase:firebase-bom:33.15.0"))
-    implementation("com.google.firebase:firebase-crashlytics-ktx")
-    implementation("com.google.firebase:firebase-perf-ktx")
-    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation(platform("com.google.firebase:firebase-bom:34.2.0"))
+    implementation("com.google.firebase:firebase-crashlytics")
+    implementation("com.google.firebase:firebase-perf")
+    implementation("com.google.firebase:firebase-analytics")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
-    implementation("androidx.compose.material:material:1.8.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
+    implementation("androidx.compose.material:material:1.9.1")
     implementation("io.github.alexzhirkevich:qrose:1.0.1")
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
-    implementation("com.google.accompanist:accompanist-permissions:0.34.0")
-    implementation("com.google.accompanist:accompanist-drawablepainter:0.36.0")
-    implementation("com.patrykandpatrick.vico:compose-m3:2.0.3")
+    implementation("com.google.accompanist:accompanist-permissions:0.37.3")
+    implementation("com.google.accompanist:accompanist-drawablepainter:0.37.3")
+    implementation("com.patrykandpatrick.vico:compose-m3:2.1.3")
 
     // core
     implementation("io.github.mflisar.composepreferences:core:$composepreferences")
@@ -215,6 +215,6 @@ dependencies {
 
     implementation("sh.calvin.reorderable:reorderable:2.1.1")
 
-    implementation("dev.shreyaspatil:capturable:2.1.0")
-    implementation("me.saket.telephoto:zoomable-image-coil3:0.14.0")
+    implementation("dev.shreyaspatil:capturable:3.0.1")
+    implementation("me.saket.telephoto:zoomable-image-coil3:0.17.0")
 }

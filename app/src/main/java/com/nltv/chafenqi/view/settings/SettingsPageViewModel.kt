@@ -29,8 +29,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
+import kotlin.time.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
@@ -38,6 +38,7 @@ import kotlinx.datetime.format.FormatStringsInDatetimeFormats
 import kotlinx.datetime.format.byUnicodePattern
 import kotlinx.datetime.toLocalDateTime
 import java.util.concurrent.Executor
+import kotlin.time.ExperimentalTime
 
 data class SettingsUiState(
     val sponsorList: List<String> = listOf(),
@@ -117,7 +118,7 @@ class SettingsPageViewModel : ViewModel() {
         }
     }
 
-    @OptIn(FormatStringsInDatetimeFormats::class)
+    @OptIn(FormatStringsInDatetimeFormats::class, ExperimentalTime::class)
     fun updateUserPremiumTime() {
         viewModelScope.launch {
             val time = CFQServer.apiCheckPremiumTime(user.token)

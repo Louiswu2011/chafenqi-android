@@ -50,8 +50,6 @@ import androidx.navigation.NavController
 import com.nltv.chafenqi.model.team.TeamBasicInfo
 import com.nltv.chafenqi.view.home.leaderboard.HomeLeaderboardPageViewModel
 import com.nltv.chafenqi.view.module.InfoBlock
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
@@ -62,8 +60,10 @@ import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import java.time.YearMonth
 import java.util.Calendar
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
 @Composable
 fun HomeTeamLeaderboardPage(navController: NavController) {
     val model: HomeTeamLeaderboardViewModel = viewModel()
