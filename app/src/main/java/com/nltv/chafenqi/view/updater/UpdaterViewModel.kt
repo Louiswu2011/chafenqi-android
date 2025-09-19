@@ -37,6 +37,7 @@ import androidx.core.net.toUri
 import java.util.Locale
 
 const val PORTAL_ADDRESS = "http://43.139.107.206:9030/"
+const val ALTERNATIVE_PORTAL_ADDRESS = "http://chafenqi.nltv.online/"
 
 data class UpdaterUiState(
     val maiServerStat: String = "暂无数据",
@@ -215,8 +216,9 @@ class UpdaterViewModel : ViewModel() {
         }
     }
 
-    fun buildUri(mode: Int): String {
-        return PORTAL_ADDRESS.toUri()
+    fun buildUri(mode: Int, useAlternativeUrl: Boolean): String {
+        val address = if (useAlternativeUrl) ALTERNATIVE_PORTAL_ADDRESS else PORTAL_ADDRESS
+        return address.toUri()
             .buildUpon()
             .appendPath("upload")
             .appendPath(if (mode == 0) "chunithm" else "maimai")

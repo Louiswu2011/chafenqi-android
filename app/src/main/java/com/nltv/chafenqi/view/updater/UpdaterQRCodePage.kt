@@ -23,18 +23,22 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.nltv.chafenqi.R
 import com.nltv.chafenqi.SCREEN_PADDING
 import com.nltv.chafenqi.extension.nameplateChunithmBottomColor
 import com.nltv.chafenqi.extension.nameplateMaimaiBottomColor
+import com.nltv.chafenqi.storage.SettingsStore
 import io.github.alexzhirkevich.qrose.options.QrBrush
 import io.github.alexzhirkevich.qrose.options.QrLogoPadding
 import io.github.alexzhirkevich.qrose.options.QrLogoShape
@@ -51,7 +55,12 @@ fun UpdaterQRCodePage(snackbarHostState: SnackbarHostState) {
     val logoPainter = painterResource(id = R.drawable.app_icon)
     val pagerState = rememberPagerState { 2 }
 
-    val maiQrCodePainter = rememberQrCodePainter(model.buildUri(1)) {
+    val context = LocalContext.current
+    val store = SettingsStore(context)
+
+    val shouldUseAlternativeUrl by store.uploadShouldUseAlternativeUrl.collectAsStateWithLifecycle(initialValue = false)
+
+    val maiQrCodePainter = rememberQrCodePainter(model.buildUri(1, shouldUseAlternativeUrl)) {
         logo {
             painter = logoPainter
             padding = QrLogoPadding.Natural(.1f)
@@ -67,7 +76,7 @@ fun UpdaterQRCodePage(snackbarHostState: SnackbarHostState) {
             dark = QrBrush.solid(nameplateMaimaiBottomColor)
         }
     }
-    val chuQrCodePainter = rememberQrCodePainter(model.buildUri(0)) {
+    val chuQrCodePainter = rememberQrCodePainter(model.buildUri(0, shouldUseAlternativeUrl)) {
         logo {
             painter = logoPainter
             padding = QrLogoPadding.Natural(.1f)

@@ -17,6 +17,8 @@ class SettingsStore(private val context: Context) {
 
         private val uploadShouldAutoJumpKey = booleanPreferencesKey("uploadShouldAutoJump")
 
+        private val uploadShouldUseAlternativeUrlKey = booleanPreferencesKey("uploadShouldUseAlternativeUrl")
+
         private val homeArrangementKey = stringPreferencesKey("homeArrangement")
 
         private val infoLevelsChunithmDefaultLevelKey =
@@ -35,6 +37,14 @@ class SettingsStore(private val context: Context) {
 
     var uploadShouldAutoJump: Flow<Boolean> =
         context.settingsStore.data.map { it[uploadShouldAutoJumpKey] ?: false }
+        private set
+
+    suspend fun setUploadShouldUseAlternativeUrl(value: Boolean) {
+        context.settingsStore.edit { it[uploadShouldUseAlternativeUrlKey] = value }
+    }
+
+    var uploadShouldUseAlternativeUrl: Flow<Boolean> =
+        context.settingsStore.data.map { it[uploadShouldUseAlternativeUrlKey] ?: false }
         private set
 
     suspend fun setUploadShouldAutoJump(value: Boolean) {

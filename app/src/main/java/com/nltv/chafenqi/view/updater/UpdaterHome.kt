@@ -125,8 +125,8 @@ fun UpdaterHomePage(navController: NavController) {
                 UpdaterProxyGroup(snackbarHostState)
                 PreferenceDivider()
 
-                UpdaterQuickActionsGroup(snackbarHostState)
-                PreferenceDivider()
+//                UpdaterQuickActionsGroup(snackbarHostState)
+//                PreferenceDivider()
 
                 UpdaterClipboardGroup(snackbarHostState)
                 PreferenceDivider()
@@ -200,6 +200,11 @@ fun PreferenceGroupScope.UpdaterClipboardGroup(snackbarHostState: SnackbarHostSt
     val clipboardManager = LocalClipboard.current
     val scope = rememberCoroutineScope()
 
+    val context = LocalContext.current
+    val store = SettingsStore(context)
+
+    val shouldUseAlternativeUrl by store.uploadShouldUseAlternativeUrl.collectAsStateWithLifecycle(initialValue = false)
+
     fun makeToast() {
         scope.launch { snackbarHostState.showSnackbar("已复制到剪贴板") }
     }
@@ -209,7 +214,7 @@ fun PreferenceGroupScope.UpdaterClipboardGroup(snackbarHostState: SnackbarHostSt
         PreferenceButton(
             onClick = {
                 scope.launch {
-                    clipboardManager.setClipEntry(ClipEntry(ClipData.newPlainText("舞萌DX链接", model.buildUri(1))))
+                    clipboardManager.setClipEntry(ClipEntry(ClipData.newPlainText("舞萌DX链接", model.buildUri(1, shouldUseAlternativeUrl))))
                 }
                 makeToast()
             },
@@ -219,7 +224,7 @@ fun PreferenceGroupScope.UpdaterClipboardGroup(snackbarHostState: SnackbarHostSt
         PreferenceButton(
             onClick = {
                 scope.launch {
-                    clipboardManager.setClipEntry(ClipEntry(ClipData.newPlainText("中二节奏链接", model.buildUri(0))))
+                    clipboardManager.setClipEntry(ClipEntry(ClipData.newPlainText("中二节奏链接", model.buildUri(0, shouldUseAlternativeUrl))))
                 }
                 makeToast()
             },
@@ -311,6 +316,7 @@ fun PreferenceGroupScope.UpdaterSettingsGroup(
     val scope = rememberCoroutineScope()
 
     val store = SettingsStore(context)
+
     var shouldForward by rememberSaveable {
         mutableStateOf(false)
     }
@@ -318,6 +324,7 @@ fun PreferenceGroupScope.UpdaterSettingsGroup(
         mutableStateOf(false)
     }
     val shouldAutoJump by store.uploadShouldAutoJump.collectAsStateWithLifecycle(initialValue = false)
+    val shouldUseAlternativeUrl by store.uploadShouldUseAlternativeUrl.collectAsStateWithLifecycle(initialValue = false)
 
     LaunchedEffect(Unit) {
         isUploading = true
@@ -326,6 +333,17 @@ fun PreferenceGroupScope.UpdaterSettingsGroup(
     }
 
     PreferenceSection(title = "设置") {
+        PreferenceBool(
+            value = shouldUseAlternativeUrl,
+            onValueChange = { newValue ->
+                scope.launch {
+                    store.setUploadShouldUseAlternativeUrl(newValue)
+                }
+            },
+            title = "使用备用传分地址",
+            subtitle = "可在传分链接被微信拦截时使用"
+        )
+
         PreferenceBool(
             value = shouldForward,
             onValueChange = { newValue ->
