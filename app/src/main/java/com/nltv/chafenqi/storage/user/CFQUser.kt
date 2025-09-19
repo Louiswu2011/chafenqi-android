@@ -214,9 +214,9 @@ object CFQUser {
 
         object Aux {
             var bestList = listOf<UserChunithmRatingListEntry>()
-            var recentList = listOf<UserChunithmRatingListEntry>()
+            var newList = listOf<UserChunithmRatingListEntry>()
             var bestRating: Double = 0.0
-            var recentRating: Double = 0.0
+            var newRating: Double = 0.0
             var updateTime: String = ""
 
             val recommendList = mutableListOf<ChunithmRecentLineup>()
@@ -224,9 +224,9 @@ object CFQUser {
 
             fun reset() {
                 bestList = listOf()
-                recentList = listOf()
+                newList = listOf()
                 bestRating = 0.0
-                recentRating = 0.0
+                newRating = 0.0
                 updateTime = ""
                 recommendList.clear()
                 levelInfo.clear()
@@ -244,7 +244,7 @@ object CFQUser {
                 rating.best.forEach {
                     it.associatedMusicEntry = it.associatedMusicEntry()
                 }
-                rating.recent.forEach {
+                rating.new.forEach {
                     it.associatedMusicEntry = it.associatedMusicEntry()
                 }
                 rating.candidate.forEach {
@@ -254,21 +254,21 @@ object CFQUser {
                 recent = recent.filterNot { it.associatedMusicEntry == ChunithmMusicEntry() }
                 rating = rating.copy(
                     best = rating.best.filterNot { it.associatedMusicEntry == ChunithmMusicEntry() },
-                    recent = rating.recent.filterNot { it.associatedMusicEntry == ChunithmMusicEntry() },
+                    new = rating.new.filterNot { it.associatedMusicEntry == ChunithmMusicEntry() },
                     candidate = rating.candidate.filterNot { it.associatedMusicEntry == ChunithmMusicEntry() }
                 )
 
                 val bestSlice = rating.best
-                val recentSlice = rating.recent
+                val newSlice = rating.new
                 Aux.bestList = bestSlice
-                Aux.recentList = recentSlice
+                Aux.newList = newSlice
                 Aux.bestRating =
                     if (bestSlice.isEmpty()) 0.0 else {
                         (bestSlice.fold(0.0) { acc, chunithmRatingEntry -> acc + chunithmRatingEntry.rating() } / 30).cutForRating()
                     }
-                Aux.recentRating =
-                    if (recentSlice.isEmpty()) 0.0 else {
-                        (recentSlice.fold(0.0) { acc, chunithmRatingEntry -> acc + chunithmRatingEntry.rating() } / 10).cutForRating()
+                Aux.newRating =
+                    if (newSlice.isEmpty()) 0.0 else {
+                        (newSlice.fold(0.0) { acc, chunithmRatingEntry -> acc + chunithmRatingEntry.rating() } / 20).cutForRating()
                     }
 
 

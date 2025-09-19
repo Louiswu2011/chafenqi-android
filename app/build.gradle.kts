@@ -213,7 +213,7 @@ dependencies {
 
     implementation("me.zhanghai.compose.preference:library:1.1.1")
 
-    implementation("sh.calvin.reorderable:reorderable:2.1.1")
+    implementation("sh.calvin.reorderable:reorderable:3.0.0")
 
     implementation("dev.shreyaspatil:capturable:3.0.1")
     implementation("me.saket.telephoto:zoomable-image-coil3:0.17.0")

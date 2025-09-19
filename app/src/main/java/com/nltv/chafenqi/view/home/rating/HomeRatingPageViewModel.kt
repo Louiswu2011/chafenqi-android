@@ -10,6 +10,7 @@ import com.nltv.chafenqi.model.user.maimai.UserMaimaiBestScoreEntry
 import com.nltv.chafenqi.storage.persistent.CFQPersistentData
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.view.home.HomeNavItem
+import java.util.Locale
 
 class HomeRatingPageViewModel : ViewModel() {
     var user = CFQUser
@@ -22,10 +23,10 @@ class HomeRatingPageViewModel : ViewModel() {
     var maiNewRating: String = ""
 
     var chuBestList: List<UserChunithmRatingListEntry> = listOf()
-    var chuRecentList: List<UserChunithmRatingListEntry> = listOf()
+    var chuNewList: List<UserChunithmRatingListEntry> = listOf()
     var chuRating: String = ""
     var chuBestRating: String = ""
-    var chuRecentRating: String = ""
+    var chuNewRating: String = ""
 
     var canNavigate = false
     var showShareDialog by mutableStateOf(false)
@@ -44,10 +45,10 @@ class HomeRatingPageViewModel : ViewModel() {
             0 -> {
                 val chunithm = user.chunithm
                 chuBestList = chunithm.aux.bestList
-                chuRecentList = chunithm.aux.recentList
-                chuRating = String.format("%.2f", chunithm.info.lastOrNull()?.rating)
-                chuBestRating = String.format("%.2f", chunithm.aux.bestRating)
-                chuRecentRating = String.format("%.2f", chunithm.aux.recentRating)
+                chuNewList = chunithm.aux.newList
+                chuRating = String.format(Locale.getDefault(),"%.2f", chunithm.info.lastOrNull()?.rating)
+                chuBestRating = String.format(Locale.getDefault(),"%.2f", chunithm.aux.bestRating)
+                chuNewRating = String.format(Locale.getDefault(),"%.2f", chunithm.aux.newRating)
             }
         }
     }

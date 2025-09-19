@@ -255,13 +255,13 @@ fun HomePageChunithmNameplate(navController: NavController) {
                 )
                 HomePageNameplateInfoRow(
                     title = "Rating",
-                    content = uiState.rating + " (${uiState.chuMaxRating})"
+                    content = uiState.rating
                 )
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     HomePageNameplateInfoRow(title = "B", content = uiState.chuBestRating)
-                    HomePageNameplateInfoRow(title = "R", content = uiState.chuRecentRating)
+                    HomePageNameplateInfoRow(title = "N", content = uiState.chuNewRating)
                 }
                 HomePageNameplateInfoRow(title = "游玩次数", content = uiState.playCount)
                 Spacer(modifier = Modifier.size(8.dp))

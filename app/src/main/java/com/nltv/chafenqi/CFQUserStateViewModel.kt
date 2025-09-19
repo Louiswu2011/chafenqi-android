@@ -137,15 +137,15 @@ class CFQUserStateViewModel : ViewModel() {
                 chunithm.recent = chunithm.recent.filterNot { it.associatedMusicEntry.isWE }
 
                 val bestFiltered = chunithm.best.filterNot { it.associatedMusicEntry.isWE }
-                val recentFiltered = chunithm.recent.filterNot { it.associatedMusicEntry.isWE }
+                val newFiltered = chunithm.recent.filterNot { it.associatedMusicEntry.isWE }
                 val candidateFiltered = chunithm.rating.candidate.filterNot { it.associatedMusicEntry.isWE }
 
                 if (bestFiltered.size != chunithm.rating.best.size || 
-                    recentFiltered.size != chunithm.rating.recent.size ||
+                    newFiltered.size != chunithm.rating.new.size ||
                     candidateFiltered.size != chunithm.rating.candidate.size) {
                     chunithm.rating = chunithm.rating.copy(
                         best = chunithm.rating.best.filterNot { it.associatedMusicEntry.isWE },
-                        recent = chunithm.rating.recent.filterNot { it.associatedMusicEntry.isWE },
+                        new = chunithm.rating.new.filterNot { it.associatedMusicEntry.isWE },
                         candidate = chunithm.rating.candidate.filterNot { it.associatedMusicEntry.isWE }
                     )
                 }

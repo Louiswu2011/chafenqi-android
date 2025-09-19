@@ -81,10 +81,15 @@ data class HomePageUiState(
     val chuRecentLineup: List<ChunithmRecentLineup> = listOf(),
     val chuMaxRating: String = "",
     val chuBestRating: String = "",
-    val chuRecentRating: String = "",
+    val chuNewRating: String = "",
     val chuIndicatorsCount: Int = 0,
+    val chuPastIndicatorsCount: Int = 0,
+    val chuNewIndicatorsCount: Int = 0,
     val chuBestRatingList: List<UserChunithmRatingListEntry> = listOf(),
+    val chuNewRatingList: List<UserChunithmRatingListEntry> = listOf(),
     val chuCurrentSelectedRatingEntry: UserChunithmRatingListEntry = UserChunithmRatingListEntry(),
+    val chuCurrentSelectedRatingEntryType: String = "",
+    val chuCurrentSelectedRatingEntryRank: Int = -1,
 
     val currentSelectedIndicatorIndex: Int = -1,
     val indicatorHeights: MutableList<Dp> = mutableListOf(),
@@ -111,7 +116,7 @@ class HomePageViewModel : ViewModel() {
     val uiState: StateFlow<HomePageUiState> = _uiState.asStateFlow()
 
     private val maiIndicatorsCount = user.maimai.aux.pastBest.size + user.maimai.aux.newBest.size
-    private val chuIndicatorsCount = user.chunithm.aux.bestList.size
+    private val chuIndicatorsCount = user.chunithm.aux.bestList.size + user.chunithm.aux.newList.size
 
     private var previousIndex = -1
 
@@ -187,20 +192,19 @@ class HomePageViewModel : ViewModel() {
                             canNavigateToRecentList = user.chunithm.recent.isNotEmpty(),
                             canNavigateToRatingList = !user.chunithm.rating.isEmpty,
                             chuRecentLineup = user.chunithm.aux.recommendList.take(3),
-                            chuMaxRating = String.format(
-                                Locale.getDefault(),
-                                "%.2f",
-                                user.chunithm.info.lastOrNull()?.maxRating
-                            ),
+                            chuMaxRating = "",
                             chuBestRating = String.format(Locale.getDefault(), "%.2f", user.chunithm.aux.bestRating),
-                            chuRecentRating = String.format(Locale.getDefault(), "%.2f", user.chunithm.aux.recentRating),
-                            chuIndicatorsCount = user.chunithm.aux.bestList.size,
+                            chuNewRating = String.format(Locale.getDefault(), "%.2f", user.chunithm.aux.newRating),
+                            chuIndicatorsCount = user.chunithm.aux.bestList.size + user.chunithm.aux.newList.size,
                             chuBestRatingList = user.chunithm.aux.bestList,
+                            chuNewRatingList = user.chunithm.aux.newList,
                             indicatorHeights = MutableList(chuIndicatorsCount) { 20.dp },
                             chuCurrentSelectedRatingEntry = if (user.chunithm.aux.bestList.isNotEmpty()) user.chunithm.aux.bestList.first() else UserChunithmRatingListEntry(),
+                            chuCurrentSelectedRatingEntryType = "旧曲",
+                            chuCurrentSelectedRatingEntryRank = 1,
                             currentSelectedIndicatorIndex = 0,
                             canOpenChunithmInfo = user.isPremium && !user.chunithm.isExtraEmpty,
-                            shouldShowRatingBar = user.chunithm.aux.bestList.isNotEmpty(),
+                            shouldShowRatingBar = user.chunithm.aux.bestList.isNotEmpty() || user.chunithm.aux.newList.isNotEmpty(),
                             currentTeamId = currentTeamId,
                             team = if (currentTeamId != null) CFQTeamServer.fetchTeamInfo(user.token, user.mode, currentTeamId) else null,
                         )
@@ -261,6 +265,10 @@ class HomePageViewModel : ViewModel() {
             val maiPastLastIndex = user.maimai.aux.pastBest.lastIndex
             val maiPosition = if (position > maiPastLastIndex) position - maiPastSize else position
 
+            val chuPastSize = user.chunithm.aux.bestList.size
+            val chuPastLastIndex = user.chunithm.aux.bestList.lastIndex
+            val chuPosition = if (position > chuPastLastIndex) position - chuPastSize else position
+
             if (position != previousIndex) {
                 if (user.mode == 1) {
                     _uiState.update { currentValue ->
@@ -275,7 +283,9 @@ class HomePageViewModel : ViewModel() {
                     _uiState.update { currentValue ->
                         currentValue.copy(
                             currentSelectedIndicatorIndex = position,
-                            chuCurrentSelectedRatingEntry = user.chunithm.aux.bestList[position]
+                            chuCurrentSelectedRatingEntry = if (position > chuPastLastIndex) user.chunithm.aux.newList[chuPosition] else user.chunithm.aux.bestList[chuPosition],
+                            chuCurrentSelectedRatingEntryType = if (position > chuPastLastIndex) "新曲" else "旧曲",
+                            chuCurrentSelectedRatingEntryRank = (if (position > chuPastLastIndex) position - chuPastSize else position) + 1
                         )
                     }
                 }

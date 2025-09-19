@@ -53,6 +53,7 @@ import com.nltv.chafenqi.model.user.maimai.UserMaimaiBestScoreEntry
 import com.nltv.chafenqi.view.module.RatingBadge
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
 import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -232,6 +233,7 @@ fun HomeRatingMaimaiEntry(entry: UserMaimaiBestScoreEntry, index: Int, navContro
                     Text(
                         text = "${
                             String.format(
+                                Locale.getDefault(),
                                 "%.1f",
                                 entry.associatedMusicEntry.constants[entry.levelIndex]
                             )
@@ -253,7 +255,7 @@ fun HomeRatingMaimaiEntry(entry: UserMaimaiBestScoreEntry, index: Int, navContro
                     modifier = Modifier.fillMaxWidth(fraction = 0.6f)
                 )
                 Text(
-                    text = "${String.format("%.4f", entry.achievements)}%",
+                    text = "${String.format(Locale.getDefault(),"%.4f", entry.achievements)}%",
                     maxLines = 1,
                     softWrap = false
                 )
@@ -288,7 +290,7 @@ fun HomeRatingChunithmList(navController: NavController) {
                     verticalAlignment = Alignment.Bottom
                 ) {
                     Text(text = model.chuRating, fontWeight = FontWeight.Bold, fontSize = 24.sp)
-                    Text(text = "Best ${model.chuBestRating} / Recent ${model.chuRecentRating}")
+                    Text(text = "Best ${model.chuBestRating} / Recent ${model.chuNewRating}")
                 }
             }
             item {
@@ -297,7 +299,7 @@ fun HomeRatingChunithmList(navController: NavController) {
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "最佳成绩 B30", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                    Text(text = "旧曲成绩 B30", fontWeight = FontWeight.Bold, fontSize = 18.sp)
                     Text(text = if (bestExpanded) "收起" else "展开", Modifier.clickable {
                         bestExpanded = !bestExpanded
                     }, color = MaterialTheme.colorScheme.primary)
@@ -324,7 +326,7 @@ fun HomeRatingChunithmList(navController: NavController) {
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "最近成绩 R10", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                    Text(text = "新曲成绩 N20", fontWeight = FontWeight.Bold, fontSize = 18.sp)
                     Text(text = if (recentExpanded) "收起" else "展开", Modifier.clickable {
                         recentExpanded = !recentExpanded
                     }, color = MaterialTheme.colorScheme.primary)
@@ -332,13 +334,13 @@ fun HomeRatingChunithmList(navController: NavController) {
             }
             if (recentExpanded) {
                 items(
-                    count = model.chuRecentList.size,
+                    count = model.chuNewList.size,
                     key = { index ->
-                        "${model.chuRecentList[index].musicId}${model.chuRecentList[index].levelIndex}R$index"
+                        "${model.chuNewList[index].musicId}${model.chuNewList[index].levelIndex}R$index"
                     },
                     itemContent = { index ->
                         HomeRatingChunithmEntry(
-                            entry = model.chuRecentList[index],
+                            entry = model.chuNewList[index],
                             index = index,
                             navController = navController
                         )
@@ -389,10 +391,11 @@ fun HomeRatingChunithmEntry(entry: UserChunithmRatingListEntry, index: Int, navC
                     Text(
                         text = "${
                             String.format(
+                                Locale.getDefault(),
                                 "%.1f",
                                 entry.associatedMusicEntry.charts.constants[entry.levelIndex]
                             )
-                        }/${String.format("%.2f", entry.rating().cutForRating())}",
+                        }/${String.format(Locale.getDefault(),"%.2f", entry.rating().cutForRating())}",
                         fontWeight = FontWeight.Bold
                     )
                 }

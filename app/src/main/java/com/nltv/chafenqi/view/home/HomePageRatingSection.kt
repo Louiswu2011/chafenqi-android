@@ -60,6 +60,7 @@ import com.nltv.chafenqi.view.module.RatingBadge
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
 import com.nltv.chafenqi.view.songlist.maimaiDifficultyColors
 import me.zhanghai.compose.preference.LocalPreferenceFlow
+import java.util.Locale
 
 @Composable
 fun HomePageRatingSection(navController: NavController) {
@@ -322,6 +323,7 @@ fun HomePageMaimaiRatingSelection(navController: NavController) {
                     Text(
                         text = "${
                             String.format(
+                                Locale.getDefault(),
                                 "%.1f",
                                 uiState.maiCurrentSelectedRatingEntry.associatedMusicEntry.constants[uiState.maiCurrentSelectedRatingEntry.levelIndex]
                             )
@@ -344,6 +346,7 @@ fun HomePageMaimaiRatingSelection(navController: NavController) {
                 )
                 Text(
                     text = String.format(
+                        Locale.getDefault(),
                         "%.4f",
                         uiState.maiCurrentSelectedRatingEntry.achievements
                     ) + "%",
@@ -399,14 +402,15 @@ fun HomePageChunithmRatingSelection(navController: NavController) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(SCREEN_PADDING)
                 ) {
-                    Text(text = "#${uiState.currentSelectedIndicatorIndex + 1}")
+                    Text(text = "${uiState.chuCurrentSelectedRatingEntryType} #${uiState.chuCurrentSelectedRatingEntryRank}")
                     Text(
                         text = "${
                             String.format(
+                                Locale.getDefault(),
                                 "%.1f",
                                 uiState.chuCurrentSelectedRatingEntry.associatedMusicEntry.charts.constants[uiState.chuCurrentSelectedRatingEntry.levelIndex]
                             )
-                        }/${String.format("%.2f", uiState.chuCurrentSelectedRatingEntry.rating())}",
+                        }/${String.format(Locale.getDefault(),"%.2f", uiState.chuCurrentSelectedRatingEntry.rating())}",
                         fontWeight = FontWeight.Bold
                     )
                 }

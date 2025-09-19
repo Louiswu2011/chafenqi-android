@@ -56,7 +56,8 @@ var CHUNITHM_LEVEL_STRINGS = listOf(
     "13+",
     "14",
     "14+",
-    "15"
+    "15",
+    "15+"
 )
 val RATE_STRINGS_MAIMAI = listOf("其他", "AAA", "S", "S+", "SS", "SS+", "SSS", "SSS+").reversed()
 val RATE_STRINGS_CHUNITHM = listOf("其他", "S", "S+", "SS", "SS+", "SSS", "SSS+").reversed()
