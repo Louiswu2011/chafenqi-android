@@ -290,7 +290,7 @@ fun HomeRatingChunithmList(navController: NavController) {
                     verticalAlignment = Alignment.Bottom
                 ) {
                     Text(text = model.chuRating, fontWeight = FontWeight.Bold, fontSize = 24.sp)
-                    Text(text = "Best ${model.chuBestRating} / Recent ${model.chuNewRating}")
+                    Text(text = "Best ${model.chuBestRating} / New ${model.chuNewRating}")
                 }
             }
             item {
