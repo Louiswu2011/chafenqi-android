@@ -973,6 +973,26 @@ class CFQServer {
             }
         }
 
+        suspend fun apiResourceChartList(
+            musicId: Int
+        ): List<Int> {
+            try {
+                val response =
+                    fetchFromServer(
+                        "GET",
+                        "api/resource/chunithm/chart/list",
+                        queries =
+                            mapOf(
+                                "musicId" to musicId.toString(),
+                            ),
+                    )
+                return Json.decodeFromString<List<Int>>(response.bodyAsText())
+            } catch (e: Exception) {
+                Log.e("CFQServer", "Failed to fetch chart list: ${e.localizedMessage}")
+                return emptyList()
+            }
+        }
+
         private fun handleErrorCode(errorCode: String) {
             when (errorCode) {
                 "MISMATCH" -> throw CredentialsMismatchException()

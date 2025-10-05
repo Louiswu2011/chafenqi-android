@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
@@ -28,6 +29,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -45,9 +47,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -66,6 +70,7 @@ import coil3.compose.SubcomposeAsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.nltv.chafenqi.SCREEN_PADDING
+import com.nltv.chafenqi.extension.toChunithmDifficultyString
 import com.nltv.chafenqi.view.home.HomeNavItem
 import com.nltv.chafenqi.view.songlist.comment.CommentCard
 import kotlinx.coroutines.launch
@@ -361,6 +366,7 @@ fun ChunithmChartCard() {
     val context = LocalContext.current
     val state by model.uiState.collectAsStateWithLifecycle()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var expanded by remember { mutableStateOf(false) }
 
     val diff by rememberSaveable {
         mutableIntStateOf(3)
@@ -381,13 +387,42 @@ fun ChunithmChartCard() {
 
     Column {
         Row(
-            modifier = Modifier.padding(bottom = 10.dp)
+            modifier = Modifier.padding(bottom = 10.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = "谱面预览",
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleMedium
             )
+
+            if (state.selectedDiff != -1) {
+                Box {
+                    TextButton(onClick = {
+                        expanded = !expanded
+                    }) {
+                        Text(state.selectedDiff.toChunithmDifficultyString())
+                    }
+
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        state.availableDiffs.forEach { diff ->
+                            DropdownMenuItem(
+                                text = { Text(diff.toChunithmDifficultyString()) },
+                                onClick = {
+                                    model.updateChartSelection(diff)
+                                    expanded = false
+                                }
+                            )
+                        }
+                    }
+                }
+            } else {
+                CircularProgressIndicator()
+            }
         }
 
         Box(

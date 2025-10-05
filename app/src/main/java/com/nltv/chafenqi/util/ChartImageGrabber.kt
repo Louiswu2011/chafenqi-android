@@ -8,7 +8,7 @@ object ChartImageGrabber {
         var diffIndex: Int = 3
     )
 
-    private val REQUEST_URL = "${CFQServer.defaultPath}/api/chunithm/preview"
+    private val REQUEST_URL = "${CFQServer.defaultPath}/api/resource/chunithm/chart/image"
     private val types = listOf("bar", "bg", "chart")
 
     fun getChartPreviewImageUrls(chartInfo: ChartInfo): List<String> {

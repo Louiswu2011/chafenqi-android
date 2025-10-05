@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil3.Image
 import com.nltv.chafenqi.data.Comment
+import com.nltv.chafenqi.extension.toChunithmDifficultyString
 import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.model.user.chunithm.UserChunithmBestScoreEntry
 import com.nltv.chafenqi.model.user.maimai.UserMaimaiBestScoreEntry
@@ -58,6 +59,8 @@ data class SongDetailUiState(
     var genre: String = "",
     var maiDiffInfos: List<MaimaiDifficultyInfo> = listOf(),
     var chuDiffInfos: List<ChunithmDifficultyInfo> = listOf(),
+    var availableDiffs: List<Int> = emptyList(),
+    var selectedDiff: Int = -1
 )
 
 class SongDetailViewModel : ViewModel() {
@@ -85,7 +88,7 @@ class SongDetailViewModel : ViewModel() {
             if (chuMusic == null) return
 
             viewModelScope.launch {
-                _uiState.update {
+                _uiState.update { it ->
                     it.copy(
                         coverUrl = "${CFQServer.defaultPath}/api/resource/chunithm/cover?musicId=${chuMusic?.musicId}",
                         title = chuMusic?.title ?: "",
@@ -107,7 +110,19 @@ class SongDetailViewModel : ViewModel() {
                                     )
                                 } else null
                             }
-                        }
+                        },
+                        availableDiffs =
+                            CFQServer
+                                .apiResourceChartList(chuMusic!!.musicId)
+                                .also { list ->
+                                    val selected = list.firstOrNull() ?: -1
+                                    _uiState.update { state ->
+                                        state.copy(
+                                            selectedDiff = selected
+                                        )
+                                    }
+                                    updateChartUrls(selected)
+                                }
                     )
                 }
             }
@@ -167,6 +182,15 @@ class SongDetailViewModel : ViewModel() {
                 }
             }
         }
+    }
+
+    fun updateChartSelection(diffIndex: Int) {
+        _uiState.update {
+            it.copy(
+                selectedDiff = diffIndex
+            )
+        }
+        updateChartUrls(diffIndex)
     }
 
     fun updateChartUrls(diffIndex: Int) {

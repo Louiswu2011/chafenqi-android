@@ -362,3 +362,13 @@ fun String.toHalfWidth(): String {
     }
     return builder.toString()
 }
+
+fun Int.toChunithmDifficultyString() =
+    when(this) {
+        0 -> "Basic"
+        1 -> "Advanced"
+        2 -> "Expert"
+        3 -> "Master"
+        4 -> "Ultima"
+        else -> ""
+    }
