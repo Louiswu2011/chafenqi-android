@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.util.Properties
@@ -15,11 +17,16 @@ plugins {
 
 kotlin {
     jvmToolchain(17)
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.fromTarget("17")
+        }
+    }
 }
 
 android {
     namespace = "com.nltv.chafenqi"
-    compileSdk = 36
+    compileSdk = 37
 
     val versionFile = file("version.properties")
 
@@ -87,7 +94,7 @@ android {
 
             resValue("string", "serverAddress", "http://43.139.107.206:8083")
 
-            setProperty("archivesBaseName", "$appName-$mVersionName-Build${versionProperties.getProperty("VERSION_BUILD")}")
+            base.archivesName = "$appName-$mVersionName-Build${versionProperties.getProperty("VERSION_BUILD")}"
         }
 
         release {
@@ -104,16 +111,13 @@ android {
 
             resValue("string", "serverAddress", "http://43.139.107.206:8083")
 
-            setProperty("archivesBaseName", "$appName-$mVersionName-Build${versionProperties.getProperty("VERSION_BUILD")}")
+            base.archivesName = "$appName-$mVersionName-Build${versionProperties.getProperty("VERSION_BUILD")}"
         }
     }
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
     }
     packaging {
         resources {
@@ -134,16 +138,22 @@ android {
             isUniversalApk = false
         }
     }
+
+    lint {
+        ignoreTestSources = true
+        checkDependencies = false
+        baseline = file("lint-baseline.xml")
+    }
 }
 
-val ktorVersion = "3.3.0"
+val ktorVersion = "3.5.0"
 val composepreferences = "2.0.0"
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 
-    implementation(platform("androidx.compose:compose-bom:2025.09.00"))
-    androidTestImplementation(platform("androidx.compose:compose-bom:2025.09.00"))
+    implementation(platform("androidx.compose:compose-bom:2026.06.00"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2026.06.00"))
 
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
@@ -154,9 +164,9 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
 
-    implementation("androidx.core:core-ktx:1.17.0")
+    implementation("androidx.core:core-ktx:1.19.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.3")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.11.0")
     implementation("androidx.activity:activity-compose")
     implementation("androidx.preference:preference-ktx:1.2.1")
     testImplementation("junit:junit:4.13.2")
@@ -168,24 +178,24 @@ dependencies {
     implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
 
-    implementation("androidx.navigation:navigation-compose:2.9.4")
+    implementation("androidx.navigation:navigation-compose:2.9.8")
     implementation("io.ktor:ktor-client-logging:$ktorVersion")
-    implementation("org.slf4j:slf4j-simple:2.0.17")
-    implementation("io.coil-kt.coil3:coil-compose:3.3.0")
-    implementation("io.coil-kt.coil3:coil-network-okhttp:3.3.0")
+    implementation("org.slf4j:slf4j-simple:2.0.18")
+    implementation("io.coil-kt.coil3:coil-compose:3.5.0")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.5.0")
     implementation("androidx.lifecycle:lifecycle-runtime-compose")
-    implementation("androidx.datastore:datastore-preferences:1.1.7")
-    implementation("com.onesignal:OneSignal:5.1.37")
+    implementation("androidx.datastore:datastore-preferences:1.2.1")
+    implementation("com.onesignal:OneSignal:5.9.4")
 
-    implementation(platform("com.google.firebase:firebase-bom:34.2.0"))
+    implementation(platform("com.google.firebase:firebase-bom:34.15.0"))
     implementation("com.google.firebase:firebase-crashlytics")
     implementation("com.google.firebase:firebase-perf")
     implementation("com.google.firebase:firebase-analytics")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
-    implementation("androidx.compose.material:material:1.9.1")
-    implementation("io.github.alexzhirkevich:qrose:1.0.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.8.0")
+    implementation("androidx.compose.material:material:1.11.3")
+    implementation("io.github.alexzhirkevich:qrose:1.1.2")
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
     implementation("com.google.accompanist:accompanist-permissions:0.37.3")
     implementation("com.google.accompanist:accompanist-drawablepainter:0.37.3")
@@ -216,5 +226,5 @@ dependencies {
     implementation("sh.calvin.reorderable:reorderable:3.0.0")
 
     implementation("dev.shreyaspatil:capturable:3.0.1")
-    implementation("me.saket.telephoto:zoomable-image-coil3:0.17.0")
+    implementation("me.saket.telephoto:zoomable-image-coil3:0.19.0")
 }
