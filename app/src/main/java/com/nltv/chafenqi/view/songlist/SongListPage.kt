@@ -119,7 +119,7 @@ fun SongListPage(navController: NavController) {
             if (!model.isSearchBarActive) {
                 FloatingActionButton(onClick = {
                     coroutineScope.launch {
-                        listState.animateScrollToItem(0)
+                        listState.scrollToItem(0)
                     }
                 }, elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(
                     defaultElevation = 5.dp
