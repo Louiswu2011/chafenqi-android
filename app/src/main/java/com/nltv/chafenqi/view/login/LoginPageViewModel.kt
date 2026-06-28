@@ -22,7 +22,8 @@ import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.networking.CFQServerSideException
 import com.nltv.chafenqi.networking.CredentialsMismatchException
 import com.nltv.chafenqi.networking.UserNotFoundException
-import com.nltv.chafenqi.storage.persistent.CFQPersistentData
+import com.nltv.chafenqi.ChafenqiApplication
+import com.nltv.chafenqi.storage.repository.SongListRepository
 import com.nltv.chafenqi.storage.user.CFQUser
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -178,12 +179,13 @@ class LoginPageViewModel : ViewModel() {
 
     private suspend fun loadPersistentStorage(context: Context, shouldValidate: Boolean) {
         updateLoginPromptText("加载歌曲列表...")
-        CFQPersistentData.loadData(shouldValidate = shouldValidate, context = context)
+        val repo = ChafenqiApplication.getRepository()
+        repo.refreshFromServer(shouldValidate = shouldValidate, context = context)
     }
 
     fun clearPersistentStorage(context: Context) {
         viewModelScope.launch {
-            CFQPersistentData.clearData(context)
+            ChafenqiApplication.getRepository().clearAll()
         }
     }
 

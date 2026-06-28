@@ -15,7 +15,8 @@ data class UserMaimaiBestScoreEntry(
     val judgeStatus: String = "",
     val syncStatus: String = "",
     val lastModified: Long = 0L,
-    @Transient var associatedMusicEntry: MaimaiMusicEntry = MaimaiMusicEntry()
+    @Transient var associatedMusicEntry: MaimaiMusicEntry = MaimaiMusicEntry(),
+    @Transient var cachedConstant: Double = 0.0
 ) {
     val level: String
         get() = associatedMusicEntry.level.getOrElse(levelIndex) { "" }

@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nltv.chafenqi.ChafenqiApplication
 import com.nltv.chafenqi.extension.CHUNITHM_GENRE_STRINGS
 import com.nltv.chafenqi.extension.CHUNITHM_LEVEL_STRINGS
 import com.nltv.chafenqi.extension.CHUNITHM_VERSION_STRINGS
@@ -14,7 +15,7 @@ import com.nltv.chafenqi.extension.MAIMAI_GENRE_STRINGS
 import com.nltv.chafenqi.extension.MAIMAI_LEVEL_STRINGS
 import com.nltv.chafenqi.extension.MAIMAI_VERSION_STRINGS
 import com.nltv.chafenqi.extension.toLevelIndex
-import com.nltv.chafenqi.storage.persistent.CFQPersistentData
+import com.nltv.chafenqi.storage.repository.SongListRepository
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import com.nltv.chafenqi.storage.user.CFQUser
@@ -25,19 +26,20 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class SongListUiState(
-    val maiMusicList: List<MaimaiMusicEntry> = CFQPersistentData.Maimai.musicList,
-    val chuMusicList: List<ChunithmMusicEntry> = CFQPersistentData.Chunithm.musicList,
+    val maiMusicList: List<MaimaiMusicEntry> = emptyList(),
+    val chuMusicList: List<ChunithmMusicEntry> = emptyList(),
     val maiSearchResult: List<MaimaiMusicEntry> = listOf(),
     val chuSearchResult: List<ChunithmMusicEntry> = listOf()
 )
 
 class SongListPageViewModel : ViewModel() {
+    private val repo = ChafenqiApplication.getRepository()
     val user = CFQUser
     private val _uiState = MutableStateFlow(SongListUiState())
     val uiState: StateFlow<SongListUiState> = _uiState.asStateFlow()
 
-    val origMaiMusicList = CFQPersistentData.Maimai.musicList
-    val origChuMusicList = CFQPersistentData.Chunithm.musicList
+    val origMaiMusicList get() = repo.maimaiMusicList.value
+    val origChuMusicList get() = repo.chunithmMusicList.value
 
     var searchQuery by mutableStateOf("")
     var isSearchBarActive by mutableStateOf(false)
@@ -83,7 +85,7 @@ class SongListPageViewModel : ViewModel() {
             _uiState.update { currentValue ->
                 when (user.mode) {
                     0 -> {
-                        val filteredList = filterChunithmList(CFQPersistentData.Chunithm.musicList)
+                        val filteredList = filterChunithmList(repo.chunithmMusicList.value)
                         currentValue.copy(
                             chuMusicList = filteredList,
                             chuSearchResult = searchChunithmList(filteredList)
@@ -91,7 +93,7 @@ class SongListPageViewModel : ViewModel() {
                     }
 
                     1 -> {
-                        val filteredList = filterMaimaiList(CFQPersistentData.Maimai.musicList)
+                        val filteredList = filterMaimaiList(repo.maimaiMusicList.value)
                         currentValue.copy(
                             maiMusicList = filteredList,
                             maiSearchResult = searchMaimaiList(filteredList)

@@ -5,6 +5,8 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import com.nltv.chafenqi.storage.db.ChafenqiDatabase
+import com.nltv.chafenqi.storage.repository.SongListRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -13,6 +15,9 @@ val Context.cacheStore: DataStore<Preferences> by preferencesDataStore(name = "c
 // const val ONE_SIGNAL_APP_ID = "61d8cb1c-6de2-4b50-af87-f419b2d24ece"
 
 class ChafenqiApplication : Application() {
+
+    lateinit var songListRepository: SongListRepository
+        private set
 
     init {
         instance = this
@@ -24,10 +29,18 @@ class ChafenqiApplication : Application() {
         fun applicationContext(): Context {
             return requireNotNull(instance).applicationContext
         }
+
+        fun getRepository(): SongListRepository {
+            return (requireNotNull(instance) as ChafenqiApplication).songListRepository
+        }
     }
 
     override fun onCreate() {
         super.onCreate()
+
+        val db = ChafenqiDatabase.getInstance(this)
+        songListRepository = SongListRepository(db)
+        songListRepository.initFromRoom(CoroutineScope(Dispatchers.IO))
 
         // OneSignal setup
         // OneSignal.Debug.logLevel = LogLevel.INFO

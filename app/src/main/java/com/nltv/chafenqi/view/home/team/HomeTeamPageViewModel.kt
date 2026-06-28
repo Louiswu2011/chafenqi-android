@@ -27,7 +27,7 @@ import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.model.team.TeamBasicInfo
 import com.nltv.chafenqi.model.team.TeamInfo
 import com.nltv.chafenqi.networking.CFQTeamServer
-import com.nltv.chafenqi.storage.persistent.CFQPersistentData
+import com.nltv.chafenqi.ChafenqiApplication
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyColors
 import com.nltv.chafenqi.view.songlist.chunithmDifficultyTitles
@@ -132,24 +132,24 @@ class HomeTeamPageViewModel : ViewModel() {
 
     fun getCoverPath(courseTrack: TeamBasicInfo.CourseTrack): String {
        return when (mode) {
-            0 -> { CFQPersistentData.Chunithm.musicList.firstOrNull { it.musicId == courseTrack.musicId.toInt() }?.musicId?.toChunithmCoverPath() ?: return "" }
-            1 -> { CFQPersistentData.Maimai.musicList.firstOrNull { it.musicId == courseTrack.musicId.toInt() }?.coverId?.toMaimaiCoverPath() ?: return "" }
+            0 -> { ChafenqiApplication.getRepository().chunithmMusicList.value.firstOrNull { it.musicId == courseTrack.musicId.toInt() }?.musicId?.toChunithmCoverPath() ?: return "" }
+            1 -> { ChafenqiApplication.getRepository().maimaiMusicList.value.firstOrNull { it.musicId == courseTrack.musicId.toInt() }?.coverId?.toMaimaiCoverPath() ?: return "" }
             else -> ""
         }
     }
 
     fun getTitle(courseTrack: TeamBasicInfo.CourseTrack): String {
         return when (mode) {
-            0 -> CFQPersistentData.Chunithm.musicList.firstOrNull { it.musicId == courseTrack.musicId.toInt() }?.title?: ""
-            1 -> CFQPersistentData.Maimai.musicList.firstOrNull { it.musicId == courseTrack.musicId.toInt() }?.title?: ""
+            0 -> ChafenqiApplication.getRepository().chunithmMusicList.value.firstOrNull { it.musicId == courseTrack.musicId.toInt() }?.title?: ""
+            1 -> ChafenqiApplication.getRepository().maimaiMusicList.value.firstOrNull { it.musicId == courseTrack.musicId.toInt() }?.title?: ""
             else -> ""
         }
     }
 
     fun getArtist(courseTrack: TeamBasicInfo.CourseTrack): String {
         return when (mode) {
-            0 -> CFQPersistentData.Chunithm.musicList.firstOrNull { it.musicId == courseTrack.musicId.toInt() }?.artist?: ""
-            1 -> CFQPersistentData.Maimai.musicList.firstOrNull { it.musicId == courseTrack.musicId.toInt() }?.basicInfo?.artist ?: ""
+            0 -> ChafenqiApplication.getRepository().chunithmMusicList.value.firstOrNull { it.musicId == courseTrack.musicId.toInt() }?.artist?: ""
+            1 -> ChafenqiApplication.getRepository().maimaiMusicList.value.firstOrNull { it.musicId == courseTrack.musicId.toInt() }?.basicInfo?.artist ?: ""
             else -> ""
         }
     }

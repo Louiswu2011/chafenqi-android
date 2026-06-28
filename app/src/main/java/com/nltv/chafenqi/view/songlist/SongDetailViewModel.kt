@@ -12,7 +12,7 @@ import com.nltv.chafenqi.extension.toMaimaiCoverPath
 import com.nltv.chafenqi.model.user.chunithm.UserChunithmBestScoreEntry
 import com.nltv.chafenqi.model.user.maimai.UserMaimaiBestScoreEntry
 import com.nltv.chafenqi.networking.CFQServer
-import com.nltv.chafenqi.storage.persistent.CFQPersistentData
+import com.nltv.chafenqi.ChafenqiApplication
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import com.nltv.chafenqi.storage.user.CFQUser
@@ -83,8 +83,8 @@ class SongDetailViewModel : ViewModel() {
 
     fun update(mode: Int, index: Int) {
         this.index = index
-        if (mode == 0 && CFQPersistentData.Chunithm.musicList.isNotEmpty()) {
-            chuMusic = CFQPersistentData.Chunithm.musicList.getOrNull(index)
+        if (mode == 0 && ChafenqiApplication.getRepository().chunithmMusicList.value.isNotEmpty()) {
+            chuMusic = ChafenqiApplication.getRepository().chunithmMusicList.value.getOrNull(index)
             if (chuMusic == null) return
 
             viewModelScope.launch {
@@ -143,8 +143,8 @@ class SongDetailViewModel : ViewModel() {
             }
 
 
-        } else if (mode == 1 && CFQPersistentData.Maimai.musicList.isNotEmpty()) {
-            maiMusic = CFQPersistentData.Maimai.musicList.getOrNull(index)
+        } else if (mode == 1 && ChafenqiApplication.getRepository().maimaiMusicList.value.isNotEmpty()) {
+            maiMusic = ChafenqiApplication.getRepository().maimaiMusicList.value.getOrNull(index)
             if (maiMusic == null) return
 
             viewModelScope.launch {

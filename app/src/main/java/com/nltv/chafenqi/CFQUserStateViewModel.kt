@@ -12,6 +12,7 @@ import com.google.firebase.Firebase
 import com.nltv.chafenqi.model.user.chunithm.UserChunithmRecentScoreEntry
 import com.nltv.chafenqi.model.user.maimai.UserMaimaiRecentScoreEntry
 import com.nltv.chafenqi.networking.CFQServer
+import com.nltv.chafenqi.storage.repository.SongListRepository
 import com.nltv.chafenqi.storage.user.CFQUser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -76,7 +77,8 @@ class CFQUserStateViewModel : ViewModel() {
             }
 
             if (!maimai.isBasicEmpty) {
-                maimai.addAuxiliaryData(context)
+                val repo = ChafenqiApplication.getRepository()
+                maimai.addAuxiliaryData(context, repo)
             }
         }
     }
@@ -131,7 +133,8 @@ class CFQUserStateViewModel : ViewModel() {
             }
 
             if (!chunithm.isBasicEmpty) {
-                chunithm.addAuxiliaryData(context)
+                val repo = ChafenqiApplication.getRepository()
+                chunithm.addAuxiliaryData(context, repo)
 
                 chunithm.best = chunithm.best.filterNot { it.associatedMusicEntry.isWE }
                 chunithm.recent = chunithm.recent.filterNot { it.associatedMusicEntry.isWE }

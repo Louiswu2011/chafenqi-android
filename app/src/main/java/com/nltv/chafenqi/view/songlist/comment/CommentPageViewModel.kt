@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nltv.chafenqi.data.Comment
 import com.nltv.chafenqi.networking.CFQServer
-import com.nltv.chafenqi.storage.persistent.CFQPersistentData
+import com.nltv.chafenqi.ChafenqiApplication
 import com.nltv.chafenqi.storage.user.CFQUser
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,8 +33,8 @@ class CommentPageViewModel: ViewModel() {
     fun update(gameType: Int, index: Int) {
         setLoading(true)
         val musicId: Int = when (gameType) {
-            0 -> CFQPersistentData.Chunithm.musicList.getOrNull(index)?.musicId ?: -1
-            1 -> CFQPersistentData.Maimai.musicList.getOrNull(index)?.musicId?.toInt() ?: -1
+            0 -> ChafenqiApplication.getRepository().chunithmMusicList.value.getOrNull(index)?.musicId ?: -1
+            1 -> ChafenqiApplication.getRepository().maimaiMusicList.value.getOrNull(index)?.musicId?.toInt() ?: -1
             else -> -1
         }
         val gameTypeString = when (gameType) {
@@ -67,8 +67,8 @@ class CommentPageViewModel: ViewModel() {
     fun submitComment(replyId: Int = -1, content: String) {
         try {
             val musicId: Int = when (mode) {
-                0 -> CFQPersistentData.Chunithm.musicList.getOrNull(index)?.musicId ?: -1
-                1 -> CFQPersistentData.Maimai.musicList.getOrNull(index)?.musicId?.toInt() ?: -1
+                0 -> ChafenqiApplication.getRepository().chunithmMusicList.value.getOrNull(index)?.musicId ?: -1
+                1 -> ChafenqiApplication.getRepository().maimaiMusicList.value.getOrNull(index)?.musicId?.toInt() ?: -1
                 else -> -1
             }
             val gameTypeString = when (mode) {

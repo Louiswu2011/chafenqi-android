@@ -11,7 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.nltv.chafenqi.model.team.TeamBasicInfo
 import com.nltv.chafenqi.model.team.TeamUpdateCoursePayload
 import com.nltv.chafenqi.networking.CFQTeamServer
-import com.nltv.chafenqi.storage.persistent.CFQPersistentData
+import com.nltv.chafenqi.ChafenqiApplication
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import com.nltv.chafenqi.storage.user.CFQUser
@@ -21,8 +21,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class HomeTeamCourseSettingUiState(
-    val chuMusic: List<ChunithmMusicEntry> = CFQPersistentData.Chunithm.musicList,
-    val maiMusic: List<MaimaiMusicEntry> = CFQPersistentData.Maimai.musicList,
+    val chuMusic: List<ChunithmMusicEntry> = emptyList(),
+    val maiMusic: List<MaimaiMusicEntry> = emptyList(),
 
     val chuSearchResult: List<ChunithmMusicEntry> = listOf(),
     val maiSearchResult: List<MaimaiMusicEntry> = listOf(),

@@ -14,7 +14,7 @@ import com.nltv.chafenqi.data.GameMusicStat
 import com.nltv.chafenqi.data.leaderboard.ChunithmDiffLeaderboard
 import com.nltv.chafenqi.data.leaderboard.MaimaiDiffLeaderboard
 import com.nltv.chafenqi.networking.CFQServer
-import com.nltv.chafenqi.storage.persistent.CFQPersistentData
+import com.nltv.chafenqi.ChafenqiApplication
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import com.nltv.chafenqi.storage.user.CFQUser
@@ -66,8 +66,8 @@ class SongStatsPageViewModel : ViewModel() {
     )
 
     fun loadSong(mode: Int, index: Int) {
-        if (mode == 0 && CFQPersistentData.Chunithm.musicList.isNotEmpty()) {
-            val chuMusic = CFQPersistentData.Chunithm.musicList.getOrNull(index)
+        if (mode == 0 && ChafenqiApplication.getRepository().chunithmMusicList.value.isNotEmpty()) {
+            val chuMusic = ChafenqiApplication.getRepository().chunithmMusicList.value.getOrNull(index)
             if (chuMusic != null) {
                 _uiState.update { currentValue ->
                     currentValue.copy(
@@ -75,8 +75,8 @@ class SongStatsPageViewModel : ViewModel() {
                     )
                 }
             }
-        } else if (mode == 1 && CFQPersistentData.Maimai.musicList.isNotEmpty()) {
-            val maiMusic = CFQPersistentData.Maimai.musicList.getOrNull(index)
+        } else if (mode == 1 && ChafenqiApplication.getRepository().maimaiMusicList.value.isNotEmpty()) {
+            val maiMusic = ChafenqiApplication.getRepository().maimaiMusicList.value.getOrNull(index)
             if (maiMusic != null) {
                 _uiState.update { currentValue ->
                     currentValue.copy(
@@ -89,8 +89,8 @@ class SongStatsPageViewModel : ViewModel() {
 
     fun fetchLeaderboard(mode: Int, index: Int, difficulty: Int, type: String = "") {
         viewModelScope.launch(Dispatchers.IO) {
-            if (mode == 0 && CFQPersistentData.Chunithm.musicList.isNotEmpty()) {
-                val chuMusic = CFQPersistentData.Chunithm.musicList.getOrNull(index)
+            if (mode == 0 && ChafenqiApplication.getRepository().chunithmMusicList.value.isNotEmpty()) {
+                val chuMusic = ChafenqiApplication.getRepository().chunithmMusicList.value.getOrNull(index)
                 if (chuMusic != null) {
                     val result = CFQServer.apiChunithmLeaderboard(token, chuMusic.musicId, difficulty)
                     _uiState.update { currentValue ->
@@ -100,8 +100,8 @@ class SongStatsPageViewModel : ViewModel() {
                         )
                     }
                 }
-            } else if (mode == 1 && CFQPersistentData.Maimai.musicList.isNotEmpty()) {
-                val maiMusic = CFQPersistentData.Maimai.musicList.getOrNull(index)
+            } else if (mode == 1 && ChafenqiApplication.getRepository().maimaiMusicList.value.isNotEmpty()) {
+                val maiMusic = ChafenqiApplication.getRepository().maimaiMusicList.value.getOrNull(index)
                 if (maiMusic != null) {
                     val result =
                         CFQServer.apiMaimaiLeaderboard(token, maiMusic.musicId, type, difficulty)
@@ -118,8 +118,8 @@ class SongStatsPageViewModel : ViewModel() {
 
     fun fetchStats(mode: Int, index: Int, difficulty: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            if (mode == 0 && CFQPersistentData.Chunithm.musicList.isNotEmpty()) {
-                val chuMusic = CFQPersistentData.Chunithm.musicList.getOrNull(index)
+            if (mode == 0 && ChafenqiApplication.getRepository().chunithmMusicList.value.isNotEmpty()) {
+                val chuMusic = ChafenqiApplication.getRepository().chunithmMusicList.value.getOrNull(index)
                 if (chuMusic != null) {
                     val result = CFQServer.apiMusicStat(
                         CFQUser.token,
@@ -134,8 +134,8 @@ class SongStatsPageViewModel : ViewModel() {
                         )
                     }
                 }
-            } else if (mode == 1 && CFQPersistentData.Maimai.musicList.isNotEmpty()) {
-                val maiMusic = CFQPersistentData.Maimai.musicList.getOrNull(index)
+            } else if (mode == 1 && ChafenqiApplication.getRepository().maimaiMusicList.value.isNotEmpty()) {
+                val maiMusic = ChafenqiApplication.getRepository().maimaiMusicList.value.getOrNull(index)
                 if (maiMusic != null) {
                     val result = CFQServer.apiMusicStat(
                         CFQUser.token,

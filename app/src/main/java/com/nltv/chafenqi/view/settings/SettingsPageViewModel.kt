@@ -20,7 +20,7 @@ import com.nltv.chafenqi.BuildConfig
 import com.nltv.chafenqi.R
 import com.nltv.chafenqi.cacheStore
 import com.nltv.chafenqi.networking.CFQServer
-import com.nltv.chafenqi.storage.persistent.CFQPersistentData
+import com.nltv.chafenqi.ChafenqiApplication
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.tile.UpdaterTileService
 import kotlinx.coroutines.Dispatchers

@@ -10,5 +10,6 @@ data class UserChunithmRatingListEntry(
     val musicId: Int = 0,
     val score: Int = 0,
     val levelIndex: Int = 0,
-    @Transient var associatedMusicEntry: ChunithmMusicEntry = ChunithmMusicEntry()
+    @Transient var associatedMusicEntry: ChunithmMusicEntry = ChunithmMusicEntry(),
+    @Transient var cachedConstant: Double = 0.0
 )

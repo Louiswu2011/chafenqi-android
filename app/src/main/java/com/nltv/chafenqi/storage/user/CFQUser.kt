@@ -7,7 +7,6 @@ import com.nltv.chafenqi.extension.CHUNITHM_LEVEL_STRINGS
 import com.nltv.chafenqi.extension.MAIMAI_LEVEL_STRINGS
 import com.nltv.chafenqi.extension.RATE_STRINGS_CHUNITHM
 import com.nltv.chafenqi.extension.RATE_STRINGS_MAIMAI
-import com.nltv.chafenqi.extension.associatedMusicEntry
 import com.nltv.chafenqi.extension.cutForRating
 import com.nltv.chafenqi.extension.rating
 import com.nltv.chafenqi.extension.toRateString
@@ -24,7 +23,7 @@ import com.nltv.chafenqi.model.user.maimai.UserMaimaiRecentScoreEntry
 import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.log.ChunithmLogData
 import com.nltv.chafenqi.storage.log.MaimaiLogData
-import com.nltv.chafenqi.storage.persistent.CFQPersistentData
+import com.nltv.chafenqi.storage.repository.SongListRepository
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import com.onesignal.OneSignal
@@ -90,18 +89,24 @@ object CFQUser {
             }
         }
 
-        fun addAuxiliaryData(context: Context) {
-            if (CFQPersistentData.Maimai.musicList.isNotEmpty()) {
+        fun addAuxiliaryData(context: Context, repo: SongListRepository) {
+            val maiMusicMap = repo.maimaiMusicMap.value
+            val maiMusicList = repo.maimaiMusicList.value
+            if (maiMusicList.isNotEmpty()) {
                 best.forEach {
-                    it.associatedMusicEntry = it.associatedMusicEntry()
+                    val entry = maiMusicMap[it.musicId] ?: MaimaiMusicEntry()
+                    it.associatedMusicEntry = entry
+                    it.cachedConstant = entry.constants.getOrElse(it.levelIndex) { 0.0 }
                 }
                 recent.forEach {
-                    it.associatedMusicEntry = it.associatedMusicEntry()
+                    val entry = maiMusicMap[it.musicId] ?: MaimaiMusicEntry()
+                    it.associatedMusicEntry = entry
+                    it.cachedConstant = entry.constants.getOrElse(it.levelIndex) { 0.0 }
                 }
                 best = best.filterNot { it.associatedMusicEntry == MaimaiMusicEntry() }
                 recent = recent.filterNot { it.associatedMusicEntry == MaimaiMusicEntry() }
 
-                val pastList = CFQPersistentData.Maimai.musicList.filter { !it.basicInfo.isNew }
+                val pastList = maiMusicList.filter { !it.basicInfo.isNew }
                 val (pastBest, newBest) = best.partition { bestEntry ->
                     pastList.map { it.musicId }.contains(bestEntry.musicId)
                 }
@@ -154,7 +159,7 @@ object CFQUser {
 
                 MAIMAI_LEVEL_STRINGS.forEachIndexed { index, level ->
                     val levelMusicEntries =
-                        CFQPersistentData.Maimai.musicList.filter { it.level.contains(level) }
+                        maiMusicList.filter { it.level.contains(level) }
                     val playedBestEntries = best.filter { it.level == level }
                     val playedMusicEntries = playedBestEntries.map { it.associatedMusicEntry }
                     val notPlayedMusicEntries =
@@ -233,22 +238,34 @@ object CFQUser {
             }
         }
 
-        fun addAuxiliaryData(context: Context) {
-            if (CFQPersistentData.Chunithm.musicList.isNotEmpty()) {
+        fun addAuxiliaryData(context: Context, repo: SongListRepository) {
+            val chuMusicMap = repo.chunithmMusicMap.value
+            val chuMusicList = repo.chunithmMusicList.value
+            if (chuMusicList.isNotEmpty()) {
                 best.forEach {
-                    it.associatedMusicEntry = it.associatedMusicEntry()
+                    val entry = chuMusicMap[it.musicId] ?: ChunithmMusicEntry()
+                    it.associatedMusicEntry = entry
+                    it.cachedConstant = entry.charts.constants.getOrElse(it.levelIndex) { 0.0 }
                 }
                 recent.forEach {
-                    it.associatedMusicEntry = it.associatedMusicEntry()
+                    val entry = chuMusicMap[it.musicId] ?: ChunithmMusicEntry()
+                    it.associatedMusicEntry = entry
+                    it.cachedConstant = entry.charts.constants.getOrElse(it.levelIndex) { 0.0 }
                 }
                 rating.best.forEach {
-                    it.associatedMusicEntry = it.associatedMusicEntry()
+                    val entry = chuMusicMap[it.musicId] ?: ChunithmMusicEntry()
+                    it.associatedMusicEntry = entry
+                    it.cachedConstant = entry.charts.constants.getOrElse(it.levelIndex) { 0.0 }
                 }
                 rating.new.forEach {
-                    it.associatedMusicEntry = it.associatedMusicEntry()
+                    val entry = chuMusicMap[it.musicId] ?: ChunithmMusicEntry()
+                    it.associatedMusicEntry = entry
+                    it.cachedConstant = entry.charts.constants.getOrElse(it.levelIndex) { 0.0 }
                 }
                 rating.candidate.forEach {
-                    it.associatedMusicEntry = it.associatedMusicEntry()
+                    val entry = chuMusicMap[it.musicId] ?: ChunithmMusicEntry()
+                    it.associatedMusicEntry = entry
+                    it.cachedConstant = entry.charts.constants.getOrElse(it.levelIndex) { 0.0 }
                 }
                 best = best.filterNot { it.associatedMusicEntry == ChunithmMusicEntry() }
                 recent = recent.filterNot { it.associatedMusicEntry == ChunithmMusicEntry() }
@@ -313,7 +330,7 @@ object CFQUser {
                 }
 
                 CHUNITHM_LEVEL_STRINGS.forEachIndexed { index, level ->
-                    val levelMusicEntries = CFQPersistentData.Chunithm.musicList.filter {
+                    val levelMusicEntries = chuMusicList.filter {
                         it.charts.levels.contains(level)
                     }
                     val playedBestEntries =

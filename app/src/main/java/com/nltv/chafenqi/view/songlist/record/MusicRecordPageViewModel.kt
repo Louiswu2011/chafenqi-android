@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.nltv.chafenqi.extension.toMonthDayString
 import com.nltv.chafenqi.model.user.chunithm.UserChunithmRecentScoreEntry
 import com.nltv.chafenqi.model.user.maimai.UserMaimaiRecentScoreEntry
-import com.nltv.chafenqi.storage.persistent.CFQPersistentData
+import com.nltv.chafenqi.ChafenqiApplication
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import com.nltv.chafenqi.storage.user.CFQUser
@@ -28,8 +28,8 @@ class MusicRecordPageViewModel : ViewModel() {
     private var maiMusic = MaimaiMusicEntry()
     private var chuMusic = ChunithmMusicEntry()
 
-    private val maiMusicList = CFQPersistentData.Maimai.musicList
-    private val chuMusicList = CFQPersistentData.Chunithm.musicList
+    private val maiMusicList = ChafenqiApplication.getRepository().maimaiMusicList.value
+    private val chuMusicList = ChafenqiApplication.getRepository().chunithmMusicList.value
 
     private val maiRecentEntries = CFQUser.maimai.recent
     private val chuRecentEntries = CFQUser.chunithm.recent

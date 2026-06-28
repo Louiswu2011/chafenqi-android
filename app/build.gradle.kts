@@ -148,6 +148,7 @@ android {
 
 val ktorVersion = "3.5.0"
 val composepreferences = "2.0.0"
+val roomVersion = "2.7.1"
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
@@ -186,6 +187,11 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-compose")
     implementation("androidx.datastore:datastore-preferences:1.2.1")
     implementation("com.onesignal:OneSignal:5.9.4")
+
+    // Room
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
 
     implementation(platform("com.google.firebase:firebase-bom:34.15.0"))
     implementation("com.google.firebase:firebase-crashlytics")

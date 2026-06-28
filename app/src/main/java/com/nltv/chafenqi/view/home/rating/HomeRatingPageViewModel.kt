@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.nltv.chafenqi.model.user.chunithm.UserChunithmRatingListEntry
 import com.nltv.chafenqi.model.user.maimai.UserMaimaiBestScoreEntry
-import com.nltv.chafenqi.storage.persistent.CFQPersistentData
+import com.nltv.chafenqi.ChafenqiApplication
 import com.nltv.chafenqi.storage.user.CFQUser
 import com.nltv.chafenqi.view.home.HomeNavItem
 import java.util.Locale
@@ -54,20 +54,20 @@ class HomeRatingPageViewModel : ViewModel() {
     }
 
     fun navigateToMusicEntry(bestEntry: UserMaimaiBestScoreEntry, navController: NavController) {
-        if (CFQPersistentData.Maimai.musicList.isEmpty()) return
+        if (ChafenqiApplication.getRepository().maimaiMusicList.value.isEmpty()) return
 
         val maiMusicEntryIndex =
-            CFQPersistentData.Maimai.musicList.indexOf(bestEntry.associatedMusicEntry)
+            ChafenqiApplication.getRepository().maimaiMusicList.value.indexOf(bestEntry.associatedMusicEntry)
         if (maiMusicEntryIndex < 0) return
 
         navController.navigate(HomeNavItem.SongList.route + "/maimai/$maiMusicEntryIndex")
     }
 
     fun navigateToMusicEntry(ratingEntry: UserChunithmRatingListEntry, navController: NavController) {
-        if (CFQPersistentData.Chunithm.musicList.isEmpty()) return
+        if (ChafenqiApplication.getRepository().chunithmMusicList.value.isEmpty()) return
 
         val chuMusicEntryIndex =
-            CFQPersistentData.Chunithm.musicList.indexOf(ratingEntry.associatedMusicEntry)
+            ChafenqiApplication.getRepository().chunithmMusicList.value.indexOf(ratingEntry.associatedMusicEntry)
         if (chuMusicEntryIndex < 0) return
 
         navController.navigate(HomeNavItem.SongList.route + "/chunithm/$chuMusicEntryIndex")

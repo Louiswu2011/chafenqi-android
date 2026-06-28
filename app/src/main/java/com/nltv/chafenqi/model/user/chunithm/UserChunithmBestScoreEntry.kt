@@ -14,5 +14,6 @@ data class UserChunithmBestScoreEntry(
     val judgeStatus: String,
     val chainStatus: String,
     val lastModified: Long,
-    @Transient var associatedMusicEntry: ChunithmMusicEntry = ChunithmMusicEntry()
+    @Transient var associatedMusicEntry: ChunithmMusicEntry = ChunithmMusicEntry(),
+    @Transient var cachedConstant: Double = 0.0
 )

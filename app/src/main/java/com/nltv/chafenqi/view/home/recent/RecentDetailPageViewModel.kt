@@ -9,7 +9,7 @@ import com.nltv.chafenqi.extension.toRateString
 import com.nltv.chafenqi.model.user.chunithm.UserChunithmRecentScoreEntry
 import com.nltv.chafenqi.model.user.maimai.UserMaimaiRecentScoreEntry
 import com.nltv.chafenqi.networking.CFQServer
-import com.nltv.chafenqi.storage.persistent.CFQPersistentData
+import com.nltv.chafenqi.ChafenqiApplication
 import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
 import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
 import com.nltv.chafenqi.storage.user.CFQUser
@@ -54,7 +54,7 @@ class RecentDetailPageViewModel : ViewModel() {
 
     fun update(mode: Int, index: Int, context: Context) {
         this.mode = mode
-        if (mode == 0 && CFQPersistentData.Chunithm.musicList.isNotEmpty() && CFQUser.chunithm.recent.isNotEmpty()) {
+        if (mode == 0 && ChafenqiApplication.getRepository().chunithmMusicList.value.isNotEmpty() && CFQUser.chunithm.recent.isNotEmpty()) {
             chuEntry = CFQUser.chunithm.recent[index]
             chuMusic = chuEntry?.associatedMusicEntry
 
@@ -66,12 +66,12 @@ class RecentDetailPageViewModel : ViewModel() {
             rateString = chuEntry?.score?.toRateString() ?: ""
 
             chuMusicEntryIndex =
-                CFQPersistentData.Chunithm.musicList.indexOf(chuMusic ?: ChunithmMusicEntry())
+                ChafenqiApplication.getRepository().chunithmMusicList.value.indexOf(chuMusic ?: ChunithmMusicEntry())
             canNavigate = chuMusicEntryIndex != -1
-        } else if (mode == 1 && CFQPersistentData.Maimai.musicList.isNotEmpty() && CFQUser.maimai.recent.isNotEmpty()) {
+        } else if (mode == 1 && ChafenqiApplication.getRepository().maimaiMusicList.value.isNotEmpty() && CFQUser.maimai.recent.isNotEmpty()) {
             maiEntry = CFQUser.maimai.recent[index]
             maiMusic =
-                CFQPersistentData.Maimai.musicList.firstOrNull { it.title == maiEntry?.associatedMusicEntry?.title && it.type == maiEntry?.type }
+                ChafenqiApplication.getRepository().maimaiMusicList.value.firstOrNull { it.title == maiEntry?.associatedMusicEntry?.title && it.type == maiEntry?.type }
 
             coverUrl = maiMusic?.coverId?.toMaimaiCoverPath() ?: ""
             title = maiMusic?.title ?: ""
@@ -97,7 +97,7 @@ class RecentDetailPageViewModel : ViewModel() {
             maiHasSync = maiSync != "―"
 
             maiMusicEntryIndex =
-                CFQPersistentData.Maimai.musicList.indexOf(maiMusic ?: MaimaiMusicEntry())
+                ChafenqiApplication.getRepository().maimaiMusicList.value.indexOf(maiMusic ?: MaimaiMusicEntry())
             canNavigate = maiMusicEntryIndex != -1
         }
     }

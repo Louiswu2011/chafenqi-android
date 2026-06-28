@@ -24,7 +24,8 @@ data class UserMaimaiRecentScoreEntry(
     val maxCombo: String,
     val maxSync: String,
     val players: List<String>,
-    @Transient var associatedMusicEntry: MaimaiMusicEntry = MaimaiMusicEntry()
+    @Transient var associatedMusicEntry: MaimaiMusicEntry = MaimaiMusicEntry(),
+    @Transient var cachedConstant: Double = 0.0
 ) {
     val levelIndex = when (difficulty.lowercase()) {
         "basic" -> 0

@@ -25,7 +25,8 @@ data class UserChunithmRecentScoreEntry(
     val clearStatus: String,
     val judgeStatus: String,
     val chainStatus: String,
-    @Transient var associatedMusicEntry: ChunithmMusicEntry = ChunithmMusicEntry()
+    @Transient var associatedMusicEntry: ChunithmMusicEntry = ChunithmMusicEntry(),
+    @Transient var cachedConstant: Double = 0.0
 ) {
     val levelIndex = when (difficulty) {
         "basic" -> 0

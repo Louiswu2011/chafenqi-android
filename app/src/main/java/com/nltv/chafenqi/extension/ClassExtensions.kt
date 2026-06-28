@@ -10,10 +10,6 @@ import com.nltv.chafenqi.model.user.chunithm.UserChunithmRecentScoreEntry
 import com.nltv.chafenqi.model.user.maimai.UserMaimaiBestScoreEntry
 import com.nltv.chafenqi.model.user.maimai.UserMaimaiRecentScoreEntry
 import com.nltv.chafenqi.networking.CFQServer
-import com.nltv.chafenqi.storage.persistent.CFQPersistentData
-import com.nltv.chafenqi.storage.songlist.chunithm.ChunithmMusicEntry
-import com.nltv.chafenqi.storage.songlist.maimai.MaimaiMusicEntry
-import com.nltv.chafenqi.storage.user.CFQUser
 import java.math.RoundingMode
 import java.security.MessageDigest
 import java.text.DecimalFormat
@@ -197,91 +193,12 @@ fun maimaiRatingOf(constant: Double, achievements: Double): Int {
 //        .toInt()
 }
 
-fun UserMaimaiBestScoreEntry.associatedMusicEntry(): MaimaiMusicEntry {
-    return try {
-        val musicList = CFQPersistentData.Maimai.musicList
-        if (musicList.isNotEmpty()) {
-            musicList.first { it.musicId == musicId }
-        } else {
-            Log.e("UserMaimaiBestScoreEntry", "无法匹配歌曲：${this.musicId}")
-            MaimaiMusicEntry()
-        }
-    } catch (e: Exception) {
-        Log.e("UserMaimaiBestScoreEntry", "找不到这首歌：${this.musicId}, $e")
-        MaimaiMusicEntry()
-    }
-}
-
-fun UserMaimaiRecentScoreEntry.associatedMusicEntry(): MaimaiMusicEntry {
-    return try {
-        val musicList = CFQPersistentData.Maimai.musicList
-        if (CFQUser.Maimai.best.isNotEmpty() && musicList.isNotEmpty()) {
-            CFQUser.Maimai.best.firstOrNull {
-                it.musicId == musicId
-            }?.associatedMusicEntry ?: musicList.first { it.musicId == musicId }
-        } else {
-            Log.e("UserMaimaiRecentScoreEntry", "无法匹配歌曲：${this.musicId}")
-            MaimaiMusicEntry()
-        }
-    } catch (e: Exception) {
-        Log.e("UserMaimaiRecentScoreEntry", "找不到这首歌：${this.musicId}, $e")
-        MaimaiMusicEntry()
-    }
-}
-
 fun UserMaimaiBestScoreEntry.rating(): Int {
     return try {
-        maimaiRatingOf(this.associatedMusicEntry.constants[this.levelIndex], this.achievements)
+        maimaiRatingOf(this.cachedConstant, this.achievements)
     } catch (e: Exception) {
         Log.e("MaimaiBestScoreEntry.Rating", "Error calculating rating for ${this.musicId}")
         -1
-    }
-}
-
-fun UserChunithmBestScoreEntry.associatedMusicEntry(): ChunithmMusicEntry {
-    return try {
-        if (CFQPersistentData.Chunithm.musicList.isNotEmpty()) {
-            CFQPersistentData.Chunithm.musicList.first {
-                // it.musicID.toString() == this.idx
-                it.musicId == musicId
-            }
-        } else {
-            Log.e("我有意见", "无法匹配歌曲：${this.musicId}")
-            ChunithmMusicEntry()
-        }
-    } catch (e: Exception) {
-        Log.e("我有意见", "找不到这首歌：${this.musicId}")
-        ChunithmMusicEntry()
-    }
-}
-
-fun UserChunithmRecentScoreEntry.associatedMusicEntry(): ChunithmMusicEntry {
-    return try {
-        if (CFQUser.Chunithm.best.isNotEmpty()) {
-            CFQUser.Chunithm.best.first {
-                it.musicId == musicId
-            }.associatedMusicEntry
-        } else {
-            Log.e("我有意见", "无法匹配歌曲：${this.musicId}")
-            ChunithmMusicEntry()
-        }
-    } catch (e: Exception) {
-        ChunithmMusicEntry()
-    }
-}
-
-fun UserChunithmRatingListEntry.associatedMusicEntry(): ChunithmMusicEntry {
-    return try {
-        if (CFQUser.Chunithm.best.isNotEmpty()) {
-            CFQUser.Chunithm.best.first {
-                it.musicId == musicId
-            }.associatedMusicEntry
-        } else {
-            Log.e("我有意见", "无法匹配歌曲：${this.musicId}")
-            ChunithmMusicEntry()
-        }
-    } catch (e: Exception) {
-        ChunithmMusicEntry()
     }
 }
 
@@ -320,13 +237,13 @@ fun chunithmRatingOf(constant: Double, score: Int): Double {
 }
 
 fun UserChunithmBestScoreEntry.rating(): Double =
-    chunithmRatingOf(this.associatedMusicEntry.charts.constants[this.levelIndex], this.score)
+    chunithmRatingOf(this.cachedConstant, this.score)
 
 fun UserChunithmRecentScoreEntry.rating(): Double =
-    chunithmRatingOf(this.associatedMusicEntry.charts.constants[this.levelIndex], this.score)
+    chunithmRatingOf(this.cachedConstant, this.score)
 
 fun UserChunithmRatingListEntry.rating(): Double =
-    chunithmRatingOf(this.associatedMusicEntry.charts.constants[this.levelIndex], this.score)
+    chunithmRatingOf(this.cachedConstant, this.score)
 
 fun Modifier.conditional(condition: Boolean, modifier: Modifier.() -> Modifier): Modifier {
     return if (condition) {

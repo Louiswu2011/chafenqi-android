@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.nltv.chafenqi.storage.persistent.CFQPersistentData
+import com.nltv.chafenqi.ChafenqiApplication
 import com.nltv.chafenqi.view.settings.ClearCacheAlertDialog
 import com.nltv.chafenqi.view.settings.ReloadSongListAlertDialog
 import com.nltv.chafenqi.view.settings.ReloadSongListDialog
@@ -45,8 +45,9 @@ fun SettingsAdvancedPage(navController: NavController) {
             model.showReloadListAlert = false
             model.isReloadingList = true
             scope.launch {
-                CFQPersistentData.clearData(context)
-                CFQPersistentData.loadData(context = context)
+                val repo = ChafenqiApplication.getRepository()
+                repo.clearAll()
+                repo.refreshFromServer(context = context)
                 model.isReloadingList = false
             }
         }
