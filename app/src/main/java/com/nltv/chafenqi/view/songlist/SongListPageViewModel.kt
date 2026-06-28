@@ -41,16 +41,6 @@ class SongListPageViewModel : ViewModel() {
     val origMaiMusicList get() = repo.maimaiMusicList.value
     val origChuMusicList get() = repo.chunithmMusicList.value
 
-    init {
-        // Observe repo music lists reactively — when data arrives or changes, refresh UI
-        viewModelScope.launch {
-            repo.maimaiMusicList.collect { update() }
-        }
-        viewModelScope.launch {
-            repo.chunithmMusicList.collect { update() }
-        }
-    }
-
     var searchQuery by mutableStateOf("")
     var isSearchBarActive by mutableStateOf(false)
 
