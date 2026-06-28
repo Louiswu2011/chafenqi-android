@@ -79,7 +79,7 @@ fun HomeRatingImageSurface(
                     .httpHeaders(
                         NetworkHeaders
                             .Builder()
-                            .set("Authorization", "Bearer ${CFQUser.token}")
+                            .set("Authorization", "Bearer ${CFQUser.getInstance().token}")
                             .build()
                     )
                     .data(if (mode == 0) CFQServer.b30Path else CFQServer.b50Path)

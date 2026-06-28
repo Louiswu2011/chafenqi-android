@@ -32,7 +32,7 @@ class HomeTeamCourseSettingViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(HomeTeamCourseSettingUiState())
     val uiState = _uiState.asStateFlow()
 
-    val mode = CFQUser.mode
+    val mode = CFQUser.getInstance().mode
 
     var isSearchBarActive by mutableStateOf(false)
     var currentSelectedMusicSlot by mutableStateOf<Int?>(null)
@@ -47,8 +47,8 @@ class HomeTeamCourseSettingViewModel: ViewModel() {
 
     fun refresh() {
         viewModelScope.launch {
-            val currentTeam = CFQTeamServer.fetchCurrentTeam(CFQUser.token, mode) ?: return@launch
-            val teamInfo = CFQTeamServer.fetchTeamInfo(CFQUser.token, mode, currentTeam) ?: return@launch
+            val currentTeam = CFQTeamServer.fetchCurrentTeam(CFQUser.getInstance().token, mode) ?: return@launch
+            val teamInfo = CFQTeamServer.fetchTeamInfo(CFQUser.getInstance().token, mode, currentTeam) ?: return@launch
 
             currentTeamId = currentTeam
             courseName = teamInfo.info.courseName
@@ -63,7 +63,7 @@ class HomeTeamCourseSettingViewModel: ViewModel() {
         viewModelScope.launch {
             try {
                 val result = CFQTeamServer.adminUpdateTeamCourse(
-                    authToken = CFQUser.token,
+                    authToken = CFQUser.getInstance().token,
                     game = mode,
                     teamId = currentTeamId,
                     newCourse = TeamUpdateCoursePayload(

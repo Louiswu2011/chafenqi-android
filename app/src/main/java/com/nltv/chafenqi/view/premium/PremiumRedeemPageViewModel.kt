@@ -16,7 +16,7 @@ import com.nltv.chafenqi.networking.CFQServer
 import com.nltv.chafenqi.storage.user.CFQUser
 
 class PremiumRedeemPageViewModel : ViewModel() {
-    val user = CFQUser
+    val user = CFQUser.getInstance()
 
     fun openPremiumPurchaseWebpage(handler: UriHandler) {
         handler.openUri(

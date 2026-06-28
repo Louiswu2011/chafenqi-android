@@ -20,7 +20,7 @@ data class CommentPageUiState(
 )
 
 class CommentPageViewModel: ViewModel() {
-    val user = CFQUser
+    val user = CFQUser.getInstance()
     private val _uiState = MutableStateFlow(CommentPageUiState())
     val uiState = _uiState.asStateFlow()
 

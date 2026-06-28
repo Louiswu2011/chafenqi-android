@@ -91,7 +91,7 @@ val HELPS = listOf(
 )
 
 class UpdaterViewModel : ViewModel() {
-    val token = CFQUser.token
+    val token = CFQUser.getInstance().token
     private val _uiState = MutableStateFlow(UpdaterUiState())
     val uiState: StateFlow<UpdaterUiState> = _uiState.asStateFlow()
 
@@ -266,8 +266,8 @@ class UpdaterViewModel : ViewModel() {
     }
 
     suspend fun checkFishTokenState(): Boolean {
-        if (CFQUser.remoteOptions.fishToken.isEmpty()) return true
-        return FishServer.checkTokenValidity(CFQUser.remoteOptions.fishToken)
+        if (CFQUser.getInstance().remoteOptions.fishToken.isEmpty()) return true
+        return FishServer.checkTokenValidity(CFQUser.getInstance().remoteOptions.fishToken)
     }
 
     // Returns remote setting

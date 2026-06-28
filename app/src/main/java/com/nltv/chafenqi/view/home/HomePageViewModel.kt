@@ -110,7 +110,7 @@ data class HomePageUiState(
 
 class HomePageViewModel : ViewModel() {
     private val tag = "HomePageViewModel"
-    val user = CFQUser
+    val user = CFQUser.getInstance()
 
     private val _uiState = MutableStateFlow(HomePageUiState())
     val uiState: StateFlow<HomePageUiState> = _uiState.asStateFlow()

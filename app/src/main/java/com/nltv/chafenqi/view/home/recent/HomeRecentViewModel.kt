@@ -21,7 +21,7 @@ data class HomeRecentViewUiState(
 )
 
 class HomeRecentViewModel : ViewModel() {
-    val user = CFQUser
+    val user = CFQUser.getInstance()
 
     private val entriesPerPage = 30.0
     val chuAvailablePage = ceil(user.chunithm.recent.size / entriesPerPage)

@@ -32,13 +32,13 @@ class MusicRecordPageViewModel : ViewModel() {
     private val maiMusicList get() = repo.maimaiMusicList.value
     private val chuMusicList get() = repo.chunithmMusicList.value
 
-    private val maiRecentEntries = CFQUser.maimai.recent
-    private val chuRecentEntries = CFQUser.chunithm.recent
+    private val maiRecentEntries = CFQUser.getInstance().maimai.recent
+    private val chuRecentEntries = CFQUser.getInstance().chunithm.recent
 
     private val _uiState = MutableStateFlow(MusicRecordPageUiState())
     val uiState: StateFlow<MusicRecordPageUiState> = _uiState.asStateFlow()
 
-    val mode = CFQUser.mode
+    val mode = CFQUser.getInstance().mode
 
     val chuEntryProvider = CartesianChartModelProducer()
     val maiEntryProvider = CartesianChartModelProducer()

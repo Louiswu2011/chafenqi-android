@@ -54,8 +54,8 @@ class RecentDetailPageViewModel : ViewModel() {
 
     fun update(mode: Int, index: Int, context: Context) {
         this.mode = mode
-        if (mode == 0 && ChafenqiApplication.getRepository().chunithmMusicList.value.isNotEmpty() && CFQUser.chunithm.recent.isNotEmpty()) {
-            chuEntry = CFQUser.chunithm.recent[index]
+        if (mode == 0 && ChafenqiApplication.getRepository().chunithmMusicList.value.isNotEmpty() && CFQUser.getInstance().chunithm.recent.isNotEmpty()) {
+            chuEntry = CFQUser.getInstance().chunithm.recent[index]
             chuMusic = chuEntry?.associatedMusicEntry
 
             coverUrl = "${CFQServer.defaultPath}/api/resource/chunithm/cover?musicId=${chuMusic?.musicId}"
@@ -68,8 +68,8 @@ class RecentDetailPageViewModel : ViewModel() {
             chuMusicEntryIndex =
                 ChafenqiApplication.getRepository().chunithmMusicList.value.indexOf(chuMusic ?: ChunithmMusicEntry())
             canNavigate = chuMusicEntryIndex != -1
-        } else if (mode == 1 && ChafenqiApplication.getRepository().maimaiMusicList.value.isNotEmpty() && CFQUser.maimai.recent.isNotEmpty()) {
-            maiEntry = CFQUser.maimai.recent[index]
+        } else if (mode == 1 && ChafenqiApplication.getRepository().maimaiMusicList.value.isNotEmpty() && CFQUser.getInstance().maimai.recent.isNotEmpty()) {
+            maiEntry = CFQUser.getInstance().maimai.recent[index]
             maiMusic =
                 ChafenqiApplication.getRepository().maimaiMusicList.value.firstOrNull { it.title == maiEntry?.associatedMusicEntry?.title && it.type == maiEntry?.type }
 

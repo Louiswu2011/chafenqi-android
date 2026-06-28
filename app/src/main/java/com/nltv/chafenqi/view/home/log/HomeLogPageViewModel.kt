@@ -32,8 +32,8 @@ class HomeLogPageViewModel : ViewModel() {
         val chuLogs: List<ChunithmLogData.ChunithmDayData> = listOf(),
     )
 
-    private val maimaiLogData = CFQUser.maimai.log
-    private val chunithmLogData = CFQUser.chunithm.log
+    private val maimaiLogData = CFQUser.getInstance().maimai.log
+    private val chunithmLogData = CFQUser.getInstance().chunithm.log
 
     private val chartDateTimeFormatter = LocalDateTime.Format {
         monthNumber()

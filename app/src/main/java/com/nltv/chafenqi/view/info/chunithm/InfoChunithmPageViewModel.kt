@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.nltv.chafenqi.storage.user.CFQUser
 
 class InfoChunithmPageViewModel : ViewModel() {
-    val user = CFQUser
+    val user = CFQUser.getInstance()
 
     val chunithm = user.chunithm
     val info = chunithm.info

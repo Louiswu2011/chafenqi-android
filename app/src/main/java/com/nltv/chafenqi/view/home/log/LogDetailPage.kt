@@ -81,7 +81,7 @@ fun LogDetailPage(navController: NavController, mode: Int, index: Int) {
                     ) {
                         HomeRecentPageEntry(
                             entry = uiState.chunithmEntries[it],
-                            index = CFQUser.chunithm.recent.indexOf(uiState.chunithmEntries[it]),
+                            index = CFQUser.getInstance().chunithm.recent.indexOf(uiState.chunithmEntries[it]),
                             navController = navController
                         )
                     }
@@ -96,7 +96,7 @@ fun LogDetailPage(navController: NavController, mode: Int, index: Int) {
                     ) {
                         HomeRecentPageEntry(
                             entry = uiState.maimaiEntries[it],
-                            index = CFQUser.maimai.recent.indexOf(uiState.maimaiEntries[it]),
+                            index = CFQUser.getInstance().maimai.recent.indexOf(uiState.maimaiEntries[it]),
                             navController = navController
                         )
                     }

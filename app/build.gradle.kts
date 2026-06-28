@@ -149,6 +149,7 @@ android {
 val ktorVersion = "3.5.0"
 val composepreferences = "2.0.0"
 val roomVersion = "2.7.1"
+val koinVersion = "4.2.2"
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
@@ -187,6 +188,10 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-compose")
     implementation("androidx.datastore:datastore-preferences:1.2.1")
     implementation("com.onesignal:OneSignal:5.9.4")
+
+    // Koin DI
+    implementation("io.insert-koin:koin-android:$koinVersion")
+    implementation("io.insert-koin:koin-androidx-compose:$koinVersion")
 
     // Room
     implementation("androidx.room:room-runtime:$roomVersion")

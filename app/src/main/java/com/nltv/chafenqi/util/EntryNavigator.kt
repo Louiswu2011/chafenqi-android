@@ -31,10 +31,10 @@ fun navigateToMusicEntry(associatedMusicEntry: ChunithmMusicEntry, navController
 
 fun navigateToRecentEntry(recentEntry: UserMaimaiRecentScoreEntry, navController: NavController) {
     if (ChafenqiApplication.getRepository().maimaiMusicList.value.isEmpty()) return
-    if (CFQUser.maimai.recent.isEmpty()) return
+    if (CFQUser.getInstance().maimai.recent.isEmpty()) return
 
     val maiRecentEntryIndex =
-        CFQUser.maimai.recent.indexOf(recentEntry)
+        CFQUser.getInstance().maimai.recent.indexOf(recentEntry)
     if (maiRecentEntryIndex < 0) return
 
     navController.navigate(HomeNavItem.Home.route + "/recent/maimai/$maiRecentEntryIndex")
@@ -42,10 +42,10 @@ fun navigateToRecentEntry(recentEntry: UserMaimaiRecentScoreEntry, navController
 
 fun navigateToRecentEntry(recentEntry: UserChunithmRecentScoreEntry, navController: NavController) {
     if (ChafenqiApplication.getRepository().chunithmMusicList.value.isEmpty()) return
-    if (CFQUser.chunithm.recent.isEmpty()) return
+    if (CFQUser.getInstance().chunithm.recent.isEmpty()) return
 
     val chuRecentEntryIndex =
-        CFQUser.chunithm.recent.indexOf(recentEntry)
+        CFQUser.getInstance().chunithm.recent.indexOf(recentEntry)
     if (chuRecentEntryIndex < 0) return
 
     navController.navigate(HomeNavItem.Home.route + "/recent/chunithm/$chuRecentEntryIndex")

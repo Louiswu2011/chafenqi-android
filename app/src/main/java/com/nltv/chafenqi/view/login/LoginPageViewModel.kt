@@ -41,7 +41,7 @@ class LoginPageViewModel : ViewModel() {
     )
 
     private var loginState = MutableStateFlow(LoginUiState())
-    var user by mutableStateOf(CFQUser)
+    var user by mutableStateOf(CFQUser.getInstance())
 
     var loginUiState = loginState.asStateFlow()
 

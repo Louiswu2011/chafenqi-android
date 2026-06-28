@@ -27,7 +27,7 @@ import com.nltv.chafenqi.storage.user.CFQUser
 fun HomePageLogSection(navController: NavController) {
     Column {
         HomePageLogBar(navController = navController)
-        if (CFQUser.isPremium) {
+        if (CFQUser.getInstance().isPremium) {
             HomePageLogInfo()
         }
     }
@@ -56,7 +56,7 @@ fun HomePageLogBar(navController: NavController) {
             text = "显示全部",
             fontSize = TextUnit(14f, TextUnitType.Sp),
             modifier = Modifier.clickable {
-                if (CFQUser.isPremium && !uiState.isLogEmpty) {
+                if (CFQUser.getInstance().isPremium && !uiState.isLogEmpty) {
                     navController.navigate(HomeNavItem.Home.route + "/log")
                 } else {
                     navController.navigate(HomeNavItem.Home.route + "/settings/user/redeem")

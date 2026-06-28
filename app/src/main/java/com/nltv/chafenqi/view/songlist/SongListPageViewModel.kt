@@ -34,7 +34,7 @@ data class SongListUiState(
 
 class SongListPageViewModel : ViewModel() {
     private val repo = ChafenqiApplication.getRepository()
-    val user = CFQUser
+    val user = CFQUser.getInstance()
     private val _uiState = MutableStateFlow(SongListUiState())
     val uiState: StateFlow<SongListUiState> = _uiState.asStateFlow()
 

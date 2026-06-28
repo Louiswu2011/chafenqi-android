@@ -20,7 +20,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 
 class CFQUserStateViewModel : ViewModel() {
-    val user = CFQUser
+    val user = CFQUser.getInstance()
     var isLoggedIn by mutableStateOf(false)
     var isRefreshing by mutableStateOf(false)
 
@@ -35,7 +35,7 @@ class CFQUserStateViewModel : ViewModel() {
         val token = user.token
         val deserializer = Json { ignoreUnknownKeys = true }
 
-        val maimai = CFQUser.Maimai
+        val maimai = CFQUser.getInstance().maimai
 
         var isEmpty = false
 
@@ -88,7 +88,7 @@ class CFQUserStateViewModel : ViewModel() {
         val token = user.token
         val deserializer = Json { ignoreUnknownKeys = true }
 
-        val chunithm = CFQUser.Chunithm
+        val chunithm = CFQUser.getInstance().chunithm
 
         var isEmpty = false
 

@@ -33,8 +33,8 @@ class HomeTeamLeaderboardViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(HomeTeamLeaderboardUiState())
     val uiState = _uiState.asStateFlow()
 
-    val mode = CFQUser.mode
-    val token = CFQUser.token
+    val mode = CFQUser.getInstance().mode
+    val token = CFQUser.getInstance().token
 
     fun refresh() {
         viewModelScope.launch(Dispatchers.IO) {

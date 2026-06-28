@@ -47,7 +47,7 @@ import com.nltv.chafenqi.view.home.HomeNavItem
 
 @Composable
 fun InfoMaimaiPage(navController: NavController) {
-    val isEmpty = CFQUser.maimai.isExtraEmpty
+    val isEmpty = CFQUser.getInstance().maimai.isExtraEmpty
     val scrollState = rememberScrollState()
 
     if (!isEmpty) {

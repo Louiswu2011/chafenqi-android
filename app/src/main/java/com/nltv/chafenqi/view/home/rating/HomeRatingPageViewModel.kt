@@ -13,7 +13,7 @@ import com.nltv.chafenqi.view.home.HomeNavItem
 import java.util.Locale
 
 class HomeRatingPageViewModel : ViewModel() {
-    var user = CFQUser
+    var user = CFQUser.getInstance()
     var mode = user.mode
 
     var maiPastList: List<UserMaimaiBestScoreEntry> = listOf()

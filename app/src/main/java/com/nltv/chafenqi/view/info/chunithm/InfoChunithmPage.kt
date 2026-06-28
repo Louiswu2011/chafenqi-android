@@ -56,7 +56,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun InfoChunithmPage(navController: NavController, snackbarHostState: SnackbarHostState) {
-    val isEmpty = CFQUser.chunithm.isExtraEmpty
+    val isEmpty = CFQUser.getInstance().chunithm.isExtraEmpty
     val scrollState = rememberScrollState()
 
     Column(

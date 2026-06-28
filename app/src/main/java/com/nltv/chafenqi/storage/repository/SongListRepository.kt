@@ -66,6 +66,20 @@ class SongListRepository(private val db: ChafenqiDatabase) {
     private val _chunithmVersion = MutableStateFlow("")
     val chunithmVersion: StateFlow<String> = _chunithmVersion.asStateFlow()
 
+    // === Filter strings (replaces global var in Values.kt) ===
+
+    private val _maimaiGenreStrings = MutableStateFlow<List<String>>(emptyList())
+    val maimaiGenreStrings: StateFlow<List<String>> = _maimaiGenreStrings.asStateFlow()
+
+    private val _maimaiVersionStrings = MutableStateFlow<Map<Int, String>>(emptyMap())
+    val maimaiVersionStrings: StateFlow<Map<Int, String>> = _maimaiVersionStrings.asStateFlow()
+
+    private val _chunithmGenreStrings = MutableStateFlow<List<String>>(emptyList())
+    val chunithmGenreStrings: StateFlow<List<String>> = _chunithmGenreStrings.asStateFlow()
+
+    private val _chunithmVersionStrings = MutableStateFlow<List<String>>(emptyList())
+    val chunithmVersionStrings: StateFlow<List<String>> = _chunithmVersionStrings.asStateFlow()
+
     // === Initialization ===
 
     fun initFromRoom(scope: CoroutineScope) {
@@ -219,10 +233,16 @@ class SongListRepository(private val db: ChafenqiDatabase) {
     // === Filter resources (populates global extension constants) ===
 
     private fun loadFilterResources() {
-        MAIMAI_GENRE_STRINGS = _maimaiGenreList.value.map { it.genre }.distinct()
-        MAIMAI_VERSION_STRINGS = _maimaiVersionList.value.associate { it.version to it.title }
-        CHUNITHM_GENRE_STRINGS = _chunithmMusicList.value.map { it.genre }.distinct()
-        CHUNITHM_VERSION_STRINGS = _chunithmMusicList.value.map { it.from }.distinct()
+        _maimaiGenreStrings.value = _maimaiGenreList.value.map { it.genre }.distinct()
+        _maimaiVersionStrings.value = _maimaiVersionList.value.associate { it.version to it.title }
+        _chunithmGenreStrings.value = _chunithmMusicList.value.map { it.genre }.distinct()
+        _chunithmVersionStrings.value = _chunithmMusicList.value.map { it.from }.distinct()
+
+        // Backward compat: keep global vars populated
+        MAIMAI_GENRE_STRINGS = _maimaiGenreStrings.value
+        MAIMAI_VERSION_STRINGS = _maimaiVersionStrings.value
+        CHUNITHM_GENRE_STRINGS = _chunithmGenreStrings.value
+        CHUNITHM_VERSION_STRINGS = _chunithmVersionStrings.value
         Log.i(TAG, "Filter resources loaded")
     }
 

@@ -48,6 +48,8 @@ class CFQServer {
             defaultPath = path
         }
 
+        fun getInstance(): CFQServer = org.koin.core.context.GlobalContext.get().get()
+
         val b30Path = "$defaultPath/api/user/chunithm/image/b30"
         val b50Path = "$defaultPath/api/user/maimai/image/b50"
 

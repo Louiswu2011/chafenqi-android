@@ -20,14 +20,14 @@ class HomeMemberViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(HomeMemberUiState())
     val uiState = _uiState.asStateFlow()
 
-    val mode = CFQUser.mode
-    val token = CFQUser.token
-    val userId = CFQUser.userId
-    val username = CFQUser.username
+    val mode = CFQUser.getInstance().mode
+    val token = CFQUser.getInstance().token
+    val userId = CFQUser.getInstance().userId
+    val username = CFQUser.getInstance().username
 
     fun refresh() {
         viewModelScope.launch(Dispatchers.IO) {
-            val currentTeam = CFQTeamServer.fetchCurrentTeam(CFQUser.token, mode)
+            val currentTeam = CFQTeamServer.fetchCurrentTeam(CFQUser.getInstance().token, mode)
             if (currentTeam == null) {
                 _uiState.update {
                     it.copy(
@@ -37,7 +37,7 @@ class HomeMemberViewModel : ViewModel() {
                 return@launch
             }
 
-            val teamInfo = CFQTeamServer.fetchTeamInfo(CFQUser.token, mode, currentTeam)
+            val teamInfo = CFQTeamServer.fetchTeamInfo(CFQUser.getInstance().token, mode, currentTeam)
             if (teamInfo == null) {
                 _uiState.update {
                     it.copy(

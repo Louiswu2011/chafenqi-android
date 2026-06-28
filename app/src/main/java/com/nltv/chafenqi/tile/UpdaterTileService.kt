@@ -51,7 +51,7 @@ class UpdaterTileService : TileService() {
     private fun doExtraActions() {
         GlobalScope.launch {
             val settings = PreferenceManager.getDefaultSharedPreferences(applicationContext).getPreferenceFlow()
-            val token = CFQUser.token
+            val token = CFQUser.getInstance().token
             val clipboardManager =
                 applicationContext.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
 

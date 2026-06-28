@@ -66,7 +66,7 @@ data class SongDetailUiState(
 class SongDetailViewModel : ViewModel() {
     private val tag = this::class.java.canonicalName
 
-    val user = CFQUser
+    val user = CFQUser.getInstance()
 
     var maiMusic: MaimaiMusicEntry? = null
     var chuMusic: ChunithmMusicEntry? = null
@@ -338,14 +338,14 @@ class MaimaiDifficultyInfo(
         difficultyName = maimaiDifficultyTitles[difficultyIndex]
         constant = String.format("%.1f", musicEntry.constants[difficultyIndex])
         charter = musicEntry.charts[difficultyIndex].charter
-        bestEntry = CFQUser.maimai.best.firstOrNull {
+        bestEntry = CFQUser.getInstance().maimai.best.firstOrNull {
             it.associatedMusicEntry == musicEntry && it.levelIndex == difficultyIndex
         }
         if (bestEntry != null) {
             bestScore = String.format("%.4f", bestEntry!!.achievements) + "%"
         }
         hasRecentEntry =
-            CFQUser.maimai.recent.firstOrNull { it.associatedMusicEntry.musicId == musicEntry.musicId && it.levelIndex == levelIndex } != null
+            CFQUser.getInstance().maimai.recent.firstOrNull { it.associatedMusicEntry.musicId == musicEntry.musicId && it.levelIndex == levelIndex } != null
     }
 }
 
@@ -368,13 +368,13 @@ class ChunithmDifficultyInfo(
         difficultyName = chunithmDifficultyTitles[difficultyIndex]
         constant = String.format("%.1f", musicEntry.charts.constants[difficultyIndex])
         charter = musicEntry.charts.charters[difficultyIndex] ?: "-"
-        bestEntry = CFQUser.chunithm.best.firstOrNull {
+        bestEntry = CFQUser.getInstance().chunithm.best.firstOrNull {
             it.associatedMusicEntry == musicEntry && it.levelIndex == difficultyIndex
         }
         if (bestEntry != null) {
             bestScore = bestEntry!!.score.toString()
         }
         hasRecentEntry =
-            CFQUser.chunithm.recent.firstOrNull { it.associatedMusicEntry.musicId == musicEntry.musicId && it.levelIndex == levelIndex } != null
+            CFQUser.getInstance().chunithm.recent.firstOrNull { it.associatedMusicEntry.musicId == musicEntry.musicId && it.levelIndex == levelIndex } != null
     }
 }

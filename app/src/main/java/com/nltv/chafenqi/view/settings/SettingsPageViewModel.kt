@@ -76,7 +76,7 @@ class SettingsPageViewModel : ViewModel() {
     var isReloadingList by mutableStateOf(false)
     var diskCacheSize by mutableStateOf("")
 
-    val user = CFQUser
+    val user = CFQUser.getInstance()
     val username = user.username
     val token = user.token
     val bindQQ = user.remoteOptions.bindQQ

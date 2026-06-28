@@ -119,7 +119,7 @@ fun HomeLogPageDataColumn(navController: NavController) {
     val store = SettingsStore(context)
 
     LaunchedEffect(Unit) {
-        model.updateInfo(CFQUser.mode)
+        model.updateInfo(CFQUser.getInstance().mode)
     }
 
     LazyColumn(
@@ -176,14 +176,14 @@ fun HomeLogPageDataColumn(navController: NavController) {
         items(
             count = uiState.logSize,
             key = { index ->
-                if (CFQUser.mode == 0) uiState.chuLogs[index].date.epochSeconds else uiState.maiLogs[index].date.epochSeconds
+                if (CFQUser.getInstance().mode == 0) uiState.chuLogs[index].date.epochSeconds else uiState.maiLogs[index].date.epochSeconds
             }
         ) {
             TextButton(
                 onClick = {
-                    if (CFQUser.mode == 0) {
+                    if (CFQUser.getInstance().mode == 0) {
                         navController.navigate(HomeNavItem.Home.route + "/log/chunithm/${it}")
-                    } else if (CFQUser.mode == 1) {
+                    } else if (CFQUser.getInstance().mode == 1) {
                         navController.navigate(HomeNavItem.Home.route + "/log/maimai/${it}")
                     }
                 },
@@ -194,13 +194,13 @@ fun HomeLogPageDataColumn(navController: NavController) {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column {
-                        if (CFQUser.mode == 0) {
+                        if (CFQUser.getInstance().mode == 0) {
                             Text(
                                 text = uiState.chuLogs[it].date.toLocalDateTime(TimeZone.currentSystemDefault())
                                     .format(model.logEntryDateTimeFormatter)
                             )
                             Text(text = "${uiState.chuLogs[it].recentEntries.size}条记录")
-                        } else if (CFQUser.mode == 1) {
+                        } else if (CFQUser.getInstance().mode == 1) {
                             Text(
                                 text = uiState.maiLogs[it].date.toLocalDateTime(TimeZone.currentSystemDefault())
                                     .format(model.logEntryDateTimeFormatter)
@@ -230,7 +230,7 @@ fun HomeLogPageDataChart() {
     }
 
     LaunchedEffect(chartMode) {
-        model.updateChart(gameMode = CFQUser.mode, chartMode = chartMode)
+        model.updateChart(gameMode = CFQUser.getInstance().mode, chartMode = chartMode)
     }
 
     Column(
@@ -277,10 +277,10 @@ fun HomeLogPageDataChart() {
                                 remember {
                                     LineCartesianLayer.LineFill.double(
                                         topFill = fill(
-                                            if (CFQUser.mode == 0) nameplateChunithmBottomColor else nameplateMaimaiBottomColor
+                                            if (CFQUser.getInstance().mode == 0) nameplateChunithmBottomColor else nameplateMaimaiBottomColor
                                         ),
                                         bottomFill = fill(
-                                            if (CFQUser.mode == 0) nameplateChunithmBottomColor else nameplateMaimaiBottomColor
+                                            if (CFQUser.getInstance().mode == 0) nameplateChunithmBottomColor else nameplateMaimaiBottomColor
                                         )
                                     )
                                 }

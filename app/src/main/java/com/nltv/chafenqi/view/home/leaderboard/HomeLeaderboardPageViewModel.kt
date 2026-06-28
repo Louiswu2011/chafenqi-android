@@ -76,8 +76,8 @@ class HomeLeaderboardPageViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(HomeLeaderboardPageUiState())
     val uiState = _uiState.asStateFlow()
 
-    val mode = CFQUser.mode
-    val token = CFQUser.token
+    val mode = CFQUser.getInstance().mode
+    val token = CFQUser.getInstance().token
 
     val statsTabs = listOf(
         SongStatsTabItem(

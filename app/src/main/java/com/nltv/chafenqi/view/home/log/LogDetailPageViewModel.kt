@@ -36,7 +36,7 @@ class LogDetailPageViewModel : ViewModel() {
 
     @OptIn(ExperimentalTime::class)
     private fun updateMaimai(index: Int) {
-        val log = CFQUser.maimai.log ?: return
+        val log = CFQUser.getInstance().maimai.log ?: return
         val entry = log.records.getOrNull(index) ?: return
 
         var ratingGain = 0
@@ -66,7 +66,7 @@ class LogDetailPageViewModel : ViewModel() {
 
     @OptIn(ExperimentalTime::class)
     private fun updateChunithm(index: Int) {
-        val log = CFQUser.chunithm.log ?: return
+        val log = CFQUser.getInstance().chunithm.log ?: return
         val entry = log.records.getOrNull(index) ?: return
 
         var ratingGain = 0.0

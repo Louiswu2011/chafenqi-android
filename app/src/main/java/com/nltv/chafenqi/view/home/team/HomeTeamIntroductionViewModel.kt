@@ -21,7 +21,7 @@ class HomeTeamIntroductionViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(HomeTeamIntroductionUiState())
     val uiState = _uiState.asStateFlow()
 
-    val user = CFQUser
+    val user = CFQUser.getInstance()
 
     fun refresh() {
         viewModelScope.launch {

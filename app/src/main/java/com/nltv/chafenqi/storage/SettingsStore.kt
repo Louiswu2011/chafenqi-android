@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.map
 
 class SettingsStore(private val context: Context) {
     companion object {
+        fun getInstance(): SettingsStore = org.koin.core.context.GlobalContext.get().get()
+
         val Context.settingsStore: DataStore<Preferences> by preferencesDataStore(name = "settingsStore")
 
         private val uploadShouldAutoJumpKey = booleanPreferencesKey("uploadShouldAutoJump")

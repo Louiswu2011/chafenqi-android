@@ -185,7 +185,7 @@ fun HomeLeaderboardRow(
                 expanded = !expanded
             },
         shape = RoundedCornerShape(5.dp),
-        border = if (rowData.username == CFQUser.username && !disableHighlight) BorderStroke(
+        border = if (rowData.username == CFQUser.getInstance().username && !disableHighlight) BorderStroke(
             2.dp,
             MaterialTheme.colorScheme.primary
         ) else null

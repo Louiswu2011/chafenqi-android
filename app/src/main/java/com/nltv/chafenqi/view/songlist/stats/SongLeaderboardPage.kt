@@ -84,7 +84,7 @@ fun ChunithmLeaderboardPage(index: Int, difficulty: Int) {
 @Composable
 fun ChunithmLeaderboardColumn(leaderboard: ChunithmDiffLeaderboard) {
     val listState = rememberLazyListState()
-    val userEntry = leaderboard.find { it.username == CFQUser.username }
+    val userEntry = leaderboard.find { it.username == CFQUser.getInstance().username }
 
     Box {
         LazyColumn(
@@ -142,7 +142,7 @@ fun ChunithmLeaderboardRow(
     Card(
         modifier = Modifier.padding(vertical = 5.dp),
         shape = RoundedCornerShape(5.dp),
-        border = if (item.username == CFQUser.username && !disableHighlight) BorderStroke(
+        border = if (item.username == CFQUser.getInstance().username && !disableHighlight) BorderStroke(
             2.dp,
             MaterialTheme.colorScheme.primary
         ) else null
@@ -226,7 +226,7 @@ fun MaimaiLeaderboardPage(index: Int, difficulty: Int, type: String) {
 @Composable
 fun MaimaiLeaderboardColumn(leaderboard: MaimaiDiffLeaderboard) {
     val listState = rememberLazyListState()
-    val userEntry = leaderboard.find { it.username == CFQUser.username }
+    val userEntry = leaderboard.find { it.username == CFQUser.getInstance().username }
 
     Box {
         LazyColumn(
@@ -284,7 +284,7 @@ fun MaimaiLeaderboardRow(
     Card(
         modifier = Modifier.padding(vertical = 5.dp),
         shape = RoundedCornerShape(5.dp),
-        border = if (item.username == CFQUser.username && !disableHighlight) BorderStroke(
+        border = if (item.username == CFQUser.getInstance().username && !disableHighlight) BorderStroke(
             2.dp,
             MaterialTheme.colorScheme.primary
         ) else null

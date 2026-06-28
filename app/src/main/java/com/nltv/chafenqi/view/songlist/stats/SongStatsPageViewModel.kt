@@ -45,7 +45,7 @@ class SongStatsPageViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(SongStatsUiState())
     val statsState = _uiState.asStateFlow()
 
-    val token = CFQUser.token
+    val token = CFQUser.getInstance().token
 
     val statsTabs = listOf(
         SongStatsTabItem(
@@ -122,7 +122,7 @@ class SongStatsPageViewModel : ViewModel() {
                 val chuMusic = ChafenqiApplication.getRepository().chunithmMusicList.value.getOrNull(index)
                 if (chuMusic != null) {
                     val result = CFQServer.apiMusicStat(
-                        CFQUser.token,
+                        CFQUser.getInstance().token,
                         mode,
                         chuMusic.musicId,
                         difficulty
@@ -138,7 +138,7 @@ class SongStatsPageViewModel : ViewModel() {
                 val maiMusic = ChafenqiApplication.getRepository().maimaiMusicList.value.getOrNull(index)
                 if (maiMusic != null) {
                     val result = CFQServer.apiMusicStat(
-                        CFQUser.token,
+                        CFQUser.getInstance().token,
                         mode,
                         maiMusic.coverId,
                         difficulty,

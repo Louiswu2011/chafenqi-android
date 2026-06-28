@@ -78,7 +78,7 @@ fun MusicRecordPage(navController: NavController, mode: Int, index: Int, levelIn
         ) {
             Text(text = "这里空荡荡的，要不出勤打这首？")
         }
-    } else if (!CFQUser.isPremium) {
+    } else if (!CFQUser.getInstance().isPremium) {
         Column(
             Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
@@ -127,10 +127,10 @@ fun MusicRecordScoreChart() {
                         remember {
                             LineCartesianLayer.LineFill.double(
                                 topFill = fill(
-                                    if (CFQUser.mode == 0) nameplateChunithmBottomColor else nameplateMaimaiBottomColor
+                                    if (CFQUser.getInstance().mode == 0) nameplateChunithmBottomColor else nameplateMaimaiBottomColor
                                 ),
                                 bottomFill = fill(
-                                    if (CFQUser.mode == 0) nameplateChunithmBottomColor else nameplateMaimaiBottomColor
+                                    if (CFQUser.getInstance().mode == 0) nameplateChunithmBottomColor else nameplateMaimaiBottomColor
                                 )
                             )
                         }
