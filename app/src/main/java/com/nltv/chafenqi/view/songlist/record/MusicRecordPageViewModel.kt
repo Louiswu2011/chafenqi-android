@@ -28,8 +28,9 @@ class MusicRecordPageViewModel : ViewModel() {
     private var maiMusic = MaimaiMusicEntry()
     private var chuMusic = ChunithmMusicEntry()
 
-    private val maiMusicList = ChafenqiApplication.getRepository().maimaiMusicList.value
-    private val chuMusicList = ChafenqiApplication.getRepository().chunithmMusicList.value
+    private val repo = ChafenqiApplication.getRepository()
+    private val maiMusicList get() = repo.maimaiMusicList.value
+    private val chuMusicList get() = repo.chunithmMusicList.value
 
     private val maiRecentEntries = CFQUser.maimai.recent
     private val chuRecentEntries = CFQUser.chunithm.recent
