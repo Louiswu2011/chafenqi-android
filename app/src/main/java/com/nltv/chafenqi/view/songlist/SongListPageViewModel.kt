@@ -86,6 +86,16 @@ class SongListPageViewModel : ViewModel() {
     var showFilterGenreDialog by mutableStateOf(false)
     var showFilterVersionDialog by mutableStateOf(false)
 
+    init {
+        // Observe repo music lists reactively — when data arrives, refresh UI
+        viewModelScope.launch {
+            repo.maimaiMusicList.collect { update() }
+        }
+        viewModelScope.launch {
+            repo.chunithmMusicList.collect { update() }
+        }
+    }
+
     private fun testFilterEnabled(): Boolean {
         return filterPlayed || filterLevel || filterConstant || filterGenre || filterVersion
     }
