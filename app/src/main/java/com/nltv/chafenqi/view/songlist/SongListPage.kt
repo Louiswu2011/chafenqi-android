@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,8 +18,10 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
@@ -133,12 +136,13 @@ fun SongListPage(navController: NavController) {
             SongListSearchBar(navController, model)
             SongListFilterChips(model)
             if (!model.isSearchBarActive) {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentPadding = PaddingValues(horizontal = 10.dp),
-                    state = listState
-                ) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        contentPadding = PaddingValues(horizontal = 10.dp),
+                        state = listState
+                    ) {
                     when (model.user.mode) {
                         0 -> {
                             items(
@@ -166,6 +170,8 @@ fun SongListPage(navController: NavController) {
                             )
                         }
                     }
+                }
+                    SongListScrollbar(listState)
                 }
             }
         }
@@ -661,5 +667,52 @@ fun ChunithmLevelBadgeRow(musicEntry: ChunithmMusicEntry) {
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun BoxScope.SongListScrollbar(listState: androidx.compose.foundation.lazy.LazyListState) {
+    val totalItems = listState.layoutInfo.totalItemsCount
+    if (totalItems == 0) return
+
+    val viewportHeight = listState.layoutInfo.viewportEndOffset - listState.layoutInfo.viewportStartOffset
+    if (viewportHeight == 0) return
+
+    val visibleItems = listState.layoutInfo.visibleItemsInfo
+    val firstVisible = listState.firstVisibleItemIndex
+
+    // Estimate total height from visible density
+    val avgItemHeight = if (visibleItems.isNotEmpty()) {
+        visibleItems.sumOf { it.size }.toFloat() / visibleItems.size
+    } else {
+        100f
+    }
+    val estimatedTotalHeight = totalItems * avgItemHeight
+    val scrollOffset = listState.firstVisibleItemScrollOffset.toFloat() + firstVisible * avgItemHeight
+
+    // Thumb height and position as fractions of viewport
+    val thumbFraction = (viewportHeight / estimatedTotalHeight).coerceIn(0.05f, 1f)
+    val scrollFraction = (scrollOffset / (estimatedTotalHeight - viewportHeight)).coerceIn(0f, 1f)
+
+    val density = androidx.compose.ui.platform.LocalDensity.current
+    val viewportHeightDp = with(density) { viewportHeight.toDp() }
+    val thumbHeightDp = viewportHeightDp * thumbFraction
+    val thumbOffsetDp = (viewportHeightDp - thumbHeightDp) * scrollFraction
+
+    Box(
+        modifier = Modifier
+            .fillMaxHeight()
+            .padding(end = 2.dp)
+            .width(4.dp)
+            .align(Alignment.CenterEnd)
+    ) {
+        Box(
+            modifier = Modifier
+                .offset(y = thumbOffsetDp)
+                .height(thumbHeightDp.coerceAtLeast(32.dp))
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(2.dp))
+                .background(Color.Black.copy(alpha = 0.25f))
+        )
     }
 }
