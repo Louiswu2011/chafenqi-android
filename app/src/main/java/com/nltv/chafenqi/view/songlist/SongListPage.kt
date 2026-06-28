@@ -2,7 +2,6 @@ package com.nltv.chafenqi.view.songlist
 
 import android.util.Log
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
@@ -131,9 +130,9 @@ fun SongListPage(navController: NavController) {
         Column(
             Modifier.padding(paddingValues)
         ) {
-            SongListSearchBar(navController)
-            SongListFilterChips()
-            AnimatedVisibility(visible = !model.isSearchBarActive) {
+            SongListSearchBar(navController, model)
+            SongListFilterChips(model)
+            if (!model.isSearchBarActive) {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize(),
@@ -145,11 +144,11 @@ fun SongListPage(navController: NavController) {
                             items(
                                 count = uiState.chuMusicList.size,
                                 key = { index ->
-                                    uiState.chuMusicList[index].hashCode()
+                                    uiState.chuMusicList[index].musicId
                                 },
                                 itemContent = { index ->
                                     val entry = uiState.chuMusicList[index]
-                                    ChunithmMusicListEntry(entry, index, navController)
+                                    ChunithmMusicListEntry(entry, index, navController, model)
                                 }
                             )
                         }
@@ -158,16 +157,15 @@ fun SongListPage(navController: NavController) {
                             items(
                                 count = uiState.maiMusicList.size,
                                 key = { index ->
-                                    uiState.maiMusicList[index].hashCode()
+                                    uiState.maiMusicList[index].musicId
                                 },
                                 itemContent = { index ->
                                     val entry = uiState.maiMusicList[index]
-                                    MaimaiMusicListEntry(entry, index, navController)
+                                    MaimaiMusicListEntry(entry, index, navController, model)
                                 }
                             )
                         }
                     }
-
                 }
             }
         }
@@ -176,8 +174,7 @@ fun SongListPage(navController: NavController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SongListSearchBar(navController: NavController) {
-    val model: SongListPageViewModel = viewModel()
+fun SongListSearchBar(navController: NavController, model: SongListPageViewModel) {
     val scope = rememberCoroutineScope()
     val maiResultListState = rememberLazyListState()
     val chuResultListState = rememberLazyListState()
@@ -260,7 +257,8 @@ fun SongListSearchBar(navController: NavController) {
                                     ChunithmMusicListEntry(
                                         music = chuSearchResult[index],
                                         index = -1,
-                                        navController = navController
+                                        navController = navController,
+                                        model = model
                                     )
                                 }
                             }
@@ -289,7 +287,8 @@ fun SongListSearchBar(navController: NavController) {
                                     MaimaiMusicListEntry(
                                         music = maiSearchResult[index],
                                         index = -1,
-                                        navController = navController
+                                        navController = navController,
+                                        model = model
                                     )
                                 }
                             }
@@ -306,9 +305,8 @@ fun SongListSearchBar(navController: NavController) {
 }
 
 @Composable
-fun SongListFilterChips() {
+fun SongListFilterChips(model: SongListPageViewModel) {
     val scrollState = rememberScrollState()
-    val model: SongListPageViewModel = viewModel()
     val levelStrings = if (model.user.mode == 0) CHUNITHM_LEVEL_STRINGS else MAIMAI_LEVEL_STRINGS
     val genreStrings = if (model.user.mode == 0) CHUNITHM_GENRE_STRINGS else MAIMAI_GENRE_STRINGS
     val versionStrings =
@@ -492,8 +490,7 @@ fun SongListSearchEmptyState(
 }
 
 @Composable
-fun MaimaiMusicListEntry(music: MaimaiMusicEntry, index: Int, navController: NavController) {
-    val model: SongListPageViewModel = viewModel()
+fun MaimaiMusicListEntry(music: MaimaiMusicEntry, index: Int, navController: NavController, model: SongListPageViewModel) {
 
     ElevatedCard (
         modifier = Modifier
@@ -555,8 +552,7 @@ fun MaimaiMusicListEntry(music: MaimaiMusicEntry, index: Int, navController: Nav
 }
 
 @Composable
-fun ChunithmMusicListEntry(music: ChunithmMusicEntry, index: Int, navController: NavController) {
-    val model: SongListPageViewModel = viewModel()
+fun ChunithmMusicListEntry(music: ChunithmMusicEntry, index: Int, navController: NavController, model: SongListPageViewModel) {
 
     ElevatedCard(
         modifier = Modifier
