@@ -144,16 +144,16 @@ android {
     }
 }
 
-val ktorVersion = "3.5.0"
+val ktorVersion = "3.5.1"
 val composepreferences = "2.0.0"
-val roomVersion = "2.7.1"
+val roomVersion = "2.8.4"
 val koinVersion = "4.2.2"
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 
-    implementation(platform("androidx.compose:compose-bom:2026.06.00"))
-    androidTestImplementation(platform("androidx.compose:compose-bom:2026.06.00"))
+    implementation(platform("androidx.compose:compose-bom:2026.06.01"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2026.06.01"))
 
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
@@ -185,7 +185,7 @@ dependencies {
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.5.0")
     implementation("androidx.lifecycle:lifecycle-runtime-compose")
     implementation("androidx.datastore:datastore-preferences:1.2.1")
-    implementation("com.onesignal:OneSignal:5.9.4")
+    implementation("com.onesignal:OneSignal:5.9.7")
 
     // Koin DI
     implementation("io.insert-koin:koin-android:$koinVersion")
@@ -196,14 +196,14 @@ dependencies {
     implementation("androidx.room:room-ktx:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
 
-    implementation(platform("com.google.firebase:firebase-bom:34.15.0"))
+    implementation(platform("com.google.firebase:firebase-bom:34.16.0"))
     implementation("com.google.firebase:firebase-crashlytics")
     implementation("com.google.firebase:firebase-perf")
     implementation("com.google.firebase:firebase-analytics")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.8.0")
-    implementation("androidx.compose.material:material:1.11.3")
+    implementation("androidx.compose.material:material:1.11.4")
     implementation("io.github.alexzhirkevich:qrose:1.1.2")
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
     implementation("com.google.accompanist:accompanist-permissions:0.37.3")
@@ -232,7 +232,7 @@ dependencies {
 
     implementation("me.zhanghai.compose.preference:library:1.1.1")
 
-    implementation("sh.calvin.reorderable:reorderable:3.0.0")
+    implementation("sh.calvin.reorderable:reorderable:3.1.0")
 
     implementation("dev.shreyaspatil:capturable:3.0.1")
     implementation("me.saket.telephoto:zoomable-image-coil3:0.19.0")
