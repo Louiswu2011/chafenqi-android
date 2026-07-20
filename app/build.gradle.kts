@@ -17,10 +17,8 @@ plugins {
 
 kotlin {
     jvmToolchain(17)
-    kotlin {
-        compilerOptions {
-            jvmTarget = JvmTarget.fromTarget("17")
-        }
+    compilerOptions {
+        jvmTarget = JvmTarget.fromTarget("17")
     }
 }
 
