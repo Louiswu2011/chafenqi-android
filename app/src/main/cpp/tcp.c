@@ -521,8 +521,9 @@ jboolean handle_tcp(const struct arguments *args,
     parse_tls_header((const char *) data, datalen, hostname);
     int len = strlen(hostname);
 
-
     int rport = htons(tcphdr->dest);
+    if (rport == 443)
+        __android_log_print(ANDROID_LOG_INFO, "Tun2Http_TLS", "SNI hostname=\"%s\" len=%d datalen=%d", hostname, len, datalen);
 
     struct allowed redirect;
     strcpy(redirect.raddr, args->proxyIp);
@@ -677,6 +678,10 @@ jboolean handle_tcp(const struct arguments *args,
                 goto free;
             }
 
+            // Direct (non-proxy) connection → skip CONNECT handshake
+            if (htons(s->tcp.dest) != 80)
+                s->tcp.connect_sent = TCP_CONNECT_ESTABLISHED;
+
             s->tcp.recv_window = get_receive_window(s);
 
             log_android(ANDROID_LOG_DEBUG, "TCP socket %d lport %d",
@@ -720,14 +725,36 @@ jboolean handle_tcp(const struct arguments *args,
             if (len > 0) {
                 strcpy(cur->tcp.hostname, hostname);
             } else {
-                struct sockaddr_in addr4;
-                addr4.sin_family = AF_INET;
-                addr4.sin_addr.s_addr = (__be32) cur->tcp.daddr.ip4;
-                addr4.sin_port = cur->tcp.dest;
-                lookup_hostname(&addr4, hostname, 512, 1);
-                len = strlen(hostname);
+                // Try DNS forward cache first (most accurate)
+                const char *cached = dns_cache_lookup(cur->tcp.daddr.ip4);
+                if (cached != NULL) {
+                    strcpy(hostname, cached);
+                    len = strlen(hostname);
+                    __android_log_print(ANDROID_LOG_DEBUG, "Tun2Http_TLS", "DNS cache hit: %s", hostname);
+                } else {
+                    // Try reverse DNS
+                    struct sockaddr_in addr4;
+                    addr4.sin_family = AF_INET;
+                    addr4.sin_addr.s_addr = (__be32) cur->tcp.daddr.ip4;
+                    addr4.sin_port = cur->tcp.dest;
+                    lookup_hostname(&addr4, hostname, 512, 1);
+                    len = strlen(hostname);
+                    __android_log_print(ANDROID_LOG_DEBUG, "Tun2Http_TLS", "reverse DNS result=\"%s\" len=%d", hostname, len);
+                }
                 if (len > 0) {
                     strcpy(cur->tcp.hostname, hostname);
+                } else if (cur->tcp.version == 4) {
+                    // Last resort: use IP address
+                    snprintf(hostname, 512, "%d.%d.%d.%d",
+                            (ntohl(cur->tcp.daddr.ip4) >> 24) & 0xFF,
+                            (ntohl(cur->tcp.daddr.ip4) >> 16) & 0xFF,
+                            (ntohl(cur->tcp.daddr.ip4) >> 8) & 0xFF,
+                            ntohl(cur->tcp.daddr.ip4) & 0xFF);
+                    len = strlen(hostname);
+                    if (len > 0) {
+                        strcpy(cur->tcp.hostname, hostname);
+                        __android_log_print(ANDROID_LOG_DEBUG, "Tun2Http_TLS", "SNI fallback to IP %s", cur->tcp.hostname);
+                    }
                 }
             }
             if (cur->tcp.connect_sent == TCP_CONNECT_NOT_SENT) {
@@ -741,6 +768,7 @@ jboolean handle_tcp(const struct arguments *args,
                     } else {
                         cur->tcp.connect_sent = TCP_CONNECT_SENT;
                         cur->tcp.state = TCP_LISTEN;
+                        __android_log_print(ANDROID_LOG_DEBUG, "Tun2Http_TLS", "CONNECT sent: %s", buffer);
                     }
                 }
             }
@@ -973,7 +1001,7 @@ int open_tcp_socket(const struct arguments *args,
     int version;
 
     int rport = htons(cur->dest);
-    if (rport != 80 && rport != 443) {
+    if (rport != 80) {
         redirect = NULL;
     }
 

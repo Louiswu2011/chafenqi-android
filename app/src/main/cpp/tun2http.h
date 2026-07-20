@@ -453,6 +453,16 @@ int sdk_int(JNIEnv *env);
 
 void log_android(int prio, const char *fmt, ...);
 
+// DNS forward cache: domain → IP mapping for TLS SNI fallback
+#define DNS_CACHE_SIZE 128
+struct dns_cache_entry {
+    __be32 ip4;
+    char hostname[256];
+    time_t expires;
+};
+void dns_cache_add(__be32 ip4, const char *hostname);
+const char *dns_cache_lookup(__be32 ip4);
+
 void log_packet(const struct arguments *args, jobject jpacket);
 
 void dns_resolved(const struct arguments *args,

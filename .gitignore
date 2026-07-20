@@ -7,6 +7,7 @@
 /.idea/workspace.xml
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
+/.idea/deploymentTargetSelector.xml
 .DS_Store
 /build
 /captures
@@ -15,3 +16,7 @@
 local.properties
 /app/release/
 .idea/AndroidProjectSystem.xml
+app/version.properties
+.reasonix/
+reasonix.toml
+docs/

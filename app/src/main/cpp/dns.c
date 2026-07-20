@@ -2,6 +2,37 @@
 // Created by Louis Wu on 2023/10/28.
 //
 #include "tun2http.h"
+#include <time.h>
+#include <android/log.h>
+
+// DNS forward cache
+static struct dns_cache_entry dns_cache[DNS_CACHE_SIZE];
+
+void dns_cache_add(__be32 ip4, const char *hostname) {
+    time_t now = time(NULL);
+    for (int i = 0; i < DNS_CACHE_SIZE; i++) {
+        if (dns_cache[i].hostname[0] == 0 || dns_cache[i].expires < now) {
+            dns_cache[i].ip4 = ip4;
+            strncpy(dns_cache[i].hostname, hostname, 255);
+            dns_cache[i].hostname[255] = 0;
+            dns_cache[i].expires = now + 300;
+            __android_log_print(ANDROID_LOG_DEBUG, "Tun2Http_DNS", "cache add %s → %d.%d.%d.%d",
+                hostname,
+                (ntohl(ip4) >> 24) & 0xFF, (ntohl(ip4) >> 16) & 0xFF,
+                (ntohl(ip4) >> 8) & 0xFF, ntohl(ip4) & 0xFF);
+            return;
+        }
+    }
+}
+
+const char *dns_cache_lookup(__be32 ip4) {
+    time_t now = time(NULL);
+    for (int i = 0; i < DNS_CACHE_SIZE; i++) {
+        if (dns_cache[i].ip4 == ip4 && dns_cache[i].expires >= now)
+            return dns_cache[i].hostname;
+    }
+    return NULL;
+}
 
 int32_t get_qname(const uint8_t *data, const size_t datalen, uint16_t off, char *qname) {
     *qname = 0;
@@ -105,8 +136,13 @@ void parse_dns_response(const struct arguments *args, const struct udp_session *
                         (qtype == DNS_QTYPE_A || qtype == DNS_QTYPE_AAAA)) {
 
                         char rd[INET6_ADDRSTRLEN + 1];
-                        if (qtype == DNS_QTYPE_A)
+                        if (qtype == DNS_QTYPE_A) {
                             inet_ntop(AF_INET, data + off, rd, sizeof(rd));
+                            // Cache domain→IP for TLS SNI fallback
+                            __be32 ip;
+                            memcpy(&ip, data + off, 4);
+                            dns_cache_add(ip, qname);
+                        }
                         else if (qclass == DNS_QCLASS_IN && qtype == DNS_QTYPE_AAAA)
                             inet_ntop(AF_INET6, data + off, rd, sizeof(rd));
                     }
